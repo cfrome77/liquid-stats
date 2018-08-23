@@ -21,6 +21,10 @@ route.get('/', function (req, res) {
     res.sendFile(pub + "/views/index.html");
 });
 
+route.get('/checkins', function (req, res) {
+    res.sendFile(pub + "/views/checkins.html");
+});
+
 route.get('/about', function(req, res) {
     res.sendFile(pub + "/views/about.html"); 
 });
@@ -39,6 +43,7 @@ route.get('/stats', function(req, res) {
 
 app.use('/', route);
 app.use('/about', route);
+app.use('/checkins', route);
 app.use('/topten', route);
 app.use('/mybadges', route);
 app.use('/stats', route);
