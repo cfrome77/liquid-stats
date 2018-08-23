@@ -42,6 +42,6 @@ I've modified code from Austin Lyons for the statistics page. You can find it [h
 
 I've modified code from pinceladasdaweb for the main list, top ten, and badges. You can find it [here](https://github.com/pinceladasdaweb/Node-Untappd)
 
-##Authors
+## Authors
 
 **Chris Frome** - [https://linkedin.com/in/cfrome77](linkedin.com/in/cfrome77)
