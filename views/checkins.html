@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Chris Frome - Top Ten</title>
+    <title>Chris Frome - Untappd List</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/assets/css/style.min.css" rel="stylesheet" type="text/css">
+    <link  rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
     <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+	
 </head>
 <header>
 <div id="header">
@@ -18,14 +18,14 @@
     <div id="logo">
     <a href="/">Liquid Stats</a>
     </div>
-    <div id="header-button">
+    <div id="header-button" >
       <svg id="header-menu-svg" height="50" width="25" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z"></path>
-                </svg>
+          <path fill-rule="evenodd" stroke="none" d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z"></path>
+      </svg>
     </div>
     <div id="nav">
-      <a href="/checkins">checkins</a>
-      <a class="active" href="/topten">Top Ten</a>
+      <a class = "active" href="/checkins">checkins</a>
+      <a href="/topten">Top Ten</a>
 	  <a href="/mybadges">Badges</a>
       <a href="/stats">Stats</a>
       <a href="/about">About</a>
@@ -34,15 +34,15 @@
 </div>
 </header>
     <body>
-        <h1>Top Ten Checkins</h1>
-		<div id="stream">
+        <h1>Recent Checkin List</h1>
+        <div id="stream">
             <img class="loading" src="assets/svg/loading-spin.svg" alt="Loading">
         </div>
         <img class="powered-by" src="assets/css/img/poweredbyuntappd.png" alt="Powered by Untappd API">
-		<script id="untappd-template" type="text/x-handlebars-template">
-			{{#each this}}
-            {{userTop @index}}
-			{{#if rating}}
+
+        <script id="untappd-template" type="text/x-handlebars-template">
+            {{#each this}}
+            {{userLatest @index}}
             <div id="checkin-{{id}}" class="checkin cf">
                 <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}">
                 <div class="beer">
@@ -54,6 +54,8 @@
                 <p class="comment">{{comments}}</p>
                 {{/if}}
                 <span class="rating r{{ratingCount rating}}"></span>
+				<br />
+				<span>Badges Earned: {{badgeCount}}</span>
                 <footer>
                     {{#if venueId}}
                     <p class="location"><a href="https://untappd.com/venue/{{venueId}}" target="_blank" title="{{venueName}}">{{venueName}}</a></p>
@@ -63,7 +65,6 @@
                         <a class="checkin-page hide-text" href="https://untappd.com/user/{{username}}/checkin/{{id}}" target="_blank" title="Checkin Page">Checkin Page</a>
                     </div>
                 </footer>
-			{{/if}}
             </div>
             {{/each}}
         </script>
@@ -71,6 +72,8 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script type="text/javascript" src="assets/js/checkins.min.js"></script>
         <script type="text/javascript" src="assets/js/navbar.js"></script>
         <script type="text/javascript">
