@@ -393,3 +393,8 @@ footer {
     width: 230px;
     white-space: nowrap
 }
+
+#button {
+    line-height:25px;
+    font-size:25px;
+}
