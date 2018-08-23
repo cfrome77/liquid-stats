@@ -45,7 +45,7 @@ app.use('/', route);
 app.use('/about', route);
 app.use('/checkins', route);
 app.use('/topten', route);
-app.use('/mybadges', route);
+app.use('/badges', route);
 app.use('/stats', route);
 
 app.listen(port);
