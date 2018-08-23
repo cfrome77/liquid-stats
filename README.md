@@ -11,7 +11,7 @@ This project uses the Untappd api, and allows you to keep track of whats beers y
 
 3 - In your terminal, run the command `grunt` to create minified version of the javascript and css files.
 
-4 - Open the [`index.html`](views/index.html), [`topten.html`](views/topten.html), and [`badges.html`](views/badges.html) files and fill in the variable username with your username of Untappd:
+4 - Open the [`checkins.html`](views/checkins.html), [`topten.html`](views/topten.html), and [`badges.html`](views/badges.html) files and fill in the variable username with your username of Untappd:
 
 ```javascript
 Untappd.init({
@@ -27,7 +27,7 @@ You will also need to update the username in the foter href in [`badges.html`](v
 
 ##Customize Handlebars Template
 
-1 - To customize the template open the [`index.html`](views/index.html), [`topten.html`](views/topten.html), and [`badges.html`](views/badges.html) file and look for the block of code in each .html file (other than stats) contianed inside the following script tag:
+1 - To customize the template open the [`checkins.html`](views/checkins.html), [`topten.html`](views/topten.html), and [`badges.html`](views/badges.html) file and look for the block of code in each .html file (other than stats) contianed inside the following script tag:
 
 ```javascript
 <script id="untappd-template" type="text/x-handlebars-template">
