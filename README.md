@@ -5,7 +5,7 @@ This project uses the Untappd api, and allows you to keep track of whats beers y
 
 ## Usage
 
-1 - The Untappd API require you register an application. Register your [here](https://untappd.com/api/register?register=new). The [`fetch_api_data.py`](fetch_api_data.py) script is used to fetch the data from the api and store it into local copies for faster retreval and to work around Untapp's 100 request per hour limit. you will need to fill in the Client ID and Client Secret variables in [`fetch_api_data.py`](fetch_api_data.py) inorder to retrieve your data.
+1 - The Untappd API require you register an application. Register your [here](https://untappd.com/api/register?register=new). The [`fetch_api_data.py`](fetch_api_data.py) script is used to fetch the data from the api and store it into local copies for faster retreval and to work around Untapp's 100 request per hour limit. you will need to fill in the Client ID and Client Secret variables in [`fetch_api_data.py`](fetch_api_data.py) inorder to retrieve your data. [`fetch_api_data.py`](fetch_api_data.py) requires the requests package be installed using `pip` before any data can be pulled or an error will occur.
 
 2 - In your terminal, run the command `npm install` to install the dependencies of the project.
 
