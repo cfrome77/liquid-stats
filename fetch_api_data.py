@@ -49,6 +49,16 @@ def get_badges():
     badges_json = requests.get(URL, params=payload)
 
     return badges_json.json()
+
+def get_topten():
+    URL = 'https://api.untappd.com/v4/user/beers/fromeca'
+    payload = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+    }
+    topten_json = requests.get(URL, params=payload)
+
+    return topten_json.json()
 	
 def save_beers_to_json(beers):
     print('saving to beers.json')
@@ -64,6 +74,11 @@ def save_badges_to_json(badges):
     print('saving to badges.json')
     with open('public/badges.json', 'w') as outfile:
         json.dump(badges, outfile)
+
+def save_topten_to_json(topten):
+    print('saving to topbeers.json')
+    with open('public/topbeers.json', 'w') as outfile:
+        json.dump(topten, outfile)
 		
 if __name__ == '__main__':
     beers = get_distinct_beers()
@@ -72,3 +87,5 @@ if __name__ == '__main__':
     save_checkins_to_json(checkins)
     badges = get_badges()
     save_badges_to_json(badges)
+    topten = get_topten()
+    save_topten_to_json(topten)
