@@ -1,5 +1,4 @@
 # Liquid Stats
-=================
 
 This project uses the Untappd api, and allows you to keep track of whats beers you have had, your top rated beers, badges you earned, and statics about your untappd checkins.
 
