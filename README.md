@@ -44,3 +44,7 @@ I've modified code from pinceladasdaweb for the main list, top beers, and badges
 ## Authors
 
 **Chris Frome** - [https://linkedin.com/in/cfrome77](linkedin.com/in/cfrome77)
+
+## Version
+
+**Current Vesion: 1.1**
