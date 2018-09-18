@@ -29,8 +29,8 @@ route.get('/about', function(req, res) {
     res.sendFile(pub + "/views/about.html"); 
 });
 
-route.get('/topten', function(req, res) {
-    res.sendFile(pub + "/views/topten.html"); 
+route.get('/topbeers', function(req, res) {
+    res.sendFile(pub + "/views/topbeers.html"); 
 });
 
 route.get('/mybadges', function(req, res) {
@@ -44,7 +44,7 @@ route.get('/stats', function(req, res) {
 app.use('/', route);
 app.use('/about', route);
 app.use('/checkins', route);
-app.use('/topten', route);
+app.use('/topbeers', route);
 app.use('/badges', route);
 app.use('/stats', route);
 
