@@ -11,7 +11,7 @@ This project uses the Untappd api, and allows you to keep track of whats beers y
 
 3 - In your terminal, run the command `grunt` to create minified version of the javascript and css files.
 
-4 - Open the [`checkins.html`](views/checkins.html), [`topten.html`](views/topten.html), and [`badges.html`](views/badges.html) files and fill in the variable username with your username of Untappd:
+4 - Open the [`checkins.html`](views/checkins.html), [`topbeers.html`](views/topbeers.html), and [`badges.html`](views/badges.html) files and fill in the variable username with your username of Untappd:
 
 ```javascript
 Untappd.init({
@@ -21,13 +21,13 @@ Untappd.init({
 });
 ```
 
-You will also need to update the username in the foter href in [`badges.html`](views/badges.html). My username is used as a default value
+You will also need to update the username in the footer href in [`badges.html`](views/badges.html). My username is used as a default value
 
 5 - Run the command `npm start` to start server. This requires you to have installed `nodemon` using `npm install nodemon`.
 
 ## Customize Handlebars Template
 
-1 - To customize the template open the [`checkins.html`](views/checkins.html), [`topten.html`](views/topten.html), and [`badges.html`](views/badges.html) file and look for the block of code in each .html file (other than stats) contianed inside the following script tag:
+1 - To customize the template open the [`checkins.html`](views/checkins.html), [`topbeers.html`](views/topbeers.html), and [`badges.html`](views/badges.html) file and look for the block of code in each .html file (other than stats) contianed inside the following script tag:
 
 ```javascript
 <script id="untappd-template" type="text/x-handlebars-template">
@@ -40,7 +40,7 @@ Change the HTML as it deems necessary.
 
 I've modified code from Austin Lyons for the statistics page. You can find it [here](https://github.com/austinlyons/dcjs-leaflet-untappd)
 
-I've modified code from pinceladasdaweb for the main list, top ten, and badges. You can find it [here](https://github.com/pinceladasdaweb/Node-Untappd)
+I've modified code from pinceladasdaweb for the main list, top beers, and badges. You can find it [here](https://github.com/pinceladasdaweb/Node-Untappd)
 
 ## Authors
 
