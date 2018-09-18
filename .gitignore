@@ -11,7 +11,3 @@ node_modules
 
 # npm package lock
 package-lock.json
-
-#mon minified css and js files
-public/assets/js/*.js
-public/assets/css/*.css
