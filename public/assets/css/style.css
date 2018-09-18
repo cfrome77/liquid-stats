@@ -16,20 +16,24 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 /**
 * @section Reset styles
 * These styles reset the default style sheet that comes with the user agent.
 */
 body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, fieldset, blockquote, pre, textarea {
-    margin: 0
+    margin: 0;
 }
 
 ul, ol, td, th, fieldset, legend {
-    padding: 0
+    padding: 0;
 }
 
 fieldset {
-    border: none
+    border: none;
 }
 
 a {
@@ -70,7 +74,7 @@ a:hover {
 
 #container {
   height: 100%;
-  min-height: 55px;
+  min-height: 50px;
   width: 100%;
   max-width: 990px;
   margin: auto;
@@ -210,7 +214,7 @@ body {
 }
 
 h1 {
-	color: #666;
+	color: #000;
 	margin: 15px 0 30px;
 	text-align: center;
 }
