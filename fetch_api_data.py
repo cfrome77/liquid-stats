@@ -1,8 +1,8 @@
 import requests
 import json
 
-CLIENT_ID = ''
-CLIENT_SECRET = ''
+CLIENT_ID = '9D1D5E2329EEAAEF1D5B39AEE442056CF29024C6'
+CLIENT_SECRET = '09AB95D20E59F28219519697B508E38E4681BF3F'
 	
 def get_distinct_beers():
     URL = 'https://api.untappd.com/v4/user/beers/fromeca'
@@ -25,9 +25,6 @@ def get_distinct_beers():
             break
 
     print('fetched data for {} beers'.format(len(beers)))
-    return beers
-
-	
     return beers
 	
 def get_checkins():

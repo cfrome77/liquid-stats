@@ -41,7 +41,7 @@
         <img class="powered-by" src="assets/css/img/poweredbyuntappd.png" alt="Powered by Untappd API">
 		<script id="untappd-template" type="text/x-handlebars-template">
 			{{#eachByIdx this}}
-			{{#ifCond rating '>' 3.5}}
+			{{#ifCond rating '>=' 4}}
             <div id="checkin-{{id}}" class="checkin cf">
                 <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}">
                 <div class="beer">
