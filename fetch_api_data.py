@@ -3,9 +3,10 @@ import json
 
 CLIENT_ID = '9D1D5E2329EEAAEF1D5B39AEE442056CF29024C6'
 CLIENT_SECRET = '09AB95D20E59F28219519697B508E38E4681BF3F'
+username = 'fromeca'
 	
 def get_distinct_beers():
-    URL = 'https://api.untappd.com/v4/user/beers/fromeca'
+    URL = 'https://api.untappd.com/v4/user/beers/' + username
     STEP = 50
     payload = {
         'client_id': CLIENT_ID,
@@ -28,7 +29,7 @@ def get_distinct_beers():
     return beers
 	
 def get_checkins():
-    URL = 'https://api.untappd.com/v4/user/checkins/fromeca'
+    URL = 'https://api.untappd.com/v4/user/checkins/' + username
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
@@ -38,7 +39,7 @@ def get_checkins():
     return checkins_json.json()
 
 def get_badges():
-    URL = 'https://api.untappd.com/v4/user/badges/fromeca'
+    URL = 'https://api.untappd.com/v4/user/badges/' + username
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
@@ -48,7 +49,7 @@ def get_badges():
     return badges_json.json()
 
 def get_topten():
-    URL = 'https://api.untappd.com/v4/user/beers/fromeca'
+    URL = 'https://api.untappd.com/v4/user/beers/' + username
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
