@@ -56,13 +56,19 @@
                         return {
                             id: beers.first_checkin_id,
                             beer: beers.beer.beer_name,
+                            bid: beers.beer.bid,
+                            beerSlug: beers.beer.beer_slug,
                             beerLabel: beers.beer.beer_label,
 							beerStyle: beers.beer.beer_style,
 							beerAbv: beers.beer.beer_abv,
+                            beerAbout: beers.beer.beer_description,
                             company: beers.brewery.brewery_name,
-							website: beers.brewery.contact.url,
+                            website: beers.brewery.contact.url,
+                            facebook: beers.brewery.contact.facebook,
+                            instagram: beers.brewery.contact.instagram,
 							breweryCity: beers.brewery.location.brewery_city,
 							breweryState: beers.brewery.location.brewery_state,
+                            breweryLabel: beers.brewery.brewery_label,
                             rating: beers.rating_score,
                             createdAt: beers.first_created_at
                         }

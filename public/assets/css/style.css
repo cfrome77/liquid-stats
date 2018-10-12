@@ -298,6 +298,12 @@ h1 {
     width: 50px
 }
 
+.brewery-label {
+	float: right;
+	height: 50px;
+    width: 50px
+}
+
 .rating {
     background: url("img/ratings.png") no-repeat center center rgba(0, 0, 0, 0);
     display: block;
@@ -401,4 +407,27 @@ footer {
 #button {
     line-height:25px;
     font-size:25px;
+}
+
+.beerInfo {
+	float: left
+}
+
+.beerInfo a {
+    color: #A9A9A9;
+    display: block;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 230px;
+    white-space: nowrap
+}
+
+.social {
+    float: right;
+    font-size: 16px;
+}
+
+.social a {
+    color: #A9A9A9;
 }
