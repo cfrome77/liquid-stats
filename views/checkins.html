@@ -7,7 +7,7 @@
     <link  rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	
@@ -44,11 +44,12 @@
             {{#each this}}
             {{userLatest @index}}
             <div id="checkin-{{id}}" class="checkin cf">
-                <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}">
+                <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}" title="{{beer}} Logo">
+                <img class="brewery-label" src="{{breweryLabel}}" alt="{{company}}" title="{{company}} Logo">
                 <div class="beer">
                     <p><strong>{{beer}}</strong></p>
 					<p>{{beerStyle}} | {{beerAbv}} ABV</p>
-                    <span><a href="{{website}}" target="_blank">{{company}}</a> - {{breweryCity}}, {{breweryState}}</span>
+                    <span>{{company}} - {{breweryCity}}, {{breweryState}}</span>
                 </div>
                 {{#if comments}}
                 <p class="comment">{{comments}}</p>
@@ -56,9 +57,15 @@
                 <span class="rating r{{ratingCount rating}}"></span>
 				<br />
 				<span>Badges Earned: {{badgeCount}}</span>
+				<span class="social"><a href="{{website}}" target="_blank" alt="website" title="website">Website</a> |
+				<a href="{{facebook}}" target="_blank" alt="facebook" title="facebook">facebook</a> |
+				<a href="http://instagram.com/{{instagram}}" target="_blank" alt="instagram" title="instagram">Instagram</a></span>
+				<br />
                 <footer>
                     {{#if venueId}}
                     <p class="location"><a href="https://untappd.com/venue/{{venueId}}" target="_blank" title="{{venueName}}">{{venueName}}</a></p>
+                    {{else}}
+                    <p class="beerInfo"><a href="https://untappd.com/b/{{beerSlug}}/{{bid}}" target="_blank">Beer Info</a></p>
                     {{/if}}
                     <div class="footer-time">
                         <time>{{published createdAt}}</time>
@@ -69,6 +76,7 @@
             {{/each}}
         </script>
 
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
