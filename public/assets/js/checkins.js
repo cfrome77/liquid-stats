@@ -51,6 +51,7 @@
 
                 if (apiStatus === 200) {
                     var checkins = data.response.checkins.items;
+                    var badges = checkins.badges;
 					
                     self.untappd = $.map(checkins, function (beers) {
                         return {
@@ -59,20 +60,24 @@
                             name: beers.user.first_name,
                             username: beers.user.user_name,
                             beer: beers.beer.beer_name,
+                            bid: beers.beer.bid,
+                            beerSlug: beers.beer.beer_slug,
                             beerLabel: beers.beer.beer_label,
 							beerStyle: beers.beer.beer_style,
 							beerAbv: beers.beer.beer_abv,
                             company: beers.brewery.brewery_name,
 							website: beers.brewery.contact.url,
+                            facebook: beers.brewery.contact.facebook,
+                            instagram: beers.brewery.contact.instagram,
 							breweryCity: beers.brewery.location.brewery_city,
 							breweryState: beers.brewery.location.brewery_state,
+                            breweryLabel: beers.brewery.brewery_label,
                             comments: beers.checkin_comment,
                             rating: beers.rating_score,
                             venueId: beers.venue.venue_id,
                             venueName: beers.venue.venue_name,
                             createdAt: beers.created_at,
 							badgeCount: beers.badges.count,
-							badgeName: beers.badges.items.badge_name
                         }
                     });
 	

@@ -191,13 +191,13 @@ function defineCharts(data) {
    .dimension(allDim)
    .group(function (d) { return 'dc.js insists on putting a row here so I remove it using JS'; })
    .columns([
-     function (d) { return '<img src="' + d.brewery.brewery_label + '"style="float:left" height="50" width="50"></img>' + d.brewery.brewery_name + " - " + d.brewery.location.brewery_city + ", " + d.brewery.location.brewery_state + '<br />' + '<a href="' + d.brewery.contact.url + '" target="_blank">' + "Website" + '</a>' },
-     function (d) { return '<img src="' + d.beer.beer_label + '"style="float:left" height="50" width="50"></img>' + d.beer.beer_name + '<details><summary>Description</summary>' + d.beer.beer_description + '</details>'; },
+     function (d) { return '<img src="' + d.brewery.brewery_label + '"style="float:left" height="50" width="50"></img>' + d.brewery.brewery_name + " - " + d.brewery.location.brewery_city + ", " + d.brewery.location.brewery_state + '<br />' + '<a href="' + d.brewery.contact.url + '" target="_blank">' + "Website" + '</a>' + " | " + '<a href="' + d.brewery.contact.facebook + '" target="_blank">' + "Facebook" + '</a>' + " | " + '<a href="https://instagram.com/' + d.brewery.contact.instagram + '" target="_blank">' + "Instagram" + '</a>'},
+     function (d) { return '<img src="' + d.beer.beer_label + '"style="float:left" height="50" width="50"></img>' + d.beer.beer_name + '<br />' + '<a href="https://untappd.com/user/fromeca/checkin/' + d.first_checkin_id + '"target="_blank">' + "First Checkin" + '</a>' + '<details><summary>Description</summary>' + d.beer.beer_description + '</details>'; },
      function (d) { return d.beer.beer_style; },
      function (d) { if (d.rating_score == 0) { return "N/A" } else { return d.rating_score; } },
      function (d) { if (d.beer.rating_score == 0) { return "N/A" } else { return d.beer.rating_score; } },
-     function (d) { return d.beer.beer_abv; },
-     function (d) { return d.beer.beer_ibu; }
+     function (d) { if (d.beer.beer_abv == 0) { return "N/A" } else { return d.beer.beer_abv; } },
+     function (d) { if (d.beer.beer_ibu == 0) { return "N/A" } else { return d.beer.beer_ibu; } }
    ])
    .sortBy(dc.pluck('rating_score'))
    .order(d3.descending)
