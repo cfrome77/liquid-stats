@@ -4,7 +4,7 @@ var breweryMarkers = new L.FeatureGroup();
         mapLink = 
             '<a href="https://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
-            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; ' + mapLink + ' Contributors',
             maxZoom: 18,
 			tileOptions: {crossOriginKeyword: null},
