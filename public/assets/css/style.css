@@ -431,3 +431,81 @@ footer {
 .social a {
     color: #A9A9A9;
 }
+
+/* Media Queries for diffrent device */
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen 
+and (min-width : 321px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen 
+and (max-width : 320px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+}
+
+/* iPads (landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+}
+
+/* iPads (portrait) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 50%;
+    }
+}
