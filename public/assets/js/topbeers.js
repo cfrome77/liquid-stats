@@ -62,6 +62,7 @@
 							beerStyle: beers.beer.beer_style,
 							beerAbv: beers.beer.beer_abv,
                             beerAbout: beers.beer.beer_description,
+                            ratingCount: beers.beer.rating_count,
                             company: beers.brewery.brewery_name,
                             website: beers.brewery.contact.url,
                             facebook: beers.brewery.contact.facebook,
