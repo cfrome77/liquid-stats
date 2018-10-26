@@ -1,7 +1,14 @@
-Handlebars.registerHelper("ratingCount", function (counter) {
-    var num = counter.toString(),
-        n   = num.replace('.', '-');
-    return n;
+Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
+    lvalue = parseFloat(lvalue);
+    rvalue = parseFloat(rvalue);
+        
+    return {
+        "+": lvalue + rvalue,
+        "-": lvalue - rvalue,
+        "*": lvalue * rvalue,
+        "/": lvalue / rvalue,
+        "%": lvalue % rvalue
+    }[operator];
 });
 
 Handlebars.registerHelper("published", function () {
