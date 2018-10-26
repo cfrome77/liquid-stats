@@ -45,7 +45,7 @@
             <div id="checkin-{{id}}" class="checkin cf">
                 <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}" title="{{beer}} Logo">
                 <img class="brewery-label" src="{{breweryLabel}}" alt="{{company}}" title="{{company}} Logo">
-                <div class="beer">
+                <div class="beer" style="text-align:center;">
                     <p><strong>{{beer}}</strong></p>
 					<p>{{beerStyle}} | {{beerAbv}} ABV</p>
                     <span>{{company}} - {{breweryCity}}, {{breweryState}}</span>
@@ -53,7 +53,9 @@
                 {{#if beerAbout}}
                 <p class="comment">{{beerAbout}}</p>
                 {{/if}}
-                <span class="rating r{{ratingCount rating}}"></span>
+                <span class="stars-container stars-{{math rating "*" 20}}">*****</span>
+                <br />
+                <span>Total Ratings: {{ratingCount}}</span>
                 <span class="social"><a href="{{website}}" target="_blank" alt="website" title="website">Website</a> |
 				<a href="{{facebook}}" target="_blank" alt="facebook" title="facebook">facebook</a> |
 				<a href="http://instagram.com/{{instagram}}" target="_blank" al"instagram" title="instagram">Instagram</a></span>
