@@ -105,7 +105,7 @@ a:hover {
 }
 
 #header-button {
-  fill: #ffffffbf;
+  fill: #fff;
   display: none !important;
   padding-right: 10px;
   margin-right: 4px;
@@ -134,6 +134,7 @@ a:hover {
   }
   
   #header-button {
+    fill: #fff;
     display: block !important;
   }
   #nav {
