@@ -450,8 +450,10 @@ footer {
 }
 
 #button {
-    line-height:25px;
+    line-height:100px;
     font-size:25px;
+    margin-top: 2%;
+    text-align:center;
 }
 
 .beerInfo {
@@ -488,6 +490,11 @@ and (max-device-width : 480px) {
         padding: 0 15px;
         max-width: 100%;
     }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
 }
 
 /* Smartphones (landscape) ----------- */
@@ -497,6 +504,11 @@ and (min-width : 321px) {
         margin: 15px auto 40px;
         padding: 0 15px;
         max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
     }
 }
 
@@ -508,6 +520,11 @@ and (max-width : 320px) {
         padding: 0 15px;
         max-width: 100%;
     }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
 }
 
 /* iPads (portrait and landscape) ----------- */
@@ -518,6 +535,11 @@ and (max-device-width : 1024px) {
         margin: 15px auto 40px;
         padding: 0 15px;
         max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
     }
 }
 
@@ -531,6 +553,11 @@ and (orientation : landscape) {
         padding: 0 15px;
         max-width: 100%;
     }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
 }
 
 /* iPads (portrait) ----------- */
@@ -542,6 +569,11 @@ and (orientation : portrait) {
         margin: 15px auto 40px;
         padding: 0 15px;
         max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
     }
 }
 
