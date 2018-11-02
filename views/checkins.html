@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <title>Liquid Stats - Checkins</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
     <link  rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	
@@ -55,6 +55,7 @@
                 <p class="comment">{{comments}}</p>
                 {{/if}}
                 <span class="stars-container stars-{{math rating "*" 20}}" style="padding-left: 0 !important">*****</span>
+                <span style="float:left;margin-top:4px;">My rating:&nbsp;</span>
 				<br />
 				<span>Badges Earned: {{badgeCount}}</span>
 				<span class="social"><a href="{{website}}" target="_blank" alt="website" title="website">Website</a> |
