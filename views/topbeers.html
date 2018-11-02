@@ -3,7 +3,7 @@
 <head>
     <title>Liquid Stats - Top Beers</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
     <link href="/assets/css/style.min.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
@@ -41,7 +41,7 @@
         <img class="powered-by" src="assets/css/img/poweredbyuntappd.png" alt="Powered by Untappd API">
 		<script id="untappd-template" type="text/x-handlebars-template">
 			{{#eachByIdx this}}
-			{{#ifCond rating '>=' 4}}
+			{{#ifCond myRating '>=' 4}}
             <div id="checkin-{{id}}" class="checkin cf">
                 <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}" title="{{beer}} Logo">
                 <img class="brewery-label" src="{{breweryLabel}}" alt="{{company}}" title="{{company}} Logo">
@@ -53,9 +53,10 @@
                 {{#if beerAbout}}
                 <p class="comment">{{beerAbout}}</p>
                 {{/if}}
-                <span class="stars-container stars-{{math rating "*" 20}}">*****</span>
+                <span class="stars-container stars-{{math myRating "*" 20}}">*****</span>
+                <span style="float:left;margin-top:4px;">My rating:&nbsp;</span>
                 <br />
-                <span>Total Ratings: {{ratingCount}}</span>
+                <span>Overall rating: {{toFixed overallRating}}</span>
                 <span class="social"><a href="{{website}}" target="_blank" alt="website" title="website">Website</a> |
 				<a href="{{facebook}}" target="_blank" alt="facebook" title="facebook">facebook</a> |
 				<a href="http://instagram.com/{{instagram}}" target="_blank" al"instagram" title="instagram">Instagram</a></span>
