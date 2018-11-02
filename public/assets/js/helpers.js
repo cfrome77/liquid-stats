@@ -11,6 +11,7 @@ Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
     }[operator];
 });
 
+
 Handlebars.registerHelper("published", function () {
     return moment(Date.parse(this.createdAt)).format('h:mm A D MMM YYYY');
 });
@@ -62,9 +63,13 @@ Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
 Handlebars.registerHelper('eachByIdx', function(context,options){
     var output = '';
     var contextSorted = context.concat()
-        .sort( function(a,b) { return b.rating - a.rating } );
+        .sort( function(a,b) { return b.myRating - a.myRating } );
     for(var i = 0, j = contextSorted.length; i < j; i++) {
         output += options.fn(contextSorted[i]);
     }
     return output;
+});
+
+Handlebars.registerHelper('toFixed', function(rating) {
+  return rating.toFixed(2);
 });
