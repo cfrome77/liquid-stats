@@ -62,7 +62,7 @@
 							beerStyle: beers.beer.beer_style,
 							beerAbv: beers.beer.beer_abv,
                             beerAbout: beers.beer.beer_description,
-                            ratingCount: beers.beer.rating_count,
+                            overallRating: beers.beer.rating_score,
                             company: beers.brewery.brewery_name,
                             website: beers.brewery.contact.url,
                             facebook: beers.brewery.contact.facebook,
@@ -70,7 +70,7 @@
 							breweryCity: beers.brewery.location.brewery_city,
 							breweryState: beers.brewery.location.brewery_state,
                             breweryLabel: beers.brewery.brewery_label,
-                            rating: beers.rating_score,
+                            myRating: beers.rating_score,
                             createdAt: beers.first_created_at
                         }
                     });
