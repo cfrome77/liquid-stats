@@ -4,13 +4,17 @@ This project uses the Untappd api, and allows you to keep track of whats beers y
 
 ## Usage
 
-1 - The Untappd API require you register an application. Register your [here](https://untappd.com/api/register?register=new). The [`fetch_api_data.py`](fetch_api_data.py) script is used to fetch the data from the api and store it into local copies for faster retreval and to work around Untapp's 100 request per hour limit. you will need to fill in the Client ID and Client Secret variables in [`fetch_api_data.py`](fetch_api_data.py) inorder to retrieve your data. [`fetch_api_data.py`](fetch_api_data.py) requires the requests package be installed using `pip` before any data can be pulled or an error will occur.
+1 - The Untappd API requires that you register your application. Register your app [here](https://untappd.com/api/register?register=new). 
 
-2 - In your terminal, run the command `npm install` to install the dependencies of the project.
+2 - run the following command to create a .env file: `cp .env.example .env`. Fill in the variables in the `.env` file with your `client_secret`, `client_id`, and `untappd username`. These variable will be read and used by the [`fetch_api_data.py`](fetch_api_data.py) file.
 
-3 - In your terminal, run the command `grunt` to create minified version of the javascript and css files.
+3 - The [`fetch_api_data.py`](fetch_api_data.py) script is used to fetch the data from the api and store it into local copies for faster retreval and to work around Untapp's 100 request per hour limit. [`fetch_api_data.py`](fetch_api_data.py) requires the `requests`, and `dotenv` packages to be installed using `pip` before any data can be pulled or an error will occur.
 
-4 - Open the [`checkins.html`](views/checkins.html), [`topbeers.html`](views/topbeers.html), and [`badges.html`](views/badges.html) files and fill in the variable username with your username of Untappd:
+4 - In your terminal, run the command `npm install` to install the dependencies of the project.
+
+5 - In your terminal, run the command `grunt` to create minified version of the javascript and css files.
+
+6 - Open the [`checkins.html`](views/checkins.html), [`topbeers.html`](views/topbeers.html), and [`badges.html`](views/badges.html) files and fill in the variable username with your username of Untappd:
 
 ```javascript
 Untappd.init({
