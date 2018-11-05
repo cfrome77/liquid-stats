@@ -1,10 +1,18 @@
 import requests
 import json
+import os
 
-CLIENT_ID = '9D1D5E2329EEAAEF1D5B39AEE442056CF29024C6'
-CLIENT_SECRET = '09AB95D20E59F28219519697B508E38E4681BF3F'
-username = 'fromeca'
-	
+from os.path import join, dirname
+from dotenv import load_dotenv
+ 
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+ 
+# Accessing variables.
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+username = os.getenv('UNTAPPD_USERNAME')
+
 def get_distinct_beers():
     URL = 'https://api.untappd.com/v4/user/beers/' + username
     STEP = 50
