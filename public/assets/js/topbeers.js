@@ -23,7 +23,7 @@
         }
 
         this.username  = options.username;
-        this.url       = '/topbeers.json';
+        this.url       = '/beers.json';
         this.template  = options.template;
         this.container = options.container;
 
@@ -47,38 +47,31 @@
             var self = this;
 
             $.getJSON(self.url, function (data) {
-                var apiStatus = data.meta.code;
-
-                if (apiStatus === 200) {
-                    var checkins = data.response.beers.items;
-					
-                    self.untappd = $.map(checkins, function (beers) {
-                        return {
-                            id: beers.first_checkin_id,
-                            beer: beers.beer.beer_name,
-                            bid: beers.beer.bid,
-                            beerSlug: beers.beer.beer_slug,
-                            beerLabel: beers.beer.beer_label,
-							beerStyle: beers.beer.beer_style,
-							beerAbv: beers.beer.beer_abv,
-                            beerAbout: beers.beer.beer_description,
-                            overallRating: beers.beer.rating_score,
-                            company: beers.brewery.brewery_name,
-                            website: beers.brewery.contact.url,
-                            facebook: beers.brewery.contact.facebook,
-                            instagram: beers.brewery.contact.instagram,
-							breweryCity: beers.brewery.location.brewery_city,
-							breweryState: beers.brewery.location.brewery_state,
-                            breweryLabel: beers.brewery.brewery_label,
-                            myRating: beers.rating_score,
-                            createdAt: beers.first_created_at
-                        }
-                    });
+                var topbeers = data.beers
+                self.untappd = $.map(topbeers, function (beers) {
+                    return {
+                        id: beers.first_checkin_id,
+                        beer: beers.beer.beer_name,
+                        bid: beers.beer.bid,
+                        beerSlug: beers.beer.beer_slug,
+                        beerLabel: beers.beer.beer_label,
+                        beerStyle: beers.beer.beer_style,
+                        beerAbv: beers.beer.beer_abv,
+                        beerAbout: beers.beer.beer_description,
+                        overallRating: beers.beer.rating_score,
+                        company: beers.brewery.brewery_name,
+                        website: beers.brewery.contact.url,
+                        facebook: beers.brewery.contact.facebook,
+                        instagram: beers.brewery.contact.instagram,
+                        breweryCity: beers.brewery.location.brewery_city,
+                        breweryState: beers.brewery.location.brewery_state,
+                        breweryLabel: beers.brewery.brewery_label,
+                        myRating: beers.rating_score,
+                        createdAt: beers.first_created_at
+                    }
+                });
 	
-                    self.attachTemplate();
-                } else {
-                    self.handleError(data.meta.error_detail);
-                }
+                self.attachTemplate();
             });
         }
     };
