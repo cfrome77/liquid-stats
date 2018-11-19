@@ -3,11 +3,11 @@
 <head>
     <title>Liquid Stats - Badges</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
     <link href="/assets/css/style.min.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -50,7 +50,7 @@
                 <footer>
                     <div class="footer-time">
                         <time>{{published createdAt}}</time>
-                        <a class="checkin-page hide-text" href="https://untappd.com/user/fromeca/badges/{{id}}" target="_blank" title="Badge Page">Badge Page</a>
+                        <a class="checkin-page hide-text" href="https://untappd.com/user/" + username + "/badges/{{id}}" target="_blank" title="Badge Page">Badge Page</a>
                     </div>
                 </footer>
             </div>

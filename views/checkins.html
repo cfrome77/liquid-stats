@@ -54,7 +54,7 @@
                 {{#if comments}}
                 <p class="comment">{{comments}}</p>
                 {{/if}}
-                <span class="stars-container stars-{{math rating "*" 20}}">*****</span>
+                <span class="stars-container stars-{{math rating "*" 20}}" style="padding-left: 0 !important">*****</span>
                 <span style="float:left;margin-top:4px;">My rating:&nbsp;</span>
 				<br />
 				<span>Badges Earned: {{badgeCount}}</span>
@@ -69,7 +69,7 @@
                     {{/if}}
                     <div class="footer-time">
                         <time>{{published createdAt}}</time>
-                        <a class="checkin-page hide-text" href="https://untappd.com/user/{{username}}/checkin/{{id}}" target="_blank" title="Checkin Page">Checkin Page</a>
+                        <a class="checkin-page hide-text" href="https://untappd.com/user/" + username + "/checkin/{{id}}" target="_blank" title="Checkin Page">Checkin Page</a>
                     </div>
                 </footer>
             </div>
