@@ -14,7 +14,7 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 username = os.getenv('UNTAPPD_USERNAME')
 
 def get_distinct_beers():
-    URL = 'https://api.untappd.com/v4/user/beers/fromeca'
+    URL = 'https://api.untappd.com/v4/user/beers/' + username
     STEP = 50
     payload = {
         'client_id': CLIENT_ID,
@@ -26,8 +26,9 @@ def get_distinct_beers():
     while True:
         payload['offset'] = offset
         print('attempting to fetch {} - {}'.format(offset, offset + STEP))
-        json = requests.get(URL, params=payload).json()
-        data = json['response']['beers']
+        response = requests.get(URL, params=payload)
+        json_data = json.loads(response.text)
+        data = json_data['response']['beers']
         beers.extend(data['items'])
         offset += STEP
         if data['count'] == 0 or data['count'] < STEP:
@@ -48,13 +49,27 @@ def get_checkins():
 
 def get_badges():
     URL = 'https://api.untappd.com/v4/user/badges/' + username
+    STEP = 50
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
+        'limit': STEP,
     }
-    badges_json = requests.get(URL, params=payload)
+    badges = []
+    offset = 0
+    while True:
+        payload['offset'] = offset
+        print('attempting to fetch {} - {}'.format(offset, offset + STEP))
+        response = requests.get(URL, params=payload)
+        json_data = json.loads(response.text)
+        data = json_data['response']
+        badges.extend(data['items'])
+        offset += STEP
+        if data['count'] == 0 or data['count'] < STEP:
+            break
 
-    return badges_json.json()
+    print('fetched data for {} badges'.format(len(badges)))
+    return badges
 
 def save_beers_to_json(beers):
     print('saving to beers.json')
