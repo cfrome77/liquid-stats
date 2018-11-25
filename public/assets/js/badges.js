@@ -47,25 +47,19 @@
             var self = this;
 
             $.getJSON(self.url, function (data) {
-                var apiStatus = data.meta.code;
+                var badges = data;
 
-                if (apiStatus === 200) {
-                    var badges = data.response.items;
+                self.untappd = $.map(badges, function (beers) {
+                    return {
+                        badgeName: beers.badge_name,
+                        badgeDescription: beers.badge_description,
+                        badgeImage: beers.media.badge_image_sm,
+                        createdAt: beers.created_at,
+                        id: beers.user_badge_id
+                    }
+                });
 
-                    self.untappd = $.map(badges, function (beers) {
-                        return {
-                            badgeName: beers.badge_name,
-							badgeDescription: beers.badge_description,
-							badgeImage: beers.media.badge_image_sm,
-							createdAt: beers.created_at,
-							id: beers.user_badge_id
-                        }
-                    });
-
-                    self.attachTemplate();
-                } else {
-                    self.handleError(data.meta.error_detail);
-                }
+                self.attachTemplate();
             });
         }
     };
