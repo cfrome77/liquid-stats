@@ -51,7 +51,6 @@
 
                 if (apiStatus === 200) {
                     var checkins = data.response.checkins.items;
-                    var badges = checkins.badges;
 					
                     self.untappd = $.map(checkins, function (beers) {
                         return {
