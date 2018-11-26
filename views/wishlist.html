@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Liquid Stats - Wishlist</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+    <link href="/assets/css/style.min.css" rel="stylesheet" type="text/css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+<header>
+<div id="header">
+  <div id="container">
+    <div id="logo">
+    <a href="/">Liquid Stats</a>
+    </div>
+    <div id="header-button">
+      <svg id="header-menu-svg" height="50" width="25" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z"></path>
+                </svg>
+    </div>
+    <div id="nav">
+      <a href="/checkins">Checkins</a>
+      <a href="/topbeers">Top Beers</a>
+	  <a href="/mybadges">Badges</a>
+      <a href="/stats">Stats</a>
+      <a class="active" href="/wishlist">Wishlist</a>
+      <a href="/about">About</a>
+    </div>
+  </div>
+</div>
+</header>
+    <body>
+        <h1>Wishlist</h1>
+		<div id="stream">
+            <img class="loading" src="assets/svg/loading-spin.svg" alt="Loading">
+        </div>
+        <img class="powered-by" src="assets/css/img/poweredbyuntappd.png" alt="Powered by Untappd API">
+		<script id="untappd-template" type="text/x-handlebars-template">
+			{{#each this}}
+            <div id="checkin-{{id}}" class="checkin cf">
+                <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}" title="{{beer}} Logo">
+                <img class="brewery-label" src="{{breweryLabel}}" alt="{{company}}" title="{{company}} Logo">
+                <div class="beer" style="text-align:center;">
+                    <p><strong>{{beer}}</strong></p>
+					<p>{{beerStyle}} | {{beerAbv}} ABV</p>
+                    <span>{{company}} - {{breweryCity}}, {{breweryState}}</span>
+                </div>
+                {{#if beerAbout}}
+                <p class="comment">{{beerAbout}}</p>
+                {{/if}}
+                <span>Overall rating: {{toFixed overallRating}}</span>
+                <span class="social"><a href="{{website}}" target="_blank" alt="website" title="website">Website</a> |
+				<a href="{{facebook}}" target="_blank" alt="facebook" title="facebook">facebook</a> |
+				<a href="http://instagram.com/{{instagram}}" target="_blank" al"instagram" title="instagram">Instagram</a></span>
+                <footer>
+                <p class="beerInfo"><a href="https://untappd.com/b/{{beerSlug}}/{{bid}}" target="_blank" title="Beer Info">Beer Info</a></p>
+                    <div class="footer-time">
+                        <time>{{published createdAt}}</time>
+                    </div>
+                </footer>
+            </div>
+            {{/each}}
+        </script>
+
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+        <script type="text/javascript" src="assets/js/wishlist.min.js"></script>
+        <script type="text/javascript" src="assets/js/navbar.js"></script>
+        <script type="text/javascript">
+            Untappd.init({
+                template: $('#untappd-template').html(),
+                container: $('#stream'),
+                username: 'fromeca' // Untappd username
+            });
+        </script>
+    </body>
+</html>
