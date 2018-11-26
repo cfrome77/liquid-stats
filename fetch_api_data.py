@@ -71,6 +71,16 @@ def get_badges():
     print('fetched data for {} badges'.format(len(badges)))
     return badges
 
+def get_wishlist():
+    URL = 'https://api.untappd.com/v4/user/wishlist/' + username
+    payload = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+    }
+    wishlist_json = requests.get(URL, params=payload)
+    
+    return wishlist_json.json()
+
 def save_beers_to_json(beers):
     print('saving to beers.json')
     with open('public/beers.json', 'w') as outfile:
@@ -86,10 +96,17 @@ def save_badges_to_json(badges):
     with open('public/badges.json', 'w') as outfile:
         json.dump(badges, outfile)
 
+def save_wishlist_to_json(wishlist):
+    print('saving to wishlist.json')
+    with open('public/wishlist.json', 'w') as outfile:
+        json.dump(wishlist, outfile)
+
 if __name__ == '__main__':
     beers = get_distinct_beers()
     save_beers_to_json(beers)
-    checkins = get_checkins()
-    save_checkins_to_json(checkins)
     badges = get_badges()
     save_badges_to_json(badges)
+    checkins = get_checkins()
+    save_checkins_to_json(checkins)
+    wishlist = get_wishlist()
+    save_wishlist_to_json(wishlist)
