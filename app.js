@@ -41,12 +41,17 @@ route.get('/stats', function(req, res) {
     res.sendFile(pub + "/views/stats.html"); 
 });
 
+route.get('/wishlist', function(req, res) {
+    res.sendFile(pub + "/views/wishlist.html"); 
+});
+
 app.use('/', route);
 app.use('/about', route);
 app.use('/checkins', route);
 app.use('/topbeers', route);
 app.use('/badges', route);
 app.use('/stats', route);
+app.use('/wishlist', route);
 
 app.listen(port);
 console.log('Your server goes on localhost:' + port);
