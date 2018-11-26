@@ -12,7 +12,8 @@ module.exports = function (grunt) {
                     'public/assets/js/checkins.min.js': ['public/assets/js/helpers.js', 'public/assets/js/checkins.js'],
 					'public/assets/js/userinfo.min.js': ['public/assets/js/helpers.js', 'public/assets/js/userinfo.js'],
 					'public/assets/js/badges.min.js': ['public/assets/js/helpers.js', 'public/assets/js/badges.js'],
-					'public/assets/js/topbeers.min.js': ['public/assets/js/helpers.js', 'public/assets/js/topbeers.js']
+					'public/assets/js/topbeers.min.js': ['public/assets/js/helpers.js', 'public/assets/js/topbeers.js'],
+					'public/assets/js/wishlist.min.js': ['public/assets/js/helpers.js', 'public/assets/js/wishlist.js']
                 }
             }
         },
