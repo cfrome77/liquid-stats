@@ -156,7 +156,7 @@ a:hover {
 #header #nav a {
   color: #ffffffbf;
   text-decoration: none;
-  margin-right: 10px;
+  margin-right: 14px;
 }
 
 #header #nav a:hover {
@@ -496,6 +496,12 @@ and (max-device-width : 480px) {
         margin-top: 30vh;
         text-align: center;
     }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
 }
 
 /* Smartphones (landscape) ----------- */
@@ -510,6 +516,12 @@ and (min-width : 321px) {
     {
         margin-top: 30vh;
         text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
     }
 }
 
@@ -526,6 +538,12 @@ and (max-width : 320px) {
         margin-top: 30vh;
         text-align: center;
     }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
 }
 
 /* iPads (portrait and landscape) ----------- */
@@ -541,6 +559,12 @@ and (max-device-width : 1024px) {
     {
         margin-top: 30vh;
         text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
     }
 }
 
@@ -559,6 +583,12 @@ and (orientation : landscape) {
         margin-top: 30vh;
         text-align: center;
     }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
 }
 
 /* iPads (portrait) ----------- */
@@ -576,6 +606,12 @@ and (orientation : portrait) {
         margin-top: 30vh;
         text-align: center;
     }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
 }
 
 /* Desktops and laptops ----------- */
@@ -585,5 +621,11 @@ and (min-width : 1224px) {
         margin: 15px auto 40px;
         padding: 0 15px;
         max-width: 50%;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
     }
 }
