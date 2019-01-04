@@ -41,8 +41,7 @@
         </div>
         <img class="powered-by" src="assets/css/img/poweredbyuntappd.png" alt="Powered by Untappd API">
 	<script id="untappd-template" type="text/x-handlebars-template">
-	{{#each this}}
-	{{#if totalCount}}
+	    {{#each this}}
             <div id="checkin-{{id}}" class="checkin cf">
                 <img class="beer-label" src="{{beerLabel}}" alt="{{beer}}" title="{{beer}} Logo">
                 <img class="brewery-label" src="{{breweryLabel}}" alt="{{company}}" title="{{company}} Logo">
@@ -65,13 +64,12 @@
                     </div>
                 </footer>
             </div>
-	    {{else}}
-                <div class="beer" style="text-align:center;">
-                    <p><strong>Sorry, no items have been added to this wishlist</strong></p>
-                </div>
-	    {{/if}}
-            {{/each}}
-        </script>
+		{{else}}
+            <div class="beer" style="text-align:center;">
+                <p><strong>Sorry, no items have been added to this wishlist</strong></p>
+            </div>
+		{{/each}}
+    </script>
 
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
