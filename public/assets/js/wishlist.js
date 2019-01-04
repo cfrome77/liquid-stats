@@ -70,7 +70,8 @@
                             breweryState: beers.brewery.location.brewery_state,
                             breweryLabel: beers.brewery.brewery_label,
                             myRating: beers.rating_score,
-                            createdAt: beers.created_at
+                            createdAt: beers.created_at,
+			    totalCount: beers.count
                         }
                     });
 	
