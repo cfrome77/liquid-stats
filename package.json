@@ -20,7 +20,7 @@
   "dependencies": {
     "compression": "^1.7.3",
     "express": "^4.16.3",
-    "nodemon": "^1.18.3",
+    "nodemon": "^1.18.9",
     "npm": "^6.4.0",
     "request": "^2.88.0"
   },
