@@ -55,6 +55,7 @@ function defineCharts(data) {
       monthDim  = ndx.dimension(dc.pluck('first_had_month')),
       dayOfWeekDim = ndx.dimension(dc.pluck('first_had_day')),
 	  styleDim = ndx.dimension(function(d) {return d.beer.beer_style;}),
+	  breweryDim = ndx.dimension(function(d) {return d.brewery.brewery_name}),
       ratingDim = ndx.dimension(dc.pluck('rating_score')),
       commRatingDim = ndx.dimension(function(d) {return d.beer.rating_score;}),
       abvDim = ndx.dimension(function(d) {return d.beer.beer_abv;}),
@@ -67,22 +68,24 @@ function defineCharts(data) {
       countPerMonth = monthDim.group().reduceCount(),
       countPerDay = dayOfWeekDim.group().reduceCount(),
 	  countPerStyle = styleDim.group().reduceCount(),
+	  countPerBrewery = breweryDim.group().reduceCount(),
       countPerRating = ratingDim.group().reduceCount(),
       countPerCommRating = commRatingDim.group().reduceCount(),
       countPerABV = abvDim.group().reduceCount(),
       countPerIBU = ibuDim.group().reduceCount();
 
   // specify charts
-  var yearChart   = dc.pieChart('#years'),
-      monthChart   = dc.pieChart('#months'),
-      dayChart   = dc.pieChart('#days'),
-	  styleChart = dc.pieChart('#style'),
-      ratingChart  = dc.barChart('#ratings'),
+  var yearChart        = dc.pieChart('#years'),
+      monthChart       = dc.pieChart('#months'),
+      dayChart         = dc.pieChart('#days'),
+	  styleChart       = dc.pieChart('#style'),
+      ratingChart      = dc.barChart('#ratings'),
       commRatingChart  = dc.barChart('#commRatings'),
-      abvChart  = dc.barChart('#abvs'),
-      ibuChart  = dc.barChart('#ibus'),
-      dataCount = dc.dataCount('#data-count')
-      dataTable = dc.dataTable('#data-table');
+      abvChart         = dc.barChart('#abvs'),
+      ibuChart         = dc.barChart('#ibus'),
+      brewerySelect    = dc.selectMenu('#brewery'),
+      dataCount        = dc.dataCount('#data-count'),
+      dataTable        = dc.dataTable('#data-table');
 
   var pieSize = 230;
   var chartWidth = 330;
@@ -186,8 +189,12 @@ function defineCharts(data) {
     .yAxisLabel('Count')
     .xUnits(function (d) { return 5;})
     .margins({top: 10, right: 20, bottom: 50, left: 50});
+    
+  brewerySelect
+    .dimension(breweryDim)
+    .group(countPerBrewery)
 
-    dataTable
+  dataTable
    .dimension(allDim)
    .group(function (d) { return 'dc.js insists on putting a row here so I remove it using JS'; })
    .columns([
