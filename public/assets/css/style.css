@@ -620,7 +620,7 @@ and (min-width : 1224px) {
     #stream {
         margin: 15px auto 40px;
         padding: 0 15px;
-        max-width: 50%;
+        max-width: 30%;
     }
     #header-button {
         margin-left: 10px;
