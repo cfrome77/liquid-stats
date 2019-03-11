@@ -59,6 +59,7 @@
                 <span style="float:left;margin-top:4px;">My rating:&nbsp;</span>
 				<br />
 				<span>Badges Earned: {{badgeCount}}</span>
+				<br />
 				<span class="social"><a href="{{website}}" target="_blank" alt="website" title="website">Website</a> |
 				<a href="{{facebook}}" target="_blank" alt="facebook" title="facebook">facebook</a> |
 				<a href="http://instagram.com/{{instagram}}" target="_blank" alt="instagram" title="instagram">Instagram</a></span>
@@ -76,13 +77,16 @@
             </div>
             {{/each}}
         </script>
-
+        
+        <button onclick="topFunction()" id="topButton" title="Go to top">Top</button>
+        
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script type="text/javascript" src="assets/js/checkins.min.js"></script>
+        <script type="text/javascript" src="assets/js/topButton.js"></script>
         <script type="text/javascript" src="assets/js/navbar.js"></script>
         <script type="text/javascript">
             Untappd.init({
