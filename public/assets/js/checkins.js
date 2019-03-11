@@ -51,7 +51,6 @@
 
                 if (apiStatus === 200) {
                     var checkins = data.response.checkins.items;
-					
                     self.untappd = $.map(checkins, function (beers) {
                         return {
                             id: beers.checkin_id,
@@ -79,7 +78,37 @@
 							badgeCount: beers.badges.count,
                         }
                     });
-	
+                    self.attachTemplate();
+                } else {
+                    self.handleError(data.meta.error_detail);
+                }
+            });
+        }
+    };
+    
+    Untappd.prototype = {
+        attachTemplate: function () {
+            var template = Handlebars.compile(this.template);
+
+            this.container.empty().append(template(this.untappd));
+        },
+        handleError: function (data) {
+            this.container.empty().append('<p class="error">'+data+'</p>');
+        },
+        fetch: function () {
+            var self = this;
+
+            $.getJSON(self.url, function (data) {
+                var apiStatus = data.meta.code;
+
+                if (apiStatus === 200) {
+                    var badges = data.response.checkins.items.badges.items;
+                    self.untappd = $.map(badges, function () {
+                        return {
+							badgeName: badgeItems.badge_name,
+                        }
+                    });
+                   
                     self.attachTemplate();
                 } else {
                     self.handleError(data.meta.error_detail);
