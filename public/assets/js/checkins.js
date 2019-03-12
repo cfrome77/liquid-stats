@@ -61,21 +61,21 @@
                             bid: beers.beer.bid,
                             beerSlug: beers.beer.beer_slug,
                             beerLabel: beers.beer.beer_label,
-							beerStyle: beers.beer.beer_style,
-							beerAbv: beers.beer.beer_abv,
+			    beerStyle: beers.beer.beer_style,
+			    beerAbv: beers.beer.beer_abv,
                             company: beers.brewery.brewery_name,
-							website: beers.brewery.contact.url,
+			    website: beers.brewery.contact.url,
                             facebook: beers.brewery.contact.facebook,
                             instagram: beers.brewery.contact.instagram,
-							breweryCity: beers.brewery.location.brewery_city,
-							breweryState: beers.brewery.location.brewery_state,
+			    breweryCity: beers.brewery.location.brewery_city,
+			    breweryState: beers.brewery.location.brewery_state,
                             breweryLabel: beers.brewery.brewery_label,
                             comments: beers.checkin_comment,
                             rating: beers.rating_score,
                             venueId: beers.venue.venue_id,
                             venueName: beers.venue.venue_name,
                             createdAt: beers.created_at,
-							badgeCount: beers.badges.count,
+			    badgeCount: beers.badges.count,
                         }
                     });
                     self.attachTemplate();
@@ -86,36 +86,5 @@
         }
     };
     
-    Untappd.prototype = {
-        attachTemplate: function () {
-            var template = Handlebars.compile(this.template);
-
-            this.container.empty().append(template(this.untappd));
-        },
-        handleError: function (data) {
-            this.container.empty().append('<p class="error">'+data+'</p>');
-        },
-        fetch: function () {
-            var self = this;
-
-            $.getJSON(self.url, function (data) {
-                var apiStatus = data.meta.code;
-
-                if (apiStatus === 200) {
-                    var badges = data.response.checkins.items.badges.items;
-                    self.untappd = $.map(badges, function () {
-                        return {
-							badgeName: badgeItems.badge_name,
-                        }
-                    });
-                   
-                    self.attachTemplate();
-                } else {
-                    self.handleError(data.meta.error_detail);
-                }
-            });
-        }
-    };
-
     return Untappd;
 });
