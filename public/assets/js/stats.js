@@ -1,14 +1,14 @@
 var map = L.map('map');
 var breweryMarkers = new L.FeatureGroup();
 
-        mapLink = 
-            '<a href="https://openstreetmap.org">OpenStreetMap</a>';
-        L.tileLayer(
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors',
-            maxZoom: 18,
-			tileOptions: {crossOriginKeyword: null},
-            }).addTo(map);
+mapLink = 
+    '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; ' + mapLink + ' Contributors',
+    maxZoom: 18,
+		tileOptions: {crossOriginKeyword: null},
+    }).addTo(map);
 			
 d3.json('/beers.json', function (error, data) {
   console.log(data[0]);
