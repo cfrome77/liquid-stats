@@ -193,6 +193,7 @@ function defineCharts(data) {
   brewerySelect
     .dimension(breweryDim)
     .group(countPerBrewery)
+    .multiple(true)
 
   dataTable
    .dimension(allDim)
