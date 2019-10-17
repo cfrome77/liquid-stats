@@ -53,5 +53,5 @@ app.use('/badges', route);
 app.use('/stats', route);
 app.use('/wishlist', route);
 
-app.listen(port);
+module.exports = app.listen(port);
 console.log('Your server goes on localhost:' + port);
