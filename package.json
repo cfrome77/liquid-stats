@@ -4,7 +4,7 @@
   "description": "Display your latest activity and stats for Untappd",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "nodemon app.js"
   },
   "repository": {
@@ -22,11 +22,14 @@
     "express": "^4.16.3",
     "leaflet.markercluster": "^1.4.1",
     "nodemon": "^1.18.9",
-    "npm": "^6.4.0"
+    "npm": "^6.12.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "grunt": "^0.4.5",
     "grunt-contrib-cssmin": "~0.11.0",
-    "grunt-contrib-uglify": "~0.7.0"
+    "grunt-contrib-uglify": "~0.7.0",
+    "mocha": "^6.2.1",
+    "request": "^2.88.0"
   }
 }
