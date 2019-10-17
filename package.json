@@ -22,8 +22,7 @@
     "express": "^4.16.3",
     "leaflet.markercluster": "^1.4.1",
     "nodemon": "^1.18.9",
-    "npm": "^6.4.0",
-    "request": "^2.88.0"
+    "npm": "^6.4.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
