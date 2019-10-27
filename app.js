@@ -1,7 +1,6 @@
 "use strict";
 
 var express  = require('express'),
-    request  = require('request'),
     compress = require('compression'),
     route    = express.Router(),
     app      = express(),
