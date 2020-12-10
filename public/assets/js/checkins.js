@@ -48,7 +48,6 @@
 
             $.getJSON(self.url, function (data) {
                 var apiStatus = data.meta.code;
-
                 if (apiStatus === 200) {
                     var checkins = data.response.checkins.items;
                     self.untappd = $.map(checkins, function (beers) {

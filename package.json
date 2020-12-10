@@ -20,6 +20,7 @@
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.17.1",
+    "handlebars-paginate": "^0.1.0",
     "leaflet.markercluster": "^1.4.1",
     "nodemon": "^1.19.4",
     "npm": "latest"
