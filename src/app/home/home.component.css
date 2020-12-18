@@ -1,0 +1,23 @@
+button {
+  font-size: 25px;
+  height: auto;
+  width: auto;
+}
+
+.wrapper {
+  text-align: center;
+}
+
+#button {
+  margin-top: 18%;
+}
+
+.bg-img {
+  min-height: 100vh;
+  width: 100%;
+  background: url("/assets/images/background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
