@@ -1,0 +1,342 @@
+@import url(https://fonts.googleapis.com/css?family=Nunito);
+/* Color Palletes */
+/*Just change the color e.g. $red or $green or define you color as you like....*/
+/* Base Styles */
+*, *:before, *:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+  font-family: "Nunito", Arial, sans-serif;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+/**
+* @section Reset styles
+* These styles reset the default style sheet that comes with the user agent.
+*/
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, fieldset, blockquote, pre, textarea {
+    margin: 0;
+}
+
+ul, ol, td, th, fieldset, legend {
+    padding: 0;
+}
+
+fieldset {
+    border: none;
+}
+
+a {
+	color: indianred;
+    opacity: 1;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #c60;
+}
+
+/* Navigation Styles */
+/* Header */
+#header {
+  width: 100vw;
+  background-color: #24292e;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 1em;
+  min-height: 55px;
+  text-transform: capitalize;
+}
+
+#container {
+  height: 100%;
+  min-height: 50px;
+  width: 100%;
+  max-width: 990px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#logo,
+#header-button,
+#nav {
+  align-self: center;
+}
+
+#logo {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 4px;
+  font-size: 1.5rem;
+  cursor: default;
+}
+
+#logo a:hover {
+  color: white;
+  text-decoration:none;
+}
+
+#header-button {
+  fill: #fff;
+  display: none !important;
+  padding-right: 10px;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+#header-button:active {
+  fill: #fff;
+}
+
+#nav {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-right: 10px;
+}
+
+#header-button,
+#nav {
+  justify-self: end;
+}
+
+@media all and (max-width: 700px) {
+  #container {
+    grid-template-columns: 3fr 1fr;
+  }
+  
+  #header-button {
+    fill: #fff;
+    display: block !important;
+  }
+  #nav {
+    display: none;
+    grid-column: 1/-1;
+    justify-self: center;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  #header #nav a {
+    border-top: 1px solid #444d56;
+    border-bottom: none !important;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 4px;
+  }
+}
+
+#header #nav a {
+  color: #ffffffbf;
+  text-decoration: none;
+  margin-right: 14px;
+}
+
+#header #nav a:hover {
+  color: #fff;
+}
+
+#header #nav a.active {
+  border-bottom: 2px solid pink;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  cursor: default;
+}
+
+/**
+* Clearfix
+*/
+.cf:before, .cf:after {
+    content: " ";
+    display: table
+}
+
+.cf:after {clear: both}
+
+/**
+* @section HTML5 Elements
+* Set display:block for HTML5 block elements
+*/
+main, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block}
+
+/**
+* @section General
+* Custom design for this app here
+*/
+body {
+	background-color: #F7F5EF;
+	color: #333;
+	font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+	color: #000;
+	margin: 15px 0 30px;
+	text-align: center;
+}
+
+/* Media Queries for diffrent device */
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen 
+and (min-width : 321px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen 
+and (max-width : 320px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+/* iPads (landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+/* iPads (portrait) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    #button a
+    {
+        margin-top: 30vh;
+        text-align: center;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+    #stream {
+        margin: 15px auto 40px;
+        padding: 0 15px;
+        max-width: 50%;
+    }
+    #header-button {
+        margin-left: 10px;
+    }
+    #header #nav a {
+        text-align:center;
+    }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
