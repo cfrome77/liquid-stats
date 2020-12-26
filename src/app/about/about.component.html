@@ -1,1 +1,52 @@
-<p>about works!</p>
+<h1 mat-dialog-title>About</h1>
+<mat-dialog-content>
+  <p>
+    Welcome to Liquid Stats. This project uses the Untappd API, and allows you
+    to keep track of whats beers you have had, your top rated beers, badges you
+    earned, and statics about your Untappd checkins.
+  </p>
+
+  <img src="assets/images/hops.jpg" />
+
+  <h2>Recent Checkins</h2>
+  <p>The recent checkins page will display your 25 most recent checkins.</p>
+
+  <h2>Top Beers</h2>
+  <p>
+    The top beers page is what it sounds. It will display the top beers you have
+    checked in, based on your rating of those beers. The number of beers
+    displayed will be based on a ratings threshold (i.e all ratings > x)
+  </p>
+
+  <h2>Stats</h2>
+  <p>
+    This page will display different stats, using bar graphs, pie charts, a map,
+    and a table. Bar graphs will show for your ratings, community ratings, ABV,
+    and IBU. Pie charts will display your total number of beers by year, month,
+    and day of the week. A map will display the location of the the breweries
+    that the beers come from. A table will display the info for each beer, with
+    columns for brewey info, beer info with description, style info, your
+    rating, community ratinng, ABV, and IBU.
+  </p>
+
+  <h2>Wishlist</h2>
+  <p>
+    The wishlist page will display the beers that have been added to the users
+    Untappd wishlist. If the user has no beers in their wishlist a message will
+    indicate the fact that the wish list is empty
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    We hope you enjoy our app. If you have any questions or comments, please
+    don't hesitate to contact us. Email:
+    <a
+      href="mailto:chris@chrisfrome.com?Subject=Liquid%20Stats%20App"
+      target="_top"
+      >chris@chrisfrome.com</a
+    >
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close tabindex="-1">close</button>
+</mat-dialog-actions>

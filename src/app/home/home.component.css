@@ -1,7 +1,17 @@
 button {
+  background-color: #f0fff0;
   font-size: 25px;
   height: auto;
   width: auto;
+}
+
+button:hover {
+  background-color: #dcdcdc;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
 }
 
 .wrapper {
@@ -13,11 +23,29 @@ button {
 }
 
 .bg-img {
-  min-height: 100vh;
-  width: 100%;
+  /* Set rules to fill background */
+  min-height: 100%;
+  min-width: 1024px;
   background: url("/assets/images/background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+
+  /* Set up positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+@media screen and (max-width: 1024px) {
+  /* Specific to this particular image */
+  .bg-img {
+    left: 50%;
+    margin-left: -512px; /* 50% */
+  }
 }

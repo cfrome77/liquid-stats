@@ -1,28 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+
+import * as moment from "moment";
 
 @Component({
-  selector: 'app-checkins',
-  templateUrl: './checkins.component.html',
-  styleUrls: ['./checkins.component.css'],
+  selector: "app-checkins",
+  templateUrl: "./checkins.component.html",
+  styleUrls: ["./checkins.component.css"],
 })
 export class CheckinsComponent implements OnInit {
   public checkins: any;
-  public starRating: any;
 
   constructor(private http: HttpClient) {
     this.getJSON().subscribe((data) => {
       this.checkins = data.response.checkins.items;
-      console.log(data);
     });
   }
 
   ngOnInit(): void {}
 
   public getJSON(): Observable<any> {
-    return this.http.get('../assets/checkins.json');
+    return this.http.get("../assets/checkins.json");
   }
 
-// getRating() return rating from 0-5
+  public published(createAt: string) {
+    return moment(Date.parse(createAt)).format("h:mm A D MMM YYYY");
+  }
 }

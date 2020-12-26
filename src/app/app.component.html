@@ -1,21 +1,100 @@
-<div id="header">
-  <div id="container">
-    <div id="logo">
-    <a href="/">Liquid Stats</a>
+<div fxLayout="column" fxFlexFill>
+  <mat-toolbar
+    class="navbar-color mat-elevation-z8 p-0"
+    fxLayout="row"
+    fxLayoutAlign="start stretch"
+    style="z-index: 2"
+  >
+    <button mat-button (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <button mat-button routerLink="/">
+      <mat-icon>home</mat-icon>
+    </button>
+
+    <span fxFlex></span>
+
+    <div fxLayout="row" fxShow="false" fxShow.gt-sm>
+      <button
+        mat-button
+        routerLink="/checkins"
+        routerLinkActive="router-link-active no-border"
+      >
+        Checkins
+      </button>
+      <button
+        mat-button
+        routerLink="/topbeers"
+        routerLinkActive="router-link-active no-border"
+      >
+        Top Beers
+      </button>
+      <button
+        mat-button
+        routerLink="/stats"
+        routerLinkActive="router-link-active no-border"
+      >
+        Stats
+      </button>
+      <button
+        mat-button
+        routerLink="/wishlist"
+        routerLinkActive="router-link-active no-border"
+      >
+        Wishlist
+      </button>
     </div>
-    <div id="header-button" >
-      <svg id="header-menu-svg" height="50" width="25" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-          <path fill-rule="evenodd" stroke="none" d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z"></path>
-      </svg>
+  </mat-toolbar>
+
+  <mat-drawer-container fxFlex autosize class="background">
+    <mat-drawer #drawer>
+      <div fxLayout="column">
+        <button
+          mat-button
+          routerLink="/checkins"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
+          <mat-icon>room</mat-icon>Checkins
+        </button>
+        <mat-divider></mat-divider>
+        <button
+          mat-button
+          routerLink="/topbeers"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
+          <mat-icon>emoji_events</mat-icon>Top Beers
+        </button>
+        <mat-divider></mat-divider>
+        <button
+          mat-button
+          routerLink="/stats"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
+          <mat-icon>analytics</mat-icon>Stats
+        </button>
+        <mat-divider></mat-divider>
+        <button
+          mat-button
+          routerLink="/wishlist"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
+          <mat-icon>list</mat-icon>Wishlist
+        </button>
+        <mat-divider></mat-divider>
+      </div>
+    </mat-drawer>
+
+    <!--Show page-->
+    <div style="display: inline;overflow-y: auto;">
+      <router-outlet></router-outlet>
+      <button mat-fab class="about-button" (click)="openDialog()">
+        <mat-icon>info</mat-icon>
+      </button>
     </div>
-    <div id="nav">
-      <a href="/checkins">Checkins</a>
-      <a href="/topbeers">Top Beers</a>
-      <a href="/stats">Stats</a>
-      <a href="/wishlist">Wishlist</a>
-      <a href="/about">About</a>
-    </div>
-  </div>
+  </mat-drawer-container>
 </div>
-<router-outlet></router-outlet>
-  
