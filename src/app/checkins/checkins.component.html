@@ -42,11 +42,19 @@
       </mat-chip>
     </mat-chip-list>
     <span class="social"
-      ><a href="{{ checkin.brewery.contact.url }}" target="_blank" alt="website" title="website"
+      ><a
+        href="{{ checkin.brewery.contact.url }}"
+        target="_blank"
+        alt="website"
+        title="website"
         >Website</a
       >
       |
-      <a href="{{ checkin.brewery.contact.facebook }}" target="_blank" alt="facebook" title="facebook"
+      <a
+        href="{{ checkin.brewery.contact.facebook }}"
+        target="_blank"
+        alt="facebook"
+        title="facebook"
         >facebook</a
       >
       |
@@ -70,14 +78,16 @@
       <ng-template #elseBlock
         ><p class="beerInfo">
           <a
-            href="https://untappd.com/b/{{ checkin.beer.beer_slug }}/{{ checkin.beer.bid }}"
+            href="https://untappd.com/b/{{ checkin.beer.beer_slug }}/{{
+              checkin.beer.bid
+            }}"
             target="_blank"
             >Beer Info</a
           >
         </p></ng-template
       >
       <div class="footer-time">
-        <time>{{ checkin.created_at }}</time>
+        <time>{{ published(checkin.created_at) }}</time>
         <a
           class="checkin-page hide-text"
           href="https://untappd.com/user/{{ checkin.user.user_name }}/checkin/{{

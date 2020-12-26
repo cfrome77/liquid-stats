@@ -1,0 +1,25 @@
+/**
+* Clearfix
+*/
+.cf:before, .cf:after {
+    content: " ";
+    display: table
+}
+
+.cf:after {clear: both}
+
+/**
+* Image Replacement
+*/
+.hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden
+}
+
+.about-button{
+  position: fixed;
+    bottom: 40px;
+    right: 20px;
+}
+

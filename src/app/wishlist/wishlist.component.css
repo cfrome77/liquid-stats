@@ -1,0 +1,13 @@
+p {
+  color: black;
+  margin: 0 !important;
+}
+
+h1 {
+  color: white;
+}
+
+.overallRating {
+  float: left;
+  clear: left;
+}
