@@ -1,5 +1,21 @@
 var map = L.map("map");
 var breweryMarkers = new L.FeatureGroup();
+// use odd page size to show the effect better
+var ofs = 0, pag = 25;
+var ndx;
+
+// specify charts
+var yearChart = dc.pieChart("#years"),
+monthChart = dc.pieChart("#months"),
+dayChart = dc.pieChart("#days"),
+styleChart = dc.pieChart("#style"),
+ratingChart = dc.barChart("#ratings"),
+commRatingChart = dc.barChart("#commRatings"),
+abvChart = dc.barChart("#abvs"),
+ibuChart = dc.barChart("#ibus"),
+brewerySelect = dc.selectMenu("#brewery"),
+dataCount = dc.dataCount("#data-count"),
+dataTable = dc.dataTable("#data-table");
 
 mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -45,12 +61,12 @@ function registerHandlers() {
 }
 
 function defineCharts(data) {
-  var ndx = crossfilter(data.beers);
+  ndx = crossfilter(data.beers);
 
   // create dimensions (x-axis values)
   var yearDim = ndx.dimension(function (d) {
-      return d.first_had_year;
-    }),
+    return d.first_had_year;
+  }),
     // dc.pluck: short-hand for same kind of anon. function we used for yearDim
     monthDim = ndx.dimension(dc.pluck("first_had_month")),
     dayOfWeekDim = ndx.dimension(dc.pluck("first_had_day")),
@@ -85,19 +101,6 @@ function defineCharts(data) {
     countPerCommRating = commRatingDim.group().reduceCount(),
     countPerABV = abvDim.group().reduceCount(),
     countPerIBU = ibuDim.group().reduceCount();
-
-  // specify charts
-  var yearChart = dc.pieChart("#years"),
-    monthChart = dc.pieChart("#months"),
-    dayChart = dc.pieChart("#days"),
-    styleChart = dc.pieChart("#style"),
-    ratingChart = dc.barChart("#ratings"),
-    commRatingChart = dc.barChart("#commRatings"),
-    abvChart = dc.barChart("#abvs"),
-    ibuChart = dc.barChart("#ibus"),
-    brewerySelect = dc.selectMenu("#brewery"),
-    dataCount = dc.dataCount("#data-count"),
-    dataTable = dc.dataTable("#data-table");
 
   var pieSize = 230;
   var chartWidth = 330;
@@ -321,6 +324,9 @@ function defineCharts(data) {
     .sortBy(dc.pluck("rating_score"))
     .order(d3.descending)
     .size(Infinity)
+    .on("preRender", update_offset)
+    .on("preRedraw", update_offset)
+    .on('pretransition', display)
     .on("renderlet", function (table) {
       // each time table is rendered remove nasty extra row dc.js insists on adding
       table.select("tr.dc-table-group").remove();
@@ -333,12 +339,12 @@ function defineCharts(data) {
         var marker = L.marker([loc.lat, loc.lng]);
         marker.bindPopup(
           "<p>" +
-            name +
-            " " +
-            loc.brewery_city +
-            " " +
-            loc.brewery_state +
-            "</p>"
+          name +
+          " " +
+          loc.brewery_city +
+          " " +
+          loc.brewery_state +
+          "</p>"
         );
         breweryMarkers.addLayer(marker);
       });
@@ -347,6 +353,47 @@ function defineCharts(data) {
     });
 
   dataCount.dimension(ndx).group(all);
+}
+
+function update_offset() {
+  var totFilteredRecs = ndx.groupAll().value();
+  var end = ofs + pag > totFilteredRecs ? totFilteredRecs : ofs + pag;
+  ofs = ofs >= totFilteredRecs ? Math.floor((totFilteredRecs - 1) / pag) * pag : ofs;
+  ofs = ofs < 0 ? 0 : ofs;
+
+  dataTable.beginSlice(ofs);
+  dataTable.endSlice(ofs + pag);
+}
+
+function display() {
+  var totFilteredRecs = ndx.groupAll().value();
+  var end = ofs + pag > totFilteredRecs ? totFilteredRecs : ofs + pag;
+  d3.select('#begin')
+    .text(end === 0 ? ofs : ofs + 1);
+  d3.select('#end')
+    .text(end);
+  d3.select('#last')
+    .attr('disabled', ofs - pag < 0 ? 'true' : null);
+  d3.select('#next')
+    .attr('disabled', ofs + pag >= totFilteredRecs ? 'true' : null);
+  d3.select('#size').text(totFilteredRecs);
+  if (totFilteredRecs != ndx.size()) {
+    d3.select('#totalsize').text("(filtered Total: " + ndx.size() + " )");
+  } else {
+    d3.select('#totalsize').text('');
+  }
+}
+
+function next() {
+  ofs += pag;
+  update_offset();
+  dataTable.redraw();
+}
+
+function last() {
+  ofs -= pag;
+  update_offset();
+  dataTable.redraw();
 }
 
 function drawCharts() {
