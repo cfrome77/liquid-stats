@@ -1,138 +1,147 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
-        <title>Liquid Stats - Stats</title>
-        <meta name="description" content="Interactive beer data visualization using dc.js">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
-        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
-		<link rel="stylesheet" href="assets/css/bootstrap-flex.css">
-        <link rel="stylesheet" href="assets/css/dc.css">
-        <link rel="stylesheet" href="assets/css/style.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.0/dist/leaflet.css"/>
-    </head>
-	<header>
-<div id="header">
-  <div id="container">
-    <div id="logo">
-    <a href="/">Liquid Stats</a>
-    </div>
-    <div id="header-button">
-      <svg id="header-menu-svg" height="50" width="25" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z"></path>
-                </svg>
-    </div>
-    <div id="nav">
-      <a href="/checkins">Checkins</a>
-      <a href="/topbeers">Top Beers</a>
-	  <a href="/mybadges">Badges</a>
-      <a class="active" href="/stats">Stats</a>
-      <a href="/wishlist">Wishlist</a>
-      <a href="/about">About</a>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0" />
+  <title>Liquid Stats - Stats</title>
+  <meta name="description" content="Interactive beer data visualization using dc.js">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="assets/css/bootstrap-flex.css">
+  <link rel="stylesheet" href="assets/css/dc.css">
+  <link rel="stylesheet" href="assets/css/style.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.0/dist/leaflet.css" />
+</head>
+<header>
+  <div id="header">
+    <div id="container">
+      <div id="logo">
+        <a href="/">Liquid Stats</a>
+      </div>
+      <div id="header-button">
+        <svg id="header-menu-svg" height="50" width="25" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
+          <path fill-rule="evenodd"
+            d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z">
+          </path>
+        </svg>
+      </div>
+      <div id="nav">
+        <a href="/checkins">Checkins</a>
+        <a href="/topbeers">Top Beers</a>
+        <a href="/mybadges">Badges</a>
+        <a class="active" href="/stats">Stats</a>
+        <a href="/wishlist">Wishlist</a>
+        <a href="/about">About</a>
+      </div>
     </div>
   </div>
-</div>
 </header>
-    <body>
-	<div class="container-fluid">
-          <div class="row" id="control-row">
-            <div class="col-xs-12 dc-data-count dc-chart">
-              <h1>Beer History Statistics
-              </h1>
-            </div>
-          </div>
-    <div class="row" id="control-row" >
-        <div class="col-xs-12 mx-auto">
+
+<body>
+  <div class="container-fluid">
+    <div class="row" id="control-row">
+      <div class="col-xs-12 dc-data-count dc-chart">
+        <h1>Beer History Statistics
+        </h1>
+      </div>
+    </div>
+    <div class="row" id="control-row">
+      <div class="col-xs-12 mx-auto">
         <h4 style="text-align:center">Breweries Map</h4>
         <div id="map" style="width: 100%; height: 400px"></div>
-        </div>
-	</div>
-	<div class="row" id="control-row">
-        <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
+      </div>
+    </div>
+    <div class="row" id="control-row">
+      <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
         <h4>Years</h4>
         <div class="dc-chart" id="years"></div>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
         <h4>Months</h4>
-        <div class="dc-chart" id="months" ></div>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
+        <div class="dc-chart" id="months"></div>
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
         <h4>Days</h4>
         <div id="days" class="dc-chart"></div>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3 pie-chart" style="text-align:center">
         <h4>Styles</h4>
         <div id="style" class="dc-chart"></div>
-        </div>
-	</div>
-  <div class="row" id="control-row">
-        <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
-            <div class="dc-chart" id="ratings"></div>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
-            <div class="dc-chart" id="commRatings"></div>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-3"  style="text-align:center">
-            <div class="dc-chart" id="abvs"></div>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
-            <div class="dc-chart" id="ibus"></div>
-        </div>
-  </div>
-  
-   <div class="container-fluid" style="overflow-x:auto;">
-  <div class="row">
-    <div class="col-xs-12 dc-data-count dc-chart" id="data-count">
-      <h5>
-        <small>
-          <span class="filter-count"></span> selected out of <span class="total-count"></span> records |
-           <a id="all" href="#">Reset All</a>
-          </span>
-          <br />
-          <span id="brewery" class="dc-chart" style="right:25%;"></span>
-          <br />
-          <div id="paging">
-            Showing <span id="begin"></span>-<span id="end"></span> of <span id="size"></span> <span id="totalsize"></span>
-            <input id="last" class="btn" type="Button" value="Last" onclick="javascript:last()" />
-            <input id="next" class="btn" type="button" value="Next" onclick="javascript:next()"/>
-          </div>
-        </small>
-      </h5>
-      <div style="overflow-x:auto;">
-        <table class="table table-bordered table-striped" id="data-table" style="text-align:center;">
-            <thead>
-            <tr>
-                <th>Brewery</th>
-                <th>Beer</th>
-                <th>Style</th>
-                <th>My Rating</th>
-                <th>Community Rating</th>
-                <th>ABV</th>
-                <th>IBU</th>
-            </tr>
-            </thead>
-        </table>
+      </div>
     </div>
-  </div>
-</div>
-        <button onclick="topFunction()" id="topButton" title="Go to top">Top</button>
-        
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/leaflet@0.7.0/dist/leaflet.js"></script>
-		<script type="text/javascript" src="assets/js/underscore-min.js"></script>
-		<script type="text/javascript" src="assets/js/crossfilter.min.js"></script>
-		<script type="text/javascript" src="assets/js/d3.js"></script>
-		<script type="text/javascript" src="assets/js/dc.js"></script>
-		<script type="text/javascript" src="assets/js/stats.js"></script>
-		<script type="text/javascript" src="assets/js/topButton.js"></script>
-		<script type="text/javascript" src="assets/js/navbar.js"></script>
-    </body>
+    <div class="row" id="control-row">
+      <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
+        <div class="dc-chart" id="ratings"></div>
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
+        <div class="dc-chart" id="commRatings"></div>
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
+        <div class="dc-chart" id="abvs"></div>
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3" style="text-align:center">
+        <div class="dc-chart" id="ibus"></div>
+      </div>
+    </div>
+    <div class="container-fluid" style="overflow-x:auto;">
+      <div class="row">
+        <div class="col-xs-12 dc-data-count dc-chart" id="data-count">
+          <h5>
+            <small>
+              <span class="filter-count"></span> selected out of <span class="total-count"></span> records |
+              <a id="all" href="#">Reset All</a>
+              </span>
+              <br />
+              <span id="brewery" class="dc-chart" style="right:25%;"></span>
+              <br />
+            </small>
+          </h5>
+          <div id="paging">
+            Showing <span id="begin"></span>-<span id="end"></span> of <span id="size"></span> <span
+              id="totalsize"></span>
+            <input id="last" class="btn btn-secondary" type="Button" value="Last" onclick="javascript:last()" />
+            <input id="next" class="btn btn-secondary" type="button" value="Next" onclick="javascript:next()" />
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="table table-bordered table-striped" id="data-table" style="text-align:center;">
+              <thead>
+                <tr>
+                  <th>Brewery</th>
+                  <th>Beer</th>
+                  <th>Style</th>
+                  <th>My Rating</th>
+                  <th>Community Rating</th>
+                  <th>ABV</th>
+                  <th>IBU</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+      <button onclick="topFunction()" id="topButton" title="Go to top">Top</button>
+
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+      <script src="https://unpkg.com/leaflet@0.7.0/dist/leaflet.js"></script>
+      <script type="text/javascript" src="assets/js/underscore-min.js"></script>
+      <script type="text/javascript" src="assets/js/crossfilter.min.js"></script>
+      <script type="text/javascript" src="assets/js/d3.js"></script>
+      <script type="text/javascript" src="assets/js/dc.js"></script>
+      <script type="text/javascript" src="assets/js/stats.js"></script>
+      <script type="text/javascript" src="assets/js/topButton.js"></script>
+      <script type="text/javascript" src="assets/js/navbar.js"></script>
+</body>
+
 </html>
