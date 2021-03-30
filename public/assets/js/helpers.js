@@ -1,7 +1,7 @@
-Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
+Handlebars.registerHelper("math", function (lvalue, operator, rvalue, options) {
     lvalue = parseFloat(lvalue);
     rvalue = parseFloat(rvalue);
-        
+
     return {
         "+": lvalue + rvalue,
         "-": lvalue - rvalue,
@@ -18,14 +18,14 @@ Handlebars.registerHelper("published", function () {
 
 Handlebars.registerHelper('userLatest', function (index) {
     if (index < 1) {
-        var name     = this.name,
+        var name = this.name,
             username = this.username,
-            avatar   = this.avatar,
-            tpl      = [
+            avatar = this.avatar,
+            tpl = [
                 '<div class="user cf">',
-                    '<img class="avatar" src="'+avatar+'" alt="'+name+'">',
-                    '<p class="name"><a href="https://untappd.com/user/'+username+'" target="_blank" title="Untappd profile" rel="extrenal">'+name+'</a></p>',
-                    '<span>Latest Checkins</span>',
+                '<img class="avatar" src="' + avatar + '" alt="' + name + '">',
+                '<p class="name"><a href="https://untappd.com/user/' + username + '" target="_blank" title="Untappd profile" rel="extrenal">' + name + '</a></p>',
+                '<span>Latest Checkins</span>',
                 '</div>'
             ].join('\n');
         return new Handlebars.SafeString(tpl);
@@ -60,16 +60,16 @@ Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
     }
 });
 
-Handlebars.registerHelper('eachByIdx', function(context,options){
+Handlebars.registerHelper('eachByIdx', function (context, options) {
     var output = '';
     var contextSorted = context.concat()
-        .sort( function(a,b) { return b.myRating - a.myRating } );
-    for(var i = 0, j = contextSorted.length; i < j; i++) {
+        .sort(function (a, b) { return b.myRating - a.myRating });
+    for (var i = 0, j = contextSorted.length; i < j; i++) {
         output += options.fn(contextSorted[i]);
     }
     return output;
 });
 
-Handlebars.registerHelper('toFixed', function(rating) {
-  return rating.toFixed(2);
+Handlebars.registerHelper('toFixed', function (rating) {
+    return rating.toFixed(2);
 });
