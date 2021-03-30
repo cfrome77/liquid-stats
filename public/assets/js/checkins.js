@@ -74,7 +74,7 @@
                             venueId: beers.venue.venue_id,
                             venueName: beers.venue.venue_name,
                             createdAt: beers.created_at,
-                            badgeCount: beers.badges.count,
+                            badgeCount: beers.badges.count
                         }
                     });
                     self.attachTemplate();

@@ -25,7 +25,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 d3.json("/beers.json", function (error, data) {
-  console.log(data[0]);
   cleanUp(data);
   defineCharts(data);
   registerHandlers();
