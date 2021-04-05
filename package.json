@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha",
-    "start": "python3 fetch_api_data.py && nodemon app.js"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
