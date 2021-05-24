@@ -11,10 +11,10 @@ load_dotenv(dotenv_path)
 # Accessing variables.
 CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-username = os.getenv('UNTAPPD_USERNAME')
+USERNAME = os.getenv('USERNAME')
 
 def get_distinct_beers():
-    URL = 'https://api.untappd.com/v4/user/beers/' + username
+    URL = 'https://api.untappd.com/v4/user/beers/' + USERNAME
     STEP = 50
     payload = {
         'client_id': CLIENT_ID,
@@ -38,7 +38,7 @@ def get_distinct_beers():
     return beers
 	
 def get_checkins():
-    URL = 'https://api.untappd.com/v4/user/checkins/' + username
+    URL = 'https://api.untappd.com/v4/user/checkins/' + USERNAME
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
@@ -48,7 +48,7 @@ def get_checkins():
     return checkins_json.json()
 
 def get_badges():
-    URL = 'https://api.untappd.com/v4/user/badges/' + username
+    URL = 'https://api.untappd.com/v4/user/badges/' + USERNAME
     STEP = 50
     payload = {
         'client_id': CLIENT_ID,
@@ -72,7 +72,7 @@ def get_badges():
     return badges
 
 def get_wishlist():
-    URL = 'https://api.untappd.com/v4/user/wishlist/' + username
+    URL = 'https://api.untappd.com/v4/user/wishlist/' + USERNAME
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
