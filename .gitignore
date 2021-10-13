@@ -11,3 +11,6 @@ node_modules
 
 #environment variables
 .env
+
+.zip
+lambda/package/
