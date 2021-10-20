@@ -1,20 +1,35 @@
 "use strict";
 
-var express  = require('express'),
+var express = require('express'),
     compress = require('compression'),
-    route    = express.Router(),
-    app      = express(),
-    port     = process.env.PORT || 8080,
-    pub      = __dirname;
+    route = express.Router(),
+    app = express(),
+    port = process.env.PORT || 8080,
+    pub = __dirname;
+
+// Creating a limiter by calling rateLimit function with options:
+// max contains the maximum number of request and windowMs 
+// contains the time in millisecond so only max amount of 
+// request can be made in windowMS time.
+const limiter = rateLimit({
+    max: 100,
+    windowMs: 60 * 60 * 1000,
+    message: "Too many request from this IP"
+});
+
+// Add the limiter function to the express middleware
+// so that every request coming from user passes 
+// through this middleware.
+app.use(limiter);
 
 app.use(compress({
-    filter: function(req, res) {
+    filter: function (req, res) {
         return (/json|text|javascript|css|image\/svg\+xml|application\/x-font-ttf/).test(res.getHeader('Content-Type'));
     },
     level: 9
 }));
 
-app.use(express.static(pub + '/public', {maxAge: 86400000}));
+app.use(express.static(pub + '/public', { maxAge: 86400000 }));
 
 route.get('/', function (req, res) {
     res.sendFile(pub + "/views/index.html");
@@ -24,24 +39,24 @@ route.get('/checkins', function (req, res) {
     res.sendFile(pub + "/views/checkins.html");
 });
 
-route.get('/about', function(req, res) {
-    res.sendFile(pub + "/views/about.html"); 
+route.get('/about', function (req, res) {
+    res.sendFile(pub + "/views/about.html");
 });
 
-route.get('/topbeers', function(req, res) {
-    res.sendFile(pub + "/views/topbeers.html"); 
+route.get('/topbeers', function (req, res) {
+    res.sendFile(pub + "/views/topbeers.html");
 });
 
-route.get('/mybadges', function(req, res) {
-    res.sendFile(pub + "/views/badges.html"); 
+route.get('/mybadges', function (req, res) {
+    res.sendFile(pub + "/views/badges.html");
 });
 
-route.get('/stats', function(req, res) {
-    res.sendFile(pub + "/views/stats.html"); 
+route.get('/stats', function (req, res) {
+    res.sendFile(pub + "/views/stats.html");
 });
 
-route.get('/wishlist', function(req, res) {
-    res.sendFile(pub + "/views/wishlist.html"); 
+route.get('/wishlist', function (req, res) {
+    res.sendFile(pub + "/views/wishlist.html");
 });
 
 app.use('/', route);
