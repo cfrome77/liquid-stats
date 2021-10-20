@@ -1,12 +1,12 @@
 "use strict";
 
 const express = require('express'),
-    rateLimit = require("express-rate-limit");
+    rateLimit = require("express-rate-limit"),
     compress = require('compression'),
     route = express.Router(),
     app = express(),
     port = process.env.PORT || 8080,
-    pub = __dirname,
+    pub = __dirname;
 
 // Creating a limiter by calling rateLimit function with options:
 // max contains the maximum number of request and windowMs 
