@@ -32,31 +32,31 @@ app.use(compress({
 
 app.use(express.static(pub + '/public', { maxAge: 86400000 }));
 
-route.get('/', limiter, function (req, res) {
+route.get('/', function (req, res) {
     res.sendFile(pub + "/views/index.html");
 });
 
-route.get('/checkins', limiter, function (req, res) {
+route.get('/checkins', function (req, res) {
     res.sendFile(pub + "/views/checkins.html");
 });
 
-route.get('/about', limiter, function (req, res) {
+route.get('/about', function (req, res) {
     res.sendFile(pub + "/views/about.html");
 });
 
-route.get('/topbeers', limiter, function (req, res) {
+route.get('/topbeers', function (req, res) {
     res.sendFile(pub + "/views/topbeers.html");
 });
 
-route.get('/mybadges', limiter, function (req, res) {
+route.get('/mybadges', function (req, res) {
     res.sendFile(pub + "/views/badges.html");
 });
 
-route.get('/stats', limiter, function (req, res) {
+route.get('/stats', function (req, res) {
     res.sendFile(pub + "/views/stats.html");
 });
 
-route.get('/wishlist', limiter, function (req, res) {
+route.get('/wishlist', function (req, res) {
     res.sendFile(pub + "/views/wishlist.html");
 });
 
