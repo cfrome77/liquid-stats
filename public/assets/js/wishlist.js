@@ -23,7 +23,11 @@
         }
 
         this.username  = options.username;
-        this.url       = 'http://liquid-stats.s3.amazonaws.com/wishlist.json';
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || window.location.hostname === "") {
+            this.url = '/wishlist.json';
+        } else {
+            this.url = 'https://liquid-stats.s3.amazonaws.com/wishlist.json';
+        }
         this.template  = options.template;
         this.container = options.container;
 
