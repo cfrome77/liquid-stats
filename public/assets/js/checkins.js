@@ -23,7 +23,7 @@
         }
 
         this.username  = options.username;
-        this.url       = '/checkins.json';
+        this.url       = 'https://liquid-stats.s3.amazonaws.com/checkins.json';
         this.template  = options.template;
         this.container = options.container;
 
