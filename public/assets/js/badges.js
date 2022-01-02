@@ -23,7 +23,7 @@
         }
 
         this.username  = options.username;
-        this.url       = '/badges.json';
+        this.url       = 'https://liquid-stats.s3.amazonaws.com/badges.json';
         this.template  = options.template;
         this.container = options.container;
 

@@ -23,7 +23,7 @@
         }
 
         this.username  = options.username;
-        this.url       = '/wishlist.json';
+        this.url       = 'http://liquid-stats.s3.amazonaws.com/wishlist.json';
         this.template  = options.template;
         this.container = options.container;
 
