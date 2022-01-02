@@ -23,7 +23,11 @@
         }
 
         this.username  = options.username;
-        this.url       = 'https://liquid-stats.s3.amazonaws.com/checkins.json';
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || window.location.hostname === "") {
+            this.url = '/checkins.json';
+        } else {
+            this.url = 'https://liquid-stats.s3.amazonaws.com/checkins.json';
+        }
         this.template  = options.template;
         this.container = options.container;
 
