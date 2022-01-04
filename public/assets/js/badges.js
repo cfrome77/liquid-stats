@@ -26,7 +26,7 @@
         if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || window.location.hostname === "") {
             this.url = '/badges.json';
         } else {
-            this.url = 'https://liquid-stats.s3.amazonaws.com//badges.json';
+            this.url = 'https://liquid-stats.s3.amazonaws.com/badges.json';
         }
         this.template  = options.template;
         this.container = options.container;
