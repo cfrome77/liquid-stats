@@ -424,7 +424,7 @@ footer {
 }
 
 .footer-time .checkin-page {
-    background: url("img/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
+    background: url("../img/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
     display: inline-block;
     height: 18px;
     margin-left: 4px;
@@ -437,7 +437,7 @@ footer {
 }
 
 .location a {
-    background: url("img/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
+    background: url("../img/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
     color: #A9A9A9;
     display: block;
     font-size: 16px;
