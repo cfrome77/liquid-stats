@@ -24,7 +24,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   tileOptions: { crossOriginKeyword: null },
 }).addTo(map);
 
-d3.json("/beers.json", function (error, data) {
+d3.json("https://liquid-stats.s3.amazonaws.com/beers.json", function (error, data) {
   cleanUp(data);
   defineCharts(data);
   registerHandlers();
