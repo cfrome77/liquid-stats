@@ -16,6 +16,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { CheckinsComponent } from "./checkins/checkins.component";
 import { TopbeersComponent } from "./topbeers/topbeers.component";
+import { BadgesComponent } from "./badges/badges.component";
 import { WishlistComponent } from "./wishlist/wishlist.component";
 import { StatsComponent } from "./stats/stats.component";
 import { AboutComponent } from "./about/about.component";
@@ -27,6 +28,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     AppComponent,
     CheckinsComponent,
     TopbeersComponent,
+    BadgesComponent,
     WishlistComponent,
     StatsComponent,
     AboutComponent,
