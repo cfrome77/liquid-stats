@@ -32,6 +32,13 @@
       </button>
       <button
         mat-button
+        routerLink="/badges"
+        routerLinkActive="router-link-active no-border"
+      >
+        Badges
+      </button>
+      <button
+        mat-button
         routerLink="/stats"
         routerLinkActive="router-link-active no-border"
       >
@@ -66,6 +73,15 @@
           fxLayoutAlign="start"
         >
           <mat-icon>emoji_events</mat-icon>Top Beers
+        </button>
+        <mat-divider></mat-divider>
+        <button
+          mat-button
+          routerLink="/badges"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
+          <mat-icon>badge</mat-icon>Badges
         </button>
         <mat-divider></mat-divider>
         <button

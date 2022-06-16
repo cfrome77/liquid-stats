@@ -1,1 +1,67 @@
-<p>badges works!</p>
+<h1>Badges Earned</h1>
+<mat-card
+  id="checkin-{{ badge.badge_id }} stream"
+  class="checkin cf mat-elevation-z0 outline"
+  style="text-align: center"
+  *ngFor="let badge of badges"
+>
+  <mat-card-content class="beer">
+    <img
+      class="beer-label"
+      src="{{ badge.media.badge_image_sm }}"
+      alt="{{ badge.badge_name }}"
+      title="{{ badge.badge_name }} Logo"
+    />
+    <p>
+      <strong>{{ badge.badge_name }}</strong>
+    </p>
+    <span class="comment">
+      {{ badge.badge_description }}
+    </span>
+    <span class="comment">
+      {{ badge.badge_hint }}
+    </span>
+    <mat-chip-list class="chip">
+      <mat-chip #chipList>
+        <mat-chip-avatar>
+          <img
+            class="avatar-image"
+            src="{{ badge.media.badge_image_sm }}"
+            alt="badge"
+          />
+        </mat-chip-avatar>
+        {{ badge.badge_name }}
+      </mat-chip>
+    </mat-chip-list>
+    <footer>
+      <p class="location">
+        <a
+        class="checkin-page hide-text"
+        href="https://untappd.com/user/fromeca/checkin/{{
+          badge.checkin_id
+        }}"
+        target="_blank"
+        title="Checkin Page"
+        >Checkin Page</a
+      >
+      </p>
+      <div class="footer-time">
+        <time>{{ published(badge.earned_at) }}</time>
+        <a
+          class="checkin-page hide-text"
+          href="https://untappd.com/user/fromeca/badges/{{
+            badge.user_badge_id
+          }}"
+          target="_blank"
+          title="Badge Page"
+          >Badge Page</a
+        >
+      </div>
+    </footer>
+  </mat-card-content>
+</mat-card>
+<img
+  class="powered-by"
+  src="../../assets/images/poweredbyuntappd.png"
+  alt="Powered by Untappd API"
+/>
