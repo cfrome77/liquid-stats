@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "liquid-stats-demo": {
+    "liquid-stats": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,14 +17,18 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/liquid-stats-demo",
+            "outputPath": "dist/liquid-stats",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
             "styles": [
+              "./node_modules/leaflet/dist/leaflet.css",
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
@@ -63,18 +67,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "liquid-stats-demo:build"
+            "browserTarget": "liquid-stats:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "liquid-stats-demo:build:production"
+              "browserTarget": "liquid-stats:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "liquid-stats-demo:build"
+            "browserTarget": "liquid-stats:build"
           }
         },
         "test": {
@@ -84,7 +88,10 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
@@ -100,25 +107,27 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "liquid-stats-demo:serve"
+            "devServerTarget": "liquid-stats-:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "liquid-stats-demo:serve:production"
+              "devServerTarget": "liquid-stats:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "liquid-stats-demo",
+  "defaultProject": "liquid-stats",
   "cli": {
     "analytics": false
   }
