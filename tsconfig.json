@@ -19,7 +19,7 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

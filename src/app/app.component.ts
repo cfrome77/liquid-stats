@@ -10,7 +10,7 @@ import { routes } from './app-routing.module';
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent {
-  title = "liquid-stats-demo";
+  title = "liquid-stats";
   routes = routes;
 
   constructor(private dialog: MatDialog, private overlay: Overlay) {}

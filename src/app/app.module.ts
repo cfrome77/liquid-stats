@@ -1,6 +1,9 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
+import { MarkerService } from './_services/marker.service';
+import { PopUpService } from './_services/pop-up.service';
+import { ShapeService } from './_services/shape.service';
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { MatMenuModule } from "@angular/material/menu";
@@ -10,7 +13,7 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import {MatDividerModule} from '@angular/material/divider';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -51,8 +54,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     MatDividerModule,
   ],
   exports: [],
-  providers: [],
+  providers: [MarkerService, PopUpService, ShapeService],
   bootstrap: [AppComponent],
   entryComponents: [AboutComponent],
 })
-export class AppModule {}
+export class AppModule { }
