@@ -8,7 +8,7 @@ import { PopUpService } from './pop-up.service';
 })
 export class MarkerService {
 
-  capitals: string = '/assets/data/usa-capitals.geojson';
+  beers: string = '/assets/beers.json';
 
   static ScaledRadius(val: number, maxVal: number): number {
     return 20 * (val / maxVal);
@@ -18,13 +18,13 @@ export class MarkerService {
     private popupService: PopUpService) {
   }
 
-  makeCapitalMarkers(map: L.Map, markerIcon: L.Icon): void {
-    this.http.get(this.capitals).subscribe((res: any) => {
-      for (const c of res.features) {
-        const lat = c.geometry.coordinates[0];
-        const lon = c.geometry.coordinates[1];
-        const marker = L.marker([lon, lat], {icon: markerIcon });
-        var popup = L.popup().setContent(this.popupService.makeCapitalPopup(c.properties));
+  makeBreweryMarkers(map: L.Map, markerIcon: L.Icon): void {
+    this.http.get(this.beers).subscribe((res: any) => {
+      for (const beer of res.beers) {
+        const lat = beer.brewery.location.lat;
+        const lon = beer.brewery.location.lng;
+        const marker = L.marker([lat, lon], {icon: markerIcon });
+        var popup = L.popup().setContent(this.popupService.makePopup(beer.brewery.brewery_name, beer.brewery.location.brewery_state, beer.brewery.location.brewery_city));
         marker.bindPopup(popup);
         marker.addTo(map);
       }
