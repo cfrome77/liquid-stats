@@ -21,7 +21,7 @@ export class BadgesComponent implements OnInit {
   ngOnInit(): void {}
 
   public getJSON(): Observable<any> {
-    return this.http.get("../assets/badges.json");
+    return this.http.get("https://liquid-stats.s3.amazonaws.com/badges.json");
   }
 
   public published(createAt: string) {

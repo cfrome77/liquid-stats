@@ -21,7 +21,7 @@ export class CheckinsComponent implements OnInit {
   ngOnInit(): void {}
 
   public getJSON(): Observable<any> {
-    return this.http.get("../assets/checkins.json");
+    return this.http.get("https://liquid-stats.s3.amazonaws.com/checkins.json");
   }
 
   public published(createAt: string) {
