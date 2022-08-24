@@ -29,7 +29,7 @@ modules/.vscode
 *secret.js
 
 # Don't include fetched json files
-src/assets/*.json
+/src/assets/badges.json
 
 # Ignore npm/yarn debug log
 npm-debug.log
