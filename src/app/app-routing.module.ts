@@ -10,15 +10,15 @@ import { StatsComponent } from './stats/stats.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { AboutComponent } from './about/about.component';
 
-export const routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, label: 'Home' },
-  { path: 'checkins', component: CheckinsComponent, label: 'Checkins' },
-  { path: 'topbeers', component: TopbeersComponent, label: 'Top Beers' },
-  { path: 'badges', component: BadgesComponent, label: 'Badges' },
-  { path: 'stats', component: StatsComponent, label: 'Stats' },
-  { path: 'wishlist', component: WishlistComponent, label: 'Wishlist' },
-  { path: 'about', component: AboutComponent, label: 'About' }
+  { path: 'home', component: HomeComponent },
+  { path: 'checkins', component: CheckinsComponent },
+  { path: 'topbeers', component: TopbeersComponent },
+  { path: 'badges', component: BadgesComponent },
+  { path: 'stats', component: StatsComponent },
+  { path: 'wishlist', component: WishlistComponent },
+  { path: 'about', component: AboutComponent }
 ];
 
 @NgModule({
