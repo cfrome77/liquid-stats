@@ -7,10 +7,12 @@ export class PopUpService {
 
   constructor() { }
 
-  makeCapitalPopup(data: any): string {
+  makePopup(brewery_name: any, brewery_state: any, brewery_city: any): string {
+    console.log(brewery_name);
+    console.log(brewery_city);
+    console.log(brewery_state);
     return `` +
-      `<div>Capital: ${ data.name }</div>` +
-      `<div>State: ${ data.state }</div>` +
-      `<div>Population: ${ data.population }</div>`;
+      `<div>${ brewery_name }</div>` +
+      `<div>${ brewery_city } ${ brewery_state}</div>`;
   }
 }

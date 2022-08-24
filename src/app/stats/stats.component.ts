@@ -1,7 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import * as L from 'leaflet';
 import { MarkerService } from '../_services/marker.service';
-import { ShapeService } from '../_services/shape.service';
 
 const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
 const iconUrl = 'assets/images/marker-icon.png';
@@ -28,17 +27,11 @@ export class StatsComponent implements AfterViewInit {
     shadowSize: [41, 41]
   });
 
-  constructor(private markerService: MarkerService,
-    private shapeService: ShapeService) {
-  }
+  constructor(private markerService: MarkerService,) {}
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.markerService.makeCapitalMarkers(this.map, this.markerIcon);
-    this.shapeService.getStateShapes().subscribe(states => {
-      this.states = states;
-      this.initStatesLayer();
-    });
+    this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
   }
 
   private initStatesLayer() {

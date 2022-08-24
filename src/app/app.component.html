@@ -106,11 +106,13 @@
     </mat-drawer>
 
     <!--Show page-->
-    <div style="display: inline;overflow-y: auto;">
+    <div>
       <router-outlet></router-outlet>
-      <button mat-fab class="about-button" (click)="openDialog()">
-        <mat-icon>info</mat-icon>
-      </button>
     </div>
   </mat-drawer-container>
+  <div class="fab-container">
+    <button mat-fab class="fab-toggler" (click)="openDialog()">
+      <mat-icon>info</mat-icon>
+    </button>
+  </div>
 </div>
