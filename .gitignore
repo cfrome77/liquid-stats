@@ -58,3 +58,6 @@ tools/gulp-tasks/cldr/cldr-data/
 
 #environment variables
 .env
+
+#angular cache
+.angular/cache/
