@@ -21,7 +21,7 @@ export class TopbeersComponent implements OnInit {
   ngOnInit(): void {}
 
   public getJSON(): Observable<any> {
-    return this.http.get("../assets/beers.json");
+    return this.http.get("https://liquid-stats.s3.amazonaws.com/beers.json");
   }
 
   public published(createAt: string) {

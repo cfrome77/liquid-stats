@@ -22,7 +22,7 @@ export class WishlistComponent implements OnInit {
   ngOnInit(): void {}
 
   public getJSON(): Observable<any> {
-    return this.http.get("../assets/wishlist.json");
+    return this.http.get("https://liquid-stats.s3.amazonaws.com/wishlist.json");
   }
 
   public published(createAt: string) {

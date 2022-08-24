@@ -34,21 +34,6 @@ export class StatsComponent implements AfterViewInit {
     this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
   }
 
-  private initStatesLayer() {
-    const stateLayer = L.geoJSON(this.states, {
-      style: (feature: any) => ({
-        weight: 3,
-        opacity: 0.5,
-        color: '#008f68',
-        fillOpacity: 0.8,
-        fillColor: '#6DB65B'
-      }),
-    });
-
-    this.map.addLayer(stateLayer);
-    stateLayer.bringToBack();
-  }
-
   private initMap(): void {
     this.map = L.map('map', {
       center: [39.8282, -98.5795],
