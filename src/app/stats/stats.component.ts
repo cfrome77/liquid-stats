@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
-import * as L from 'leaflet';
 import { MarkerService } from '../_services/marker.service';
+import * as L from 'leaflet';
 
 const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
 const iconUrl = 'assets/images/marker-icon.png';
