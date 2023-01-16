@@ -29,7 +29,7 @@
     <span class="stars-container stars-{{ checkin.rating_score * 20 }}"
       >*****</span
     >
-    <mat-chip-list class="chip">
+    <mat-chip-list class="chip" selectable="false">
       <mat-chip #chipList *ngFor="let badge of checkin.badges.items">
         <mat-chip-avatar>
           <img
