@@ -8,7 +8,7 @@ import { PopUpService } from './pop-up.service';
 })
 export class MarkerService {
 
-  beers: string = '/assets/beers.json';
+  beers: string = 'https://liquid-stats.s3.amazonaws.com/beers.json';
 
   static ScaledRadius(val: number, maxVal: number): number {
     return 20 * (val / maxVal);
