@@ -26,7 +26,7 @@
     <span class="comment" *ngIf="checkin.checkin_comment">
       {{ checkin.checkin_comment }}
     </span>
-    <span class="stars-container stars-{{ checkin.rating_score * 20 }}"
+    <span class="stars-container stars-{{ checkin.rating_score * 20 }}" title="{{ checkin.rating_score }}"
       >*****</span
     >
     <mat-chip-list class="chip" selectable="false">

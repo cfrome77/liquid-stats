@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import { PopUpService } from './pop-up.service';
 
 @Injectable({
@@ -9,10 +10,6 @@ import { PopUpService } from './pop-up.service';
 export class MarkerService {
 
   beers: string = 'https://liquid-stats.s3.amazonaws.com/beers.json';
-
-  static ScaledRadius(val: number, maxVal: number): number {
-    return 20 * (val / maxVal);
-  }
 
   constructor(private http: HttpClient,
     private popupService: PopUpService) {
