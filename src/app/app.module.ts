@@ -20,6 +20,7 @@ import { CheckinsComponent } from "./checkins/checkins.component";
 import { TopbeersComponent } from "./topbeers/topbeers.component";
 import { BadgesComponent } from "./badges/badges.component";
 import { WishlistComponent } from "./wishlist/wishlist.component";
+import { MapComponent } from "./map/map.component";
 import { StatsComponent } from "./stats/stats.component";
 import { AboutComponent } from "./about/about.component";
 import { HomeComponent } from "./home/home.component";
@@ -32,6 +33,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     TopbeersComponent,
     BadgesComponent,
     WishlistComponent,
+    MapComponent,
     StatsComponent,
     AboutComponent,
     HomeComponent,

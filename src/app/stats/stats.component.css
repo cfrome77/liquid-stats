@@ -1,17 +1,58 @@
-.map-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 30px;
+h1 {
+  color: #fff;
+  text-align: center;
 }
 
-.map-frame {
-    border: 2px solid black;
-    height: 100%;
+img {
+  float: left; 
+  margin: 0px 15px 15px 0px;
 }
 
-#map {
-    height: 100%;
+body {
+  background: #00091B;
+  color: #fff;
+}
+
+
+@keyframes fadeIn {
+  from {top: 20%; opacity: 0;}
+  to {top: 100; opacity: 1;}
+  
+}
+
+@-webkit-keyframes fadeIn {
+  from {top: 20%; opacity: 0;}
+  to {top: 100; opacity: 1;}
+  
+}
+
+.wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  animation: fadeIn 1000ms ease;
+  -webkit-animation: fadeIn 1000ms ease;
+  
+}
+
+h2 {
+  font-size: 50px;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 0;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.dot {
+  color: #008000;
+}
+
+p {
+  text-align: center;
+  margin: 18px;
+  font-family: 'Muli', sans-serif;
+  font-weight: normal;
+  
 }
