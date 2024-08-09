@@ -58,5 +58,18 @@ export class MarkerService {
       // Add all markers to the map after processing
       markers.addTo(map);
     });
+
+    // this.http.get(this.beers).subscribe((res: any) => {
+    //   for (const beer of res.beers) {
+    //     const lat = beer.brewery.location.lat;
+    //     const lon = beer.brewery.location.lng;
+    //     const marker = L.marker([lat, lon], { icon: markerIcon });
+    //     var popup = L.popup().setContent(this.popupService.makePopup(beer.brewery.brewery_name, beer.brewery.location.brewery_state, beer.brewery.location.brewery_city));
+    //     popupMarker = marker.bindPopup(popup);
+    //     marker.addTo(markers);
+    //   }
+    //   popupMarker.addTo(markers)
+    //   markers.addTo(map);
+    // });
   }
 }
