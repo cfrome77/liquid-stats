@@ -1,6 +1,8 @@
 <h1>Badges Earned</h1>
+
+<!-- Display the badges using a mat-card for each badge -->
 <mat-card id="checkin-{{ badge.badge_id }} stream" class="checkin cf mat-elevation-z0 outline"
-  style="text-align: center" *ngFor="let badge of badges">
+  style="text-align: center" *ngFor="let badge of paginatedBadges">
   <mat-card-content class="beer">
     <img class="beer-label" src="{{ badge.media.badge_image_sm }}" alt="{{ badge.badge_name }}"
       title="{{ badge.badge_name }} Logo" />
@@ -23,4 +25,33 @@
     </footer>
   </mat-card-content>
 </mat-card>
+
+<!-- Pagination controls -->
+<div class="pagination-controls">
+  <button mat-button (click)="goToFirstPage()" [disabled]="currentPage === 1">First</button>
+  <button mat-button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+
+  <!-- Page numbers with ellipses -->
+  <button mat-button *ngFor="let page of pageNumbers" (click)="isNumber(page) && goToPage(page)"
+    [class.active]="page === currentPage" class="page-number">
+    <span *ngIf="isNumber(page)">{{ page }}</span>
+    <span *ngIf="page === '...'" class="ellipsis">{{ page }}</span>
+  </button>
+
+  <button mat-button (click)="nextPage()" [disabled]="currentPage === lastPage">Next</button>
+  <button mat-button (click)="goToLastPage()" [disabled]="currentPage === lastPage">Last</button>
+</div>
+
+
+<!-- Select how many items to display per page -->
+<div class="items-per-page">
+  <label for="itemsPerPage">Items per page:</label>
+  <select id="itemsPerPage" (change)="changeItemsPerPage($event)">
+    <option *ngFor="let value of [10, 20, 30, 50]" [value]="value" [selected]="value === itemsPerPage">
+      {{ value }}
+    </option>
+  </select>
+</div>
+
+<!-- Powered by Untappd image -->
 <img class="powered-by" src="../../assets/images/poweredbyuntappd.png" alt="Powered by Untappd API" />
