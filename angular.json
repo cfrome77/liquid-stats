@@ -37,6 +37,7 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "leaflet",
+              "leaflet.markercluster",
               "moment"
             ]
           },

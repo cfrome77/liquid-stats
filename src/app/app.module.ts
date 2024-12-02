@@ -13,6 +13,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatDividerModule } from '@angular/material/divider';
+import { FormsModule } from '@angular/forms'; 
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -24,6 +25,7 @@ import { MapComponent } from "./map/map.component";
 import { StatsComponent } from './stats/stats.component';
 import { AboutComponent } from "./about/about.component";
 import { HomeComponent } from "./home/home.component";
+import { PaginationComponent } from './_services/pagination/pagination.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
@@ -37,11 +39,13 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     StatsComponent,
     AboutComponent,
     HomeComponent,
+    PaginationComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
     HttpClientModule,
     MatButtonModule,
     MatMenuModule,
