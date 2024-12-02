@@ -18,40 +18,21 @@
     <footer>
       <div class="footer-time">
         <time>{{ published(badge.earned_at) }}</time>
-        <a class="checkin-page hide-text" href="https://untappd.com/user/fromeca/badges/{{
-            badge.user_badge_id
-          }}" target="_blank" title="Badge Page">Badge Page</a>
+        <a class="checkin-page hide-text" href="https://untappd.com/user/fromeca/badges/{{ badge.user_badge_id }}"
+           target="_blank" title="Badge Page">Badge Page</a>
       </div>
     </footer>
   </mat-card-content>
 </mat-card>
 
-<!-- Pagination controls -->
-<div class="pagination-controls">
-  <button mat-button (click)="goToFirstPage()" [disabled]="currentPage === 1">First</button>
-  <button mat-button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-
-  <!-- Page numbers with ellipses -->
-  <button mat-button *ngFor="let page of pageNumbers" (click)="isNumber(page) && goToPage(page)"
-    [class.active]="page === currentPage" class="page-number">
-    <span *ngIf="isNumber(page)">{{ page }}</span>
-    <span *ngIf="page === '...'" class="ellipsis">{{ page }}</span>
-  </button>
-
-  <button mat-button (click)="nextPage()" [disabled]="currentPage === lastPage">Next</button>
-  <button mat-button (click)="goToLastPage()" [disabled]="currentPage === lastPage">Last</button>
-</div>
-
-
-<!-- Select how many items to display per page -->
-<div class="items-per-page">
-  <label for="itemsPerPage">Items per page:</label>
-  <select id="itemsPerPage" (change)="changeItemsPerPage($event)">
-    <option *ngFor="let value of [10, 20, 30, 50]" [value]="value" [selected]="value === itemsPerPage">
-      {{ value }}
-    </option>
-  </select>
-</div>
+<!-- Use the pagination component -->
+<app-pagination 
+  [currentPage]="currentPage" 
+  [itemsPerPage]="itemsPerPage" 
+  [totalItems]="totalItems"
+  (pageChange)="onPageChange($event)"
+  (itemsPerPageChange)="onItemsPerPageChange($event)">
+</app-pagination>
 
 <!-- Powered by Untappd image -->
 <img class="powered-by" src="../../assets/images/poweredbyuntappd.png" alt="Powered by Untappd API" />

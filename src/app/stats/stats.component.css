@@ -1,58 +1,55 @@
+/* General Text Styling */
+p {
+  color: black;
+  margin: 0 !important;
+  font-size: 16px;
+}
+
 h1 {
-  color: #fff;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Styling for the White Cards */
+.white-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  margin: 10px auto;
+  width: 95%;
+  max-width: 800px;
+  padding: 10px;
   text-align: center;
 }
 
-img {
-  float: left; 
-  margin: 0px 15px 15px 0px;
-}
-
-body {
-  background: #00091B;
-  color: #fff;
-}
-
-
-@keyframes fadeIn {
-  from {top: 20%; opacity: 0;}
-  to {top: 100; opacity: 1;}
-  
-}
-
-@-webkit-keyframes fadeIn {
-  from {top: 20%; opacity: 0;}
-  to {top: 100; opacity: 1;}
-  
-}
-
-.wrapper {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  animation: fadeIn 1000ms ease;
-  -webkit-animation: fadeIn 1000ms ease;
-  
-}
-
-h2 {
-  font-size: 50px;
-  font-family: 'Poppins', sans-serif;
-  margin-bottom: 0;
-  line-height: 1;
-  font-weight: 700;
-}
-
-.dot {
-  color: #008000;
+/* Beer Name and Style */
+p strong {
+  font-size: 18px;
+  color: #333;
 }
 
 p {
-  text-align: center;
-  margin: 18px;
-  font-family: 'Muli', sans-serif;
-  font-weight: normal;
-  
+  font-size: 14px;
+  color: #555;
+}
+
+/* Beer Description */
+.beer-description {
+  font-size: 14px;
+  color: #777;
+  margin-top: 10px;
+}
+
+.overallRating {
+  float: left;
+  clear: left;
+}
+
+/* Rating Score Styling */
+.rating-score-container {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff9800;
 }

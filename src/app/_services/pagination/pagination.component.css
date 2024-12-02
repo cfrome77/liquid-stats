@@ -1,0 +1,72 @@
+/* Pagination Controls */
+.pagination-controls {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination-controls button {
+    margin: 0 5px;
+    background-color: transparent;
+    border: none;
+    padding: 5px 10px;
+}
+
+/* Unselected page numbers color - Darker gray for better contrast */
+.pagination-controls button.page-number {
+    color: #444;
+    font-size: 16px;
+}
+
+/* Active page number with bold text, blue background, and white text */
+.pagination-controls button.page-number.active {
+    font-weight: bold;
+    background-color: #007BFF;
+    color: white !important;
+}
+
+/* Active page number span */
+.pagination-controls button.page-number.active span {
+    color: white !important;
+}
+
+/* Ellipsis styling to prevent hover effect and ensure no click */
+.pagination-controls button.page-number.ellipsis {
+    pointer-events: none;
+    color: gray !important;
+    cursor: not-allowed;
+    background: transparent;
+    border: none;
+}
+
+/* Hover effect for page numbers */
+.pagination-controls button.page-number:hover {
+    background-color: transparent;
+    /* No background on hover */
+}
+
+/* Disabled button styling */
+.pagination-controls button[disabled] {
+    color: gray;
+    cursor: not-allowed;
+}
+
+/* For general span (if any other text is used within buttons) */
+.pagination-controls span {
+    margin: 0 5px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* Items per page section */
+.items-per-page {
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.items-per-page select {
+    margin-left: 10px;
+    padding: 5px;
+}
