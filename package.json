@@ -22,7 +22,7 @@
     "@angular/platform-browser": "^14.3.0",
     "@angular/platform-browser-dynamic": "^14.3.0",
     "@angular/router": "^14.3.0",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "leaflet": "1.7.0",
     "leaflet.markercluster": "^1.5.3",
     "moment": "^2.29.4",
