@@ -1,59 +1,52 @@
 <h1>Beer Statistics</h1>
 
-<!-- Display the paginated beers using a mat-card for each beer -->
-<ng-container *ngFor="let beer of paginatedBeers">
-  <mat-card id="checkin-{{ beer.recent_checkin_id }} stream" class="checkin cf mat-elevation-z0 outline white-card"
-    style="text-align: center">
-    <mat-card-content class="beer">
-      <!-- Beer Image -->
-      <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}"
-        title="{{ beer.beer.beer_name }} Logo" />
-      <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}"
-        title="{{ beer.brewery?.brewery_name }} Logo" />
+<!-- Filter Component -->
+<div class="card-container">
+  <!-- Card Wrapper for Filter and Search Bar -->
+  <mat-card class="white-card">
+    <div class="stats-filter-container-wrapper">
+      <!-- Search Bar Spanning the Full Width -->
+      <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
+        (input)="onSearchChange()" />
 
-      <p><strong>{{ beer.beer.beer_name }}</strong></p>
-      <p>{{ beer.beer.beer_style }}</p>
-      <p>{{ beer.brewery?.brewery_name }}</p>
-
-      <span class="comment" *ngIf="beer.beer.beer_description">
-        {{ beer.beer.beer_description }}
-      </span>
-
-      <span class="stars-container stars-{{ beer.rating_score * 20 }}" title="{{ beer.rating_score }}">*****</span>
-      <br />
-
-      <span class="overallRating">
-        <div *ngIf="beer.beer.rating_score == 0; then thenBlock; else elseBlock"></div>
-        <ng-template #thenBlock>Overall rating: n/a</ng-template>
-        <ng-template #elseBlock>Overall rating: {{ beer.beer.rating_score }}</ng-template>
-      </span>
-      <span class="social"><a href="{{ beer.brewery.contact.url }}" target="_blank" alt="website"
-          title="website">Website</a>
-        |
-        <a href="{{ beer.brewery.contact.facebook }}" target="_blank" alt="facebook" title="facebook">facebook</a>
-        |
-        <a href="http://instagram.com/{{ beer.brewery.contact.instagram }}" target="_blank" alt="instagram"
-          title="instagram">Instagram</a>
-      </span>
-
-      <footer>
-        <p class="beerInfo">
-          <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
-        </p>
-        <div class="footer-time">
-          <time>{{ published(beer.recent_created_at) }}</time>
-          <a class="checkin-page hide-text" href="https://untappd.com/user/fromeca/checkin/{{beer.recent_checkin_id}}"
-            target="_blank" title="Checkin Page">Checkin Page</a>
-        </div>
-      </footer>
-    </mat-card-content>
+      <!-- Filter Component (buttons aligned to the left below the search bar) -->
+      <div class="stats-filter-container">
+        <app-filter [filterFields]="filterFields" (filterChanged)="applyFilters()"></app-filter>
+      </div>
+    </div>
   </mat-card>
-</ng-container>
 
-<!-- Pagination controls -->
-<app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
-  (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
-</app-pagination>
+  <!-- Display the paginated beers -->
+  <ng-container *ngFor="let beer of paginatedBeers">
+    <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin cf mat-elevation-z0 outline white-card"
+      style="text-align: center">
+      <mat-card-content class="beer">
+        <!-- Beer Image -->
+        <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}"
+          title="{{ beer.beer.beer_name }} Logo" />
+        <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}"
+          title="{{ beer.brewery?.brewery_name }} Logo" />
+        <p><strong>{{ beer.beer.beer_name }}</strong></p>
+        <p>{{ beer.beer.beer_style }}</p>
+        <p>{{ beer.brewery?.brewery_name }}</p>
+        <span class="comment" *ngIf="beer.beer.beer_description">{{ beer.beer.beer_description }}</span>
+        <span class="stars-container stars-{{ beer.rating_score * 20 }}" title="{{ beer.rating_score }}">*****</span>
+        <footer>
+          <p class="beerInfo">
+            <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
+          </p>
+          <div class="footer-time">
+            <time>{{ published(beer.recent_created_at) }}</time>
+          </div>
+        </footer>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
 
-<!-- Powered by Untappd image -->
+  <!-- Pagination controls -->
+  <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
+    (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
+  </app-pagination>
+</div>
+
 <img class="powered-by" src="../../assets/images/poweredbyuntappd.png" alt="Powered by Untappd API" />

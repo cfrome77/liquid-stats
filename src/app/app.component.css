@@ -4,11 +4,11 @@
 .cf:before,
 .cf:after {
   content: " ";
-  display: table
+  display: table;
 }
 
 .cf:after {
-  clear: both
+  clear: both;
 }
 
 /**
@@ -17,7 +17,7 @@
 .hide-text {
   text-indent: 100%;
   white-space: nowrap;
-  overflow: hidden
+  overflow: hidden;
 }
 
 .fab-container {
@@ -26,22 +26,25 @@
   right: 15px;
   z-index: 100;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: row;
   align-items: center;
 }
-.fab-container > div {
+
+.fab-container>div {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: row;
   align-items: center;
   margin-bottom: 5px;
 }
-.fab-container > div button {
-  margin-bottom: 17px;
+
+.fab-container>div button {
+  margin-left: 10px;
 }
+
 .fab-toggler {
-  float: right;
   z-index: 100;
 }
+
 #fab-dismiss {
   position: fixed;
   top: 0;
