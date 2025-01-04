@@ -26,6 +26,8 @@ import { StatsComponent } from './stats/stats.component';
 import { AboutComponent } from "./about/about.component";
 import { HomeComponent } from "./home/home.component";
 import { PaginationComponent } from './_services/pagination/pagination.component';
+import { FilterComponent } from './_services/filter/filter.component';
+import { ScrollToTopComponent } from './_services/scroll-to-top/scroll-to-top.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
@@ -40,6 +42,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     AboutComponent,
     HomeComponent,
     PaginationComponent,
+    FilterComponent,
+    ScrollToTopComponent,
   ],
   imports: [
     BrowserModule,

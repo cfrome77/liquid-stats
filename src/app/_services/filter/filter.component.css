@@ -1,0 +1,142 @@
+/* Modal Styling for the Filter Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: white;
+  color: black;
+  padding: 0;
+  border-radius: 8px;
+  width: 300px;
+  max-width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+}
+
+.modal-button-container {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.apply-button {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.apply-button:hover {
+  background-color: #218838;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  color: #000;
+}
+
+.reset-button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: #0056b3;
+}
+
+.modal-body {
+  font-size: 14px;
+  color: #333;
+  padding-top: 10px;
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.filter-option-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-left: 10px;
+  width: 100%;
+}
+
+.filter-option-label input[type="checkbox"] {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+.stats-filter-button {
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 100px;
+  margin-bottom: 10px;
+  margin-right: 15px;
+}
+
+.stats-filter-button:hover {
+  background-color: #0056b3;
+}
+
+.stats-filter-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.stats-filter-button:active {
+  background-color: #004085;
+}

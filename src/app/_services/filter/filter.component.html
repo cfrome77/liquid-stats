@@ -1,11 +1,46 @@
-<div>
-    <h3>Filter By {{ fieldName }}</h3>
-    <div *ngFor="let option of options">
-      <mat-checkbox
-        [(ngModel)]="selectedValues.includes(option)"
-        (change)="onFilterChange()">
-        {{ option }}
-      </mat-checkbox>
+<!-- Main Filter Container (for triggering the modal) -->
+<div class="filter-container-wrapper">
+  <!-- Loop through the filters and create buttons for each filter -->
+  <label *ngFor="let filter of filterFields">
+    <button type="button" class="btn btn-primary stats-filter-button" (click)="openFilterModal(filter)">
+      {{ filter.label }}
+      <!-- Show selected / total count -->
+      ({{ filter.selected.length === filter.options.length ? filter.options.length : filter.selected.length }}/{{
+      filter.options.length }})
+    </button>
+  </label>
+</div>
+
+<!-- Modal for Filter Options -->
+<div *ngIf="activeFilter" class="modal-overlay">
+  <div class="modal-content">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <!-- Back Button -->
+      <button type="button" class="back-button" (click)="closeModal()"><mat-icon>arrow_back</mat-icon></button>
+
+      <!-- Button Container for Select/Deselect All and Apply Buttons -->
+      <div class="modal-button-container">
+        <!-- Select/Deselect All Button -->
+        <button type="button" class="reset-button" (click)="toggleSelectDeselect()">
+          {{ allSelected ? 'Deselect All' : 'Select All' }}
+        </button>
+
+        <!-- Apply Button -->
+        <button type="button" class="apply-button" (click)="applyFilter()">Apply</button>
+      </div>
+    </div>
+
+    <!-- Modal Body with scrollable content for options -->
+    <div class="modal-body">
+      <!-- Loop through the options for the active filter -->
+      <div *ngFor="let option of activeFilter.options">
+        <label class="filter-option-label">
+          <input type="checkbox" [checked]="activeFilter.selected.includes(option)"
+            (change)="onCheckboxChange(option, $event)">
+          {{ option }}
+        </label>
+      </div>
     </div>
   </div>
-  
+</div>

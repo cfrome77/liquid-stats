@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';  // Import HttpClient
-import { Observable } from 'rxjs';  // Import Observable for HTTP requests
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import * as moment from 'moment';
+
+interface FilterField {
+  field: string;
+  label: string;
+  options: string[];
+  selected: string[];
+}
 
 @Component({
   selector: 'app-stats',
@@ -10,67 +16,163 @@ import * as moment from 'moment';
   styleUrls: ['./stats.component.css']
 })
 export class StatsComponent implements OnInit {
-  public beers: any[] = [];  // Declare beers array
-  public paginatedBeers: any[] = [];  // Declare paginatedBeers array
-  public currentPage: number = 1;  // Initial page
-  public itemsPerPage: number = 10;  // Default number of items per page
-  public totalItems: number = 0;  // Total number of beers
+  public beers: any[] = [];
+  public paginatedBeers: any[] = [];
+  public currentPage: number = 1;
+  public itemsPerPage: number = 10;
+  public totalItems: number = 0;
 
-  constructor(private http: HttpClient) {}
+  public filterFields: FilterField[] = [
+    { field: 'brewery', label: 'Brewery', options: [], selected: [] },
+    { field: 'beer_style', label: 'Beer Style', options: [], selected: [] }
+  ];
+
+  public filteredBeers: any[] = [];
+  public searchTerm: string = ''; // This will hold the search term
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.fetchBeersData();  // Fetch the beer data when the component initializes
+    this.fetchBeersData();
   }
 
-  // Function to fetch beer data from the provided URL
+  // Fetch beer data from JSON
   public fetchBeersData(): void {
     this.getJSON().subscribe((data) => {
-      // Check if the data contains beers
       if (data && data.beers && Array.isArray(data.beers)) {
-        // Initialize badges if not already set
-        data.beers.forEach((beer: { badges: {}; }) => {
-          beer.badges = beer.badges || {};  // Initialize badges if undefined
-        });
-        this.beers = data.beers;  // Set the beers data
-        this.totalItems = this.beers.length;  // Set the total number of items for pagination
-        this.updatePaginatedBeers();  // Update the paginated beers after data is loaded
+        this.beers = data.beers;
+        this.totalItems = this.beers.length;
+        this.filteredBeers = this.beers;
+
+        // Extract unique values for breweries and beer styles
+        this.filterFields[0].options = this.getUniqueFieldValues('brewery');
+        this.filterFields[1].options = this.getUniqueFieldValues('beer_style');
+
+        // Set selected to all options by default
+        this.filterFields[0].selected = [...this.filterFields[0].options];
+        this.filterFields[1].selected = [...this.filterFields[1].options];
+
+        // Apply any initial filters
+        this.applyFilters();
       } else {
-        console.error('Invalid data structure:', data);  // Log an error if data structure is not as expected
+        console.error('Invalid data structure:', data);
       }
     });
   }
 
-  // Function to retrieve JSON data using HttpClient
+  onSearchChange(): void {
+    this.filteredBeers = this.beers.filter(beer => {
+      const searchTermLower = this.searchTerm.toLowerCase();
+      return beer.beer.beer_name.toLowerCase().includes(searchTermLower) ||
+        beer.beer.beer_style.toLowerCase().includes(searchTermLower) ||
+        beer.brewery?.brewery_name.toLowerCase().includes(searchTermLower);
+    });
+    this.totalItems = this.filteredBeers.length;
+    this.updatePaginatedBeers();
+  }
+
+  // Retrieve the JSON data
   public getJSON(): Observable<any> {
-    return this.http.get('https://liquid-stats.s3.amazonaws.com/beers.json');  // URL of your JSON data
+    return this.http.get('https://liquid-stats.s3.amazonaws.com/beers.json');
   }
 
-  // Function to format the publication date of a beer
+  // Format the date for display
   public published(createAt: string): string {
-    return moment(Date.parse(createAt)).format('h:mm A D MMM YYYY');  // Format using moment.js
+    return moment(Date.parse(createAt)).format('h:mm A D MMM YYYY');
   }
 
-  // Update the paginated beers based on the current page and items per page
+  // Get unique values for a given field (brewery or beer_style)
+  private getUniqueFieldValues(field: string): string[] {
+    let values: string[] = [];
+    if (field === 'brewery') {
+      values = this.beers.map(beer => beer.brewery?.brewery_name).filter(Boolean);
+    } else if (field === 'beer_style') {
+      values = this.beers.map(beer => beer.beer?.beer_style).filter(Boolean);
+    }
+    return [...new Set(values)];
+  }
+
+  // Update options for Beer Style based on selected Brewery
+  updateBeerStyleOptions(): void {
+    const selectedBreweries = this.filterFields.find(field => field.field === 'brewery')?.selected || [];
+    const stylesForSelectedBreweries = new Set<string>();
+
+    if (selectedBreweries.length > 0) {
+      this.beers.forEach(beer => {
+        if (selectedBreweries.includes(beer.brewery?.brewery_name)) {
+          stylesForSelectedBreweries.add(beer.beer?.beer_style);
+        }
+      });
+    } else {
+      // If no brewery is selected, show all styles
+      this.filterFields[1].options = this.getUniqueFieldValues('beer_style');
+      return;
+    }
+
+    this.filterFields[1].options = Array.from(stylesForSelectedBreweries);
+  }
+
+  // Update options for Brewery based on selected Beer Style
+  updateBreweryOptions(): void {
+    const selectedStyles = this.filterFields.find(field => field.field === 'beer_style')?.selected || [];
+    const breweriesForSelectedStyles = new Set<string>();
+
+    if (selectedStyles.length > 0) {
+      this.beers.forEach(beer => {
+        if (selectedStyles.includes(beer.beer?.beer_style)) {
+          breweriesForSelectedStyles.add(beer.brewery?.brewery_name);
+        }
+      });
+    } else {
+      // If no style is selected, show all breweries
+      this.filterFields[0].options = this.getUniqueFieldValues('brewery');
+      return;
+    }
+
+    this.filterFields[0].options = Array.from(breweriesForSelectedStyles);
+  }
+
+  // Apply the selected filters to the beers data
+  applyFilters(): void {
+    this.filteredBeers = this.beers.filter(beer => {
+      const breweryFilterSelected = this.filterFields.find(field => field.field === 'brewery')?.selected || [];
+      const styleFilterSelected = this.filterFields.find(field => field.field === 'beer_style')?.selected || [];
+
+      const isBreweryMatch = breweryFilterSelected.length === 0 || breweryFilterSelected.includes(beer.brewery?.brewery_name || '');
+      const isStyleMatch = styleFilterSelected.length === 0 || styleFilterSelected.includes(beer.beer?.beer_style || '');
+
+      return isBreweryMatch && isStyleMatch;
+    });
+
+    this.totalItems = this.filteredBeers.length;
+    this.updatePaginatedBeers();
+  }
+
+  // Update paginated beers based on current filters
   updatePaginatedBeers(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;  // Calculate the starting index
-    const endIndex = startIndex + this.itemsPerPage;  // Calculate the ending index
-    this.paginatedBeers = this.beers.slice(startIndex, endIndex);  // Slice the beers for pagination
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
   }
 
   // Handle page navigation
   goToPage(page: number): void {
-    this.currentPage = page;  // Update the current page
-    this.updatePaginatedBeers();  // Update the paginated beers for the new page
+    this.currentPage = page;
+    this.updatePaginatedBeers();
   }
 
   // Handle items per page change
   changeItemsPerPage(itemsPerPage: number): void {
-    const maxPage = Math.ceil(this.totalItems / itemsPerPage);  // Calculate the maximum page number
-    // If the current page exceeds the max page, reset to the last valid page
+    const maxPage = Math.ceil(this.totalItems / itemsPerPage);
     if (this.currentPage > maxPage) {
       this.currentPage = maxPage;
     }
-    this.itemsPerPage = itemsPerPage;  // Update the number of items per page
-    this.updatePaginatedBeers();  // Update the paginated beers with the new items per page
+    this.itemsPerPage = itemsPerPage;
+    this.updatePaginatedBeers();
+  }
+
+  // Update the filter counts (not used in this example)
+  updateFilterCounts(): void {
+    // Not implemented here but you can count how many beers fit each filter.
   }
 }

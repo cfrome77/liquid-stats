@@ -12,6 +12,10 @@ h1 {
   margin-bottom: 20px;
 }
 
+.card-container {
+  margin-top: 0;
+}
+
 /* Styling for the White Cards */
 .white-card {
   background-color: white;
@@ -24,32 +28,38 @@ h1 {
   text-align: center;
 }
 
-/* Beer Name and Style */
-p strong {
-  font-size: 18px;
-  color: #333;
+/* Stats Filter Container Wrapper (flex container) */
+.stats-filter-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-p {
+/* Search Bar Styling */
+.search-bar {
+  padding: 8px;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   font-size: 14px;
-  color: #555;
+  margin-bottom: 15px;
 }
 
-/* Beer Description */
-.beer-description {
-  font-size: 14px;
-  color: #777;
-  margin-top: 10px;
+/* Stats Filter Container (filter buttons aligned to the left) */
+.stats-filter-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 5px;
 }
 
-.overallRating {
-  float: left;
-  clear: left;
-}
-
-/* Rating Score Styling */
-.rating-score-container {
-  font-size: 16px;
-  font-weight: bold;
-  color: #ff9800;
+/* Style for each button if needed */
+.stats-filter-container button {
+  flex-shrink: 0;
 }
