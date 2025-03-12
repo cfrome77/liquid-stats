@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
+import * as L from 'leaflet';  // Import Leaflet for map functionality
 
 interface FilterField {
   field: string;
@@ -10,17 +11,25 @@ interface FilterField {
   selected: string[];
 }
 
+const iconUrl = 'assets/images/marker-icon.png';  // Path to the icon image
+const iconRetinaUrl = 'assets/images/marker-icon-2x.png';  // Retina icon
+const shadowUrl = 'assets/images/marker-shadow.png';  // Path to the shadow image
+
 @Component({
   selector: 'app-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.css']
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent implements OnInit, AfterViewInit {
+  @ViewChild('statsMap', { static: false }) mapContainer!: ElementRef;  // Reference to the map container
+
   public beers: any[] = [];
   public paginatedBeers: any[] = [];
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
   public totalItems: number = 0;
+  
+  
 
   public filterFields: FilterField[] = [
     { field: 'brewery', label: 'Brewery', options: [], selected: [] },
@@ -28,12 +37,38 @@ export class StatsComponent implements OnInit {
   ];
 
   public filteredBeers: any[] = [];
-  public searchTerm: string = ''; // This will hold the search term
+  public searchTerm: string = '';
+
+  public mapId: string = 'statsMap';
+
+  private map: any;
+  private markerIcon = L.icon({
+      iconRetinaUrl,
+      iconUrl,
+      shadowUrl,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      tooltipAnchor: [16, -28],
+      shadowSize: [41, 41]
+    });
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.fetchBeersData();
+  }
+
+  ngAfterViewInit(): void {
+    // Wait for the next tick to make sure the DOM is fully ready
+    setTimeout(() => {
+      const mapContainer = document.getElementById(this.mapId);
+      if (mapContainer) {
+        this.initMap();  // Initialize map only when the container is available
+      } else {
+        console.error('Map container not found!');
+      }
+    });
   }
 
   // Fetch beer data from JSON
@@ -44,15 +79,12 @@ export class StatsComponent implements OnInit {
         this.totalItems = this.beers.length;
         this.filteredBeers = this.beers;
 
-        // Extract unique values for breweries and beer styles
         this.filterFields[0].options = this.getUniqueFieldValues('brewery');
         this.filterFields[1].options = this.getUniqueFieldValues('beer_style');
 
-        // Set selected to all options by default
         this.filterFields[0].selected = [...this.filterFields[0].options];
         this.filterFields[1].selected = [...this.filterFields[1].options];
 
-        // Apply any initial filters
         this.applyFilters();
       } else {
         console.error('Invalid data structure:', data);
@@ -71,17 +103,14 @@ export class StatsComponent implements OnInit {
     this.updatePaginatedBeers();
   }
 
-  // Retrieve the JSON data
   public getJSON(): Observable<any> {
     return this.http.get('https://liquid-stats.s3.amazonaws.com/beers.json');
   }
 
-  // Format the date for display
   public published(createAt: string): string {
     return moment(Date.parse(createAt)).format('h:mm A D MMM YYYY');
   }
 
-  // Get unique values for a given field (brewery or beer_style)
   private getUniqueFieldValues(field: string): string[] {
     let values: string[] = [];
     if (field === 'brewery') {
@@ -92,7 +121,6 @@ export class StatsComponent implements OnInit {
     return [...new Set(values)];
   }
 
-  // Update options for Beer Style based on selected Brewery
   updateBeerStyleOptions(): void {
     const selectedBreweries = this.filterFields.find(field => field.field === 'brewery')?.selected || [];
     const stylesForSelectedBreweries = new Set<string>();
@@ -104,7 +132,6 @@ export class StatsComponent implements OnInit {
         }
       });
     } else {
-      // If no brewery is selected, show all styles
       this.filterFields[1].options = this.getUniqueFieldValues('beer_style');
       return;
     }
@@ -112,7 +139,6 @@ export class StatsComponent implements OnInit {
     this.filterFields[1].options = Array.from(stylesForSelectedBreweries);
   }
 
-  // Update options for Brewery based on selected Beer Style
   updateBreweryOptions(): void {
     const selectedStyles = this.filterFields.find(field => field.field === 'beer_style')?.selected || [];
     const breweriesForSelectedStyles = new Set<string>();
@@ -124,7 +150,6 @@ export class StatsComponent implements OnInit {
         }
       });
     } else {
-      // If no style is selected, show all breweries
       this.filterFields[0].options = this.getUniqueFieldValues('brewery');
       return;
     }
@@ -132,7 +157,6 @@ export class StatsComponent implements OnInit {
     this.filterFields[0].options = Array.from(breweriesForSelectedStyles);
   }
 
-  // Apply the selected filters to the beers data
   applyFilters(): void {
     this.filteredBeers = this.beers.filter(beer => {
       const breweryFilterSelected = this.filterFields.find(field => field.field === 'brewery')?.selected || [];
@@ -148,20 +172,65 @@ export class StatsComponent implements OnInit {
     this.updatePaginatedBeers();
   }
 
-  // Update paginated beers based on current filters
   updatePaginatedBeers(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
+    this.updateMapMarkers();
   }
 
-  // Handle page navigation
+  // Update map markers for the paginated beers
+  updateMapMarkers(): void {
+    if (this.map) {
+      // Remove any existing markers
+      this.map.eachLayer((layer: any) => {
+        if (layer instanceof L.Marker) {
+          this.map.removeLayer(layer);
+        }
+      });
+  
+      // Add markers using the markerIcon if data is available
+      this.paginatedBeers.forEach((beer) => {
+        const { lat, lng } = beer.brewery?.location || {};
+        if (lat && lng) {
+          L.marker([lat, lng], { icon: this.markerIcon })  // Use the custom markerIcon
+            .addTo(this.map)
+            .bindPopup(`<b>${beer.beer.beer_name}</b><br>${beer.brewery?.brewery_name}`);
+        } else {
+          console.warn(`Missing coordinates for beer: ${beer.beer.beer_name}`);
+        }
+      });
+    } else {
+      console.warn('Map is not initialized yet.');
+    }
+  }
+
+  initMap(): void {
+    const mapContainer = document.getElementById(this.mapId);
+    if (!mapContainer) {
+      console.error('Map container not found!');
+      return;
+    }
+
+    this.map = L.map(mapContainer, {
+      center: [39.8282, -98.5795],  // Default center (US)
+      zoom: 3,  // Default zoom level
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(this.map);
+
+    // Add initial markers for the first page of beers
+    this.updateMapMarkers();
+  }
+
   goToPage(page: number): void {
     this.currentPage = page;
     this.updatePaginatedBeers();
   }
 
-  // Handle items per page change
   changeItemsPerPage(itemsPerPage: number): void {
     const maxPage = Math.ceil(this.totalItems / itemsPerPage);
     if (this.currentPage > maxPage) {
@@ -169,10 +238,5 @@ export class StatsComponent implements OnInit {
     }
     this.itemsPerPage = itemsPerPage;
     this.updatePaginatedBeers();
-  }
-
-  // Update the filter counts (not used in this example)
-  updateFilterCounts(): void {
-    // Not implemented here but you can count how many beers fit each filter.
   }
 }

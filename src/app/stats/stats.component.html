@@ -43,6 +43,11 @@
     </mat-card>
   </ng-container>
 
+  <!-- Map Section (For the Current Page's Beers) -->
+  <mat-card class="white-card map-container">
+    <div class="map-wrapper" [id]="mapId" style="height: 400px;"></div> <!-- This div will hold the map -->
+  </mat-card>
+
   <!-- Pagination controls -->
   <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
     (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">

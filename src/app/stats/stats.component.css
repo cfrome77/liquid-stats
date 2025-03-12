@@ -14,6 +14,10 @@ h1 {
 
 .card-container {
   margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
 }
 
 /* Styling for the White Cards */
@@ -24,8 +28,9 @@ h1 {
   margin: 10px auto;
   width: 95%;
   max-width: 800px;
-  padding: 10px;
+  padding: 15px;
   text-align: center;
+  border-radius: 8px;
 }
 
 /* Stats Filter Container Wrapper (flex container) */
@@ -38,7 +43,7 @@ h1 {
 
 /* Search Bar Styling */
 .search-bar {
-  padding: 8px;
+  padding: 10px;
   width: 100%;
   max-width: 100%;
   border: 1px solid #ccc;
@@ -62,4 +67,151 @@ h1 {
 /* Style for each button if needed */
 .stats-filter-container button {
   flex-shrink: 0;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #f2f2f2;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.stats-filter-container button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Map Section Styling */
+.map-container {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.map-wrapper {
+  height: 400px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+}
+
+/* Pagination Controls Styling */
+app-pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Card Content Styling */
+.checkin {
+  background-color: #fafafa;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.checkin .beer {
+  margin-bottom: 10px;
+}
+
+.beer-label,
+.brewery-label {
+  max-height: 150px;
+  width: auto;
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Beer Name Styling */
+.checkin p strong {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* Footer Styling for Beer Info */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+footer .beerInfo a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+footer .beerInfo a:hover {
+  text-decoration: underline;
+}
+
+footer .footer-time {
+  font-size: 12px;
+  color: #777;
+}
+
+.comment {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Stars Styling */
+.stars-container {
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.stars-container:before {
+  content: "★★★★★";
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #ffd700;
+}
+
+.stars-container.stars-20:before {
+  width: 20%;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.stars-container.stars-40:before {
+  width: 40%;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.stars-container.stars-60:before {
+  width: 60%;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.stars-container.stars-80:before {
+  width: 80%;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.stars-container.stars-100:before {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+}
+
+/* Powered by Untappd */
+.powered-by {
+  width: 150px;
+  display: block;
+  margin: 30px auto;
+  opacity: 0.6;
+}
+
+.powered-by:hover {
+  opacity: 1;
 }

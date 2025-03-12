@@ -17,7 +17,7 @@ export const routes: Routes = [
   { path: 'checkins', component: CheckinsComponent },
   { path: 'topbeers', component: TopbeersComponent },
   { path: 'badges', component: BadgesComponent },
-  { path: 'map', component: MapComponent },
+  { path: 'map', component: MapComponent, data: { mapId: 'myMap' } },
   { path: 'stats', component: StatsComponent },
   { path: 'wishlist', component: WishlistComponent },
   { path: 'about', component: AboutComponent }
