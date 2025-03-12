@@ -1,20 +1,22 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MarkerService } from '../_services/marker.service';
+import { MapService } from '../_services/map.service'; // Import MapService
 import * as L from 'leaflet';
 
 const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
 const iconUrl = 'assets/images/marker-icon.png';
-const shadowUrl = 'assets/images/marker-shadow.png'
+const shadowUrl = 'assets/images/marker-shadow.png';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnDestroy {
 
-  private map: any;
-  private states: any;
+  public mapId: string = 'myMap';
+  private map: L.Map | undefined;
 
   private markerIcon = L.icon({
     iconRetinaUrl,
@@ -27,24 +29,65 @@ export class MapComponent implements AfterViewInit {
     shadowSize: [41, 41]
   });
 
-  constructor(private markerService: MarkerService,) {}
+  constructor(
+    private markerService: MarkerService,
+    private mapService: MapService,
+    private route: ActivatedRoute
+  ) { }
 
   ngAfterViewInit(): void {
-    this.initMap();
-    this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
+    this.route.data.subscribe(data => {
+      this.mapId = data['mapId'];
+
+      if (!this.mapId) {
+        console.error("Map ID is not set. Cannot initialize the map.");
+        return; // Prevent further execution
+      }
+
+      setTimeout(() => {
+        this.initMap();
+        if (this.map) {
+          this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
+        } else {
+          console.error("Map instance is not initialized.");
+        }
+      });
+    });
   }
 
   private initMap(): void {
-    this.map = L.map('map', {
-      center: [39.8282, -98.5795],
-      zoom: 3
-    });
+    if (!this.mapId) {
+      console.error("Map ID is not set. Cannot initialize the map.");
+      return;
+    }
 
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    });
+    const mapElement = document.getElementById(this.mapId);
+    if (!mapElement) {
+      console.error(`Map container with id '${this.mapId}' not found in the DOM.`);
+      return;
+    }
 
-    tiles.addTo(this.map);
+    if (!this.map) {
+      this.map = L.map(this.mapId, {
+        center: [39.8282, -98.5795],
+        zoom: 3
+      });
+
+      const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      });
+
+      tiles.addTo(this.map);
+      this.mapService.addMap(this.mapId, this.map);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Cleanup map instance when the component is destroyed
+    if (this.map) {
+      this.map.remove();  // Removes the map instance from the DOM
+      this.mapService.removeMap(this.mapId);  // Remove map from service
+    }
   }
 }
