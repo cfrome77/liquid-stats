@@ -1,38 +1,20 @@
+/* Ensure html and body take full height */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 /* Map Wrapper Container */
 .map-wrapper {
     position: relative;
-    margin: 20px auto;
-    max-width: 100%;
-    padding: 10px;
-    background-color: #f9f9f9;
-    /* Light background for container */
-    border-radius: 8px;
-    /* Smooth corners */
-}
-
-/* Styling for the Map itself */
-#map {
-    height: 400px;
-    /* Fixed height as specified */
     width: 100%;
-    /* Ensures the map takes the full width of its container */
-    border-radius: 5px;
-    /* Rounded corners */
-    border: 2px solid #ccc;
-    /* Soft border around the map */
-    box-sizing: border-box;
-    /* Ensures padding and borders do not affect width and height */
+    height: 100%;
 }
 
-/* Optional: Responsive Design for smaller screens */
-@media (max-width: 768px) {
-    .map-wrapper {
-        margin: 20px 10px;
-        /* Reduces margins for smaller screens */
-    }
-
-    #map {
-        height: 300px;
-        /* Adjusts height for smaller screens */
-    }
+/* Map Styling */
+#map {
+    width: 100%;
+    height: 100%;
 }

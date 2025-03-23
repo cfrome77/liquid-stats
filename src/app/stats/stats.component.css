@@ -215,3 +215,71 @@ footer .footer-time {
 .powered-by:hover {
   opacity: 1;
 }
+
+/* New Styling for Charts Section */
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+  width: 100%;
+  align-items: center;
+}
+
+.chart-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  margin: 10px auto;
+  width: 95%;
+  max-width: 800px;
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.chart-card h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+#beerStylePie,
+#breweryBar {
+  height: 300px;
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 400px;
+  background-color: #f9f9f9;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+  .stats-filter-container-wrapper {
+    flex-direction: column;
+  }
+
+  .stats-filter-container {
+    flex-direction: column;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+}

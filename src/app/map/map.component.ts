@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MarkerService } from '../_services/marker.service';
-import { MapService } from '../_services/map.service'; // Import MapService
+import { MapService } from '../_services/map.service';
 import * as L from 'leaflet';
 
 const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
@@ -41,12 +41,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       if (!this.mapId) {
         console.error("Map ID is not set. Cannot initialize the map.");
-        return; // Prevent further execution
+        return;
       }
 
       setTimeout(() => {
         this.initMap();
         if (this.map) {
+          // Use MarkerService to add markers
           this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
         } else {
           console.error("Map instance is not initialized.");
@@ -69,7 +70,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     if (!this.map) {
       this.map = L.map(this.mapId, {
-        center: [39.8282, -98.5795],
+        center: [39.8282, -98.5795], // Coordinates for the USA
         zoom: 3
       });
 
@@ -80,14 +81,29 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       tiles.addTo(this.map);
       this.mapService.addMap(this.mapId, this.map);
+
+      // Ensure the map fills the screen dynamically
+      this.setMapHeight();
+      window.addEventListener('resize', this.setMapHeight.bind(this));
+    }
+  }
+
+  // Dynamically adjust map height
+  private setMapHeight(): void {
+    const mapElement = document.getElementById(this.mapId);
+    if (mapElement) {
+      mapElement.style.height = `${window.innerHeight}px`; // Set the map height to the full window height
+    }
+    if (this.map) {
+      this.map.invalidateSize(); // Inform Leaflet to update the map size
     }
   }
 
   ngOnDestroy(): void {
-    // Cleanup map instance when the component is destroyed
     if (this.map) {
-      this.map.remove();  // Removes the map instance from the DOM
-      this.mapService.removeMap(this.mapId);  // Remove map from service
+      this.map.remove();
+      this.mapService.removeMap(this.mapId);
     }
+    window.removeEventListener('resize', this.setMapHeight.bind(this)); // Clean up event listener on destroy
   }
 }
