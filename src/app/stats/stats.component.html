@@ -5,13 +5,17 @@
   <!-- Card Wrapper for Filter and Search Bar -->
   <mat-card class="white-card">
     <div class="stats-filter-container-wrapper">
-      <!-- Search Bar Spanning the Full Width -->
-      <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
-        (input)="onSearchChange()" />
+      
+      <!-- Brewery and Beer Style Filter Buttons -->
+      <div class="filter-buttons-container">
+        <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
+      </div>
 
-      <!-- Filter Component (buttons aligned to the left below the search bar) -->
-      <div class="stats-filter-container">
-        <app-filter [filterFields]="filterFields" (filterChanged)="applyFilters()"></app-filter>
+      <!-- Search Bar and Reset Button Wrapper -->
+      <div class="search-bar-container">
+        <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
+          (input)="onSearchChange()" />
+        <button (click)="resetFilters()" class="reset-button">Reset Filters</button>
       </div>
     </div>
   </mat-card>
