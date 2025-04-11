@@ -4,17 +4,26 @@ import os
 
 from os.path import join, dirname
 from dotenv import load_dotenv
- 
+
+# Load environment variables
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
- 
-# Accessing variables.
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-username = os.getenv('UNTAPPD_USERNAME')
+
+# Accessing variables with default fallback
+CLIENT_ID = os.environ.get('CLIENT_ID') or os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET') or os.getenv('CLIENT_SECRET')
+USERNAME = os.environ.get('UNTAPPD_USERNAME') or os.getenv('UNTAPPD_USERNAME')
+BUCKET_NAME = os.environ.get('S3_BUCKET_NAME') or os.getenv('S3_BUCKET_NAME')
+
+# Determine environment (AWS or local)
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'local')
+
+if ENVIRONMENT == 'aws':
+    import boto3
+    s3 = boto3.client('s3')
 
 def get_distinct_beers():
-    URL = 'https://api.untappd.com/v4/user/beers/' + username
+    URL = 'https://api.untappd.com/v4/user/beers/' + USERNAME
     STEP = 50
     payload = {
         'client_id': CLIENT_ID,
@@ -36,19 +45,18 @@ def get_distinct_beers():
 
     print('fetched data for {} beers'.format(len(beers)))
     return beers
-	
+
 def get_checkins():
-    URL = 'https://api.untappd.com/v4/user/checkins/' + username
+    URL = 'https://api.untappd.com/v4/user/checkins/' + USERNAME
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
     }
     checkins_json = requests.get(URL, params=payload)
-    
     return checkins_json.json()
 
 def get_badges():
-    URL = 'https://api.untappd.com/v4/user/badges/' + username
+    URL = 'https://api.untappd.com/v4/user/badges/' + USERNAME
     STEP = 50
     payload = {
         'client_id': CLIENT_ID,
@@ -72,36 +80,40 @@ def get_badges():
     return badges
 
 def get_wishlist():
-    URL = 'https://api.untappd.com/v4/user/wishlist/' + username
+    URL = 'https://api.untappd.com/v4/user/wishlist/' + USERNAME
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
     }
     wishlist_json = requests.get(URL, params=payload)
-    
     return wishlist_json.json()
 
+def save_data_to_storage(data, filename):
+    if ENVIRONMENT == 'aws':
+        print(f'saving to {filename} (S3)')
+        s3.put_object(
+            Body=json.dumps(data),
+            Bucket=BUCKET_NAME,
+            Key=filename
+        )
+    else:
+        print(f'saving to {filename} (local)')
+        with open(f'src/assets/{filename}', 'w') as outfile:
+            json.dump(data, outfile)
+
 def save_beers_to_json(beers):
-    print('saving to beers.json')
-    with open('src/assets/beers.json', 'w') as outfile:
-        json.dump({'beers': beers}, outfile)
+    save_data_to_storage({'beers': beers}, 'beers.json')
 
 def save_checkins_to_json(checkins):
-    print('saving to checkins.json')
-    with open('src/assets/checkins.json', 'w') as outfile:
-        json.dump(checkins, outfile)
+    save_data_to_storage(checkins, 'checkins.json')
 
 def save_badges_to_json(badges):
-    print('saving to badges.json')
-    with open('src/assets/badges.json', 'w') as outfile:
-        json.dump(badges, outfile)
+    save_data_to_storage(badges, 'badges.json')
 
 def save_wishlist_to_json(wishlist):
-    print('saving to wishlist.json')
-    with open('src/assets/wishlist.json', 'w') as outfile:
-        json.dump(wishlist, outfile)
+    save_data_to_storage(wishlist, 'wishlist.json')
 
-if __name__ == '__main__':
+def lambda_handler(event, context):
     beers = get_distinct_beers()
     save_beers_to_json(beers)
     badges = get_badges()
@@ -110,3 +122,6 @@ if __name__ == '__main__':
     save_checkins_to_json(checkins)
     wishlist = get_wishlist()
     save_wishlist_to_json(wishlist)
+
+if __name__ == '__main__':
+    lambda_handler(None, None)  # Simulate Lambda call for local testing
