@@ -2,16 +2,16 @@
 
 <!-- Filter Component -->
 <div class="card-container">
-  <!-- Card Wrapper for Filter and Search Bar -->
   <mat-card class="white-card">
     <div class="stats-filter-container-wrapper">
-      
-      <!-- Brewery and Beer Style Filter Buttons -->
+
+      <!-- All Inline Filter Buttons -->
       <div class="filter-buttons-container">
+        <!-- Main Filter Fields (Brewery, Style, Country, Ratings) -->
         <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
       </div>
 
-      <!-- Search Bar and Reset Button Wrapper -->
+      <!-- Search Bar and Reset -->
       <div class="search-bar-container">
         <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
           (input)="onSearchChange()" />
@@ -20,16 +20,12 @@
     </div>
   </mat-card>
 
-  <!-- Display the paginated beers -->
+  <!-- Beers List -->
   <ng-container *ngFor="let beer of paginatedBeers">
-    <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin cf mat-elevation-z0 outline white-card"
-      style="text-align: center">
+    <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin cf mat-elevation-z0 outline white-card">
       <mat-card-content class="beer">
-        <!-- Beer Image -->
-        <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}"
-          title="{{ beer.beer.beer_name }} Logo" />
-        <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}"
-          title="{{ beer.brewery?.brewery_name }} Logo" />
+        <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}" />
+        <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}" />
         <p><strong>{{ beer.beer.beer_name }}</strong></p>
         <p>{{ beer.beer.beer_style }}</p>
         <p>{{ beer.brewery?.brewery_name }}</p>
@@ -47,7 +43,7 @@
     </mat-card>
   </ng-container>
 
-  <!-- Pagination controls -->
+  <!-- Pagination -->
   <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
     (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
   </app-pagination>

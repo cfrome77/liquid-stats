@@ -5,6 +5,7 @@ export interface FilterField {
   label: string;
   options: string[];
   selected: string[];
+  countMap?: { [option: string]: number };
 }
 
 @Component({

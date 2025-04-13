@@ -13,6 +13,11 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms'; 
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -61,6 +66,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     MatSidenavModule,
     FlexLayoutModule,
     MatDividerModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   exports: [],
   providers: [MarkerService, PopUpService],

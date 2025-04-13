@@ -4,9 +4,6 @@
   <label *ngFor="let filter of filterFields">
     <button type="button" class="btn btn-primary stats-filter-button" (click)="openFilterModal(filter)">
       {{ filter.label }}
-      <!-- Show selected / total count -->
-      ({{ filter.selected.length === filter.options.length ? filter.options.length : filter.selected.length }}/{{
-      filter.options.length }})
     </button>
   </label>
 </div>
@@ -17,16 +14,15 @@
     <!-- Modal Header -->
     <div class="modal-header">
       <!-- Back Button -->
-      <button type="button" class="back-button" (click)="closeModal()"><mat-icon>arrow_back</mat-icon></button>
+      <button type="button" class="back-button" (click)="closeModal()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
 
       <!-- Button Container for Select/Deselect All and Apply Buttons -->
       <div class="modal-button-container">
-        <!-- Select/Deselect All Button -->
         <button type="button" class="reset-button" (click)="toggleSelectDeselect()">
           {{ allSelected ? 'Deselect All' : 'Select All' }}
         </button>
-
-        <!-- Apply Button -->
         <button type="button" class="apply-button" (click)="applyFilter()">Apply</button>
       </div>
     </div>
@@ -38,7 +34,10 @@
         <label class="filter-option-label">
           <input type="checkbox" [checked]="activeFilter.selected.includes(option)"
             (change)="onCheckboxChange(option, $event)">
-          {{ option }}
+          {{ option }}&nbsp;
+          <span *ngIf="activeFilter.countMap && activeFilter.countMap[option] !== undefined">
+            ({{ activeFilter.countMap[option] }})
+          </span>
         </label>
       </div>
     </div>
