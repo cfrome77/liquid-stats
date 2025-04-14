@@ -110,4 +110,9 @@ export class FilterComponent implements OnChanges {
       this.activeFilter.selected = [...this.activeFilter.options];  // Re-select all options
     }
   }
+
+  formatRating(option: string): string {
+    const value = parseFloat(option);
+    return value === 0 ? 'No Rating' : value.toString();
+  }
 }

@@ -45,20 +45,19 @@ export class StatsComponent implements OnInit {
         this.filteredBeers = [...this.beers];
         this.totalItems = this.beers.length;
 
-        const quarterPointScale = Array.from({ length: 20 }, (_, i) => ((i + 1) * 0.25).toFixed(2));
-        const tenthPointScale = Array.from({ length: 50 }, (_, i) => ((i + 1) * 0.1).toFixed(1));
+        const quarterPointScale = Array.from({ length: 21 }, (_, i) => (i * 0.25).toFixed(2));
+        const tenthPointScale = Array.from({ length: 51 }, (_, i) => (i * 0.1).toFixed(1));
+
         const combinedRatings = Array.from(new Set([
           ...quarterPointScale.map(val => parseFloat(val)),
           ...tenthPointScale.map(val => parseFloat(val))
         ])).sort((a, b) => a - b);
 
-        const formattedRatings = combinedRatings.map(rating => {
-          if (rating % 1 === 0) {
-            return rating.toFixed(1);
-          } else {
-            return rating.toFixed(2);
-          }
-        });
+        const formattedRatings = combinedRatings.map(rating =>
+          Number.isInteger(rating * 100) && rating * 10 % 10 === 0
+            ? rating.toFixed(1)
+            : rating.toFixed(2)
+        );
 
         this.filterFields[0].options = this.getUniqueFieldValues('brewery');
         this.filterFields[1].options = this.getUniqueFieldValues('beer_style');
@@ -141,7 +140,14 @@ export class StatsComponent implements OnInit {
         if (filter.field === 'brewery') value = beer.brewery?.brewery_name;
         else if (filter.field === 'beer_style') value = beer.beer?.beer_style;
         else if (filter.field === 'country') value = beer.brewery?.country_name;
-        else if (filter.field === 'rating') value = beer.rating_score?.toFixed(2);
+        else if (filter.field === 'rating') {
+          const raw = beer.rating_score;
+          if (raw !== undefined && raw !== null) {
+            value = (Number.isInteger(raw * 100) && raw * 10 % 10 === 0)
+              ? raw.toFixed(1)
+              : raw.toFixed(2);
+          }
+        }
 
         if (value) {
           countMap[value] = (countMap[value] || 0) + 1;

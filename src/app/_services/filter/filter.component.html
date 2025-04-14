@@ -34,10 +34,8 @@
         <label class="filter-option-label">
           <input type="checkbox" [checked]="activeFilter.selected.includes(option)"
             (change)="onCheckboxChange(option, $event)">
-          {{ option }}&nbsp;
-          <span *ngIf="activeFilter.countMap && activeFilter.countMap[option] !== undefined">
-            ({{ activeFilter.countMap[option] }})
-          </span>
+          {{ formatRating(option) }}&nbsp;
+          <span>({{ activeFilter.countMap?.[option] ?? 0 }})</span>
         </label>
       </div>
     </div>
