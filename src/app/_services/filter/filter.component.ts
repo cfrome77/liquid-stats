@@ -111,8 +111,17 @@ export class FilterComponent implements OnChanges {
     }
   }
 
-  formatRating(option: string): string {
-    const value = parseFloat(option);
-    return value === 0 ? 'No Rating' : value.toString();
+  formatRating(value: string): string {
+    if (value === '0.0' || value === '0.00') {
+      return 'No Rating';
+    }
+
+    const parsed = parseFloat(value);
+    if (isNaN(parsed)) return value; // fallback just in case
+
+    return Number.isInteger(parsed * 100) && parsed * 10 % 10 === 0
+      ? parsed.toFixed(1)
+      : parsed.toFixed(2);
   }
+
 }

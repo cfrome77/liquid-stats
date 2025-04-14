@@ -34,7 +34,7 @@
         <label class="filter-option-label">
           <input type="checkbox" [checked]="activeFilter.selected.includes(option)"
             (change)="onCheckboxChange(option, $event)">
-          {{ formatRating(option) }}&nbsp;
+          {{ activeFilter.field === 'rating' ? formatRating(option) : option }}&nbsp;
           <span>({{ activeFilter.countMap?.[option] ?? 0 }})</span>
         </label>
       </div>
