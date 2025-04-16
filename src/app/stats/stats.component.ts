@@ -9,6 +9,7 @@ interface FilterField {
   options: string[];
   selected: string[];
   countMap?: { [option: string]: number };
+  type?: 'text' | 'date' | 'number';
 }
 
 @Component({
@@ -29,7 +30,8 @@ export class StatsComponent implements OnInit {
     { field: 'brewery', label: 'Brewery', options: [], selected: [], countMap: {} },
     { field: 'beer_style', label: 'Beer Style', options: [], selected: [], countMap: {} },
     { field: 'country', label: 'Country', options: [], selected: [], countMap: {} },
-    { field: 'rating', label: 'Ratings', options: [], selected: [], countMap: {} }
+    { field: 'rating', label: 'Ratings', options: [], selected: [], countMap: {} },
+    { field: 'date_range', label: 'Date Range', options: [], selected: [], type: 'date' },
   ];
 
   constructor(private http: HttpClient) { }
@@ -45,6 +47,17 @@ export class StatsComponent implements OnInit {
         this.filteredBeers = [...this.beers];
         this.totalItems = this.beers.length;
 
+        // Date range setup
+        const timestamps = this.beers.map(b => new Date(b.first_created_at).getTime());
+        const minDate = moment(Math.min(...timestamps)).format('YYYY-MM-DD');
+        const maxDate = moment().format('YYYY-MM-DD');
+
+        const dateFilter = this.filterFields.find(f => f.field === 'date_range');
+        if (dateFilter) {
+          dateFilter.options = [minDate, maxDate];
+          dateFilter.selected = [minDate, maxDate];
+        }
+
         const quarterPointScale = Array.from({ length: 21 }, (_, i) => (i * 0.25).toFixed(2));
         const tenthPointScale = Array.from({ length: 51 }, (_, i) => (i * 0.1).toFixed(1));
 
@@ -59,9 +72,9 @@ export class StatsComponent implements OnInit {
             : rating.toFixed(2)
         );
 
-        this.filterFields[0].options = this.getUniqueFieldValues('brewery');
-        this.filterFields[1].options = this.getUniqueFieldValues('beer_style');
-        this.filterFields[2].options = this.getUniqueFieldValues('country');
+        this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort((a, b) => a.localeCompare(b));
+        this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort((a, b) => a.localeCompare(b));
+        this.filterFields[2].options = this.getUniqueFieldValues('country').sort((a, b) => a.localeCompare(b));
         this.filterFields[3].options = formattedRatings;
 
         this.updateOptionCounts(formattedRatings);
@@ -96,7 +109,6 @@ export class StatsComponent implements OnInit {
 
   onFilterChange(): void {
     this.applyFilters();
-    // Removed updateDropdownOptions()
   }
 
   public applyFilters(): void {
@@ -104,27 +116,31 @@ export class StatsComponent implements OnInit {
     const selectedStyles = this.filterFields.find(f => f.field === 'beer_style')?.selected || [];
     const selectedCountries = this.filterFields.find(f => f.field === 'country')?.selected || [];
     const selectedRatings = this.filterFields.find(f => f.field === 'rating')?.selected.map(r => parseFloat(r)) || [];
-
+    const dateRange = this.filterFields.find(f => f.field === 'date_range')?.selected || [];
     const searchTermLower = this.searchTerm.toLowerCase();
+    const startDate = moment(dateRange[0], 'YYYY-MM-DD');
+    const endDate = moment(dateRange[1], 'YYYY-MM-DD');
 
+    // Filter beers based on selected filters
     this.filteredBeers = this.beers.filter(beer => {
       const brewery = beer.brewery?.brewery_name || '';
       const style = beer.beer?.beer_style || '';
       const country = beer.brewery?.country_name || '';
       const rating = beer.rating_score || 0;
+      const beerDate = moment(beer.first_created_at);
 
+      // Check if beer matches the filters
       const matchBrewery = selectedBreweries.length === 0 || selectedBreweries.includes(brewery);
       const matchStyle = selectedStyles.length === 0 || selectedStyles.includes(style);
       const matchCountry = selectedCountries.length === 0 || selectedCountries.includes(country);
       const matchRating = selectedRatings.length === 0 || selectedRatings.includes(rating);
-
-      const matchSearch =
-        this.searchTerm === '' ||
+      const matchDate = beerDate.isSameOrAfter(startDate, 'day') && beerDate.isSameOrBefore(endDate, 'day');
+      const matchSearch = this.searchTerm === '' ||
         beer.beer.beer_name.toLowerCase().includes(searchTermLower) ||
         style.toLowerCase().includes(searchTermLower) ||
         brewery.toLowerCase().includes(searchTermLower);
 
-      return matchBrewery && matchStyle && matchCountry && matchRating && matchSearch;
+      return matchBrewery && matchStyle && matchCountry && matchRating && matchDate && matchSearch;
     });
 
     this.totalItems = this.filteredBeers.length;
@@ -167,16 +183,23 @@ export class StatsComponent implements OnInit {
   resetFilters(): void {
     this.searchTerm = '';
 
-    const allBreweries = this.getUniqueFieldValues('brewery');
-    const allStyles = this.getUniqueFieldValues('beer_style');
+    const allBreweries = this.getUniqueFieldValues('brewery').sort((a, b) => a.localeCompare(b));
+    const allStyles = this.getUniqueFieldValues('beer_style').sort((a, b) => a.localeCompare(b));
+    const allCountries = this.getUniqueFieldValues('country').sort((a, b) => a.localeCompare(b));
 
     this.filterFields[0].options = allBreweries;
     this.filterFields[1].options = allStyles;
+    this.filterFields[2].options = allCountries;
 
     this.filterFields[0].selected = [...allBreweries];
     this.filterFields[1].selected = [...allStyles];
-    this.filterFields[2].selected = [];
+    this.filterFields[2].selected = [...allCountries];
     this.filterFields[3].selected = [];
+
+    const dateFilter = this.filterFields.find(f => f.field === 'date_range');
+    if (dateFilter) {
+      dateFilter.selected = [...dateFilter.options];
+    }
 
     setTimeout(() => this.applyFilters(), 0);
   }

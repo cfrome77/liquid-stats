@@ -25,6 +25,7 @@
   z-index: 10000;
   box-sizing: border-box;
   overflow: hidden;
+  word-wrap: break-word;
 }
 
 .modal-header {
@@ -34,12 +35,23 @@
   width: 100%;
   padding: 10px;
   background-color: white;
+  gap: 15px;
 }
 
 .modal-button-container {
   display: flex;
   gap: 15px;
   justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .modal-header {
+    padding: 10px 15px;
+  }
+
+  .modal-button-container {
+    gap: 25px;
+  }
 }
 
 .apply-button {
@@ -99,6 +111,22 @@
 
 .modal-body::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* New style to dynamically adjust width for desktop */
+@media (min-width: 768px) {
+  .modal-content {
+    width: auto;
+    max-width: 80%;
+  }
+
+  .filter-option-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-left: 10px;
+    width: auto;
+  }
 }
 
 .filter-option-label {
