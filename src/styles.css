@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
+
 /* Color Palletes */
 /*Just change the color e.g. $red or $green or define you color as you like....*/
 /* Base Styles */
@@ -18,8 +19,14 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 html,
 body {
+  height: 100%;
   overflow-x: hidden;
 }
 
@@ -205,63 +212,83 @@ mat-card {
 .stars-0:after {
   width: 0%;
 }
+
 .stars-5:after {
   width: 5%;
 }
+
 .stars-10:after {
   width: 10%;
 }
+
 .stars-15:after {
   width: 15%;
 }
+
 .stars-20:after {
   width: 20%;
 }
+
 .stars-25:after {
   width: 25%;
 }
+
 .stars-30:after {
   width: 30%;
 }
+
 .stars-35:after {
   width: 35%;
 }
+
 .stars-40:after {
   width: 40%;
 }
+
 .stars-45:after {
   width: 45%;
 }
+
 .stars-50:after {
   width: 50%;
 }
+
 .stars-55:after {
   width: 55%;
 }
+
 .stars-60:after {
   width: 60%;
 }
+
 .stars-65:after {
   width: 65%;
 }
+
 .stars-70:after {
   width: 70%;
 }
+
 .stars-75:after {
   width: 75%;
 }
+
 .stars-80:after {
   width: 80%;
 }
+
 .stars-85:after {
   width: 85%;
 }
+
 .stars-90:after {
   width: 90%;
 }
+
 .stars-95:after {
   width: 95%;
 }
+
 .stars-100:after {
   width: 100%;
 }
@@ -293,8 +320,7 @@ footer {
 }
 
 .footer-time .checkin-page {
-  background: url("./assets/images/ico_checkin_page.png") no-repeat left top
-    rgba(0, 0, 0, 0);
+  background: url("./assets/images/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
   display: inline-block;
   height: 18px;
   margin-left: 4px;
@@ -403,28 +429,89 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.navbar-color {background-color: #494d50; color: white;}
-.router-link-active {background-color: #414548;}
-.no-border {border-radius: 0px;}
+.navbar-color {
+  background-color: #494d50;
+  color: white;
+}
 
-.toolbar-color {background-color: #616466; color: white;}
+.router-link-active {
+  background-color: #414548;
+}
+
+.no-border {
+  border-radius: 0px;
+}
+
+.toolbar-color {
+  background-color: #616466;
+  color: white;
+}
+
 .center {
   margin-left: auto;
   margin-right: auto;
 }
+
 .v-center {
   margin-top: auto;
   margin-bottom: auto;
 }
 
-.txt-bold {font-weight: bold;}
+.txt-bold {
+  font-weight: bold;
+}
 
-.selected {background-color: gainsboro;}
+.selected {
+  background-color: gainsboro;
+}
+
+/* Custom light-theme section, for datepicker only */
+.light-theme {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.light-theme .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.light-theme .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #3f51b5;
+  border-color: #3f51b5;
+}
+
+.light-theme .mat-form-field-label {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.light-theme .mat-input-element {
+  color: #000;
+}
+
+/* Datepicker popup panel override */
+.light-theme .mat-datepicker-content,
+.light-theme .mat-calendar {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Fix datepicker toggle icon color in light theme */
+.light-theme .mat-datepicker-toggle-default-icon {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+/* Optional: when hovered or focused */
+.light-theme .mat-datepicker-toggle:hover .mat-datepicker-toggle-default-icon,
+.light-theme .mat-datepicker-toggle.mat-focused .mat-datepicker-toggle-default-icon {
+  color: #3f51b5;
+}
 
 /** 
   mobile view
@@ -454,7 +541,7 @@ body {
 }
 
 /* Media Query for Tablets Ipads portrait mode */
-@media (min-width: 768px) and (max-width: 1024px){
+@media (min-width: 768px) and (max-width: 1024px) {
   mat-card {
     background-color: #fff;
     border-radius: 2px;
@@ -466,7 +553,7 @@ body {
 }
 
 /* Media Query for Laptops and Desktops */
-@media (min-width: 1025px) and (max-width: 1280px){
+@media (min-width: 1025px) and (max-width: 1280px) {
   mat-card {
     background-color: #fff;
     border-radius: 2px;
@@ -488,5 +575,3 @@ body {
     width: 50%;
   }
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

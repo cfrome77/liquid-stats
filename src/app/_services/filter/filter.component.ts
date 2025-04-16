@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 export interface FilterField {
   field: string;
@@ -6,6 +7,7 @@ export interface FilterField {
   options: string[];
   selected: string[];
   countMap?: { [option: string]: number };
+  type?: 'text' | 'date' | 'number';
 }
 
 @Component({
@@ -84,6 +86,20 @@ export class FilterComponent implements OnChanges {
   // Emit the current filter changes to the parent component
   onFilterChange() {
     this.filterChanged.emit(this.filterFields);
+  }
+
+  onDateFromChange(event: MatDatepickerInputEvent<Date>) {
+    const date = event.value;
+    if (date && this.activeFilter) {
+      this.activeFilter.selected[0] = date.toISOString().split('T')[0];
+    }
+  }
+
+  onDateToChange(event: MatDatepickerInputEvent<Date>) {
+    const date = event.value;
+    if (date && this.activeFilter) {
+      this.activeFilter.selected[1] = date.toISOString().split('T')[0];
+    }
   }
 
   // Toggle Select/Deselect All options
