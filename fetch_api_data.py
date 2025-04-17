@@ -91,15 +91,20 @@ def get_wishlist():
 def save_data_to_storage(data, filename):
     if ENVIRONMENT == 'aws':
         print(f'saving to {filename} (S3)')
+
         s3.put_object(
             Body=json.dumps(data),
             Bucket=BUCKET_NAME,
-            Key=filename
+            Key=filename,
+            Metadata={
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
+            }
         )
     else:
         print(f'saving to {filename} (local)')
         with open(f'src/assets/{filename}', 'w') as outfile:
             json.dump(data, outfile)
+
 
 def save_beers_to_json(beers):
     save_data_to_storage({'beers': beers}, 'beers.json')

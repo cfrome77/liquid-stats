@@ -43,14 +43,29 @@ export class StatsComponent implements OnInit {
   private fetchBeersData(): void {
     this.getJSON().subscribe((data) => {
       if (data && data.beers && Array.isArray(data.beers)) {
-        this.beers = data.beers;
+        // Use fallback parser for safety
+        const parseDate = (dateStr: string): moment.Moment => {
+          let parsed = moment(dateStr, 'ddd, DD MMM YYYY HH:mm:ss Z', true);
+          if (!parsed.isValid()) parsed = moment(dateStr); // fallback for loose formats
+          return parsed;
+        };
+
+        // Separate invalid ones
+        const validBeers = data.beers.filter((b: { first_created_at: string; }) => parseDate(b.first_created_at).isValid());
+
+        // Sort valid beers by date
+        this.beers = validBeers.sort((a: { first_created_at: string; }, b: { first_created_at: string; }) =>
+          parseDate(b.first_created_at).valueOf() - parseDate(a.first_created_at).valueOf()
+        );
+
+        // Build timestamps
+        const timestamps = this.beers.map(b => parseDate(b.first_created_at).valueOf());
+
         this.filteredBeers = [...this.beers];
         this.totalItems = this.beers.length;
 
-        // Date range setup
-        const timestamps = this.beers.map(b => new Date(b.first_created_at).getTime());
         const minDate = moment(Math.min(...timestamps)).format('YYYY-MM-DD');
-        const maxDate = moment().format('YYYY-MM-DD');
+        const maxDate = moment(Math.max(...timestamps)).format('YYYY-MM-DD');
 
         const dateFilter = this.filterFields.find(f => f.field === 'date_range');
         if (dateFilter) {
@@ -58,9 +73,9 @@ export class StatsComponent implements OnInit {
           dateFilter.selected = [minDate, maxDate];
         }
 
+        // Build ratings list
         const quarterPointScale = Array.from({ length: 21 }, (_, i) => (i * 0.25).toFixed(2));
         const tenthPointScale = Array.from({ length: 51 }, (_, i) => (i * 0.1).toFixed(1));
-
         const combinedRatings = Array.from(new Set([
           ...quarterPointScale.map(val => parseFloat(val)),
           ...tenthPointScale.map(val => parseFloat(val))
@@ -72,15 +87,13 @@ export class StatsComponent implements OnInit {
             : rating.toFixed(2)
         );
 
-        this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort((a, b) => a.localeCompare(b));
-        this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort((a, b) => a.localeCompare(b));
-        this.filterFields[2].options = this.getUniqueFieldValues('country').sort((a, b) => a.localeCompare(b));
+        this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort();
+        this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort();
+        this.filterFields[2].options = this.getUniqueFieldValues('country').sort();
         this.filterFields[3].options = formattedRatings;
 
-        this.updateOptionCounts(formattedRatings);
+        this.updateOptionCounts();
         this.resetFilters();
-      } else {
-        console.error('Invalid data structure:', data);
       }
     });
   }
@@ -118,23 +131,32 @@ export class StatsComponent implements OnInit {
     const selectedRatings = this.filterFields.find(f => f.field === 'rating')?.selected.map(r => parseFloat(r)) || [];
     const dateRange = this.filterFields.find(f => f.field === 'date_range')?.selected || [];
     const searchTermLower = this.searchTerm.toLowerCase();
-    const startDate = moment(dateRange[0], 'YYYY-MM-DD');
-    const endDate = moment(dateRange[1], 'YYYY-MM-DD');
 
-    // Filter beers based on selected filters
+    const startDate = dateRange[0] ? moment(dateRange[0], 'YYYY-MM-DD').startOf('day') : moment('1900-01-01');
+    const endDate = dateRange[1] ? moment(dateRange[1], 'YYYY-MM-DD').endOf('day') : moment().endOf('day');
+
+    // Use same fallback logic from fetchBeersData
+    const parseDate = (dateStr: string): moment.Moment => {
+      let parsed = moment(dateStr, 'ddd, DD MMM YYYY HH:mm:ss Z', true);
+      if (!parsed.isValid()) parsed = moment(dateStr);
+      return parsed;
+    };
+
     this.filteredBeers = this.beers.filter(beer => {
       const brewery = beer.brewery?.brewery_name || '';
       const style = beer.beer?.beer_style || '';
       const country = beer.brewery?.country_name || '';
       const rating = beer.rating_score || 0;
-      const beerDate = moment(beer.first_created_at);
+      const beerDate = parseDate(beer.first_created_at);
 
-      // Check if beer matches the filters
       const matchBrewery = selectedBreweries.length === 0 || selectedBreweries.includes(brewery);
       const matchStyle = selectedStyles.length === 0 || selectedStyles.includes(style);
       const matchCountry = selectedCountries.length === 0 || selectedCountries.includes(country);
       const matchRating = selectedRatings.length === 0 || selectedRatings.includes(rating);
-      const matchDate = beerDate.isSameOrAfter(startDate, 'day') && beerDate.isSameOrBefore(endDate, 'day');
+      const matchDate = beerDate.isValid() &&
+        beerDate.isSameOrAfter(startDate, 'day') &&
+        beerDate.isSameOrBefore(endDate, 'day');
+
       const matchSearch = this.searchTerm === '' ||
         beer.beer.beer_name.toLowerCase().includes(searchTermLower) ||
         style.toLowerCase().includes(searchTermLower) ||
@@ -147,16 +169,20 @@ export class StatsComponent implements OnInit {
     this.updatePaginatedBeers();
   }
 
-  updateOptionCounts(ratingsList: string[]): void {
+  updateOptionCounts(): void {
     this.filterFields.forEach(filter => {
       const countMap: { [option: string]: number } = {};
 
       this.beers.forEach(beer => {
         let value = '';
-        if (filter.field === 'brewery') value = beer.brewery?.brewery_name;
-        else if (filter.field === 'beer_style') value = beer.beer?.beer_style;
-        else if (filter.field === 'country') value = beer.brewery?.country_name;
-        else if (filter.field === 'rating') {
+
+        if (filter.field === 'brewery') {
+          value = beer.brewery?.brewery_name || '';
+        } else if (filter.field === 'beer_style') {
+          value = beer.beer?.beer_style || '';
+        } else if (filter.field === 'country') {
+          value = beer.brewery?.country_name || '';
+        } else if (filter.field === 'rating') {
           const raw = beer.rating_score;
           if (raw !== undefined && raw !== null) {
             value = (Number.isInteger(raw * 100) && raw * 10 % 10 === 0)
@@ -170,9 +196,9 @@ export class StatsComponent implements OnInit {
         }
       });
 
-      ratingsList.forEach(rating => {
-        if (!countMap[rating]) {
-          countMap[rating] = 0;
+      filter.options.forEach(option => {
+        if (!countMap[option]) {
+          countMap[option] = 0;
         }
       });
 
@@ -181,27 +207,19 @@ export class StatsComponent implements OnInit {
   }
 
   resetFilters(): void {
+    this.filterFields.forEach(f => f.selected = []);
     this.searchTerm = '';
+    this.applyFilters();
+  }
 
-    const allBreweries = this.getUniqueFieldValues('brewery').sort((a, b) => a.localeCompare(b));
-    const allStyles = this.getUniqueFieldValues('beer_style').sort((a, b) => a.localeCompare(b));
-    const allCountries = this.getUniqueFieldValues('country').sort((a, b) => a.localeCompare(b));
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.updatePaginatedBeers();
+  }
 
-    this.filterFields[0].options = allBreweries;
-    this.filterFields[1].options = allStyles;
-    this.filterFields[2].options = allCountries;
-
-    this.filterFields[0].selected = [...allBreweries];
-    this.filterFields[1].selected = [...allStyles];
-    this.filterFields[2].selected = [...allCountries];
-    this.filterFields[3].selected = [];
-
-    const dateFilter = this.filterFields.find(f => f.field === 'date_range');
-    if (dateFilter) {
-      dateFilter.selected = [...dateFilter.options];
-    }
-
-    setTimeout(() => this.applyFilters(), 0);
+  changeItemsPerPage(items: number): void {
+    this.itemsPerPage = items;
+    this.updatePaginatedBeers();
   }
 
   updatePaginatedBeers(): void {
@@ -210,17 +228,7 @@ export class StatsComponent implements OnInit {
     this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
   }
 
-  goToPage(page: number): void {
-    this.currentPage = page;
-    this.updatePaginatedBeers();
-  }
-
-  changeItemsPerPage(itemsPerPage: number): void {
-    this.itemsPerPage = itemsPerPage;
-    this.updatePaginatedBeers();
-  }
-
   public published(createdAt: string): string {
-    return moment(Date.parse(createdAt)).format('h:mm A D MMM YYYY');
+    return moment(createdAt, 'ddd, DD MMM YYYY HH:mm:ss Z', true).format('h:mm A D MMM YYYY');
   }
 }
