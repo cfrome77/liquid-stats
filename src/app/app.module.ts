@@ -33,6 +33,7 @@ import { HomeComponent } from "./home/home.component";
 import { PaginationComponent } from './_services/pagination/pagination.component';
 import { FilterComponent } from './_services/filter/filter.component';
 import { ScrollToTopComponent } from './_services/scroll-to-top/scroll-to-top.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
@@ -70,7 +71,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTooltipModule
   ],
   exports: [],
   providers: [MarkerService, PopUpService],
