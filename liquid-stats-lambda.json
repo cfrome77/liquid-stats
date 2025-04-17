@@ -28,6 +28,17 @@
     }
   },
   "Resources": {
+    "MyS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Ref": "S3BucketName"
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    },
     "LambdaExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -55,7 +66,8 @@
               "Statement": [
                 {
                   "Action": [
-                    "s3:GetObject"
+                    "s3:GetObject",
+                    "s3:PutObject"
                   ],
                   "Effect": "Allow",
                   "Resource": {
@@ -103,7 +115,7 @@
             "Ref": "S3Key"
           }
         },
-        "Runtime": "python3.8",
+        "Runtime": "python3.12",
         "MemorySize": 128,
         "Timeout": 60,
         "Environment": {
@@ -113,6 +125,9 @@
             },
             "CLIENT_SECRET": {
               "Ref": "ClientSecret"
+            },
+            "S3_BUCKET_NAME": {
+              "Ref": "S3BucketName"
             },
             "UNTAPPD_USERNAME": {
               "Ref": "Username"
