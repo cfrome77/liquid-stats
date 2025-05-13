@@ -37,6 +37,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RatingComponent } from './shared/components/rating/rating.component';
 import { PoweredByComponent } from './shared/components/powered-by/powered-by.component';
+import { BadgeDialogComponent } from './shared/components/badge-dialog/badge-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { PoweredByComponent } from './shared/components/powered-by/powered-by.co
     ScrollToTopComponent,
     RatingComponent,
     PoweredByComponent,
+    BadgeDialogComponent,
   ],
   imports: [
     BrowserModule,
