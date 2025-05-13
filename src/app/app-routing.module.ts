@@ -2,23 +2,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HomeComponent } from './home/home.component';
-import { CheckinsComponent } from './checkins/checkins.component';
-import { TopbeersComponent } from './topbeers/topbeers.component';
-import { BadgesComponent } from './badges/badges.component';
-import { MapComponent } from './map/map.component';
-import { StatsComponent } from './stats/stats.component';
+import { HomeComponent } from './components/home/home.component';
+import { CheckinsComponent } from './components/checkins/checkins.component';
+import { TopBeersComponent } from './top-beers/top-beers.component';
+import { BadgesComponent } from './components/badges/badges.component';
+import { MapComponent } from './components/map/map.component';
+import { BeerHistoryComponent } from './components/beer-history/beer-history.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
-import { AboutComponent } from './about/about.component';
+import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'checkins', component: CheckinsComponent },
-  { path: 'topbeers', component: TopbeersComponent },
+  { path: 'top-beers', component: TopBeersComponent },
   { path: 'badges', component: BadgesComponent },
   { path: 'map', component: MapComponent, data: { mapId: 'myMap' } },
-  { path: 'stats', component: StatsComponent },
+  { path: 'beer-history', component: BeerHistoryComponent },
   { path: 'wishlist', component: WishlistComponent },
   { path: 'about', component: AboutComponent }
 ];

@@ -1,0 +1,54 @@
+<h1>Beer History</h1>
+
+<!-- Filter Component -->
+<div class="card-container">
+  <mat-card class="white-card">
+    <div class="stats-filter-container-wrapper">
+
+      <!-- All Inline Filter Buttons -->
+      <div class="filter-buttons-container">
+        <!-- Main Filter Fields (Brewery, Style, Country, Ratings) -->
+        <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
+      </div>
+
+      <!-- Search Bar and Reset -->
+      <div class="search-bar-container">
+        <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
+          (input)="onSearchChange()" />
+        <button (click)="resetFilters()" class="reset-button">Reset Filters</button>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Beers List -->
+  <ng-container *ngFor="let beer of paginatedBeers">
+    <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin cf mat-elevation-z0 outline white-card">
+      <mat-card-content class="beer">
+        <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}" />
+        <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}" />
+        <p><strong>{{ beer.beer.beer_name }}</strong></p>
+        <p>{{ beer.beer.beer_style }}</p>
+        <p>{{ beer.brewery?.brewery_name }}</p>
+        <span class="comment" *ngIf="beer.beer.beer_description">{{ beer.beer.beer_description }}</span>
+        <div class="rating-container">
+          <app-rating [ratingScore]="beer.rating_score"></app-rating>
+        </div>
+        <footer>
+          <p class="beerInfo">
+            <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
+          </p>
+          <div class="footer-time">
+            <time>{{ published(beer.recent_created_at) }}</time>
+          </div>
+        </footer>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+  <!-- Pagination -->
+  <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
+    (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
+  </app-pagination>
+</div>
+
+<img class="powered-by" src="../../assets/images/poweredbyuntappd.png" alt="Powered by Untappd API" />
