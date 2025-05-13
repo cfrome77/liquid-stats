@@ -15,7 +15,16 @@
       <span class="comment" *ngIf="beer.beer.beer_description">
         {{ beer.beer.beer_description }}
       </span>
-      <span class="stars-container stars-{{ beer.rating_score * 20 }}">*****</span>
+      <div class="rating-container">
+        <div class="stars" [attr.title]="beer.rating_score">
+          <div class="stars-background">★★★★★</div>
+          <div class="stars-foreground" [style.width.%]="(beer.rating_score / 5) * 100">
+            ★★★★★
+          </div>
+        </div>
+        <span class="rating-number">{{ beer.rating_score }}</span>
+      </div>
+      
       <br />
 
       <span class="overallRating">

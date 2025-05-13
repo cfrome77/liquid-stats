@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MarkerService } from '../_services/marker.service';
-import { MapService } from '../_services/map.service';
+import { MarkerService } from '../../core/services/marker.service';
+import { MapService } from '../../core/services/map.service';
 import * as L from 'leaflet';
 
 const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
