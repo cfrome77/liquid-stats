@@ -5,11 +5,11 @@ import { Observable } from "rxjs";
 import * as moment from "moment";
 
 @Component({
-  selector: "app-topbeers",
-  templateUrl: "./topbeers.component.html",
-  styleUrls: ["./topbeers.component.css"],
+  selector: "app-top-beers",
+  templateUrl: "./top-beers.component.html",
+  styleUrls: ["./top-beers.component.css"],
 })
-export class TopbeersComponent implements OnInit {
+export class TopBeersComponent implements OnInit {
   public beers: any;
 
   constructor(private http: HttpClient) {

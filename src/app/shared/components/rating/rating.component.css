@@ -1,0 +1,64 @@
+.stars {
+    position: relative;
+    display: inline-block;
+    font-size: 2.5em;
+    line-height: 1;
+    font-family: 'Courier New', Courier, monospace;
+    width: 5ch;
+    height: 1em;
+    vertical-align: middle;
+}
+
+.stars-background,
+.stars-foreground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.stars-background {
+    color: lightgray;
+    z-index: 1;
+}
+
+.stars-foreground {
+    color: gold;
+    z-index: 2;
+    overflow: hidden;
+    width: 0%;
+    transition: width 0.3s ease-out;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+/* Ensure the rating number is hidden by default */
+.rating-number {
+    font-size: 14pt;
+    color: #333;
+    display: none;
+    vertical-align: middle;
+}
+
+/* Show rating number when hovering */
+.stars-container:hover+.rating-number {
+    display: inline-block;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .rating-number {
+        display: inline-block;
+    }
+}
+
+@media (max-width: 480px) {
+    .stars {
+        font-size: 2em;
+    }
+}

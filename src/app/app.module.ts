@@ -1,8 +1,8 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
-import { MarkerService } from './_services/marker.service';
-import { PopUpService } from './_services/pop-up.service';
+import { MarkerService } from './core/services/marker.service';
+import { PopUpService } from './core/services/pop-up.service';
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { MatMenuModule } from "@angular/material/menu";
@@ -22,34 +22,36 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { CheckinsComponent } from "./checkins/checkins.component";
-import { TopbeersComponent } from "./topbeers/topbeers.component";
-import { BadgesComponent } from "./badges/badges.component";
+import { CheckinsComponent } from "./components/checkins/checkins.component";
+import { TopBeersComponent } from "./top-beers/top-beers.component";
+import { BadgesComponent } from "./components/badges/badges.component";
 import { WishlistComponent } from "./wishlist/wishlist.component";
-import { MapComponent } from "./map/map.component";
-import { StatsComponent } from './stats/stats.component';
-import { AboutComponent } from "./about/about.component";
-import { HomeComponent } from "./home/home.component";
-import { PaginationComponent } from './_services/pagination/pagination.component';
-import { FilterComponent } from './_services/filter/filter.component';
-import { ScrollToTopComponent } from './_services/scroll-to-top/scroll-to-top.component';
+import { MapComponent } from "./components/map/map.component";
+import { BeerHistoryComponent } from './components/beer-history/beer-history.component';
+import { AboutComponent } from "./components/about/about.component";
+import { HomeComponent } from "./components/home/home.component";
+import { PaginationComponent } from './shared/components/pagination/pagination.component';
+import { FilterComponent } from './shared/components/filter/filter.component';
+import { ScrollToTopComponent } from './shared/components/scroll-to-top/scroll-to-top.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { RatingComponent } from './shared/components/rating/rating.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CheckinsComponent,
-    TopbeersComponent,
+    TopBeersComponent,
     BadgesComponent,
     WishlistComponent,
     MapComponent,
-    StatsComponent,
+    BeerHistoryComponent,
     AboutComponent,
     HomeComponent,
     PaginationComponent,
     FilterComponent,
     ScrollToTopComponent,
+    RatingComponent,
   ],
   imports: [
     BrowserModule,
