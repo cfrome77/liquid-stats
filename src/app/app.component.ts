@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Overlay } from "@angular/cdk/overlay";
-import { AboutComponent } from "./about/about.component";
+import { AboutComponent } from "./components/about/about.component";
 import { routes } from './app-routing.module';
 
 @Component({

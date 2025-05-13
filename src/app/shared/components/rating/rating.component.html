@@ -1,0 +1,9 @@
+<div class="rating-container">
+    <div class="stars" [attr.title]="ratingScore">
+        <div class="stars-background">★★★★★</div>
+        <div class="stars-foreground" [style.width.%]="starPercentage">
+            ★★★★★
+        </div>
+    </div>
+    <span class="rating-number">{{ ratingScore }}</span>
+</div>

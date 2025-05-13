@@ -1,4 +1,4 @@
-<h1>Beer Statistics</h1>
+<h1>Beer History</h1>
 
 <!-- Filter Component -->
 <div class="card-container">
@@ -30,7 +30,9 @@
         <p>{{ beer.beer.beer_style }}</p>
         <p>{{ beer.brewery?.brewery_name }}</p>
         <span class="comment" *ngIf="beer.beer.beer_description">{{ beer.beer.beer_description }}</span>
-        <span class="stars-container stars-{{ beer.rating_score * 20 }}" title="{{ beer.rating_score }}">*****</span>
+        <div class="rating-container">
+          <app-rating [ratingScore]="beer.rating_score"></app-rating>
+        </div>
         <footer>
           <p class="beerInfo">
             <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
