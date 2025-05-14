@@ -107,11 +107,6 @@ mat-card {
   object-fit: cover;
 }
 
-.powered-by {
-  display: block;
-  margin: 0 auto 15px;
-}
-
 .user,
 .checkin {
   margin-bottom: 15px;

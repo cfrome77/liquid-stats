@@ -1,0 +1,13 @@
+<div class="badge-dialog-container">
+    <div class="badge-header">
+        <h2 mat-dialog-title>{{ data.badge_name }}</h2>
+        <img [src]="data.badge_image.md" [alt]="data.badge_name" class="badge-image" />
+    </div>
+    <mat-dialog-content>
+        <p class="description">{{ data.badge_description }}</p>
+        <p class="date">Awarded: {{ data.created_at | date:'medium' }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</div>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { MatDialog } from '@angular/material/dialog';
+import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge-dialog.component';
 
 import * as moment from "moment";
 
@@ -12,7 +14,7 @@ import * as moment from "moment";
 export class CheckinsComponent implements OnInit {
   public checkins: any;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private dialog: MatDialog) {
     this.getJSON().subscribe((data) => {
       this.checkins = data.response.checkins.items;
     });
@@ -26,5 +28,12 @@ export class CheckinsComponent implements OnInit {
 
   public published(createAt: string) {
     return moment(Date.parse(createAt)).format("h:mm A D MMM YYYY");
+  }
+
+  openBadgeDialog(badge: any): void {
+    this.dialog.open(BadgeDialogComponent, {
+      width: '400px',
+      data: badge
+    });
   }
 }

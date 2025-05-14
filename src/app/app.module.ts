@@ -23,9 +23,9 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { CheckinsComponent } from "./components/checkins/checkins.component";
-import { TopBeersComponent } from "./top-beers/top-beers.component";
+import { TopBeersComponent } from "./components/top-beers/top-beers.component";
 import { BadgesComponent } from "./components/badges/badges.component";
-import { WishlistComponent } from "./wishlist/wishlist.component";
+import { WishlistComponent } from "./components/wishlist/wishlist.component";
 import { MapComponent } from "./components/map/map.component";
 import { BeerHistoryComponent } from './components/beer-history/beer-history.component';
 import { AboutComponent } from "./components/about/about.component";
@@ -36,6 +36,8 @@ import { ScrollToTopComponent } from './shared/components/scroll-to-top/scroll-t
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RatingComponent } from './shared/components/rating/rating.component';
+import { PoweredByComponent } from './shared/components/powered-by/powered-by.component';
+import { BadgeDialogComponent } from './shared/components/badge-dialog/badge-dialog.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +54,8 @@ import { RatingComponent } from './shared/components/rating/rating.component';
     FilterComponent,
     ScrollToTopComponent,
     RatingComponent,
+    PoweredByComponent,
+    BadgeDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -18,9 +18,9 @@
       <app-rating [ratingScore]="checkin.rating_score"></app-rating>
     </div>
     <mat-chip-list class="chip" selectable="false">
-      <mat-chip #chipList *ngFor="let badge of checkin.badges.items">
+      <mat-chip *ngFor="let badge of checkin.badges.items" (click)="openBadgeDialog(badge)">
         <mat-chip-avatar>
-          <img class="avatar-image" src="{{ badge.badge_image.sm }}" alt="badge" />
+          <img class="avatar-image" [src]="badge.badge_image.sm" alt="badge" />
         </mat-chip-avatar>
         {{ badge.badge_name }}
       </mat-chip>
@@ -53,4 +53,5 @@
     </footer>
   </mat-card-content>
 </mat-card>
-<img class="powered-by" src="../../../assets/images/poweredbyuntappd.png" alt="Powered by Untappd API" />
+<!-- Powered by Untappd image -->
+<app-powered-by></app-powered-by>
