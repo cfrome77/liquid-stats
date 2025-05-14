@@ -97,8 +97,15 @@ mat-card {
 }
 
 .chip {
-  float: left;
-  clear: left;
+  margin-bottom: 0;
+}
+
+.meta-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .avatar-image {
@@ -182,7 +189,6 @@ mat-card {
 footer {
   border-top: 1px solid #eee;
   clear: both;
-  margin-top: 18px;
   padding-top: 8px;
 }
 
@@ -254,16 +260,6 @@ footer {
   text-overflow: ellipsis;
   width: 230px;
   white-space: nowrap;
-  text-decoration: none;
-}
-
-.social {
-  float: right;
-  font-size: 16px;
-}
-
-.social a {
-  color: #a9a9a9;
   text-decoration: none;
 }
 

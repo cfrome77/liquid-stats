@@ -38,6 +38,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RatingComponent } from './shared/components/rating/rating.component';
 import { PoweredByComponent } from './shared/components/powered-by/powered-by.component';
 import { BadgeDialogComponent } from './shared/components/badge-dialog/badge-dialog.component';
+import { SocialLinksComponent } from './shared/components/social-links/social-links.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { BadgeDialogComponent } from './shared/components/badge-dialog/badge-dia
     RatingComponent,
     PoweredByComponent,
     BadgeDialogComponent,
+    SocialLinksComponent,
   ],
   imports: [
     BrowserModule,
