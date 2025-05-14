@@ -17,21 +17,17 @@
     <div class="rating-container">
       <app-rating [ratingScore]="checkin.rating_score"></app-rating>
     </div>
-    <mat-chip-list class="chip" selectable="false">
-      <mat-chip *ngFor="let badge of checkin.badges.items" (click)="openBadgeDialog(badge)">
-        <mat-chip-avatar>
-          <img class="avatar-image" [src]="badge.badge_image.sm" alt="badge" />
-        </mat-chip-avatar>
-        {{ badge.badge_name }}
-      </mat-chip>
-    </mat-chip-list>
-    <span class="social"><a href="{{ checkin.brewery.contact.url }}" target="_blank" alt="website"
-        title="website">Website</a>
-      |
-      <a href="{{ checkin.brewery.contact.facebook }}" target="_blank" alt="facebook" title="facebook">facebook</a>
-      |
-      <a href="http://instagram.com/{{ checkin.brewery.contact.instagram }}" target="_blank" alt="instagram"
-        title="instagram">Instagram</a></span>
+    <div class="meta-bar">
+      <mat-chip-list class="chip" selectable="false">
+        <mat-chip *ngFor="let badge of checkin.badges.items" (click)="openBadgeDialog(badge)">
+          <mat-chip-avatar>
+            <img class="avatar-image" [src]="badge.badge_image.sm" alt="badge" />
+          </mat-chip-avatar>
+          {{ badge.badge_name }}
+        </mat-chip>
+      </mat-chip-list>
+      <app-social-links [contact]="checkin.brewery.contact"></app-social-links>
+    </div>
     <footer>
       <p class="location" *ngIf="checkin.venue; else elseBlock">
         <a href="https://untappd.com/venue/{{ checkin.venue.venue_id }}" target="_blank"
