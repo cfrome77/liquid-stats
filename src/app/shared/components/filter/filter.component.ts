@@ -22,6 +22,8 @@ export class FilterComponent implements OnChanges {
   activeFilter: FilterField | null = null;
   isModalOpen: boolean = false;
 
+  ngOnInit(): void { }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['filterFields'] && this.filterFields) {
       this.filterFields.forEach(filter => {

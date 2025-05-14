@@ -1,0 +1,20 @@
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: #a9a9a9;
+    text-decoration: none;
+    margin-bottom: 0;
+}
+
+.social-links a {
+    color: #a9a9a9;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.social-links mat-icon {
+    font-size: 24px;
+}
