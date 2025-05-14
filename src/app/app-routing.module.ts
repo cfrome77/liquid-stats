@@ -4,11 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
 import { CheckinsComponent } from './components/checkins/checkins.component';
-import { TopBeersComponent } from './top-beers/top-beers.component';
+import { TopBeersComponent } from './components/top-beers/top-beers.component';
 import { BadgesComponent } from './components/badges/badges.component';
 import { MapComponent } from './components/map/map.component';
 import { BeerHistoryComponent } from './components/beer-history/beer-history.component';
-import { WishlistComponent } from './wishlist/wishlist.component';
+import { WishlistComponent } from './components/wishlist/wishlist.component';
 import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
