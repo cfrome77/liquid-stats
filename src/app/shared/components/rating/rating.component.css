@@ -7,9 +7,17 @@
     margin-bottom: 10px;
 }
 
-.svg-stars {
-    display: flex;
-    align-items: center;
+.rating-container.unrated {
+    justify-content: flex-start;
+}
+
+.rating-number {
+    font-size: 1.25em;
+    color: #333;
+    display: inline-block;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1;
 }
 
 .star {
@@ -19,19 +27,11 @@
     flex-shrink: 0;
 }
 
-.star polygon {
-    stroke: #aaa;
-    stroke-width: 0.5;
-}
-
-.rating-number {
-    font-size: 1.25em;
-    color: #333;
-    display: inline-block;
-    white-space: nowrap;
+.svg-stars {
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
     flex-shrink: 0;
-    vertical-align: middle;
-    margin-left: 0.5rem;
 }
 
 /* Extra small devices (phones <480px) */
