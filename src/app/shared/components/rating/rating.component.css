@@ -30,7 +30,7 @@
 .svg-stars {
     display: flex;
     align-items: center;
-    margin-right: 0.5rem; /* add spacing between stars and number */
+    margin-right: 0.5rem;
     flex-shrink: 0;
 }
 
@@ -55,19 +55,6 @@
 
     .rating-number {
         font-size: 1.1em;
-        font-size: 1.1em;
-    }
-}
-
-/* Medium devices (tablets/laptops <1024px) */
-@media (max-width: 1024px) {
-    .star {
-        width: 2.1em;
-        height: 2.1em;
-    }
-
-    .rating-number {
-        font-size: 1.2em;
     }
 }
 
