@@ -1,37 +1,3 @@
-.stars {
-    position: relative;
-    display: inline-block;
-    font-size: 2.5em;
-    line-height: 1;
-    font-family: 'Courier New', Courier, monospace;
-    width: 5ch;
-    height: 1em;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-.stars-background,
-.stars-foreground {
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-.stars-background {
-    color: lightgray;
-    z-index: 1;
-}
-
-.stars-foreground {
-    color: gold;
-    z-index: 2;
-    overflow: hidden;
-    width: 0%;
-    transition: width 0.3s ease-out;
-}
-
 .rating-container {
     display: flex;
     justify-content: space-between;
@@ -41,7 +7,23 @@
     margin-bottom: 10px;
 }
 
-/* Rating number styling */
+.svg-stars {
+    display: flex;
+    align-items: center;
+}
+
+.star {
+    width: 2.2em;
+    height: 2.2em;
+    margin-right: 0.1em;
+    flex-shrink: 0;
+}
+
+.star polygon {
+    stroke: #aaa;
+    stroke-width: 0.5;
+}
+
 .rating-number {
     font-size: 1.25em;
     color: #333;
@@ -52,20 +34,38 @@
     margin-left: 0.5rem;
 }
 
-/* Show rating number when hovering */
-.stars-container:hover+.rating-number {
-    display: inline-block;
-    opacity: 1;
-}
+/* Extra small devices (phones <480px) */
+@media (max-width: 480px) {
+    .star {
+        width: 1.8em;
+        height: 1.8em;
+    }
 
-@media (hover: none) and (pointer: coarse) {
     .rating-number {
-        display: inline-block;
+        font-size: 1em;
     }
 }
 
-@media (max-width: 480px) {
-    .stars {
-        font-size: 2em;
+/* Small to medium devices (phones/phablets <768px) */
+@media (max-width: 768px) {
+    .star {
+        width: 2em;
+        height: 2em;
+    }
+
+    .rating-number {
+        font-size: 1.1em;
+    }
+}
+
+/* Medium devices (tablets/laptops <1024px) */
+@media (max-width: 1024px) {
+    .star {
+        width: 2.1em;
+        height: 2.1em;
+    }
+
+    .rating-number {
+        font-size: 1.2em;
     }
 }
