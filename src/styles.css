@@ -108,6 +108,11 @@ mat-card {
   margin-bottom: 10px;
 }
 
+.overallRating {
+  float: left;
+  clear: left;
+}
+
 .avatar-image {
   width: inherit;
   height: inherit;

@@ -1,19 +1,25 @@
-<div class="rating-container">
-    <div class="svg-stars" [attr.title]="ratingScore">
-        <ng-container *ngFor="let fill of starFills; let i = index">
-            <svg viewBox="0 0 24 24" class="star" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <clipPath [attr.id]="'clip-star-' + i">
-                        <rect x="0" y="0" [attr.width]="(fill / 100) * 24" height="24" />
-                    </clipPath>
-                </defs>
-                <!-- Star background (empty) -->
-                <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="lightgray" />
-                <!-- Star foreground (filled portion) -->
-                <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="gold"
-                    [attr.clip-path]="'url(#clip-star-' + i + ')'" />
-            </svg>
-        </ng-container>
-    </div>
-    <span class="rating-number">Rating: <strong>{{ ratingScore }}</strong></span>
+<div class="rating-container" [class.has-stars]="hasRating">
+    <ng-container *ngIf="hasRating; else noRating">
+        <div class="svg-stars" [attr.title]="ratingScore">
+            <ng-container *ngFor="let fill of starFills; let i = index">
+                <svg viewBox="0 0 24 24" class="star" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <clipPath [attr.id]="'clip-star-' + uniqueId + '-' + i">
+                            <rect x="0" y="0" [attr.width]="((fill || 0) / 100) * 24" height="24" />
+                        </clipPath>
+                    </defs>
+                    <!-- Star background -->
+                    <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="lightgray" />
+                    <!-- Star foreground -->
+                    <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="gold"
+                        [attr.clip-path]="'url(#clip-star-' + uniqueId + '-' + i + ')'" />
+                </svg>
+            </ng-container>
+        </div>
+        <span class="rating-number">Rating: <strong>{{ ratingScore }}</strong></span>
+    </ng-container>
+
+    <ng-template #noRating>
+        <span class="rating-number" title="Not yet rated">Rating: <strong>N/A</strong></span>
+    </ng-template>
 </div>
