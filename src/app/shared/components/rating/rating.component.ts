@@ -6,27 +6,34 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./rating.component.css']
 })
 export class RatingComponent {
-  @Input() ratingScore: number = 0;
+  @Input() ratingScore: number | null = null;
+
+  // Unique ID to avoid clipPath conflicts across component instances
+  uniqueId = Math.random().toString(36).substring(2, 9);
+
+  get hasRating(): boolean {
+    return typeof this.ratingScore === 'number' && this.ratingScore >= 0.1;
+  }
 
   get starFills(): number[] {
+    if (!this.hasRating) {
+      return [];
+    }
+
     const fills: number[] = [];
 
     for (let i = 0; i < 5; i++) {
       const starValue = i + 1;
-      if (this.ratingScore >= starValue) {
+      if (this.ratingScore! >= starValue) {
         fills.push(100); // full star
-      } else if (this.ratingScore + 1 > starValue) {
-        const rawFill = (this.ratingScore - i) * 100;
-
-        // Clamp fill to a min of 15% if greater than 0
-        const visibleFill = rawFill > 0 && rawFill < 15 ? 15 : rawFill < 100 && rawFill > 85 ? 85 : rawFill;
-
-        fills.push(Math.round(visibleFill));
+      } else if (this.ratingScore! + 1 > starValue) {
+        const fill = (this.ratingScore! - i) * 100;
+        fills.push(Math.round(fill));
       } else {
-        fills.push(0);
+        fills.push(0); // empty star
       }
     }
-    
+
     return fills;
   }
 }
