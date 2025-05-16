@@ -1,7 +1,7 @@
 .rating-container {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* change to baseline if you want tighter alignment */
+    align-items: center;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -55,6 +55,19 @@
 
     .rating-number {
         font-size: 1.1em;
+        font-size: 1.1em;
+    }
+}
+
+/* Medium devices (tablets/laptops <1024px) */
+@media (max-width: 1024px) {
+    .star {
+        width: 2.1em;
+        height: 2.1em;
+    }
+
+    .rating-number {
+        font-size: 1.2em;
     }
 }
 
