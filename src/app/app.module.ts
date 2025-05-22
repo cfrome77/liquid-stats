@@ -10,7 +10,10 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -72,7 +75,10 @@ import { SocialLinksComponent } from './shared/components/social-links/social-li
     MatCardModule,
     MatChipsModule,
     MatDialogModule,
+    MatRadioModule,
     MatSidenavModule,
+    MatSelectModule,
+    MatOptionModule,
     FlexLayoutModule,
     MatDividerModule,
     MatCheckboxModule,
