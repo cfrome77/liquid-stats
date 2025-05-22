@@ -15,18 +15,14 @@
       <span class="comment" *ngIf="list_item.beer.beer_description">
         {{ list_item.beer.beer_description }}
       </span>
-      <br />
-
-      <span class="overallRating">
-        <div *ngIf="
-            list_item.beer.rating_score == 0;
-            then thenBlock;
-            else elseBlock
-          "></div>
-        <ng-template #thenBlock>Overall rating: n/a</ng-template>
-        <ng-template #elseBlock>Overall rating: {{ list_item.beer.rating_score }}</ng-template>
-      </span>
-      <app-social-links [contact]="beer.brewery.contact"></app-social-links>
+      <div class="meta-bar">
+        <span class="overallRating">
+          <div *ngIf="list_item.beer.rating_score == 0; then thenBlock; else elseBlock"></div>
+          <ng-template #thenBlock>Overall rating: n/a</ng-template>
+          <ng-template #elseBlock>Overall rating: {{ list_item.beer.rating_score }}</ng-template>
+        </span>
+        <app-social-links [contact]="list_item.brewery.contact"></app-social-links>
+      </div>
       <footer>
         <p class="beerInfo">
           <a href="https://untappd.com/b/{{ list_item.beer.beer_slug }}/{{
