@@ -3,6 +3,8 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import * as moment from "moment";
 
+type DateRangeOption = { label: string; daysBack?: number; year?: number };
+
 @Component({
   selector: "app-top-beers",
   templateUrl: "./top-beers.component.html",
@@ -12,23 +14,18 @@ export class TopBeersComponent implements OnInit {
   public beers: any[] = [];
   public filteredBeers: any[] = [];
 
-  // Predefined range dropdown
-  public dateRangeOptions = [
+  public dateRangeOptions: DateRangeOption[] = [
     { label: "Last 30 days", daysBack: 30 },
     { label: "Last 60 days", daysBack: 60 },
     { label: "Last 90 days", daysBack: 90 },
     { label: "Last 6 months", daysBack: 180 },
-    { label: "Last year", daysBack: 365 },
-    { label: "2025", year: 2025 },
-    { label: "2024", year: 2024 },
-    { label: "2023", year: 2023 }
+    { label: "Last year", daysBack: 365 }
   ];
 
   public topXOptions = [5, 10, 15, 20];
   public minCheckinOptions = [1, 3, 5, 10];
 
-  // Defaults
-  public selectedRange = this.dateRangeOptions[0];
+  public selectedRange: DateRangeOption = this.dateRangeOptions[0];
   public topX = 10;
   public minCheckins = 3;
 
@@ -38,10 +35,22 @@ export class TopBeersComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.addYearOptions(2018);
     this.getJSON().subscribe((data) => {
       this.beers = data.beers;
-      this.applyFilters(); // Default on load
+      this.applyFilters();
     });
+  }
+
+  private addYearOptions(startYear: number): void {
+    const currentYear = new Date().getFullYear();
+    const years: DateRangeOption[] = [];
+
+    for (let year = currentYear; year >= startYear; year--) {
+      years.push({ label: `${year}`, year });
+    }
+
+    this.dateRangeOptions.push(...years);
   }
 
   public getJSON(): Observable<any> {
@@ -57,10 +66,12 @@ export class TopBeersComponent implements OnInit {
 
     if (this.useCustomDate && this.customStartDate) {
       cutoffDate = moment(this.customStartDate);
-    } else if (this.selectedRange.year) {
+    } else if (this.selectedRange?.year !== undefined) {
       cutoffDate = moment(`${this.selectedRange.year}-01-01`);
-    } else {
+    } else if (this.selectedRange?.daysBack !== undefined) {
       cutoffDate = moment().subtract(this.selectedRange.daysBack, "days");
+    } else {
+      cutoffDate = moment().subtract(30, "days"); // fallback
     }
 
     this.filteredBeers = this.beers
