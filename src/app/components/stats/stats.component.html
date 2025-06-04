@@ -1,53 +1,45 @@
-<h1>Beer Statistics</h1>
+<div class="stats-container">
+  <h2>Your Beer Statistics</h2>
 
-<!-- Filter Component -->
-<div class="card-container">
-  <mat-card class="white-card">
-    <div class="stats-filter-container-wrapper">
+  <div class="filters">
+    <label for="date-range">Date Range:</label>
+    <select [formControl]="dateRange" (change)="onDateChange()">
+      <option value="week">Last Week</option>
+      <option value="month">Last Month</option>
+      <option value="year">Last Year</option>
+      <option value="all">All Time</option>
+      <option value="custom">Custom</option>
+    </select>
 
-      <!-- All Inline Filter Buttons -->
-      <div class="filter-buttons-container">
-        <!-- Main Filter Fields (Brewery, Style, Country, Ratings) -->
-        <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
-      </div>
-
-      <!-- Search Bar and Reset -->
-      <div class="search-bar-container">
-        <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
-          (input)="onSearchChange()" />
-        <button (click)="resetFilters()" class="reset-button">Reset Filters</button>
-      </div>
+    <div *ngIf="dateRange.value === 'custom'" class="custom-date-range">
+      <input type="date" [formControl]="customStartDate" (change)="onDateChange()" placeholder="Start Date" />
+      <input type="date" [formControl]="customEndDate" (change)="onDateChange()" placeholder="End Date" />
     </div>
-  </mat-card>
+  </div>
 
-  <!-- Beers List -->
-  <ng-container *ngFor="let beer of paginatedBeers">
-    <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin cf mat-elevation-z0 outline white-card">
-      <mat-card-content class="beer">
-        <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}" />
-        <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}" />
-        <p><strong>{{ beer.beer.beer_name }}</strong></p>
-        <p>{{ beer.beer.beer_style }}</p>
-        <p>{{ beer.brewery?.brewery_name }}</p>
-        <span class="comment" *ngIf="beer.beer.beer_description">{{ beer.beer.beer_description }}</span>
-        <span class="stars-container stars-{{ beer.rating_score * 20 }}" title="{{ beer.rating_score }}">*****</span>
-        <footer>
-          <p class="beerInfo">
-            <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
-          </p>
-          <div class="footer-time">
-            <time>{{ published(beer.recent_created_at) }}</time>
-          </div>
-        </footer>
-      </mat-card-content>
-    </mat-card>
-  </ng-container>
+  <div class="stats-cards" *ngIf="processedStats">
+    <div class="card">Total Unique Beers: {{ processedStats.totalUniqueBeers }}</div>
+    <div class="card">Total Check-ins: {{ processedStats.totalCheckins }}</div>
+    <div class="card">New Beers Count: {{ processedStats.newBeersCount }}</div>
+    <div class="card">New Beer Ratio: {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%</div>
+    <div class="card">Average Rating: {{ processedStats.averageRating.toFixed(2) }}</div>
+    <div class="card short-card">Total Unique Breweries: {{ processedStats.totalUniqueBreweries }}</div>
 
-  <!-- Pagination -->
-  <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
-    (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
-  </app-pagination>
+    <div class="card beer-styles-breakdown">
+      Beer Styles Breakdown
+      <ul>
+        <ng-container *ngFor="let style of beerStylesList()">
+          <li *ngIf="processedStats.beerStylesCount[style] > 0" class="clickable"
+            [title]="style + ': ' + processedStats.beerStylesCount[style]" (click)="openBeerStyleDialog(style)">
+            <span class="style-name">{{ style }}</span>
+            <span class="style-count">{{ processedStats.beerStylesCount[style] }}</span>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+
+  <div class="charts">
+    <p>Charts and visualizations will go here...</p>
+  </div>
 </div>
-
-<!-- Powered by Untappd image -->
-<app-powered-by></app-powered-by>

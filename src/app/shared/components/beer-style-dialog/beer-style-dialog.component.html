@@ -1,0 +1,23 @@
+<h2 mat-dialog-title style="margin-bottom: 16px;">{{ data.styleName }}</h2>
+
+<div mat-dialog-content style="max-height: 400px; overflow-y: auto;">
+    <ul style="padding-left: 0; list-style-type: none;">
+        <li *ngFor="let beer of data.beers" style="margin-bottom: 10px;">
+            <div style="display: flex; align-items: center;">
+                <img [src]="beer.beerLabel" [alt]="beer.beerName"
+                    style="width: 50px; height: 50px; margin-right: 10px; object-fit: cover;" />
+                <div>
+                    <strong>{{ beer.beerName }}</strong><br />
+                    <strong>{{ beer.breweryName }}</strong><br />
+                    <small>ABV: {{ beer.beerABV }}%</small><br />
+                    <small>Rating: {{ beer.rating }}/5</small><br />
+                    <small>Date: {{ beer.checkInDate }}</small>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+</div>

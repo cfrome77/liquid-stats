@@ -1,155 +1,164 @@
-/* General Styling */
-p {
+/* Container for stats section */
+.stats-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Filters section */
+.filters {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Date input styles */
+.filters input[type="date"] {
+  max-width: 200px;
+}
+
+/* Grid layout for stats cards */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  overflow: visible;
+}
+
+/* Base card style */
+.card {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #000;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  transition: all 0.2s ease;
+}
+
+/* Subtle hover effect on cards */
+.card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Align short card to the top */
+.short-card {
+  align-self: start;
+}
+
+/* Beer styles breakdown card */
+.card.beer-styles-breakdown {
+  overflow: visible;
   color: black;
-  margin: 0 !important;
-  font-size: 16px;
+  text-align: left;
+  font-size: 0.95rem;
 }
 
-h1 {
-  color: white;
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 20px;
+/* Heading inside beer styles breakdown card */
+.card.beer-styles-breakdown h3 {
+  color: black;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  text-align: left;
 }
 
-.card-container {
-  margin-top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+/* List container inside beer styles breakdown card */
+.card.beer-styles-breakdown ul {
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  color: black;
+  scroll-behavior: smooth;
 }
 
-/* Styling for the White Cards */
-.white-card {
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  box-shadow: none;
-  margin: 10px auto;
-  width: 95%;
-  max-width: 800px;
-  padding: 15px;
-  text-align: center;
-  border-radius: 8px;
+/* Custom scrollbar styling for WebKit browsers */
+.card.beer-styles-breakdown ul::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Stats Filter Container Wrapper */
-.stats-filter-container-wrapper {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 10px;
+.card.beer-styles-breakdown ul::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
-/* Brewery and Beer Style Buttons */
-.filter-buttons-container {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding-bottom: 10px;
+.card.beer-styles-breakdown ul::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
-/* Search Bar and Reset Button */
-.search-bar-container {
+/* List items inside beer styles breakdown card */
+.card.beer-styles-breakdown li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.search-bar {
-  flex-grow: 1;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.style-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
-/* Reset Button Styling */
-.reset-button {
-  padding: 10px 15px;
-  font-size: 14px;
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
+.style-count {
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Tooltip on truncated list items */
+.card.beer-styles-breakdown li:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  background: #333;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  white-space: normal;
+  z-index: 10;
+  width: max-content;
+  max-width: 200px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Accessible focus style for keyboard navigation */
+.card.beer-styles-breakdown li:focus {
+  outline: 2px solid #2684ff;
+  outline-offset: 2px;
+}
+
+.clickable {
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background 0.2s;
 }
 
-.reset-button:hover {
-  background-color: #cc0000;
+.clickable:hover {
+  background-color: #f0f0f0;
 }
 
-/* Beer Card Styling */
-.checkin {
-  background-color: #fafafa;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.beer-label,
-.brewery-label {
-  max-height: 150px;
-  width: auto;
-  max-width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-/* Pagination Controls */
-app-pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  width: 100%;
-}
-
-/* Footer Styling */
-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-footer .beerInfo a {
-  color: #1976d2;
-  text-decoration: none;
-}
-
-footer .beerInfo a:hover {
-  text-decoration: underline;
-}
-
-footer .footer-time {
-  font-size: 12px;
-  color: #777;
-}
-
-/* Mobile Adjustments */
+/* Responsive font sizing */
 @media (max-width: 600px) {
-  .filter-buttons-container {
-    flex-direction: column;
-    align-items: flex-start;
+
+  .card,
+  .card.beer-styles-breakdown {
+    font-size: 0.9rem;
   }
 
-  .search-bar-container {
-    flex-direction: column;
-    align-items: stretch;
+  .card.beer-styles-breakdown h3 {
+    font-size: 1.1rem;
   }
+}
 
-  .search-bar {
-    width: 100%;
-  }
-
-  .reset-button {
-    width: 100%;
-  }
+/* Charts placeholder section */
+.charts {
+  margin-top: 2rem;
+  text-align: center;
 }
