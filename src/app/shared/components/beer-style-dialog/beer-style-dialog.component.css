@@ -1,34 +1,83 @@
 ::ng-deep .mat-dialog-container {
   background-color: #1e1e1e;
   color: white;
+  padding: 24px;
 }
 
 h2 {
   color: white;
 }
 
-strong {
-  color: white;
+small {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.beer-style-dialog-container {
-    max-width: 600px;
+.dialog-content-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+  -webkit-overflow-scrolling: touch;
 }
 
-.beer-list-scroll {
-    max-height: 400px;
-    overflow-y: auto;
+.beer-list {
+  padding-left: 0;
+  list-style-type: none;
+  margin: 0;
 }
 
 .beer-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.beer-item img {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    object-fit: cover;
+.beer-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.beer-label-img {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  margin-right: 8px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.beer-details-container {
+  flex-grow: 1;
+}
+
+.beer-name-bold,
+.brewery-name-bold {
+  color: white;
+  display: block;
+  font-size: 0.95em;
+  margin-bottom: 0px;
+}
+
+.beer-stats-compact {
+  line-height: 1.2;
+}
+
+.beer-stats-compact small {
+  display: inline;
+  line-height: normal;
+  margin-right: 5px;
+  white-space: nowrap;
+  font-size: 0.8em;
+}
+
+.beer-stats-compact small:last-child {
+  margin-right: 0;
+}
+
+.no-beers-message {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
 }

@@ -23,6 +23,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -92,7 +93,8 @@ import { BeerStyleDialogComponent } from './shared/components/beer-style-dialog/
     MatDatepickerModule,
     MatNativeDateModule,
     MatTooltipModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgChartsModule
   ],
   exports: [],
   providers: [MarkerService, PopUpService],
