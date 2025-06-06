@@ -21,7 +21,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -31,6 +33,7 @@ import { BadgesComponent } from "./components/badges/badges.component";
 import { WishlistComponent } from "./components/wishlist/wishlist.component";
 import { MapComponent } from "./components/map/map.component";
 import { BeerHistoryComponent } from './components/beer-history/beer-history.component';
+import { StatsComponent } from './components/stats/stats.component';
 import { AboutComponent } from "./components/about/about.component";
 import { HomeComponent } from "./components/home/home.component";
 import { PaginationComponent } from './shared/components/pagination/pagination.component';
@@ -42,6 +45,7 @@ import { RatingComponent } from './shared/components/rating/rating.component';
 import { PoweredByComponent } from './shared/components/powered-by/powered-by.component';
 import { BadgeDialogComponent } from './shared/components/badge-dialog/badge-dialog.component';
 import { SocialLinksComponent } from './shared/components/social-links/social-links.component';
+import { BeerStyleDialogComponent } from './shared/components/beer-style-dialog/beer-style-dialog.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +56,7 @@ import { SocialLinksComponent } from './shared/components/social-links/social-li
     WishlistComponent,
     MapComponent,
     BeerHistoryComponent,
+    StatsComponent,
     AboutComponent,
     HomeComponent,
     PaginationComponent,
@@ -61,6 +66,7 @@ import { SocialLinksComponent } from './shared/components/social-links/social-li
     PoweredByComponent,
     BadgeDialogComponent,
     SocialLinksComponent,
+    BeerStyleDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +92,9 @@ import { SocialLinksComponent } from './shared/components/social-links/social-li
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ReactiveFormsModule,
+    NgChartsModule
   ],
   exports: [],
   providers: [MarkerService, PopUpService],

@@ -81,3 +81,6 @@ venv/
 *.rar
 *.tar
 *.zip
+
+# Local JSON data
+src/assets/beer.json
