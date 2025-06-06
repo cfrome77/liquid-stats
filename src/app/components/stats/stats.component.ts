@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { FormControl } from '@angular/forms';
 import * as moment from 'moment';
-
-interface FilterField {
-  field: string;
-  label: string;
-  options: string[];
-  selected: string[];
-  countMap?: { [option: string]: number };
-  type?: 'text' | 'date' | 'number';
-}
+import { StatsService } from './stats.service';
+import { BeerCheckin, ProcessedStats } from './stats.model';
+import { BeerStyleDialogComponent, GenericBeersDialogData } from '../../shared/components/beer-style-dialog/beer-style-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ChartData } from 'chart.js';
 
 @Component({
   selector: 'app-stats',
@@ -18,217 +13,349 @@ interface FilterField {
   styleUrls: ['./stats.component.css']
 })
 export class StatsComponent implements OnInit {
-  public beers: any[] = [];
-  public filteredBeers: any[] = [];
-  public paginatedBeers: any[] = [];
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
-  public totalItems: number = 0;
-  public searchTerm: string = '';
+  beers: BeerCheckin[] = [];
+  processedStats: ProcessedStats | null = null;
 
-  public filterFields: FilterField[] = [
-    { field: 'brewery', label: 'Brewery', options: [], selected: [], countMap: {} },
-    { field: 'beer_style', label: 'Beer Style', options: [], selected: [], countMap: {} },
-    { field: 'country', label: 'Country', options: [], selected: [], countMap: {} },
-    { field: 'rating', label: 'Ratings', options: [], selected: [], countMap: {} },
-    { field: 'date_range', label: 'Date Range', options: [], selected: [], type: 'date' },
-  ];
+  dateRange = new FormControl('year');
+  customStartDate = new FormControl(moment().subtract(1, 'year').format('YYYY-MM-DD'));
+  customEndDate = new FormControl(moment().format('YYYY-MM-DD'));
 
-  constructor(private http: HttpClient) { }
+  hourChartLabels: string[] = Array.from({ length: 24 }, (_, i) => i.toString());
+  hourChartData: ChartData<'bar', number[], string> = {
+    labels: this.hourChartLabels,
+    datasets: [
+      {
+        label: 'Check-ins by Hour',
+        data: [],
+        backgroundColor: 'rgba(63,81,181,0.8)'
+      }
+    ]
+  };
+
+  recentActivityChartLabels: string[] = [];
+  recentActivityChartData?: ChartData<'line', number[], string>;
+  checkinsByDayLabels: string[] = [];
+  dayChartData: ChartData<'bar'> = { labels: [], datasets: [] };
+  monthChartData: ChartData<'bar'> = { labels: [], datasets: [] };
+  ratingChartData: ChartData<'line'> = { labels: [], datasets: [] };
+
+  chartOptions = { responsive: true, maintainAspectRatio: false };
+
+  objectKeys = Object.keys;
+
+  constructor(private statsService: StatsService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.fetchBeersData();
+    this.loadBeerData();
+    this.dateRange.valueChanges.subscribe(() => this.onDateChange());
+    this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
+    this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
   }
 
-  private fetchBeersData(): void {
-    this.getJSON().subscribe((data) => {
-      if (data && data.beers && Array.isArray(data.beers)) {
-        // Use fallback parser for safety
-        const parseDate = (dateStr: string): moment.Moment => {
-          let parsed = moment(dateStr, 'ddd, DD MMM YYYY HH:mm:ss Z', true);
-          if (!parsed.isValid()) parsed = moment(dateStr); // fallback for loose formats
-          return parsed;
-        };
-
-        // Separate invalid ones
-        const validBeers = data.beers.filter((b: { first_created_at: string; }) => parseDate(b.first_created_at).isValid());
-
-        // Sort valid beers by date
-        this.beers = validBeers.sort((a: { first_created_at: string; }, b: { first_created_at: string; }) =>
-          parseDate(b.first_created_at).valueOf() - parseDate(a.first_created_at).valueOf()
-        );
-
-        // Build timestamps
-        const timestamps = this.beers.map(b => parseDate(b.first_created_at).valueOf());
-
-        this.filteredBeers = [...this.beers];
-        this.totalItems = this.beers.length;
-
-        const minDate = moment(Math.min(...timestamps)).format('YYYY-MM-DD');
-        const maxDate = moment(Math.max(...timestamps)).format('YYYY-MM-DD');
-
-        const dateFilter = this.filterFields.find(f => f.field === 'date_range');
-        if (dateFilter) {
-          dateFilter.options = [minDate, maxDate];
-          dateFilter.selected = [minDate, maxDate];
-        }
-
-        // Build ratings list
-        const quarterPointScale = Array.from({ length: 21 }, (_, i) => (i * 0.25).toFixed(2));
-        const tenthPointScale = Array.from({ length: 51 }, (_, i) => (i * 0.1).toFixed(1));
-        const combinedRatings = Array.from(new Set([
-          ...quarterPointScale.map(val => parseFloat(val)),
-          ...tenthPointScale.map(val => parseFloat(val))
-        ])).sort((a, b) => a - b);
-
-        const formattedRatings = combinedRatings.map(rating =>
-          Number.isInteger(rating * 100) && rating * 10 % 10 === 0
-            ? rating.toFixed(1)
-            : rating.toFixed(2)
-        );
-
-        this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort();
-        this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort();
-        this.filterFields[2].options = this.getUniqueFieldValues('country').sort();
-        this.filterFields[3].options = formattedRatings;
-
-        this.updateOptionCounts();
-        this.resetFilters();
-      }
+  loadBeerData(): void {
+    this.statsService.loadBeerData().subscribe((data: BeerCheckin[]) => {
+      this.beers = data;
+      this.onDateChange();
     });
   }
 
-  public getJSON(): Observable<any> {
-    return this.http.get('https://liquid-stats.s3.amazonaws.com/beers.json');
-  }
+  onDateChange(): void {
+    try { // ADDED: try-catch block to catch any runtime errors
+      if (!this.beers || this.beers.length === 0) {
+        console.warn('No beers loaded yet.');
+        this.processedStats = null;
+        this.clearChartData();
+        return;
+      }
 
-  private getUniqueFieldValues(field: string): string[] {
-    let values: string[] = [];
+      const rangeType = this.dateRange.value;
+      let rangeStart: Date;
+      let rangeEnd: Date;
 
-    if (field === 'brewery') {
-      values = this.beers.map(beer => beer.brewery?.brewery_name).filter(Boolean);
-    } else if (field === 'beer_style') {
-      values = this.beers.map(beer => beer.beer?.beer_style).filter(Boolean);
-    } else if (field === 'country') {
-      values = this.beers.map(beer => beer.brewery?.country_name).filter(Boolean);
+      if (rangeType === 'custom') {
+        if (!this.customStartDate.value || !this.customEndDate.value) {
+          console.warn('Custom dates are missing');
+          this.processedStats = null;
+          this.clearChartData();
+          return;
+        }
+        rangeStart = new Date(this.customStartDate.value);
+        rangeEnd = new Date(this.customEndDate.value);
+      } else {
+        const now = new Date();
+        switch (rangeType) {
+          case 'week':
+            rangeStart = moment(now).subtract(7, 'days').toDate();
+            rangeEnd = now;
+            break;
+          case 'month':
+            rangeStart = moment(now).subtract(1, 'month').toDate();
+            rangeEnd = now;
+            break;
+          case 'year':
+            rangeStart = moment(now).subtract(1, 'year').toDate();
+            rangeEnd = now;
+            break;
+          case 'all':
+          default:
+            rangeStart = new Date('2000-01-01');
+            rangeEnd = now;
+            break;
+        }
+      }
+
+      const stats = this.statsService.computeStats(this.beers, rangeStart, rangeEnd);
+
+      this.processedStats = {
+        totalUniqueBeers: stats.totalUniqueBeers ?? 0,
+        totalCheckins: stats.totalCheckins ?? 0,
+        newBeersCount: stats.newBeersCount ?? 0,
+        newBeerRatio: stats.newBeerRatio ?? 0,
+        averageRating: stats.averageRating ?? 0,
+        totalUniqueBreweries: stats.totalUniqueBreweries ?? 0,
+        beerStylesCount: stats.beerStylesCount ?? {},
+        topBeers: stats.topBeers ?? [],
+        topCountries: stats.topCountries ?? {},
+        topStates: stats.topStates ?? {},
+        recentActivityByDate: stats.recentActivityByDate ?? [],
+        checkinsByHour: stats.checkinsByHour ?? [],
+        checkinsByDay: stats.checkinsByDay ?? [],
+        checkinsByDayOfWeek: stats.checkinsByDayOfWeek ?? [],
+        checkinsByMonth: stats.checkinsByMonth ?? [],
+        averageRatingsOverTime: stats.averageRatingsOverTime ?? []
+      };
+
+      console.log('*** ProcessedStats after assignment:', this.processedStats); // ADDED LOG
+
+      // Chart: Check-ins by Hour
+      this.hourChartData = {
+        labels: this.hourChartLabels,
+        datasets: [
+          {
+            data: this.processedStats.checkinsByHour,
+            label: 'Check-ins by Hour',
+            backgroundColor: 'rgba(63,81,181,0.8)'
+          }
+        ]
+      };
+      console.log('hourChartData after assignment:', this.hourChartData); // ADDED LOG
+
+      // Chart: Recent Activity (Line Chart)
+      this.recentActivityChartLabels = this.processedStats.recentActivityByDate.map(d => d.date);
+      this.recentActivityChartData = {
+        labels: this.recentActivityChartLabels,
+        datasets: [
+          {
+            data: this.processedStats.recentActivityByDate.map(d => d.count),
+            label: 'Beers Checked In',
+            fill: false,
+            borderColor: 'rgba(255,235,59,0.9)',
+            tension: 0.3
+          }
+        ]
+      };
+      console.log('recentActivityChartData after assignment:', this.recentActivityChartData); // ADDED LOG
+
+      // Chart: Check-ins by Day (Bar Chart, last 7 days)
+      this.checkinsByDayLabels = this.generateLastNDaysLabels(7);
+      const checkinsCountByDayMap = new Map(
+        this.processedStats.checkinsByDay.map(d => [d.date, d.count])
+      );
+      const checkinsData = this.checkinsByDayLabels.map(label => {
+        const labelDate = moment(label, 'MMM D').year(moment().year()).format('YYYY-MM-DD');
+        return checkinsCountByDayMap.get(labelDate) || 0;
+      });
+
+      // Chart: Check-ins by Day of Week
+      const dayOfWeekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayOfWeekCounts = new Array(7).fill(0);
+
+      this.processedStats.checkinsByDayOfWeek?.forEach(item => {
+        const index = dayOfWeekLabels.indexOf(item.day);
+        if (index !== -1) {
+          dayOfWeekCounts[index] = item.count;
+        }
+      });
+
+      this.dayChartData = {
+        labels: dayOfWeekLabels,
+        datasets: [
+          {
+            data: dayOfWeekCounts,
+            label: 'Check-ins by Day of Week',
+            backgroundColor: 'rgba(255,167,38,0.8)'
+          }
+        ]
+      };
+      console.log('dayChartData after assignment:', this.dayChartData); // ADDED LOG
+
+      // Chart: Check-ins by Month
+      const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthCounts = new Array(12).fill(0);
+
+      this.processedStats.checkinsByMonth?.forEach(item => {
+        const index = monthLabels.indexOf(item.month);
+        if (index !== -1) {
+          monthCounts[index] = item.count;
+        }
+      });
+
+      this.monthChartData = {
+        labels: monthLabels,
+        datasets: [
+          {
+            data: monthCounts,
+            label: 'Check-ins by Month',
+            backgroundColor: 'rgba(171,71,188,0.8)'
+          }
+        ]
+      };
+      console.log('monthChartData after assignment:', this.monthChartData); // ADDED LOG
+
+      // Chart: Average Ratings Over Time
+      this.ratingChartData = {
+        labels: this.processedStats.averageRatingsOverTime?.map(item => item.date) || [],
+        datasets: [
+          {
+            data: this.processedStats.averageRatingsOverTime?.map(item => item.rating) || [],
+            label: 'Average Rating',
+            fill: false,
+            borderColor: 'rgba(255,82,82,0.9)',
+            tension: 0.2
+          }
+        ]
+      };
+      console.log('ratingChartData after assignment:', this.ratingChartData); // ADDED LOG
+
+    } catch (error) {
+      console.error("!!! Error in onDateChange:", error); // Log any errors that occur
+      this.processedStats = null; // Clear stats to indicate an issue
+      this.clearChartData();      // Clear charts
     }
-
-    return [...new Set(values)];
   }
 
-  onSearchChange(): void {
-    this.applyFilters();
+  generateLastNDaysLabels(days: number): string[] {
+    const labels: string[] = [];
+    for (let i = days - 1; i >= 0; i--) {
+      labels.push(moment().subtract(i, 'days').format('MMM D'));
+    }
+    return labels;
   }
 
-  onFilterChange(): void {
-    this.applyFilters();
+  private clearChartData(): void {
+    this.hourChartData = { labels: this.hourChartLabels, datasets: [{ label: 'Check-ins by Hour', data: [], backgroundColor: 'rgba(63,81,181,0.8)' }] };
+    this.recentActivityChartLabels = [];
+    this.recentActivityChartData = undefined;
+    this.checkinsByDayLabels = [];
+    this.dayChartData = { labels: [], datasets: [] };
+    this.monthChartData = { labels: [], datasets: [] };
+    this.ratingChartData = { labels: [], datasets: [] };
   }
 
-  public applyFilters(): void {
-    const selectedBreweries = this.filterFields.find(f => f.field === 'brewery')?.selected || [];
-    const selectedStyles = this.filterFields.find(f => f.field === 'beer_style')?.selected || [];
-    const selectedCountries = this.filterFields.find(f => f.field === 'country')?.selected || [];
-    const selectedRatings = this.filterFields.find(f => f.field === 'rating')?.selected.map(r => parseFloat(r)) || [];
-    const dateRange = this.filterFields.find(f => f.field === 'date_range')?.selected || [];
-    const searchTermLower = this.searchTerm.toLowerCase();
 
-    const startDate = dateRange[0] ? moment(dateRange[0], 'YYYY-MM-DD').startOf('day') : moment('1900-01-01');
-    const endDate = dateRange[1] ? moment(dateRange[1], 'YYYY-MM-DD').endOf('day') : moment().endOf('day');
+  beerStylesList(): string[] {
+    return Object.keys(this.processedStats?.beerStylesCount || {}).sort(
+      (a, b) => this.processedStats!.beerStylesCount[b] - this.processedStats!.beerStylesCount[a]
+    );
+  }
 
-    // Use same fallback logic from fetchBeersData
-    const parseDate = (dateStr: string): moment.Moment => {
-      let parsed = moment(dateStr, 'ddd, DD MMM YYYY HH:mm:ss Z', true);
-      if (!parsed.isValid()) parsed = moment(dateStr);
-      return parsed;
+  getStartDate(): Date | null {
+    const range = this.dateRange.value;
+    const now = new Date();
+
+    switch (range) {
+      case 'week': return moment(now).subtract(7, 'days').toDate();
+      case 'month': return moment(now).subtract(1, 'month').toDate();
+      case 'year': return moment(now).subtract(1, 'year').toDate();
+      case 'custom': return this.customStartDate.value ? new Date(this.customStartDate.value) : null;
+      case 'all':
+      default:
+        return null;
+    }
+  }
+
+  getEndDate(): Date | null {
+    const range = this.dateRange.value;
+    return (range === 'custom' && this.customEndDate.value)
+      ? new Date(this.customEndDate.value)
+      : new Date();
+  }
+
+  private openGenericBeersDialog(title: string, filteredBeers: BeerCheckin[]): void {
+    const dialogData: GenericBeersDialogData = {
+      title: title,
+      beers: filteredBeers.map(b => ({
+        beerName: b.beer.beer_name,
+        beerLabel: b.beer.beer_label || 'https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png',
+        breweryName: b.brewery.brewery_name,
+        beerABV: b.beer.beer_abv,
+        rating: b.rating_score,
+        checkInDate: b.recent_created_at ? new Date(b.recent_created_at).toLocaleString() : 'Unknown Date'
+      }))
     };
 
-    this.filteredBeers = this.beers.filter(beer => {
-      const brewery = beer.brewery?.brewery_name || '';
-      const style = beer.beer?.beer_style || '';
-      const country = beer.brewery?.country_name || '';
-      const rating = beer.rating_score || 0;
-      const beerDate = parseDate(beer.first_created_at);
-
-      const matchBrewery = selectedBreweries.length === 0 || selectedBreweries.includes(brewery);
-      const matchStyle = selectedStyles.length === 0 || selectedStyles.includes(style);
-      const matchCountry = selectedCountries.length === 0 || selectedCountries.includes(country);
-      const matchRating = selectedRatings.length === 0 || selectedRatings.includes(rating);
-      const matchDate = beerDate.isValid() &&
-        beerDate.isSameOrAfter(startDate, 'day') &&
-        beerDate.isSameOrBefore(endDate, 'day');
-
-      const matchSearch = this.searchTerm === '' ||
-        beer.beer.beer_name.toLowerCase().includes(searchTermLower) ||
-        style.toLowerCase().includes(searchTermLower) ||
-        brewery.toLowerCase().includes(searchTermLower);
-
-      return matchBrewery && matchStyle && matchCountry && matchRating && matchDate && matchSearch;
-    });
-
-    this.totalItems = this.filteredBeers.length;
-    this.updatePaginatedBeers();
-  }
-
-  updateOptionCounts(): void {
-    this.filterFields.forEach(filter => {
-      const countMap: { [option: string]: number } = {};
-
-      this.beers.forEach(beer => {
-        let value = '';
-
-        if (filter.field === 'brewery') {
-          value = beer.brewery?.brewery_name || '';
-        } else if (filter.field === 'beer_style') {
-          value = beer.beer?.beer_style || '';
-        } else if (filter.field === 'country') {
-          value = beer.brewery?.country_name || '';
-        } else if (filter.field === 'rating') {
-          const raw = beer.rating_score;
-          if (raw !== undefined && raw !== null) {
-            value = (Number.isInteger(raw * 100) && raw * 10 % 10 === 0)
-              ? raw.toFixed(1)
-              : raw.toFixed(2);
-          }
-        }
-
-        if (value) {
-          countMap[value] = (countMap[value] || 0) + 1;
-        }
-      });
-
-      filter.options.forEach(option => {
-        if (!countMap[option]) {
-          countMap[option] = 0;
-        }
-      });
-
-      filter.countMap = countMap;
+    this.dialog.open(BeerStyleDialogComponent, {
+      data: dialogData,
+      width: '350px',
+      maxHeight: '80vh'
     });
   }
 
-  resetFilters(): void {
-    this.filterFields.forEach(f => f.selected = []);
-    this.searchTerm = '';
-    this.applyFilters();
+  openBeersByStyle(style: string) {
+    const startDate = this.getStartDate();
+    const endDate = this.getEndDate();
+    const normalizeStyle = (s: string): string => s.trim().toLowerCase();
+
+    const filteredBeers = this.beers.filter(b => {
+      const beerStyle = normalizeStyle(b.beer.beer_style);
+      const selectedStyle = normalizeStyle(style);
+      const checkInDate = new Date(b.recent_created_at);
+
+      return (
+        beerStyle === selectedStyle &&
+        (!startDate || !endDate || (checkInDate >= startDate && checkInDate <= endDate))
+      );
+    });
+
+    this.openGenericBeersDialog(`Beers with Style: ${style}`, filteredBeers);
   }
 
-  goToPage(page: number): void {
-    this.currentPage = page;
-    this.updatePaginatedBeers();
+  openBeersByTopBeer(beerName: string): void {
+    const startDate = this.getStartDate();
+    const endDate = this.getEndDate();
+
+    const filteredBeers = this.beers.filter(b => {
+      const checkInDate = new Date(b.recent_created_at);
+      return b.beer.beer_name === beerName &&
+        (!startDate || !endDate || (checkInDate >= startDate && checkInDate <= endDate));
+    });
+
+    this.openGenericBeersDialog(`All Check-ins for: ${beerName}`, filteredBeers);
   }
 
-  changeItemsPerPage(items: number): void {
-    this.itemsPerPage = items;
-    this.updatePaginatedBeers();
+  openBeersByCountry(country: string): void {
+    const startDate = this.getStartDate();
+    const endDate = this.getEndDate();
+
+    const filteredBeers = this.beers.filter(b => {
+      const checkInDate = new Date(b.recent_created_at);
+      return b.brewery.country_name === country &&
+        (!startDate || !endDate || (checkInDate >= startDate && checkInDate <= endDate));
+    });
+
+    this.openGenericBeersDialog(`Beers from: ${country}`, filteredBeers);
   }
 
-  updatePaginatedBeers(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
-  }
+  openBeersByState(state: string): void {
+    const startDate = this.getStartDate();
+    const endDate = this.getEndDate();
 
-  public published(createdAt: string): string {
-    return moment(createdAt, 'ddd, DD MMM YYYY HH:mm:ss Z', true).format('h:mm A D MMM YYYY');
+    const filteredBeers = this.beers.filter(b => {
+      const checkInDate = new Date(b.recent_created_at);
+      return b.brewery.location.brewery_state === state &&
+        (!startDate || !endDate || (checkInDate >= startDate && checkInDate <= endDate));
+    });
+
+    this.openGenericBeersDialog(`Beers from: ${state}`, filteredBeers);
   }
 }
