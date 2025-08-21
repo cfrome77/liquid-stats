@@ -1,0 +1,208 @@
+/* General Styling */
+p {
+  color: black;
+  margin: 0 !important;
+  font-size: 16px;
+}
+
+h1 {
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.card-container {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Styling for the White Cards */
+.white-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  margin: 10px auto;
+  width: 95%;
+  max-width: 800px;
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+/* Stats Filter Container Wrapper */
+.stats-filter-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Brewery and Beer Style Buttons */
+.filter-buttons-container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+}
+
+/* Search Bar and Reset Button */
+.search-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.search-bar {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Reset Button Styling */
+.reset-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+  background-color: #cc0000;
+}
+
+/* Beer Card Styling */
+.checkin {
+  background-color: #fafafa;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.beer-label,
+.brewery-label {
+  max-height: 150px;
+  width: auto;
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Pagination Controls */
+app-pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* NEW: Fix for beer name color */
+.beer strong {
+  color: black;
+}
+
+/* New container for social links and map link */
+.social-and-map-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Updated meta-bar to be a flex container without the top border */
+.meta-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-top: none;
+}
+
+/* Ensure the overall rating is black */
+.overallRating {
+  color: black;
+}
+
+/* NEW: Fix for overall rating color */
+.overallRating strong {
+  color: black !important;
+}
+
+/* Style for the new 'View on Map' link to match the social icons */
+.view-on-map-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #3f51b5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.view-on-map-link mat-icon {
+  font-size: 24px;
+}
+
+/* Footer Styling */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.beerInfo {
+  float: none;
+  clear: none;
+}
+
+.beerInfo a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.beerInfo a:hover {
+  text-decoration: underline;
+}
+
+.footer-time {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+  .filter-buttons-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-bar-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .reset-button {
+    width: 100%;
+  }
+}
