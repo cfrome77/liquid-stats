@@ -10,24 +10,16 @@ import "leaflet.markercluster";
 })
 export class MarkerService {
 
-  private beersUrl: string = 'https://liquid-stats.s3.amazonaws.com/beers.json';
-  public markers!: L.MarkerClusterGroup;
+  beers: string = 'https://liquid-stats.s3.amazonaws.com/beers.json';
 
-  constructor(private http: HttpClient, private popupService: PopUpService) { }
+  constructor(private http: HttpClient,
+    private popupService: PopUpService) { }
 
-  /**
-   * Create brewery markers on the map.
-   */
-  public makeBreweryMarkers(map: L.Map, markerIcon: L.Icon, filteredBeers?: any[]): void {
-    if (this.markers) {
-      this.markers.clearLayers();
-    }
-    this.markers = L.markerClusterGroup();
-
+  makeBreweryMarkers(map: L.Map, markerIcon: L.Icon): void {
+    const markers = L.markerClusterGroup();
     const breweryCounts: Record<string, {
       lat: number;
       lon: number;
-      id: string;
       name: string;
       city: string;
       state: string;
@@ -44,13 +36,10 @@ export class MarkerService {
       }[];
     }> = {};
 
-    this.http.get(this.beersUrl).subscribe((res: any) => {
-      const beersList = filteredBeers && filteredBeers.length ? filteredBeers : res.beers;
-
-      for (const beer of beersList) {
+    this.http.get(this.beers).subscribe((res: any) => {
+      for (const beer of res.beers) {
         const lat = beer.brewery.location.lat;
         const lon = beer.brewery.location.lng;
-        const breweryId = beer.brewery.brewery_id;
         const breweryName = beer.brewery.brewery_name;
         const breweryCity = beer.brewery.location.brewery_city;
         const breweryState = beer.brewery.location.brewery_state;
@@ -65,14 +54,14 @@ export class MarkerService {
         const checkInDate = beer.recent_created_at ? new Date(beer.recent_created_at).toLocaleString() : 'Unknown Date';
         const count = beer.count || 1;
 
-        // Use the actual brewery_id as the key
-        const uniqueKey = `${breweryId}`;
+        // Create a unique key based on brewery name, lat, and lon
+        const uniqueKey = `${breweryName}-${lat}-${lon}`;
 
+        // If the brewery doesn't exist yet, create an entry for it
         if (!breweryCounts[uniqueKey]) {
           breweryCounts[uniqueKey] = {
             lat,
             lon,
-            id: breweryId,
             name: breweryName,
             city: breweryCity,
             state: breweryState,
@@ -81,6 +70,7 @@ export class MarkerService {
           };
         }
 
+        // Add check-in information for this brewery
         breweryCounts[uniqueKey].checkIns.push({
           beerName,
           beerLabel,
@@ -93,23 +83,24 @@ export class MarkerService {
         });
       }
 
-      // Create markers
+      // Now create markers based on the counts
       for (const key in breweryCounts) {
-        const { lat, lon, name, city, state, logo, checkIns, id } = breweryCounts[key];
+        const { lat, lon, name, city, state, logo, checkIns } = breweryCounts[key];
 
+        // Calculate total check-ins for the brewery
         const totalCheckIns = checkIns.length;
 
+        // Create a scrollable list of check-ins
         const checkInsList = checkIns.map(checkIn => {
+          // Use the count variable from the data
           const beerCheckInCount = checkIn.count;
-          // Updated to handle missing beer name data
-          const displayedBeerName = checkIn.beerName || 'Name not available'; 
-          
+
           return `
             <li style="color: black; list-style-type: none; margin-bottom: 10px;">
               <div style="display: flex; align-items: center;">
-                <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
+                <img src="${checkIn.beerLabel}" alt="${checkIn.beerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
                 <div style="color: black;">
-                  <strong style="color: black;">${displayedBeerName}${beerCheckInCount > 1 ? ` (${beerCheckInCount})` : ''}</strong><br>
+                  <strong>${checkIn.beerName}${beerCheckInCount > 1 ? ` (${beerCheckInCount})` : ''}</strong><br>
                   <small>Style: ${checkIn.beerStyle}</small><br>
                   <small>ABV: ${checkIn.beerABV}%</small><br>
                   <small>Rating: ${checkIn.rating}/5</small><br>
@@ -140,20 +131,13 @@ export class MarkerService {
 
         const popup = L.popup().setContent(popupContent);
 
-        const marker = L.marker([lat, lon], { icon: markerIcon }) as any;
-        marker.breweryId = id;
+        const marker = L.marker([lat, lon], { icon: markerIcon });
         marker.bindPopup(popup);
-        this.markers.addLayer(marker);
+        markers.addLayer(marker);
       }
 
-      this.markers.addTo(map);
+      // Add all markers to the map after processing
+      markers.addTo(map);
     });
-  }
-
-  /**
-   * Find a marker by its breweryId
-   */
-  public getMarkerByBreweryId(breweryId: string): L.Marker | undefined {
-    return this.markers.getLayers().find((m: any) => m.breweryId === breweryId) as L.Marker;
   }
 }

@@ -1,0 +1,71 @@
+.rating-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.rating-container.unrated {
+    justify-content: flex-start;
+}
+
+.rating-number {
+    font-size: 1.25em;
+    color: #333;
+    display: inline-block;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.star {
+    width: 2.2em;
+    height: 2.2em;
+    margin-right: 0.1em;
+    flex-shrink: 0;
+}
+
+.svg-stars {
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Extra small devices (phones <480px) */
+@media (max-width: 480px) {
+    .star {
+        width: 1.8em;
+        height: 1.8em;
+    }
+
+    .rating-number {
+        font-size: 1em;
+    }
+}
+
+/* Small to medium devices (phones/phablets <768px) */
+@media (max-width: 768px) {
+    .star {
+        width: 2em;
+        height: 2em;
+    }
+
+    .rating-number {
+        font-size: 1.1em;
+    }
+}
+
+/* Medium devices (tablets/laptops <1024px) */
+@media (max-width: 1024px) {
+    .star {
+        width: 2.1em;
+        height: 2.1em;
+    }
+
+    .rating-number {
+        font-size: 1.2em;
+    }
+}

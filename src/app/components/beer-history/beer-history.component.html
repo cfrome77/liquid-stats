@@ -1,13 +1,17 @@
 <h1>Beer History</h1>
 
+<!-- Filter Component -->
 <div class="card-container">
   <mat-card class="white-card">
     <div class="stats-filter-container-wrapper">
 
+      <!-- All Inline Filter Buttons -->
       <div class="filter-buttons-container">
+        <!-- Main Filter Fields (Brewery, Style, Country, Ratings) -->
         <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
       </div>
 
+      <!-- Search Bar and Reset -->
       <div class="search-bar-container">
         <input type="text" class="search-bar" placeholder="Search beers..." [(ngModel)]="searchTerm"
           (input)="onSearchChange()" />
@@ -16,6 +20,7 @@
     </div>
   </mat-card>
 
+  <!-- Beers List -->
   <ng-container *ngFor="let beer of paginatedBeers">
     <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin cf mat-elevation-z0 outline white-card">
       <mat-card-content class="beer">
@@ -34,14 +39,7 @@
             <ng-template #thenBlock>Overall rating: n/a</ng-template>
             <ng-template #elseBlock>Overall rating: {{ beer.beer.rating_score }}</ng-template>
           </span>
-          <div class="social-and-map-container">
-            <app-social-links [contact]="beer.brewery.contact"></app-social-links>
-            <a [routerLink]="['/map']"
-              [queryParams]="{ lat: beer.brewery?.location?.lat, lng: beer.brewery?.location?.lng, breweryId: beer.brewery?.brewery_id }"
-              class="view-on-map-link">
-              <mat-icon>map</mat-icon>
-            </a>
-          </div>
+          <app-social-links [contact]="beer.brewery.contact"></app-social-links>
         </div>
         <footer>
           <p class="beerInfo">
@@ -55,9 +53,11 @@
     </mat-card>
   </ng-container>
 
+  <!-- Pagination -->
   <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
     (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
   </app-pagination>
 </div>
 
+<!-- Powered by Untappd image -->
 <app-powered-by></app-powered-by>

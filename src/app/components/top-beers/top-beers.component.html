@@ -1,0 +1,96 @@
+<h1 style="color: white">Top {{ topX }} Beers</h1>
+
+<!-- Filters -->
+<!-- Toggle between range and custom -->
+<div style="display: flex; justify-content: center; margin-bottom: 10px;">
+  <mat-radio-group [(ngModel)]="useCustomDate" (change)="onFilterChange()">
+    <mat-radio-button [value]="false" style="margin-right: 20px;">
+      Predefined Range
+    </mat-radio-button>
+    <mat-radio-button [value]="true">
+      Custom Start Date
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
+
+<!-- Filters -->
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 20px;">
+  <!-- Predefined Range -->
+  <mat-form-field appearance="outline" *ngIf="!useCustomDate">
+    <mat-label style="color: white">Time Range</mat-label>
+    <mat-select [(ngModel)]="selectedRange" (selectionChange)="onFilterChange()">
+      <mat-option *ngFor="let option of dateRangeOptions" [value]="option">{{ option.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Custom Date Picker -->
+  <mat-form-field appearance="outline" *ngIf="useCustomDate">
+    <mat-label style="color: white">Custom Start Date</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="customStartDate" (dateChange)="onFilterChange()" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Top X -->
+  <mat-form-field appearance="outline">
+    <mat-label style="color: white">Top X Beers</mat-label>
+    <mat-select [(ngModel)]="topX" (selectionChange)="onFilterChange()">
+      <mat-option *ngFor="let option of topXOptions" [value]="option">{{ option }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Min Check-ins -->
+  <mat-form-field appearance="outline">
+    <mat-label style="color: white">Minimum Check-ins</mat-label>
+    <mat-select [(ngModel)]="minCheckins" (selectionChange)="onFilterChange()">
+      <mat-option *ngFor="let option of minCheckinOptions" [value]="option">{{ option }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- Message if fewer than expected beers -->
+<p *ngIf="filteredBeers.length < topX" style="text-align: center; color: #ccc;">
+  {{ filteredBeers.length }} beers matched the criteria.
+</p>
+
+<!-- Beer Cards -->
+<ng-container *ngFor="let beer of filteredBeers; index as i">
+  <mat-card id="checkin-{{ beer.recent_checkin_id }} stream" class="checkin cf mat-elevation-z0 outline"
+    style="text-align: center; background-color: white; color: black;">
+    <mat-card-content class="beer">
+      <img class="beer-label" src="{{ beer.beer.beer_label }}" alt="{{ beer.beer.beer_name }}" />
+      <img class="brewery-label" src="{{ beer.brewery.brewery_label }}" alt="{{ beer.brewery.brewery_name }}" />
+
+      <p><strong>#{{ i + 1 }} - {{ beer.beer.beer_name }}</strong></p>
+      <p>{{ beer.beer.beer_style }}</p>
+      <p>{{ beer.brewery.brewery_name }}</p>
+
+      <span class="comment" *ngIf="beer.beer.beer_description">{{ beer.beer.beer_description }}</span>
+
+      <div class="rating-container">
+        <app-rating [ratingScore]="beer.rating_score"></app-rating>
+      </div>
+
+      <div class="meta-bar">
+        <span class="overallRating">
+          <ng-container *ngIf="beer.beer.rating_score === 0; else hasRating">Overall rating: n/a</ng-container>
+          <ng-template #hasRating>Overall rating: {{ beer.beer.rating_score }}</ng-template>
+        </span>
+        <app-social-links [contact]="beer.brewery.contact"></app-social-links>
+      </div>
+
+      <footer>
+        <p class="beerInfo">
+          <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
+        </p>
+        <div class="footer-time">
+          <time>{{ published(beer.recent_created_at) }}</time>
+          <a class="checkin-page hide-text" href="https://untappd.com/user/fromeca/checkin/{{ beer.recent_checkin_id }}"
+            target="_blank" title="Checkin Page">Checkin Page</a>
+        </div>
+      </footer>
+    </mat-card-content>
+  </mat-card>
+</ng-container>
+<br />
+<app-powered-by></app-powered-by>

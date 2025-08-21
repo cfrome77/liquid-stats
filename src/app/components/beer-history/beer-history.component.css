@@ -111,54 +111,6 @@ app-pagination {
   width: 100%;
 }
 
-/* NEW: Fix for beer name color */
-.beer strong {
-  color: black;
-}
-
-/* New container for social links and map link */
-.social-and-map-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-/* Updated meta-bar to be a flex container without the top border */
-.meta-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-  border-top: none;
-}
-
-/* Ensure the overall rating is black */
-.overallRating {
-  color: black;
-}
-
-/* NEW: Fix for overall rating color */
-.overallRating strong {
-  color: black !important;
-}
-
-/* Style for the new 'View on Map' link to match the social icons */
-.view-on-map-link {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  color: #3f51b5;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
-
-.view-on-map-link mat-icon {
-  font-size: 24px;
-}
-
 /* Footer Styling */
 footer {
   display: flex;
@@ -167,21 +119,16 @@ footer {
   margin-top: 10px;
 }
 
-.beerInfo {
-  float: none;
-  clear: none;
-}
-
-.beerInfo a {
+footer .beerInfo a {
   color: #1976d2;
   text-decoration: none;
 }
 
-.beerInfo a:hover {
+footer .beerInfo a:hover {
   text-decoration: underline;
 }
 
-.footer-time {
+footer .footer-time {
   font-size: 12px;
   color: #777;
 }

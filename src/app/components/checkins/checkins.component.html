@@ -1,0 +1,53 @@
+<h1>Recent Checkin List</h1>
+<mat-card id="checkin-{{ checkin.checkin_id }} stream" class="checkin cf mat-elevation-z0 outline"
+  style="text-align: center" *ngFor="let checkin of checkins">
+  <mat-card-content class="beer">
+    <img class="beer-label" src="{{ checkin.beer.beer_label }}" alt="{{ checkin.beer.beer_name }}"
+      title="{{ checkin.beer.beer_name }} Logo" />
+    <img class="brewery-label" src="{{ checkin.brewery.brewery_label }}" alt="{{ checkin.brewery.brewery_name }}"
+      title="{{ checkin.brewery.brewery_name }} Logo" />
+    <p>
+      <strong>{{ checkin.beer.beer_name }}</strong>
+    </p>
+    <p>{{ checkin.beer.beer_style }}</p>
+    <p>{{ checkin.brewery.brewery_name }}</p>
+    <span class="comment" *ngIf="checkin.checkin_comment">
+      {{ checkin.checkin_comment }}
+    </span>
+    <div class="rating-container">
+      <app-rating [ratingScore]="checkin.rating_score"></app-rating>
+    </div>
+    <div class="meta-bar">
+      <mat-chip-listbox class="chip" selectable="false">
+        <mat-chip-option *ngFor="let badge of checkin.badges.items" (click)="openBadgeDialog(badge)">
+          <mat-chip-avatar>
+            <img class="avatar-image" [src]="badge.badge_image.sm" alt="badge" />
+          </mat-chip-avatar>
+          {{ badge.badge_name }}
+        </mat-chip-option>
+      </mat-chip-listbox>
+      <app-social-links [contact]="checkin.brewery.contact"></app-social-links>
+    </div>
+    <footer>
+      <p class="location" *ngIf="checkin.venue; else elseBlock">
+        <a href="https://untappd.com/venue/{{ checkin.venue.venue_id }}" target="_blank"
+          title="{{ checkin.venue.venue_name }}">{{ checkin.venue.venue_name }}</a>
+      </p>
+      <ng-template #elseBlock>
+        <p class="beerInfo">
+          <a href="https://untappd.com/b/{{ checkin.beer.beer_slug }}/{{
+              checkin.beer.bid
+            }}" target="_blank">Beer Info</a>
+        </p>
+      </ng-template>
+      <div class="footer-time">
+        <time>{{ published(checkin.created_at) }}</time>
+        <a class="checkin-page hide-text" href="https://untappd.com/user/{{ checkin.user.user_name }}/checkin/{{
+            checkin.checkin_id
+          }}" target="_blank" title="Checkin Page">Checkin Page</a>
+      </div>
+    </footer>
+  </mat-card-content>
+</mat-card>
+<!-- Powered by Untappd image -->
+<app-powered-by></app-powered-by>
