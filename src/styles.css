@@ -242,7 +242,7 @@ footer {
 }
 
 .footer-time .checkin-page {
-  background: url("./assets/images/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
+  background: url("assets/images/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
   display: inline-block;
   height: 18px;
   margin-left: 4px;

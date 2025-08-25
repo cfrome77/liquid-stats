@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { MarkerService } from '../../core/services/marker.service';
 import { MapService } from '../../core/services/map.service';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 
 const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
-const iconUrl = 'assets/images/marker-icon.png';
-const shadowUrl = 'assets/images/marker-shadow.png';
+const iconUrl = '/assets/images/marker-icon.png';
+const shadowUrl = '/assets/images/marker-shadow.png';
 
 @Component({
   selector: 'app-map',
@@ -37,23 +38,57 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.route.data.subscribe(data => {
-      this.mapId = data['mapId'];
-
-      if (!this.mapId) {
-        console.error("Map ID is not set. Cannot initialize the map.");
-        return;
-      }
+      this.mapId = data['mapId'] || 'myMap';
 
       setTimeout(() => {
         this.initMap();
-        if (this.map) {
-          // Use MarkerService to add markers
-          this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
-        } else {
-          console.error("Map instance is not initialized.");
-        }
+
+        if (!this.map) return;
+
+        this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
+
+        this.route.queryParams.subscribe(params => {
+          const lat = parseFloat(params['lat']);
+          const lng = parseFloat(params['lng']);
+          const breweryId = params['breweryId'];
+
+          if (!isNaN(lat) && !isNaN(lng) && breweryId && this.markerService.markers) {
+            const marker = this.markerService.getMarkerByBreweryId(breweryId);
+
+            if (marker) {
+              this.smoothZoomToMarker(marker);
+            } else {
+              this.map!.setView([lat, lng], 17);
+            }
+          }
+        });
       });
     });
+  }
+
+  /**
+   * Smoothly zooms to a marker by expanding clusters and then setting the max zoom.
+   */
+  private smoothZoomToMarker(marker: L.Marker): void {
+    if (!this.markerService.markers || !this.map) {
+      return;
+    }
+
+    const maxZoom = this.map.getMaxZoom();
+
+    // Check if the marker is already visible on the map (not in a cluster).
+    if (this.map.hasLayer(marker)) {
+      const targetZoom = maxZoom;
+      this.map.setView(marker.getLatLng(), targetZoom, { animate: true, duration: 0.5 });
+      setTimeout(() => marker.openPopup(), 500);
+    } else {
+      // If the marker is in a cluster, use zoomToShowLayer to expand it.
+      this.markerService.markers.zoomToShowLayer(marker, () => {
+        const targetZoom = maxZoom;
+        this.map!.setView(marker.getLatLng(), targetZoom, { animate: true, duration: 0.5 });
+        setTimeout(() => marker.openPopup(), 500);
+      });
+    }
   }
 
   private initMap(): void {
@@ -82,20 +117,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       tiles.addTo(this.map);
       this.mapService.addMap(this.mapId, this.map);
 
-      // Ensure the map fills the screen dynamically
       this.setMapHeight();
       window.addEventListener('resize', this.setMapHeight.bind(this));
     }
   }
 
-  // Dynamically adjust map height
   private setMapHeight(): void {
     const mapElement = document.getElementById(this.mapId);
     if (mapElement) {
-      mapElement.style.height = `${window.innerHeight}px`; // Set the map height to the full window height
+      mapElement.style.height = `${window.innerHeight}px`;
     }
     if (this.map) {
-      this.map.invalidateSize(); // Inform Leaflet to update the map size
+      this.map.invalidateSize();
     }
   }
 
@@ -104,6 +137,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.map.remove();
       this.mapService.removeMap(this.mapId);
     }
-    window.removeEventListener('resize', this.setMapHeight.bind(this)); // Clean up event listener on destroy
+    window.removeEventListener('resize', this.setMapHeight.bind(this));
   }
 }

@@ -1,0 +1,192 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "S3BucketName": {
+      "Type": "String",
+      "Description": "The S3 bucket that contains the Lambda function code."
+    },
+    "S3Key": {
+      "Type": "String",
+      "Description": "The S3 object key for the Lambda function code."
+    },
+    "ClientId": {
+      "Type": "String",
+      "Description": "The Client ID for the external API"
+    },
+    "ClientSecret": {
+      "Type": "String",
+      "Description": "The Client Secret for the external API",
+      "NoEcho": true
+    },
+    "Username": {
+      "Type": "String",
+      "Description": "The username for the application"
+    },
+    "Environment": {
+      "Type": "String",
+      "Description": "The environment (e.g., dev, prod, aws)"
+    }
+  },
+  "Resources": {
+    "MyS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Ref": "S3BucketName"
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    },
+    "LambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "lambdaAllowS3",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:s3:::${S3BucketName}/*"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambdaAllowCloudwatch",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "fetch_api_data.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaExecutionRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3BucketName"
+          },
+          "S3Key": {
+            "Ref": "S3Key"
+          }
+        },
+        "Runtime": "python3.12",
+        "MemorySize": 128,
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "CLIENT_ID": {
+              "Ref": "ClientId"
+            },
+            "CLIENT_SECRET": {
+              "Ref": "ClientSecret"
+            },
+            "S3_BUCKET_NAME": {
+              "Ref": "S3BucketName"
+            },
+            "UNTAPPD_USERNAME": {
+              "Ref": "Username"
+            },
+            "ENVIRONMENT": {
+              "Ref": "Environment"
+            }
+          }
+        }
+      }
+    },
+    "LambdaFunctionSchedule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "ScheduleExpression": "cron(0 0 ? * MON *)",
+        "Targets": [
+          {
+            "Id": "1",
+            "Arn": {
+              "Fn::GetAtt": [
+                "LambdaFunction",
+                "Arn"
+              ]
+            }
+          }
+        ]
+      },
+      "DependsOn": "LambdaFunction"
+    },
+    "LambdaFunctionCwPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
+          ]
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "LambdaFunctionSchedule",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": "LambdaFunctionSchedule"
+    }
+  },
+  "Outputs": {
+    "LambdaFunctionArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaFunction",
+          "Arn"
+        ]
+      },
+      "Description": "ARN of the Lambda function"
+    }
+  }
+}

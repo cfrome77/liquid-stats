@@ -18,14 +18,14 @@
       <app-rating [ratingScore]="checkin.rating_score"></app-rating>
     </div>
     <div class="meta-bar">
-      <mat-chip-listbox class="chip" selectable="false">
-        <mat-chip-option *ngFor="let badge of checkin.badges.items" (click)="openBadgeDialog(badge)">
+      <mat-chip-list class="chip" selectable="false">
+        <mat-chip *ngFor="let badge of checkin.badges.items" (click)="openBadgeDialog(badge)">
           <mat-chip-avatar>
             <img class="avatar-image" [src]="badge.badge_image.sm" alt="badge" />
           </mat-chip-avatar>
           {{ badge.badge_name }}
-        </mat-chip-option>
-      </mat-chip-listbox>
+        </mat-chip>
+      </mat-chip-list>
       <app-social-links [contact]="checkin.brewery.contact"></app-social-links>
     </div>
     <footer>

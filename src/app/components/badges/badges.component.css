@@ -14,7 +14,7 @@ h1 {
 }
 
 .location a {
-    background: url("../../../assets/images/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
+    background: url("/assets/images/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
     color: #a9a9a9;
     /* Keeping the grey color for location links */
     display: flex;
