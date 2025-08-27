@@ -1,9 +1,21 @@
-h1 {
-  color: #fff;
-  text-align: center;
+/* Unique styles for the about page */
+/* Use a class instead of a general tag to prevent conflicts */
+.about-image {
+  float: left;
+  margin: 0px 15px 15px 0px;
 }
 
-img {
-  float: left; 
-  margin: 0px 15px 15px 0px;
+/* Make the image full-width on small screens for better readability */
+@media (max-width: 600px) {
+  .about-image {
+    float: none;
+    width: 100%;
+    margin: 15px 0;
+  }
+}
+
+/* Style for the link, a better approach than inline styling */
+.about-link {
+  color: #ffffff;
+  text-decoration: none;
 }

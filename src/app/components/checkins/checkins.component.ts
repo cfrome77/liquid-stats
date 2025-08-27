@@ -15,7 +15,7 @@ export class CheckinsComponent implements OnInit {
   public checkins: any;
 
   constructor(private http: HttpClient, private dialog: MatDialog) {
-    this.getJSON().subscribe((data: { response: { checkins: { items: any; }; }; }) => {
+    this.getJSON().subscribe((data) => {
       this.checkins = data.response.checkins.items;
     });
   }

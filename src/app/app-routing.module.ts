@@ -10,7 +10,6 @@ import { MapComponent } from './components/map/map.component';
 import { BeerHistoryComponent } from './components/beer-history/beer-history.component';
 import { StatsComponent } from './components/stats/stats.component';
 import { WishlistComponent } from './components/wishlist/wishlist.component';
-import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -22,7 +21,7 @@ export const routes: Routes = [
   { path: 'beer-history', component: BeerHistoryComponent },
   { path: 'stats', component: StatsComponent },
   { path: 'wishlist', component: WishlistComponent },
-  { path: 'about', component: AboutComponent }
+  { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({

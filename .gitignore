@@ -83,4 +83,7 @@ venv/
 *.zip
 
 # Local JSON data
-src/assets/beer.json
+src/assets/*.json
+
+#lambda package files
+lambda/package/

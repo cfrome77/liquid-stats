@@ -38,7 +38,7 @@
             <app-social-links [contact]="beer.brewery.contact"></app-social-links>
             <a [routerLink]="['/map']"
               [queryParams]="{ lat: beer.brewery?.location?.lat, lng: beer.brewery?.location?.lng, breweryId: beer.brewery?.brewery_id }"
-              class="view-on-map-link">
+              class="view-on-map-link" title="View on Map">
               <mat-icon>map</mat-icon>
             </a>
           </div>

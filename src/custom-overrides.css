@@ -1,0 +1,144 @@
+/*
+ * This file is for overriding the default Angular Material styles.
+ * It is imported after the main theme file to ensure its styles take precedence.
+ * We are using more specific and consolidated selectors here for better organization and efficiency.
+ */
+
+/* ================== General Card & Container Overrides ================== */
+
+/* This section consolidates rules to force text color for consistency on different backgrounds.
+   It targets mat-cards, checkins, and stats cards. */
+mat-card,
+.checkin,
+.stats-cards .card {
+    color: #000000;
+}
+
+/* Overrides the text color for the mat-card-header to be black */
+.mat-card-header .mat-card-title,
+.mat-card-header .mat-card-subtitle {
+    color: #000000 !important;
+}
+
+/* Ensure buttons inside the cards also have black text */
+mat-card .mat-mdc-button,
+mat-card .mat-mdc-unelevated-button,
+mat-card .mat-mdc-raised-button,
+.checkin a,
+.stats-cards .card a,
+.stats-cards .card li,
+.stats-cards .card strong {
+    color: #000000 !important;
+}
+
+/* Keeps the text white on the reset button */
+.reset-button {
+    color: #ffffff !important;
+}
+
+/* ================== Checkin Specific Overrides ================== */
+
+/* Ensure all text elements within the checkin component are black */
+.checkin h1,
+.checkin h2,
+.checkin h3,
+.checkin h4,
+.checkin h5,
+.checkin h6,
+.checkin p,
+.checkin span,
+.checkin li,
+.checkin strong {
+    color: #000000 !important;
+}
+
+/* Adjust the link color in the footer for better visibility on a dark background */
+footer .beerInfo a {
+    color: #1976d2 !important;
+}
+
+/* Adjust the footer time color */
+footer .footer-time {
+    color: #777777 !important;
+}
+
+/* Location link styling */
+.location {
+    float: left !important;
+}
+
+.location a {
+    background: url("/assets/images/ico_location.png") no-repeat left center rgba(0, 0, 0, 0) !important;
+    color: #a9a9a9 !important;
+    display: flex !important;
+    width: 230px !important;
+    font-size: 16px !important;
+    padding-left: 18px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-decoration: none !important;
+}
+
+
+/* ================== Dialog Overrides ================== */
+
+/* Main dialog container background color */
+.mat-dialog-container {
+    background-color: #303030 !important;
+}
+
+/* Ensure all text inside dialogs is white for a consistent dark theme */
+.mat-dialog-container h1,
+.mat-dialog-container h2,
+.mat-dialog-container h3,
+.mat-dialog-container p,
+.mat-dialog-container a,
+.mat-dialog-container span,
+.mat-dialog-container li,
+.mat-dialog-container strong {
+    color: #ffffff !important;
+}
+
+/* Make the 'close' button text visible in the pop-up */
+mat-dialog-actions .mat-mdc-button,
+mat-dialog-actions .mat-mdc-unelevated-button,
+mat-dialog-actions .mat-mdc-raised-button {
+    color: #ffffff !important;
+}
+
+/* ================== Form Field Overrides ================== */
+
+/* Rules to make form field labels, outlines, and other text elements white */
+.mat-form-field-label,
+.mat-form-field-outline,
+.mat-select-value-text,
+.mat-select-arrow,
+.mat-form-field-suffix,
+.mat-input-element,
+.mat-datepicker-toggle-default-icon,
+mat-label,
+.mat-radio-label-content {
+    color: #ffffff !important;
+}
+
+/* For radio buttons specifically */
+.mat-radio-outer-circle {
+    border-color: #ffffff !important;
+}
+
+.mat-radio-inner-circle {
+    background-color: #ffffff !important;
+}
+
+/* Ensure select options are readable on a light background */
+.items-per-page select,
+.items-per-page option {
+    color: #000000 !important;
+}
+
+/* Specific rule for the pagination text */
+.pagination-controls .ellipsis,
+.items-per-page label {
+    color: #ffffff !important;
+}

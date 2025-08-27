@@ -27,13 +27,11 @@
 
 /* Base card style */
 .card {
-  color: black;
   background: white;
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
-  color: #000;
   font-size: 0.95rem;
   line-height: 1.4;
   transition: all 0.2s ease;
@@ -60,7 +58,6 @@
 
 /* Beer styles breakdown card */
 .card.beer-styles-breakdown {
-  color: black;
   text-align: center;
   font-size: 0.95rem;
 }

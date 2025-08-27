@@ -1,30 +1,75 @@
-/* General Text Styling */
-p {
-    color: black;
-    margin: 0 !important;
-}
-
-h1 {
-    color: white;
-}
-
-/* Location Styling */
-.location {
-    float: left;
-}
-
-.location a {
-    background: url("/assets/images/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
-    color: #a9a9a9;
-    /* Keeping the grey color for location links */
+/* Unique styles for the badges page */
+.badges-container {
     display: flex;
-    width: 230px;
-    font-size: 16px;
-    padding-left: 18px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+/* Card container for a single badge */
+.badge-card {
+    width: 100%;
+    max-width: 400px;
+    /* Limit max width on larger screens */
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Badge image styling */
+.badge-card .badge-image {
+    width: 100px;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+/* Text styling within the card */
+.badge-card .badge-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+    color: #000;
+}
+
+.badge-card .badge-description,
+.badge-card .badge-hint {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+/* Footer for the card */
+.badge-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+/* Style for the earned time text inside the card */
+.badge-card .badge-earned-time {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* "Badge Page" link styling */
+.badge-card .badge-link {
+    font-size: 0.8rem;
+    color: #1a73e8;
+    /* Google's blue color for links */
     text-decoration: none;
+}
+
+.badge-card .badge-link:hover {
+    text-decoration: underline;
+}
+
+/* Pagination container */
+app-pagination {
+    margin-top: 1rem;
 }
 
 /* Powered by Untappd image */
@@ -33,4 +78,15 @@ h1 {
     margin: 20px auto 0;
     max-width: 150px;
     height: auto;
+}
+
+/* Media Queries for responsiveness */
+@media (min-width: 601px) {
+    .badge-card {
+        max-width: 500px;
+    }
+
+    .badge-card .badge-image {
+        width: 120px;
+    }
 }

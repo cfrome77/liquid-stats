@@ -13,7 +13,7 @@ export class AppComponent {
   title = "liquid-stats";
   routes = routes;
 
-  constructor(private dialog: MatDialog, private overlay: Overlay) {}
+  constructor(private dialog: MatDialog, private overlay: Overlay) { }
 
   openDialog() {
     const scrollStrategy = this.overlay.scrollStrategies.reposition();

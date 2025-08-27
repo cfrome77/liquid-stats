@@ -1,4 +1,9 @@
 .powered-by {
     display: block;
-    margin: 0 auto 15px;
+    margin: 20px auto 15px;
+    transition: filter 0.3s ease;
+}
+
+.powered-by:hover {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
 }

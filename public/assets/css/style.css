@@ -1,8 +1,11 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import url(https://fonts.googleapis.com/css?family=Nunito);
-/* Color Palletes */
-/*Just change the color e.g. $red or $green or define you color as you like....*/
-/* Base Styles */
-*, *:before, *:after {
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+/* Base Reset */
+*,
+*:before,
+*:after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -16,445 +19,258 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-html, body {
+html,
+body {
+  height: 100%;
   overflow-x: hidden;
 }
 
-/**
-* @section Reset styles
-* These styles reset the default style sheet that comes with the user agent.
-*/
-body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, fieldset, blockquote, pre, textarea {
-    margin: 0;
+/* Unified body style with a sleeker dark background */
+body {
+  background-color: #212121;
+  /* Charcoal Gray */
+  color: #ffffff;
+  font-family: "Montserrat", Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
 }
 
-ul, ol, td, th, fieldset, legend {
-    padding: 0;
+/* Fix for mat-drawer-container background color to match the body */
+.mat-drawer-container {
+  background-color: #212121 !important;
+  /* Charcoal Gray */
+}
+
+/* Reset default margins and colors */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+dl,
+dd,
+fieldset,
+blockquote,
+pre,
+textarea {
+  margin: 0;
+  color: #ffffff;
+}
+
+/* A custom class to force text to be black where needed */
+.text-black {
+  color: #000000 !important;
+}
+
+/* Global H1 style to prevent repetition in component files */
+h1,
+strong {
+  color: #ffffff;
+  margin: 15px 0 30px;
+  text-align: center;
+}
+
+ul,
+ol,
+td,
+th,
+fieldset,
+legend {
+  padding: 0;
 }
 
 fieldset {
-    border: none;
+  border: none;
 }
 
-a {
-	color: indianred;
-    opacity: 1;
-	text-decoration: none;
+/* Clearfix */
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
 }
 
-a:hover {
-	color: #c60;
-	text-decoration: underline;
+.cf:after {
+  clear: both;
 }
 
-.content {
-  text-align: center;
-  margin-top: 2em;
+/* Card styles - now with black text for readability on a light background */
+mat-card {
+  border-radius: 2px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  margin: 0 auto 15px;
+  padding: 15px;
+  width: 50%;
+  color: #000000;
+  /* Force text to be black inside the card */
 }
 
-.row {
-  margin-bottom: 20px;
+/* Media Query for Mobile Devices - Updated */
+@media (max-width: 767px) {
+  mat-card {
+    width: 95%;
+    /* Use 95% width to provide some padding on smaller screens */
+  }
+
+  /* Adjustments for the main toolbar */
+  .mat-toolbar-row {
+    padding: 0 16px;
+    /* Add some padding to the sides */
+  }
+
+  /* Adjust spacing for drawer content */
+  .mat-drawer-content {
+    padding: 16px;
+  }
 }
 
-#data-table {
-  font-size: 12px;
+/* Media Query for Tablets and Desktops */
+@media (min-width: 768px) {
+  mat-card {
+    width: 50%;
+    /* Keep 50% width for larger screens */
+  }
 }
 
-/* Navigation Styles */
-/* Header */
-#header {
-  width: 100vw;
-  background-color: #24292e;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 1em;
-  min-height: 55px;
-  text-transform: capitalize;
+/* Other components */
+.chip {
+  margin-bottom: 0;
 }
 
-#container {
-  height: 100%;
-  min-height: 50px;
-  width: 100%;
-  max-width: 990px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-#logo,
-#header-button,
-#nav {
-  align-self: center;
-}
-
-#logo {
-  justify-self: start;
+.meta-bar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  margin-left: 4px;
-  font-size: 1.5rem;
-  cursor: default;
+  margin: 10px 0;
 }
 
-#logo a:hover {
-  color: white;
-  text-decoration:none;
+.overallRating {
+  float: left;
+  clear: left;
 }
 
-#header-button {
-  fill: #fff;
-  display: none !important;
-  padding-right: 10px;
-  margin-right: 4px;
-  cursor: pointer;
+.avatar-image {
+  width: inherit;
+  height: inherit;
+  object-fit: cover;
 }
 
-#header-button:active {
-  fill: #fff;
-}
-
-#nav {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-right: 10px;
-}
-
-#header-button,
-#nav {
-  justify-self: end;
-}
-
-@media all and (max-width: 700px) {
-  #container {
-    grid-template-columns: 3fr 1fr;
-  }
-  
-  #header-button {
-    fill: #fff;
-    display: block !important;
-  }
-  #nav {
-    display: none;
-    grid-column: 1/-1;
-    justify-self: center;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  #header #nav a {
-    border-top: 1px solid #444d56;
-    border-bottom: none !important;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    padding-left: 4px;
-  }
-}
-
-#header #nav a {
-  color: #ffffffbf;
-  text-decoration: none;
-  margin-right: 14px;
-}
-
-#header #nav a:hover {
-  color: #fff;
-}
-
-#header #nav a.active {
-  border-bottom: 2px solid pink;
-  color: #fff;
-  font-weight: bold;
-  letter-spacing: 0.05em;
-  cursor: default;
-}
-
-.hidden {
-  display: none;
-}
-
-.show {
-  display: flex !important;
-}
-
-/**
-* Clearfix
-*/
-.cf:before, .cf:after {
-    content: " ";
-    display: table
-}
-
-.cf:after {clear: both}
-
-/**
-* Image Replacement
-*/
-.hide-text {
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden
-}
-
-/**
-* @section HTML5 Elements
-* Set display:block for HTML5 block elements
-*/
-main, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block}
-
-/**
-* @section General
-* Custom design for this app here
-*/
-body {
-	background-color: #F7F5EF;
-	color: #333;
-	font-family: 'Montserrat', sans-serif;
-}
-
-h1 {
-	color: #000;
-	margin: 15px 0 30px;
-	text-align: center;
-}
-
-.loading {
-	display: block;
-	height: 32px;
-	margin: 0 auto;
-	width: 32px
-}
-
-.error {
-	text-align: center
-}
-
-.powered-by {
-	display: block;
-	margin: 0 auto 15px
-}
-
-#stream {
-	margin: 15px auto 40px;
-	padding: 0 15px;
-	max-width: 50%;
-}
-
-.user, .checkin {
-	margin-bottom: 15px
+.user,
+.checkin {
+  margin-bottom: 15px;
 }
 
 .user {
-	width: 190px;
-	margin-left: auto;
-	margin-right: auto
+  width: 190px;
+  margin: 0 auto;
 }
 
 .user .avatar {
-	border-radius: 30px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    float: left;
-    height: 48px;
-    overflow: hidden;
-    width: 48px
+  border-radius: 30px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  float: left;
+  height: 48px;
+  overflow: hidden;
+  width: 48px;
 }
 
 .user .name {
-	padding-left: 60px;
-    padding-top: 4px
+  padding-left: 60px;
+  padding-top: 4px;
 }
 
 .user span {
-	color: #999;
-    font-size: 14px;
-    padding-left: 12px;
+  color: #999;
+  font-size: 14px;
+  padding-left: 12px;
 }
 
+/* Checkin styles - now with black text for readability */
 .checkin {
-	background-color: #FFFFFF;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-	padding: 15px
+  background-color: #ffffff;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  color: #000000;
+  /* Force text to be black inside the checkin box */
 }
 
 .checkin:last-of-type {
-	margin-bottom: 0
+  margin-bottom: 0;
 }
 
+/* Adjusting colors for elements inside the checkin to ensure readability */
 .beer {
-	color: #666;
-	margin-bottom: 16px;
-    min-height: 50px;
+  color: #333;
+  /* Darker color for better contrast */
+  margin-bottom: 16px;
+  min-height: 50px;
 }
 
 .beer span {
-	color: #666
+  color: #333;
+  /* Darker color for better contrast */
+}
+
+.beer-label,
+.brewery-label {
+  height: 50px;
+  width: 50px;
 }
 
 .beer-label {
-	float: left;
-	height: 50px;
-    width: 50px
+  float: left;
 }
 
 .brewery-label {
-	float: right;
-	height: 50px;
-    width: 50px
-}
-
-.stars-container {
-  position: relative;
-  display: inline-block;
-  color: transparent;
-  font-size: 40pt;
-  line-height: 54px;
-  text-align:center;
-}
-
-.stars-container:before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  content: '*****';
-  color: lightgray;
-  font-size: 40pt;
-  line-height: 54px;
-}
-
-.stars-container:after {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  content: '*****';
-  color: gold;
-  overflow: hidden;
-  font-size: 40pt;
-  line-height: 54px;
-}
-
-.stars-0:after {
-  width: 0%;
-}
-.stars-5:after {
-  width: 5%;
-}
-.stars-10:after {
-  width: 10%;
-}
-.stars-15:after {
-  width: 15%;
-}
-.stars-20:after {
-  width: 20%;
-}
-.stars-25:after {
-  width: 25%;
-}
-.stars-30:after {
-  width: 30%;
-}
-.stars-35:after {
-  width: 35%;
-}
-.stars-40:after {
-  width: 40%;
-}
-.stars-45:after {
-  width: 45%;
-}
-.stars-50:after {
-  width: 50%;
-}
-.stars-55:after {
-  width: 55%;
-}
-.stars-60:after {
-  width: 60%;
-}
-.stars-65:after {
-  width: 65%;
-}
-.stars-70:after {
-  width: 70%;
-}
-.stars-75:after {
-  width: 75%;
-}
-.stars-80:after {
-  width: 80%;
-}
-.stars-85:after {
-  width: 85%;
-}
-.stars-90:after {
-  width: 90%;
-}
-.stars-95:after {
-  width: 95%;
-}
-.stars-100:after {
-  width: 100%;
+  float: right;
 }
 
 .comment {
-    color: #666;
-    font-size: 18px;
-    line-height: 22px;
-    margin-bottom: 15px
+  color: #333;
+  /* Darker color for better contrast */
+  line-height: 22px;
+  margin: 10px 0 15px;
+  display: block;
 }
 
 footer {
-	border-top: 1px solid #eee;
-	clear: both;
-    margin-top: 12px;
-    padding-top: 8px
+  border-top: 1px solid #eee;
+  clear: both;
+  padding-top: 8px;
 }
 
 .footer-time {
-	float: right
+  float: right;
 }
 
 .footer-time time {
-    color: #A9A9A9;
-    display: inline-block;
-    font-size: 14px
+  color: #333;
+  /* Darker color for better contrast on white background */
+  display: inline-block;
+  font-size: 14px;
 }
 
 .footer-time .checkin-page {
-    background: url("../img/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
-    display: inline-block;
-    height: 18px;
-    margin-left: 4px;
-    vertical-align: top;
-    width: 13px;
+  background: url("assets/images/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
+  display: inline-block;
+  height: 18px;
+  margin-left: 4px;
+  vertical-align: top;
+  width: 13px;
 }
 
-.location {
-	float: left
+/* Image Replacement */
+.hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.location a {
-    background: url("../img/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
-    color: #A9A9A9;
-    display: block;
-    font-size: 16px;
-    overflow: hidden;
-    padding-left: 18px;
-    text-overflow: ellipsis;
-    width: 230px;
-    white-space: nowrap
-}
-
-#button {
-    line-height:100px;
-    font-size:25px;
-    margin-top: 2%;
-    text-align:center;
-}
-
+/* Scroll-to-top button */
 #topButton {
   display: none;
   position: fixed;
@@ -475,175 +291,117 @@ footer {
   background-color: #555;
 }
 
+/* Beer link styles - Now with black color for readability on a light background */
 .beerInfo {
-	float: left
+  float: left;
+  clear: left;
 }
 
 .beerInfo a {
-    color: #A9A9A9;
-    display: block;
-    font-size: 16px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 230px;
-    white-space: nowrap
+  color: #000000;
+  /* Forced to black for readability on white background */
+  display: flex;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 230px;
+  white-space: nowrap;
+  text-decoration: none;
 }
 
-.social {
-    float: right;
-    font-size: 16px;
+/* HTML5 Block Elements */
+main,
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
 
-.social a {
-    color: #A9A9A9;
+/* Navbar + Toolbar */
+.navbar-color {
+  background-color: #494d50;
+  color: white;
 }
 
-/* Media Queries for diffrent device */
-
-/* Smartphones (portrait and landscape) ----------- */
-@media only screen 
-and (min-device-width : 320px) 
-and (max-device-width : 480px) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 100%;
-    }
-    #button a
-    {
-        margin-top: 30vh;
-        text-align: center;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+.router-link-active {
+  background-color: #414548;
 }
 
-/* Smartphones (landscape) ----------- */
-@media only screen 
-and (min-width : 321px) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 100%;
-    }
-    #button a
-    {
-        margin-top: 30vh;
-        text-align: center;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+.toolbar-color {
+  background-color: #616466;
+  color: white;
 }
 
-/* Smartphones (portrait) ----------- */
-@media only screen 
-and (max-width : 320px) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 100%;
-    }
-    #button a
-    {
-        margin-top: 30vh;
-        text-align: center;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+/* Utility */
+.no-border {
+  border-radius: 0px;
 }
 
-/* iPads (portrait and landscape) ----------- */
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 100%;
-    }
-    #button a
-    {
-        margin-top: 30vh;
-        text-align: center;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+.center {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* iPads (landscape) ----------- */
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) 
-and (orientation : landscape) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 100%;
-    }
-    #button a
-    {
-        margin-top: 30vh;
-        text-align: center;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+.v-center {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
-/* iPads (portrait) ----------- */
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) 
-and (orientation : portrait) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 100%;
-    }
-    #button a
-    {
-        margin-top: 30vh;
-        text-align: center;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+.txt-bold {
+  font-weight: bold;
 }
 
-/* Desktops and laptops ----------- */
-@media only screen 
-and (min-width : 1224px) {
-    #stream {
-        margin: 15px auto 40px;
-        padding: 0 15px;
-        max-width: 50%;
-    }
-    #header-button {
-        margin-left: 10px;
-    }
-    #header #nav a {
-        text-align:center;
-    }
+.selected {
+  background-color: gainsboro;
+}
+
+.fab-toggler {
+  background-color: #9e9e9e !important;
+}
+
+/* Light theme for datepicker only */
+.light-theme {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.light-theme .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.light-theme .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #3f51b5;
+  border-color: #3f51b5;
+}
+
+.light-theme .mat-form-field-label {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.light-theme .mat-input-element {
+  color: #000;
+}
+
+.light-theme .mat-datepicker-content,
+.light-theme .mat-calendar {
+  background-color: white !important;
+  color: black !important;
+}
+
+.light-theme .mat-datepicker-toggle-default-icon {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.light-theme .mat-datepicker-toggle:hover .mat-datepicker-toggle-default-icon,
+.light-theme .mat-datepicker-toggle.mat-focused .mat-datepicker-toggle-default-icon {
+  color: #3f51b5;
 }

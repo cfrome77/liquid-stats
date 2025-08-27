@@ -1,3 +1,4 @@
+/* Unique styles for the home page */
 button {
   background-color: #f0fff0;
   font-size: 25px;
@@ -43,9 +44,11 @@ button a {
 }
 
 @media screen and (max-width: 1024px) {
+
   /* Specific to this particular image */
   .bg-img {
     left: 50%;
-    margin-left: -512px; /* 50% */
+    margin-left: -512px;
+    /* 50% */
   }
 }
