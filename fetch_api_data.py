@@ -83,22 +83,22 @@ def get_wishlist():
 
 def save_beers_to_json(beers):
     print('saving to beers.json')
-    with open('public/beers.json', 'w') as outfile:
+    with open('src/app/assets/beers.json', 'w') as outfile:
         json.dump({'beers': beers}, outfile)
 
 def save_checkins_to_json(checkins):
     print('saving to checkins.json')
-    with open('public/checkins.json', 'w') as outfile:
+    with open('src/app/assets/checkins.json', 'w') as outfile:
         json.dump(checkins, outfile)
 
 def save_badges_to_json(badges):
     print('saving to badges.json')
-    with open('public/badges.json', 'w') as outfile:
+    with open('src/app/assets/badges.json', 'w') as outfile:
         json.dump(badges, outfile)
 
 def save_wishlist_to_json(wishlist):
     print('saving to wishlist.json')
-    with open('public/wishlist.json', 'w') as outfile:
+    with open('src/app/assets/wishlist.json', 'w') as outfile:
         json.dump(wishlist, outfile)
 
 if __name__ == '__main__':
