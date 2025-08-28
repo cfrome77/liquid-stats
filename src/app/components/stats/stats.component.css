@@ -3,6 +3,15 @@
   padding: 2rem;
   max-width: 1000px;
   margin: auto;
+  color: white;
+}
+
+.stats-container h2,
+.stats-container h3,
+.stats-container label,
+.stats-container span,
+.stats-container li {
+  color: white;
 }
 
 /* Filters section */

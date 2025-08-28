@@ -124,9 +124,7 @@ export class StatsComponent implements OnInit {
         checkinsByMonth: stats.checkinsByMonth ?? [],
         averageRatingsOverTime: stats.averageRatingsOverTime ?? []
       };
-
-      console.log('*** ProcessedStats after assignment:', this.processedStats); // ADDED LOG
-
+      
       // Chart: Check-ins by Hour
       this.hourChartData = {
         labels: this.hourChartLabels,
@@ -138,7 +136,6 @@ export class StatsComponent implements OnInit {
           }
         ]
       };
-      console.log('hourChartData after assignment:', this.hourChartData); // ADDED LOG
 
       // Chart: Recent Activity (Line Chart)
       this.recentActivityChartLabels = this.processedStats.recentActivityByDate.map(d => d.date);
@@ -154,7 +151,6 @@ export class StatsComponent implements OnInit {
           }
         ]
       };
-      console.log('recentActivityChartData after assignment:', this.recentActivityChartData); // ADDED LOG
 
       // Chart: Check-ins by Day (Bar Chart, last 7 days)
       this.checkinsByDayLabels = this.generateLastNDaysLabels(7);
@@ -187,7 +183,6 @@ export class StatsComponent implements OnInit {
           }
         ]
       };
-      console.log('dayChartData after assignment:', this.dayChartData); // ADDED LOG
 
       // Chart: Check-ins by Month
       const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -210,7 +205,6 @@ export class StatsComponent implements OnInit {
           }
         ]
       };
-      console.log('monthChartData after assignment:', this.monthChartData); // ADDED LOG
 
       // Chart: Average Ratings Over Time
       this.ratingChartData = {
@@ -225,7 +219,6 @@ export class StatsComponent implements OnInit {
           }
         ]
       };
-      console.log('ratingChartData after assignment:', this.ratingChartData); // ADDED LOG
 
     } catch (error) {
       console.error("!!! Error in onDateChange:", error); // Log any errors that occur
