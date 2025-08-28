@@ -1,0 +1,15 @@
+
+Initial Chunk Files   | Names         |  Raw Size | Estimated Transfer Size
+main.js               | main          |   1.30 MB |               306.82 kB
+styles.css, styles.js | styles        | 152.16 kB |                30.40 kB
+polyfills.js          | polyfills     | 109.30 kB |                33.53 kB
+runtime.js            | runtime       |   1.32 kB |               713 bytes
+
+| Initial Total |   1.56 MB |               371.46 kB
+
+Build at: 2025-08-28T19:42:43.999Z - Hash: efec7d66101f88b7 - Time: 11599ms
+
+** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
+
+
+✖ Failed to compile.
