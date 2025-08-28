@@ -147,10 +147,11 @@ app-pagination {
 
 /* Footer Styling */
 footer {
+  border-top: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  padding-top: 8px;
 }
 
 footer .beerInfo a {
@@ -163,7 +164,7 @@ footer .beerInfo a:hover {
 }
 
 footer .footer-time {
-  font-size: 12px;
+  font-size: 14px;
   color: #777;
 }
 

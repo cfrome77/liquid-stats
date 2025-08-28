@@ -1,92 +1,132 @@
-/* Unique styles for the badges page */
-.badges-container {
+/* Container for a single badge card */
+.badge-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-}
-
-/* Card container for a single badge */
-.badge-card {
     width: 100%;
-    max-width: 400px;
-    /* Limit max width on larger screens */
+    max-width: 600px;
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 8px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-/* Badge image styling */
-.badge-card .badge-image {
-    width: 100px;
-    height: auto;
-    margin-bottom: 0.5rem;
-}
-
-/* Text styling within the card */
-.badge-card .badge-name {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 0.25rem;
     color: #000;
 }
 
-.badge-card .badge-description,
-.badge-card .badge-hint {
+/* Header with Icon and Name */
+.card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Image styling */
+.badge-image {
+    width: 50px;
+    height: auto;
+    flex-shrink: 0;
+    margin-right: 5px;
+}
+
+/* Badge name styling */
+.badge-card .badge-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 0;
+    color: #000;
+}
+
+/* Body for the description */
+.card-body {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.badge-description {
     font-size: 0.9rem;
     color: #555;
-    margin-bottom: 0.5rem;
+    white-space: normal;
+    display: block;
+    margin-bottom: 5px;
 }
 
-/* Footer for the card */
-.badge-card-footer {
+.badge-hint {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: normal;
+    display: block;
+}
+
+/* More specific rule for the bold hint text */
+.badge-hint strong {
+    font-weight: bold;
+    color: #000;
+}
+
+/* A lass for the hint content to create a space */
+.hint-content {
+    margin-left: 5px;
+}
+
+/* A rule to fix link styles. Using !important is necessary
+   due to innerHTML overriding component styles. */
+:host ::ng-deep .badge-card a {
+    text-decoration: none !important;
+    color: #8A4500 !important;
+}
+
+:host ::ng-deep .badge-card a strong {
+    text-decoration: none !important;
+    color: #8A4500 !important;
+}
+
+/* Separator line */
+.separator {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+/* Footer with time and link icon */
+.card-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    margin-top: 1rem;
 }
 
-/* Style for the earned time text inside the card */
-.badge-card .badge-earned-time {
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.badge-earned-time {
     font-size: 0.8rem;
     color: #888;
 }
 
-/* "Badge Page" link styling */
-.badge-card .badge-link {
-    font-size: 0.8rem;
-    color: #1a73e8;
-    /* Google's blue color for links */
-    text-decoration: none;
+/* Visually-hidden utility class for accessibility */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-.badge-card .badge-link:hover {
-    text-decoration: underline;
-}
-
-/* Pagination container */
-app-pagination {
-    margin-top: 1rem;
-}
-
-/* Powered by Untappd image */
-.powered-by {
-    display: block;
-    margin: 20px auto 0;
-    max-width: 150px;
+/* Styles for the link icon */
+.badge-link .link-icon {
+    width: 13px;
     height: auto;
 }
 
-/* Media Queries for responsiveness */
-@media (min-width: 601px) {
+/* Media query for wider cards on larger screens */
+@media (min-width: 768px) {
     .badge-card {
-        max-width: 500px;
-    }
-
-    .badge-card .badge-image {
-        width: 120px;
+        max-width: 650px;
     }
 }

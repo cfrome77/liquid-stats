@@ -46,6 +46,7 @@ import { PoweredByComponent } from './shared/components/powered-by/powered-by.co
 import { BadgeDialogComponent } from './shared/components/badge-dialog/badge-dialog.component';
 import { SocialLinksComponent } from './shared/components/social-links/social-links.component';
 import { BeerStyleDialogComponent } from './shared/components/beer-style-dialog/beer-style-dialog.component';
+import { CardComponent } from './shared/components/card/card.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { BeerStyleDialogComponent } from './shared/components/beer-style-dialog/
     BadgeDialogComponent,
     SocialLinksComponent,
     BeerStyleDialogComponent,
+    CardComponent,
   ],
   imports: [
     BrowserModule,

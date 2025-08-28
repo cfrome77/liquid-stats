@@ -1,38 +1,34 @@
 <h1>Badges Earned</h1>
 
-<!-- Display the badges using a mat-card for each badge -->
-<mat-card id="checkin-{{ badge.badge_id }} stream" class="checkin cf mat-elevation-z0 outline"
-  style="text-align: center" *ngFor="let badge of paginatedBadges">
-  <mat-card-content class="beer">
-    <img class="beer-label" src="{{ badge.media.badge_image_sm }}" alt="{{ badge.badge_name }}"
-      title="{{ badge.badge_name }} Logo" />
-    <p>
-      <strong>{{ badge.badge_name }}</strong>
-    </p>
-    <span class="comment">
-      {{ badge.badge_description }}
+<mat-card class="badge-card" *ngFor="let badge of paginatedBadges">
+  <div class="card-header">
+    <img class="badge-image" src="{{ badge.media.badge_image_sm }}" alt="{{ badge.badge_name }}" />
+    <strong class="badge-name">{{ badge.badge_name }}</strong>
+  </div>
+
+  <div class="card-body">
+    <span class="badge-description" [innerHTML]="badge.badge_description"></span>
+    <span class="badge-hint">
+      <strong>Hint:</strong> <span class="hint-content" [innerHTML]="badge.badge_hint"></span>
     </span>
-    <span class="comment">
-      {{ badge.badge_hint }}
-    </span>
-    <footer>
-      <div class="footer-time">
-        <time>{{ published(badge.earned_at) }}</time>
-        <a class="checkin-page hide-text" href="https://untappd.com/user/fromeca/badges/{{ badge.user_badge_id }}"
-           target="_blank" title="Badge Page">Badge Page</a>
-      </div>
-    </footer>
-  </mat-card-content>
+  </div>
+
+  <hr class="separator" />
+
+  <div class="card-footer">
+    <div class="footer-right">
+      <time class="badge-earned-time">{{ published(badge.earned_at) }}</time>
+      <a class="badge-link" href="https://untappd.com/user/fromeca/badges/{{ badge.user_badge_id }}" target="_blank"
+        title="Badge Page" alt="Badge Page">
+        <span class="visually-hidden">Badge Page</span>
+        <img class="link-icon" src="/assets/images/ico_checkin_page.png" alt="Go to badge page" />
+      </a>
+    </div>
+  </div>
 </mat-card>
 
-<!-- Use the pagination component -->
-<app-pagination 
-  [currentPage]="currentPage" 
-  [itemsPerPage]="itemsPerPage" 
-  [totalItems]="totalItems"
-  (pageChange)="onPageChange($event)"
-  (itemsPerPageChange)="onItemsPerPageChange($event)">
+<app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
+  (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
 </app-pagination>
 
-<!-- Powered by Untappd image -->
 <app-powered-by></app-powered-by>
