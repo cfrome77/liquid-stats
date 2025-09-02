@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
@@ -30,11 +31,12 @@ export class BeerHistoryComponent implements OnInit {
     { field: 'brewery', label: 'Brewery', options: [], selected: [], countMap: {} },
     { field: 'beer_style', label: 'Beer Style', options: [], selected: [], countMap: {} },
     { field: 'country', label: 'Country', options: [], selected: [], countMap: {} },
+    { field: 'region', label: 'State/Region', options: [], selected: [], countMap: {} },
     { field: 'rating', label: 'Ratings', options: [], selected: [], countMap: {} },
     { field: 'date_range', label: 'Date Range', options: [], selected: [], type: 'date' },
   ];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.fetchBeersData();
@@ -90,7 +92,8 @@ export class BeerHistoryComponent implements OnInit {
         this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort();
         this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort();
         this.filterFields[2].options = this.getUniqueFieldValues('country').sort();
-        this.filterFields[3].options = formattedRatings;
+        this.filterFields[3].options = this.getUniqueFieldValues('region').sort();
+        this.filterFields[4].options = formattedRatings;
 
         this.updateOptionCounts();
         this.resetFilters();
@@ -112,6 +115,11 @@ export class BeerHistoryComponent implements OnInit {
     } else if (field === 'country') {
       values = this.beers.map(beer => beer.brewery?.country_name).filter(Boolean);
     }
+    else if (field === 'region') {
+      values = this.beers
+        .map(beer => beer.brewery?.location?.brewery_state)
+        .filter(Boolean);
+    }
 
     return [...new Set(values)];
   }
@@ -128,6 +136,7 @@ export class BeerHistoryComponent implements OnInit {
     const selectedBreweries = this.filterFields.find(f => f.field === 'brewery')?.selected || [];
     const selectedStyles = this.filterFields.find(f => f.field === 'beer_style')?.selected || [];
     const selectedCountries = this.filterFields.find(f => f.field === 'country')?.selected || [];
+    const selectedRegions = this.filterFields.find(f => f.field === 'region')?.selected || [];
     const selectedRatings = this.filterFields.find(f => f.field === 'rating')?.selected.map(r => parseFloat(r)) || [];
     const dateRange = this.filterFields.find(f => f.field === 'date_range')?.selected || [];
     const searchTermLower = this.searchTerm.toLowerCase();
@@ -146,43 +155,71 @@ export class BeerHistoryComponent implements OnInit {
       const brewery = beer.brewery?.brewery_name || '';
       const style = beer.beer?.beer_style || '';
       const country = beer.brewery?.country_name || '';
+      const region = beer.brewery?.location?.brewery_state || '';
       const rating = beer.rating_score || 0;
       const beerDate = parseDate(beer.first_created_at);
 
       const matchBrewery = selectedBreweries.length === 0 || selectedBreweries.includes(brewery);
       const matchStyle = selectedStyles.length === 0 || selectedStyles.includes(style);
       const matchCountry = selectedCountries.length === 0 || selectedCountries.includes(country);
+      const matchRegion = selectedRegions.length === 0 || selectedRegions.includes(region);
       const matchRating = selectedRatings.length === 0 || selectedRatings.includes(rating);
       const matchDate = beerDate.isValid() &&
         beerDate.isSameOrAfter(startDate, 'day') &&
         beerDate.isSameOrBefore(endDate, 'day');
 
-      const matchSearch = this.searchTerm === '' ||
+      const matchSearch =
+        this.searchTerm === '' ||
         beer.beer.beer_name.toLowerCase().includes(searchTermLower) ||
         style.toLowerCase().includes(searchTermLower) ||
-        brewery.toLowerCase().includes(searchTermLower);
+        brewery.toLowerCase().includes(searchTermLower) ||
+        country.toLowerCase().includes(searchTermLower) ||
+        region.toLowerCase().includes(searchTermLower) ||
+        (beer.beer.beer_description?.toLowerCase().includes(searchTermLower) ?? false);
 
-      return matchBrewery && matchStyle && matchCountry && matchRating && matchDate && matchSearch;
+      return matchBrewery && matchStyle && matchCountry && matchRegion && matchRating && matchDate && matchSearch;
     });
 
     this.totalItems = this.filteredBeers.length;
+    this.updateOptionCounts();
     this.updatePaginatedBeers();
   }
 
   updateOptionCounts(): void {
-    this.filterFields.forEach(filter => {
+    this.filterFields.forEach(currentFilter => {
       const countMap: { [option: string]: number } = {};
 
       this.beers.forEach(beer => {
-        let value = '';
+        // Check if beer passes all OTHER filters
+        const passesOtherFilters = this.filterFields.every(f => {
+          if (f === currentFilter) return true; // skip self
+          if (!f.selected.length) return true;
 
-        if (filter.field === 'brewery') {
-          value = beer.brewery?.brewery_name || '';
-        } else if (filter.field === 'beer_style') {
-          value = beer.beer?.beer_style || '';
-        } else if (filter.field === 'country') {
-          value = beer.brewery?.country_name || '';
-        } else if (filter.field === 'rating') {
+          let beerValue = '';
+          if (f.field === 'brewery') beerValue = beer.brewery?.brewery_name || '';
+          else if (f.field === 'beer_style') beerValue = beer.beer?.beer_style || '';
+          else if (f.field === 'country') beerValue = beer.brewery?.country_name || '';
+          else if (f.field === 'region') beerValue = beer.brewery?.location?.brewery_state || '';
+          else if (f.field === 'rating') {
+            const raw = beer.rating_score;
+            if (raw !== undefined && raw !== null) {
+              beerValue = (Number.isInteger(raw * 100) && raw * 10 % 10 === 0)
+                ? raw.toFixed(1)
+                : raw.toFixed(2);
+            }
+          }
+          return f.selected.includes(beerValue);
+        });
+
+        if (!passesOtherFilters) return;
+
+        // Now count this beer for current filter
+        let value = '';
+        if (currentFilter.field === 'brewery') value = beer.brewery?.brewery_name || '';
+        else if (currentFilter.field === 'beer_style') value = beer.beer?.beer_style || '';
+        else if (currentFilter.field === 'country') value = beer.brewery?.country_name || '';
+        else if (currentFilter.field === 'region') value = beer.brewery?.location?.brewery_state || '';
+        else if (currentFilter.field === 'rating') {
           const raw = beer.rating_score;
           if (raw !== undefined && raw !== null) {
             value = (Number.isInteger(raw * 100) && raw * 10 % 10 === 0)
@@ -196,15 +233,17 @@ export class BeerHistoryComponent implements OnInit {
         }
       });
 
-      filter.options.forEach(option => {
+      // Ensure every option has at least a 0
+      currentFilter.options.forEach(option => {
         if (!countMap[option]) {
           countMap[option] = 0;
         }
       });
 
-      filter.countMap = countMap;
+      currentFilter.countMap = countMap;
     });
   }
+
 
   resetFilters(): void {
     this.filterFields.forEach(f => f.selected = []);
@@ -226,6 +265,20 @@ export class BeerHistoryComponent implements OnInit {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
+  }
+
+  viewOnMap(beer: any): void {
+    const lat = beer.brewery?.location?.lat;
+    const lng = beer.brewery?.location?.lng;
+    const breweryId = beer.brewery?.brewery_id;
+
+    if (lat && lng && breweryId) {
+      this.router.navigate(['/map'], {
+        queryParams: { lat, lng, breweryId }
+      });
+    } else {
+      console.warn('No location data available for this brewery');
+    }
   }
 
   public published(createdAt: string): string {
