@@ -12,7 +12,7 @@ export class RatingComponent {
   uniqueId = Math.random().toString(36).substring(2, 9);
 
   get hasRating(): boolean {
-    return typeof this.ratingScore === 'number' && this.ratingScore >= 0.1;
+    return typeof this.ratingScore === 'number' && this.ratingScore > 0;
   }
 
   get starFills(): number[] {

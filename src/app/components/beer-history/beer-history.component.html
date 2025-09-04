@@ -44,18 +44,16 @@
             <ng-template #elseBlock>Overall rating: {{ beer.beer.rating_score }}</ng-template>
           </span>
           <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-            <app-social-links [contact]="beer.brewery.contact"></app-social-links>
-            <a [routerLink]="['/map']"
-              [queryParams]="{ lat: beer.brewery?.location?.lat, lng: beer.brewery?.location?.lng, breweryId: beer.brewery?.brewery_id }"
-              title="View on Map" class="view-on-map-link">
-              <mat-icon>map</mat-icon>
-            </a>
+            <app-social-links [contact]="beer.brewery.contact"
+              [mapData]="{ lat: beer.brewery?.location?.lat, lng: beer.brewery?.location?.lng, breweryId: beer.brewery?.brewery_id }">
+            </app-social-links>
           </div>
         </div>
         <footer>
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <p class="beerInfo">
-              <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
+              <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer
+                Info</a>
             </p>
             <div class="footer-time">
               <time>{{ published(beer.recent_created_at) }}</time>

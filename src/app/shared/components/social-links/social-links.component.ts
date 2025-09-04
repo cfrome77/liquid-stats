@@ -25,4 +25,10 @@ export class SocialLinksComponent implements OnInit {
     instagram?: string;
   };
 
+  @Input() mapData: {
+    lat: number;
+    lng: number;
+    breweryId: string;
+  } | undefined;
+
 }

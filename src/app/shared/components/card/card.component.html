@@ -1,0 +1,60 @@
+<mat-card class="shared-card">
+    <mat-card-content class="beer no-padding-top-bottom">
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px" class="header-section">
+            <img *ngIf="cardData.mainImage" class="beer-label" [src]="cardData.mainImage" [alt]="cardData.title"
+                [title]="cardData.title" />
+
+            <div fxFlex fxLayout="column" fxLayoutAlign="center center" class="beer-info">
+                <h3>{{ cardData.title }}</h3>
+                <p *ngIf="cardData.subtitle">{{ cardData.subtitle }}</p>
+                <p *ngIf="cardData.breweryName">{{ cardData.breweryName }}</p>
+            </div>
+
+            <img *ngIf="cardData.secondaryImage" class="brewery-label" [src]="cardData.secondaryImage"
+                [alt]="cardData.breweryName" [title]="cardData.breweryName" />
+        </div>
+
+        <span class="comment" *ngIf="cardData.description">{{ cardData.description }}</span>
+
+        <div class="meta-bar" fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
+                <app-rating *ngIf="cardData.rating != null" [ratingScore]="cardData.rating" fxFlex></app-rating>
+            </div>
+        </div>
+
+        <div class="badges-and-social-links" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+            <mat-chip-list class="chip" selectable="false" *ngIf="cardData.extraData?.badges">
+                <mat-chip *ngFor="let badge of cardData.extraData.badges" (click)="onBadgeClick(badge)">
+                    <mat-chip-avatar>
+                        <img class="avatar-image" [src]="badge.badge_image.sm" alt="badge" />
+                    </mat-chip-avatar>
+                    {{ badge.badge_name }}
+                </mat-chip>
+            </mat-chip-list>
+            <app-social-links *ngIf="cardData.extraData?.socialLinks" [contact]="cardData.extraData.socialLinks"
+                [mapData]="cardData.extraData.mapData">
+            </app-social-links>
+        </div>
+
+        <footer>
+            <div class="footer-left">
+                <p class="location" *ngIf="cardData.extraData?.venueId">
+                    <img class="location-icon" src="https://img.icons8.com/material-outlined/24/000000/marker.png"
+                        alt="Location" />
+                    <a [href]="cardData.footerInfo.link" target="_blank" [title]="cardData.footerInfo.text">
+                        {{ cardData.footerInfo.text }}
+                    </a>
+                </p>
+                <p class="beerInfo" *ngIf="!cardData.extraData?.venueId">
+                    <a [href]="cardData.footerInfo.link" target="_blank">{{ cardData.footerInfo.text }}</a>
+                </p>
+            </div>
+            <div class="footer-time">
+                <time>{{ cardData.footerInfo.timestamp }}</time>
+                <a class="checkin-page hide-text"
+                    href="https://untappd.com/user/{{ cardData.extraData?.userName }}/checkin/{{ cardData.extraData?.checkinId }}"
+                    target="_blank" title="Checkin Page">Checkin Page</a>
+            </div>
+        </footer>
+    </mat-card-content>
+</mat-card>

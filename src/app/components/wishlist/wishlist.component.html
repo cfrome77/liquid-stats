@@ -21,7 +21,9 @@
           <ng-template #thenBlock>Overall rating: n/a</ng-template>
           <ng-template #elseBlock>Overall rating: {{ list_item.beer.rating_score }}</ng-template>
         </span>
-        <app-social-links [contact]="list_item.brewery.contact"></app-social-links>
+        <app-social-links [contact]="list_item.brewery.contact"
+          [mapData]="{ lat: list_item.brewery?.location?.lat, lng: list_item.brewery?.location?.lng, breweryId: list_item.brewery?.brewery_id }">
+        </app-social-links>
       </div>
       <footer>
         <p class="beerInfo">

@@ -76,7 +76,9 @@
           <ng-container *ngIf="beer.beer.rating_score === 0; else hasRating">Overall rating: n/a</ng-container>
           <ng-template #hasRating>Overall rating: {{ beer.beer.rating_score }}</ng-template>
         </span>
-        <app-social-links [contact]="beer.brewery.contact"></app-social-links>
+        <app-social-links [contact]="beer.brewery.contact"
+          [mapData]="{ lat: beer.brewery?.location?.lat, lng: beer.brewery?.location?.lng, breweryId: beer.brewery?.brewery_id }">
+        </app-social-links>
       </div>
 
       <footer>
