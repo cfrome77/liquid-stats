@@ -16,10 +16,8 @@
 
         <span class="comment" *ngIf="cardData.description">{{ cardData.description }}</span>
 
-        <div class="meta-bar" fxLayout="row" fxLayoutAlign="space-between center">
-            <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
-                <app-rating *ngIf="cardData.rating != null" [ratingScore]="cardData.rating" fxFlex></app-rating>
-            </div>
+        <div class="rating-bar" fxLayout="row" fxLayoutAlign="space-between center">
+            <app-rating *ngIf="cardData.rating != null" [ratingScore]="cardData.rating" fxFlex></app-rating>
         </div>
 
         <div class="badges-and-social-links" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
@@ -38,16 +36,11 @@
 
         <footer>
             <div class="footer-left">
-                <p class="location" *ngIf="cardData.extraData?.venueId">
-                    <img class="location-icon" src="https://img.icons8.com/material-outlined/24/000000/marker.png"
-                        alt="Location" />
-                    <a [href]="cardData.footerInfo.link" target="_blank" [title]="cardData.footerInfo.text">
-                        {{ cardData.footerInfo.text }}
-                    </a>
-                </p>
-                <p class="beerInfo" *ngIf="!cardData.extraData?.venueId">
-                    <a [href]="cardData.footerInfo.link" target="_blank">{{ cardData.footerInfo.text }}</a>
-                </p>
+                <a class="location-link" [href]="cardData.footerInfo.link" target="_blank"
+                    [title]="cardData.footerInfo.text" *ngIf="cardData.extraData?.venueId">
+                    <mat-icon class="location-icon">location_on</mat-icon>
+                    <span class="location-text">{{ cardData.footerInfo.text }}</span>
+                </a>
             </div>
             <div class="footer-time">
                 <time>{{ cardData.footerInfo.timestamp }}</time>
