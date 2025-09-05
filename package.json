@@ -1,13 +1,16 @@
 {
-  "name": "liquid-stats",
+  "name": "your-app-name",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "ng serve",
     "build": "ng build",
+    "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "prebuild": "node set-env.js",
+    "start:dev": "node set-env.js --env=dev && ng serve"
   },
   "private": true,
   "dependencies": {

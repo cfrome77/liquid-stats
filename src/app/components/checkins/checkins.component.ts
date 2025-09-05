@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { MatDialog } from '@angular/material/dialog';
 import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge-dialog.component';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
+import { environment } from '../../../environments/environment';
 
 import * as moment from "moment";
 
@@ -15,8 +16,11 @@ import * as moment from "moment";
 export class CheckinsComponent implements OnInit {
   public checkins: any;
   public transformedCheckins: BaseCardData[] = [];
+  username: string;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) { }
+  constructor(private http: HttpClient, private dialog: MatDialog) { 
+    this.username = environment.untappdUsername;
+  }
 
   ngOnInit(): void {
     this.getJSON().subscribe((data) => {
@@ -64,7 +68,7 @@ export class CheckinsComponent implements OnInit {
         },
         venueId: checkin.venue?.venue_id,
         checkinId: checkin.checkin_id,
-        userName: checkin.user.user_name
+        userName: this.username
       }
     };
   }

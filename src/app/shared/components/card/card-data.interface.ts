@@ -4,7 +4,9 @@ export interface BaseCardData {
   subtitle?: string;
   breweryName?: string;
   description?: string;
+  hint?: string;
   rating?: number;
+  globalRating?: number;
   mainImage?: string;
   secondaryImage?: string;
   footerInfo: {
@@ -20,4 +22,5 @@ export interface BaseCardData {
     checkinId?: number;
     userName?: string;
   };
+  rank?: number;
 }

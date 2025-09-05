@@ -52,6 +52,12 @@
     color: #555;
 }
 
+.rank {
+    font-weight: bold;
+    color: black;
+    margin-right: 6px;
+}
+
 .comment {
     color: #333;
     line-height: 22px;
@@ -124,7 +130,7 @@ footer .footer-time {
     white-space: nowrap;
 }
 
-/* ratings styling */
+/* Ratings and badges styling */
 .rating-bar {
     display: flex;
     justify-content: space-between;
@@ -133,21 +139,43 @@ footer .footer-time {
     padding-bottom: 10px;
 }
 
+/* Global rating and social links row */
 .badges-and-social-links {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
+    justify-content: flex-start;
+    align-items: flex-start;
     margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.global-rating {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.global-rating-label {
+    margin-right: 4px;
+    font-weight: normal;
+    color: #555;
+    font-size: 0.9rem;
 }
 
 .chip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
     flex: 1;
 }
 
 .avatar-image {
     height: 24px;
     width: 24px;
+}
+
+.app-social-links {
+    margin-left: auto;
 }
 
 .shared-card .beer-info {
@@ -166,4 +194,21 @@ footer .footer-time {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+/* Adjust for small screens */
+@media (max-width: 480px) {
+    .shared-card {
+        width: 100%;
+    }
+
+    .beer-label,
+    .brewery-label {
+        height: 40px;
+        width: 40px;
+    }
+
+    .global-rating {
+        font-size: 0.95rem;
+    }
 }
