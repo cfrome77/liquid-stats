@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
+import { BaseCardData } from '../../shared/components/card/card-data.interface';
+import { environment } from '../../../environments/environment';
+
 
 interface FilterField {
   field: string;
@@ -21,11 +24,12 @@ interface FilterField {
 export class BeerHistoryComponent implements OnInit {
   public beers: any[] = [];
   public filteredBeers: any[] = [];
-  public paginatedBeers: any[] = [];
+  public paginatedBeers: BaseCardData[] = [];
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
   public totalItems: number = 0;
   public searchTerm: string = '';
+  username: string;
 
   public filterFields: FilterField[] = [
     { field: 'brewery', label: 'Brewery', options: [], selected: [], countMap: {} },
@@ -36,7 +40,9 @@ export class BeerHistoryComponent implements OnInit {
     { field: 'date_range', label: 'Date Range', options: [], selected: [], type: 'date' },
   ];
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) { 
+    this.username = environment.untappdUsername;
+  }
 
   ngOnInit(): void {
     this.fetchBeersData();
@@ -99,6 +105,36 @@ export class BeerHistoryComponent implements OnInit {
         this.resetFilters();
       }
     });
+  }
+
+  // Transform beer data to BaseCardData format
+  public transformBeerData(beer: any): BaseCardData {
+    return {
+      title: beer.beer.beer_name,
+      subtitle: beer.beer.beer_style,
+      breweryName: beer.brewery?.brewery_name,
+      description: beer.beer.beer_description,
+      rating: beer.rating_score,
+      globalRating: beer.beer.rating_score,
+      mainImage: beer.beer.beer_label,
+      secondaryImage: beer.brewery?.brewery_label,
+      footerInfo: {
+        text: 'View Details',
+        link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
+        timestamp: this.published(beer.recent_created_at)
+      },
+      extraData: {
+        socialLinks: beer.brewery.contact,
+        mapData: {
+          lat: beer.brewery?.location?.lat,
+          lng: beer.brewery?.location?.lng,
+          breweryId: beer.brewery?.brewery_id
+        },
+        venueId: beer.brewery?.brewery_id,
+        checkinId: beer.recent_checkin_id,
+        userName: this.username
+      }
+    };
   }
 
   public getJSON(): Observable<any> {
@@ -264,7 +300,8 @@ export class BeerHistoryComponent implements OnInit {
   updatePaginatedBeers(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
+    const beersToPaginate = this.filteredBeers.slice(startIndex, endIndex);
+    this.paginatedBeers = beersToPaginate.map(beer => this.transformBeerData(beer));
   }
 
   viewOnMap(beer: any): void {

@@ -18,52 +18,8 @@
     </div>
   </mat-card>
 
-  <ng-container *ngFor="let beer of paginatedBeers">
-    <mat-card id="checkin-{{ beer.recent_checkin_id }}" class="checkin outline">
-      <mat-card-content>
-        <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px">
-          <img class="beer-label" [src]="beer.beer.beer_label" alt="{{ beer.beer.beer_name }}" />
-          <div fxFlex fxLayout="column">
-            <p><strong>{{ beer.beer.beer_name }}</strong></p>
-            <p>{{ beer.beer.beer_style }}</p>
-            <p>{{ beer.brewery?.brewery_name }}</p>
-          </div>
-          <img class="brewery-label" [src]="beer.brewery?.brewery_label" alt="{{ beer.brewery?.brewery_name }}" />
-        </div>
-
-        <span class="comment" *ngIf="beer.beer.beer_description">{{ beer.beer.beer_description }}</span>
-
-        <div class="rating-container">
-          <app-rating [ratingScore]="beer.rating_score"></app-rating>
-        </div>
-
-        <div fxLayout="row" fxLayoutAlign="space-between center">
-          <span class="overallRating">
-            <div *ngIf="beer.beer.rating_score == 0; then thenBlock; else elseBlock"></div>
-            <ng-template #thenBlock>Overall rating: n/a</ng-template>
-            <ng-template #elseBlock>Overall rating: {{ beer.beer.rating_score }}</ng-template>
-          </span>
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-            <app-social-links [contact]="beer.brewery.contact"></app-social-links>
-            <a [routerLink]="['/map']"
-              [queryParams]="{ lat: beer.brewery?.location?.lat, lng: beer.brewery?.location?.lng, breweryId: beer.brewery?.brewery_id }"
-              title="View on Map" class="view-on-map-link">
-              <mat-icon>map</mat-icon>
-            </a>
-          </div>
-        </div>
-        <footer>
-          <div fxLayout="row" fxLayoutAlign="space-between center">
-            <p class="beerInfo">
-              <a href="https://untappd.com/b/{{ beer.beer.beer_slug }}/{{ beer.beer.bid }}" target="_blank">Beer Info</a>
-            </p>
-            <div class="footer-time">
-              <time>{{ published(beer.recent_created_at) }}</time>
-            </div>
-          </div>
-        </footer>
-      </mat-card-content>
-    </mat-card>
+  <ng-container *ngFor="let beerCard of paginatedBeers">
+    <app-card [cardData]="beerCard"></app-card>
   </ng-container>
 
   <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"

@@ -9,4 +9,8 @@
         title="Instagram">
         <mat-icon svgIcon="instagram"></mat-icon>
     </a>
+    <a *ngIf="mapData" [routerLink]="['/map']"
+        [queryParams]="{ lat: mapData.lat, lng: mapData.lng, breweryId: mapData.breweryId }" title="View on Map">
+        <mat-icon>map</mat-icon>
+    </a>
 </div>

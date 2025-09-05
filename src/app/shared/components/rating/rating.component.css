@@ -1,3 +1,4 @@
+/* General container for the stars and rating number */
 .rating-container {
     display: flex;
     justify-content: space-between;
@@ -7,10 +8,12 @@
     margin-bottom: 10px;
 }
 
+/* Modifier class for unrated items */
 .rating-container.unrated {
     justify-content: flex-start;
 }
 
+/* Styling for the numeric rating text */
 .rating-number {
     font-size: 1.25em;
     color: #333;
@@ -20,6 +23,7 @@
     line-height: 1;
 }
 
+/* Styling for the SVG stars */
 .star {
     width: 2.2em;
     height: 2.2em;

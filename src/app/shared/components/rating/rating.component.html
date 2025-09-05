@@ -1,5 +1,6 @@
-<div class="rating-container" [class.has-stars]="hasRating">
+<div class="rating-container" [class.has-stars]="hasRating" [class.unrated]="!hasRating">
     <ng-container *ngIf="hasRating; else noRating">
+        <!-- Stars on the left -->
         <div class="svg-stars" [attr.title]="ratingScore">
             <ng-container *ngFor="let fill of starFills; let i = index">
                 <svg viewBox="0 0 24 24" class="star" xmlns="http://www.w3.org/2000/svg">
@@ -16,6 +17,8 @@
                 </svg>
             </ng-container>
         </div>
+
+        <!-- Rating text on the right -->
         <span class="rating-number">Rating: <strong>{{ ratingScore }}</strong></span>
     </ng-container>
 
