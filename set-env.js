@@ -3,7 +3,7 @@ const path = require('path');
 require('dotenv').config();
 
 // Check if the main build command includes production flags
-const isProduction = process.argv.includes('--configuration=production') || process.argv.includes('--prod');
+const isProduction = process.argv.includes('--env=prod');
 
 // Determine the target environment file based on the detected environment
 const envFile = isProduction

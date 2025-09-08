@@ -4,13 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node set-env.js && ng build",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "prebuild": "node set-env.js --env=dev",
-    "build:prod": "node set-env.js --env=prod && ng build --configuration production --prod",
+    "build:prod": "node set-env.js --env=prod && ng build --configuration production",
     "start:dev": "node set-env.js --env=dev && ng serve",
     "start:local": "node -r dotenv/config node set-env.js --env=dev && ng serve"
   },
