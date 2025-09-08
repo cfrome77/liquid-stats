@@ -2,15 +2,10 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const environment = process.argv[2];
-const isProduction = environment === '--env=prod';
-const isDevelopment = environment === '--env=dev';
+// Check if the main build command includes production flags
+const isProduction = process.argv.includes('--configuration=production') || process.argv.includes('--prod');
 
-if (!isProduction && !isDevelopment) {
-    console.error('Error: Please provide a valid environment flag: --env=dev or --env=prod');
-    process.exit(1);
-}
-
+// Determine the target environment file based on the detected environment
 const envFile = isProduction
     ? path.join(__dirname, 'src/environments/environment.prod.ts')
     : path.join(__dirname, 'src/environments/environment.ts');
@@ -19,8 +14,10 @@ const targetPath = isProduction
     ? 'src/environments/environment.prod.ts'
     : 'src/environments/environment.ts';
 
+// Get the Untappd username from the environment variables
 const untappdUsername = process.env.UNTAPPD_USERNAME || '';
 
+// Create the content for the environment file
 const envContent = `
 export const environment = {
   production: ${isProduction},
@@ -28,6 +25,7 @@ export const environment = {
 };
 `;
 
+// Write the content to the environment file
 try {
     fs.writeFileSync(envFile, envContent);
     console.log(`Successfully wrote to ${targetPath}`);
