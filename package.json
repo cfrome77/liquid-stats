@@ -61,7 +61,7 @@
     "webpack-bundle-analyzer": "^4.10.2"
   },
   "engines": {
-    "node": "16.20.2",
-    "npm": "8.19.4"
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
   }
 }
