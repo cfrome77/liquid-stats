@@ -6,7 +6,7 @@ import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
 import { environment } from '../../../environments/environment';
 
-import * as moment from "moment";
+import { DateUtils } from '../../shared/date-utils';
 
 @Component({
   selector: "app-checkins",
@@ -18,7 +18,7 @@ export class CheckinsComponent implements OnInit {
   public transformedCheckins: BaseCardData[] = [];
   username: string;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) { 
+  constructor(private http: HttpClient, private dialog: MatDialog) {
     this.username = environment.untappdUsername;
   }
 
@@ -33,8 +33,9 @@ export class CheckinsComponent implements OnInit {
     return this.http.get("https://liquid-stats.s3.amazonaws.com/checkins.json");
   }
 
-  public published(createAt: string) {
-    return moment(Date.parse(createAt)).format("h:mm A D MMM YYYY");
+  public published(createdAt: string | Date): string {
+    // Use DateUtils.formatTimestamp for readable format
+    return DateUtils.formatTimestamp(createdAt);
   }
 
   openBadgeDialog(badge: any): void {
@@ -55,8 +56,10 @@ export class CheckinsComponent implements OnInit {
       secondaryImage: checkin.brewery.brewery_label,
       footerInfo: {
         text: checkin.venue ? checkin.venue.venue_name : 'Beer Info',
-        link: checkin.venue ? `https://untappd.com/venue/${checkin.venue.venue_id}` : `https://untappd.com/b/${checkin.beer.beer_slug}/${checkin.beer.bid}`,
-        timestamp: this.published(checkin.created_at)
+        link: checkin.venue
+          ? `https://untappd.com/venue/${checkin.venue.venue_id}`
+          : `https://untappd.com/b/${checkin.beer.beer_slug}/${checkin.beer.bid}`,
+        timestamp: this.published(checkin.created_at) // <- uses DateUtils
       },
       extraData: {
         badges: checkin.badges.items,

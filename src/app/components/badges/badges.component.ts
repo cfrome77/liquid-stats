@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import * as moment from 'moment';
 import { environment } from '../../../environments/environment';
+import { DateUtils } from 'src/app/shared/date-utils';
 
 @Component({
   selector: 'app-badges',
@@ -17,7 +17,7 @@ export class BadgesComponent implements OnInit {
   public paginatedBadges: any[] = [];
   username: string;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
     this.username = environment.untappdUsername;
   }
 
@@ -33,7 +33,7 @@ export class BadgesComponent implements OnInit {
     return this.http.get<any>('https://liquid-stats.s3.amazonaws.com/badges.json');
   }
 
-  // This method is now used to transform the data for the shared-card
+  // Transform badge data into what your shared-card expects
   public transformBadgeData(badge: any): any {
     return {
       title: badge.badge_name,
@@ -46,13 +46,20 @@ export class BadgesComponent implements OnInit {
         text: 'Badge Page'
       },
       extraData: {
-        // You can add more data here if needed
+        // more optional data if needed
       }
     };
   }
 
-  public published(createAt: string) {
-    return moment(Date.parse(createAt)).format('h:mm A D MMM YYYY');
+  public published(createdAt: string): string {
+    return DateUtils.formatDate(createdAt, {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
   }
 
   public updatePagination(): void {

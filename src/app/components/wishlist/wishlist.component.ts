@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import * as moment from 'moment';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
+import { DateUtils } from '../../shared/date-utils';
 
 @Component({
   selector: 'app-wishlist',
@@ -83,9 +83,7 @@ export class WishlistComponent implements OnInit {
     );
   }
 
-  public published(createAt: string): string {
-    return moment(createAt, 'ddd, DD MMM YYYY HH:mm:ss Z', true).format(
-      'h:mm A D MMM YYYY'
-    );
+  public published(createdAt: string | Date): string {
+    return DateUtils.formatTimestamp(createdAt);
   }
 }

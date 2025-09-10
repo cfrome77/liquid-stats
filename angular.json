@@ -37,8 +37,7 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "leaflet",
-              "leaflet.markercluster",
-              "moment"
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
@@ -60,7 +59,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -98,7 +97,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/ _redirects"
+              "src/_redirects"
             ],
             "styles": [
               "./node_modules/leaflet/dist/leaflet.css",
@@ -126,7 +125,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "liquid-stats-:serve"
+            "devServerTarget": "liquid-stats:serve"
           },
           "configurations": {
             "production": {
@@ -137,7 +136,6 @@
       }
     }
   },
-  "defaultProject": "liquid-stats",
   "cli": {
     "analytics": false
   }

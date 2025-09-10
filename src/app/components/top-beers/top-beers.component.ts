@@ -1,11 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import * as moment from "moment";
 import { MatDialog } from '@angular/material/dialog';
 import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge-dialog.component';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
 import { environment } from '../../../environments/environment';
+
+import { DateUtils } from '../../shared/date-utils';
 
 type DateRangeOption = { label: string; daysBack?: number; year?: number };
 
@@ -66,35 +67,36 @@ export class TopBeersComponent implements OnInit {
     return this.http.get("https://liquid-stats.s3.amazonaws.com/beers.json");
   }
 
-  public published(createAt: string) {
-    return moment(Date.parse(createAt)).format("h:mm A D MMM YYYY");
+  public published(createdAt: string | Date): string {
+    return DateUtils.formatTimestamp(createdAt);
   }
 
   public applyFilters(): void {
-    let cutoffDate: moment.Moment;
+    let cutoffDate: Date;
 
     if (this.useCustomDate && this.customStartDate) {
-      cutoffDate = moment(this.customStartDate);
+      cutoffDate = this.customStartDate;
     } else if (this.selectedRange?.year !== undefined) {
-      cutoffDate = moment(`${this.selectedRange.year}-01-01`);
+      cutoffDate = new Date(this.selectedRange.year, 0, 1); // Jan 1 of year
     } else if (this.selectedRange?.daysBack !== undefined) {
-      cutoffDate = moment().subtract(this.selectedRange.daysBack, "days");
+      cutoffDate = DateUtils.subtractDays(this.selectedRange.daysBack);
     } else {
-      cutoffDate = moment().subtract(30, "days"); // fallback
+      cutoffDate = DateUtils.subtractDays(30); // fallback last 30 days
     }
 
     const filtered = this.beers
       .filter((b: any) => {
-        const checkinDate = moment(b.recent_created_at, "ddd, DD MMM YYYY HH:mm:ss Z");
+        const checkinDate = DateUtils.parseDate(b.recent_created_at);
         return (
           b.rating_score > 0 &&
-          checkinDate.isAfter(cutoffDate) &&
+          checkinDate >= cutoffDate &&
           b.count >= this.minCheckins
         );
       })
       .sort((a: any, b: any) => {
         if (b.rating_score === a.rating_score) {
-          return moment(b.recent_created_at).valueOf() - moment(a.recent_created_at).valueOf();
+          return DateUtils.toTimestamp(DateUtils.parseDate(b.recent_created_at)) -
+                 DateUtils.toTimestamp(DateUtils.parseDate(a.recent_created_at));
         }
         return b.rating_score - a.rating_score;
       })

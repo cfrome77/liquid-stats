@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import * as moment from 'moment';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
 import { environment } from '../../../environments/environment';
-
+import { DateUtils } from 'src/app/shared/date-utils';
 
 interface FilterField {
   field: string;
@@ -40,7 +39,7 @@ export class BeerHistoryComponent implements OnInit {
     { field: 'date_range', label: 'Date Range', options: [], selected: [], type: 'date' },
   ];
 
-  constructor(private http: HttpClient, private router: Router) { 
+  constructor(private http: HttpClient, private router: Router) {
     this.username = environment.untappdUsername;
   }
 
@@ -51,29 +50,27 @@ export class BeerHistoryComponent implements OnInit {
   private fetchBeersData(): void {
     this.getJSON().subscribe((data) => {
       if (data && data.beers && Array.isArray(data.beers)) {
-        // Use fallback parser for safety
-        const parseDate = (dateStr: string): moment.Moment => {
-          let parsed = moment(dateStr, 'ddd, DD MMM YYYY HH:mm:ss Z', true);
-          if (!parsed.isValid()) parsed = moment(dateStr); // fallback for loose formats
-          return parsed;
+        const parseDate = (dateStr: string): Date => {
+          const d = new Date(dateStr);
+          return isNaN(d.getTime()) ? new Date() : d;
         };
 
         // Separate invalid ones
-        const validBeers = data.beers.filter((b: { first_created_at: string; }) => parseDate(b.first_created_at).isValid());
+        const validBeers = data.beers.filter((b: { first_created_at: string; }) => !isNaN(parseDate(b.first_created_at).getTime()));
 
         // Sort valid beers by date
-        this.beers = validBeers.sort((a: { first_created_at: string; }, b: { first_created_at: string; }) =>
-          parseDate(b.first_created_at).valueOf() - parseDate(a.first_created_at).valueOf()
+        this.beers = validBeers.sort(
+          (a: { first_created_at: string; }, b: { first_created_at: string; }) => parseDate(b.first_created_at).getTime() - parseDate(a.first_created_at).getTime()
         );
 
         // Build timestamps
-        const timestamps = this.beers.map(b => parseDate(b.first_created_at).valueOf());
+       const timestamps = this.beers.map(b => DateUtils.parseDate(b.first_created_at));
 
         this.filteredBeers = [...this.beers];
         this.totalItems = this.beers.length;
 
-        const minDate = moment(Math.min(...timestamps)).format('YYYY-MM-DD');
-        const maxDate = moment(Math.max(...timestamps)).format('YYYY-MM-DD');
+        const minDate = DateUtils.toISODate(DateUtils.minDate(timestamps));
+        const maxDate = DateUtils.toISODate(DateUtils.maxDate(timestamps));
 
         const dateFilter = this.filterFields.find(f => f.field === 'date_range');
         if (dateFilter) {
@@ -150,11 +147,8 @@ export class BeerHistoryComponent implements OnInit {
       values = this.beers.map(beer => beer.beer?.beer_style).filter(Boolean);
     } else if (field === 'country') {
       values = this.beers.map(beer => beer.brewery?.country_name).filter(Boolean);
-    }
-    else if (field === 'region') {
-      values = this.beers
-        .map(beer => beer.brewery?.location?.brewery_state)
-        .filter(Boolean);
+    } else if (field === 'region') {
+      values = this.beers.map(beer => beer.brewery?.location?.brewery_state).filter(Boolean);
     }
 
     return [...new Set(values)];
@@ -177,15 +171,8 @@ export class BeerHistoryComponent implements OnInit {
     const dateRange = this.filterFields.find(f => f.field === 'date_range')?.selected || [];
     const searchTermLower = this.searchTerm.toLowerCase();
 
-    const startDate = dateRange[0] ? moment(dateRange[0], 'YYYY-MM-DD').startOf('day') : moment('1900-01-01');
-    const endDate = dateRange[1] ? moment(dateRange[1], 'YYYY-MM-DD').endOf('day') : moment().endOf('day');
-
-    // Use same fallback logic from fetchBeersData
-    const parseDate = (dateStr: string): moment.Moment => {
-      let parsed = moment(dateStr, 'ddd, DD MMM YYYY HH:mm:ss Z', true);
-      if (!parsed.isValid()) parsed = moment(dateStr);
-      return parsed;
-    };
+    const startDate = dateRange[0] ? DateUtils.startOfDay(dateRange[0]) : new Date('1900-01-01');
+    const endDate = dateRange[1] ? DateUtils.endOfDay(dateRange[1]) : DateUtils.endOfDay(new Date());
 
     this.filteredBeers = this.beers.filter(beer => {
       const brewery = beer.brewery?.brewery_name || '';
@@ -193,16 +180,14 @@ export class BeerHistoryComponent implements OnInit {
       const country = beer.brewery?.country_name || '';
       const region = beer.brewery?.location?.brewery_state || '';
       const rating = beer.rating_score || 0;
-      const beerDate = parseDate(beer.first_created_at);
+      const beerDate = new Date(beer.first_created_at);
 
       const matchBrewery = selectedBreweries.length === 0 || selectedBreweries.includes(brewery);
       const matchStyle = selectedStyles.length === 0 || selectedStyles.includes(style);
       const matchCountry = selectedCountries.length === 0 || selectedCountries.includes(country);
       const matchRegion = selectedRegions.length === 0 || selectedRegions.includes(region);
       const matchRating = selectedRatings.length === 0 || selectedRatings.includes(rating);
-      const matchDate = beerDate.isValid() &&
-        beerDate.isSameOrAfter(startDate, 'day') &&
-        beerDate.isSameOrBefore(endDate, 'day');
+      const matchDate = beerDate >= startDate && beerDate <= endDate;
 
       const matchSearch =
         this.searchTerm === '' ||
@@ -280,7 +265,6 @@ export class BeerHistoryComponent implements OnInit {
     });
   }
 
-
   resetFilters(): void {
     this.filterFields.forEach(f => f.selected = []);
     this.searchTerm = '';
@@ -319,6 +303,13 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   public published(createdAt: string): string {
-    return moment(createdAt, 'ddd, DD MMM YYYY HH:mm:ss Z', true).format('h:mm A D MMM YYYY');
+    return DateUtils.formatDate(createdAt, {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
   }
 }
