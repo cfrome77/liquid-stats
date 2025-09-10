@@ -1,0 +1,214 @@
+/* General card styling */
+.shared-card {
+    background-color: #fafafa;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make the cards wider on larger screens */
+@media (min-width: 768px) {
+    .shared-card {
+        width: 650px;
+    }
+}
+
+/* Image styling */
+.beer-label {
+    height: 50px;
+    width: 50px;
+    margin-right: 10px;
+}
+
+.brewery-label {
+    height: 50px;
+    width: 50px;
+    margin-left: 10px;
+}
+
+/* Text and content styling */
+.beer-info {
+    flex-grow: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.beer-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: black;
+}
+
+.beer-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.rank {
+    font-weight: bold;
+    color: black;
+    margin-right: 6px;
+}
+
+.comment {
+    color: #333;
+    line-height: 22px;
+    margin: 10px 0 15px;
+    display: block;
+    text-align: left;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Footer styling */
+footer {
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer .footer-time {
+    font-size: 14px;
+    color: #777;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.location-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #777;
+    text-decoration: none;
+    max-width: 200px;
+}
+
+.location-link:hover {
+    text-decoration: none !important;
+}
+
+.location-link mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #777;
+}
+
+.location-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Ratings and badges styling */
+.rating-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+}
+
+/* Global rating and social links row */
+.badges-and-social-links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.global-rating {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.global-rating-label {
+    margin-right: 4px;
+    font-weight: normal;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.chip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1;
+}
+
+.avatar-image {
+    height: 24px;
+    width: 24px;
+}
+
+.app-social-links {
+    margin-left: auto;
+}
+
+.shared-card .beer-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-left {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Adjust for small screens */
+@media (max-width: 480px) {
+    .shared-card {
+        width: 100%;
+    }
+
+    .beer-label,
+    .brewery-label {
+        height: 40px;
+        width: 40px;
+    }
+
+    .global-rating {
+        font-size: 0.95rem;
+    }
+}

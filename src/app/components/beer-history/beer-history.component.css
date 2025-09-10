@@ -30,7 +30,6 @@ h1 {
   padding: 15px;
   text-align: center;
   width: 100%;
-  /* Ensures the card fills the main-content-container */
 }
 
 /* Beer Card Styling */
@@ -41,7 +40,6 @@ h1 {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 100%;
-  /* Ensures the card fills the main-content-container */
 }
 
 .beer-label {
@@ -63,32 +61,6 @@ h1 {
 
 .overallRating {
   display: block;
-}
-
-/* Map Icon Styling */
-.view-on-map-link {
-  color: grey;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
-  width: 24px;
-}
-
-.view-on-map-link mat-icon {
-  font-size: 24px;
-  line-height: 1;
-  color: inherit;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.view-on-map-link:hover {
-  color: #000;
 }
 
 /* Footer Styling */
