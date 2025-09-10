@@ -2,7 +2,7 @@
 
 This project uses the Untappd api, and allows you to keep track of whats beers you have had, your top rated beers, badges you earned, and statics about your untappd checkins.
 
-![Node CI](https://github.com/cfrome77/liquid-stats/workflows/Node%20CI/badge.svg?branch=main)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e8ebaf8a-2969-42fe-845e-4ae2bd422444/deploy-status)](https://app.netlify.com/projects/liquid-stats/deploys)
 
 The Untappd API requires that you register your application. Register your app [here](https://untappd.com/api/register?register=new). Currently they are not letting an new apps be created to get API access. Most likey you will need t be an insider to gain the ability to download your untappd JSON data.
 

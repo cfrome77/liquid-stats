@@ -83,4 +83,8 @@ venv/
 *.zip
 
 # Local JSON data
-src/assets/beer.json
+/src/assets/*.json
+
+# Angular environment files (auto-generated)
+src/environments/environment.*.ts
+!src/environments/environment.template.ts
