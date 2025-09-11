@@ -36,7 +36,7 @@
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
-                <mat-chip-list class="chip" selectable="false"
+                <mat-chip-listbox class="chip" selectable="false"
                     *ngIf="cardData.extraData?.badges && cardData.globalRating == null">
                     <mat-chip *ngFor="let badge of cardData.extraData.badges" (click)="onBadgeClick(badge)">
                         <mat-chip-avatar>
@@ -44,7 +44,7 @@
                         </mat-chip-avatar>
                         {{ badge.badge_name }}
                     </mat-chip>
-                </mat-chip-list>
+                </mat-chip-listbox>
             </div>
 
             <div fxShrink="0" fxLayoutAlign="center center">
