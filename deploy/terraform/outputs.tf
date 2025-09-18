@@ -4,7 +4,7 @@ output "lambda_arn" {
 }
 
 output "s3_bucket_name" {
-  value       = aws_s3_bucket.this.bucket
+  value       = "https://${aws_s3_bucket.this.bucket}.s3.amazonaws.com/"
   description = "S3 bucket used for Lambda deployment"
 }
 

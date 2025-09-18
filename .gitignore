@@ -75,6 +75,7 @@ venv/
 .venv_packages_hash
 
 # Terraform
+/deploy/terraform/tfplan
 *.tfstate
 *.tfstate.backup
 .terraform/
