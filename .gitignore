@@ -75,11 +75,12 @@ venv/
 .venv_packages_hash
 
 # Terraform
+/deploy/terraform/terraform.auto.tfvars
+/deploy/terraform/*.tfplan
 /deploy/terraform/tfplan
-*.tfstate
-*.tfstate.backup
-.terraform/
-*.tfplan
+/deploy/terraform/*.tfstate
+/deploy/terraform/*.tfstate.backup
+/deploy/terraform/.terraform/
 cloudformation/
 
 # Lambda / Python build artifacts
