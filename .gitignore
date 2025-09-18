@@ -81,7 +81,6 @@ venv/
 /deploy/terraform/*.tfstate
 /deploy/terraform/*.tfstate.backup
 /deploy/terraform/.terraform/
-cloudformation/
 
 # Lambda / Python build artifacts
 lambda/package/
