@@ -24,12 +24,14 @@ variable "lambda_zip_file" {
   description = "Path to the Lambda zip file"
 }
 
-variable "s3_bucket_name" {
-  type        = string
-  description = "S3 bucket name for Lambda code"
-}
-
 variable "region" {
   type        = string
   default     = "us-east-1"
 }
+
+variable "allowed_cors_origins" {
+  description = "List of allowed origins for S3 CORS"
+  type        = list(string)
+  default     = ["http://localhost:4200"] # dev default
+}
+

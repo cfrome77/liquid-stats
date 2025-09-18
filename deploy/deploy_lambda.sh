@@ -13,7 +13,6 @@ source "$TOP_DIR/.env"
 set +a
 
 echo "🌍 Use AWS: $USE_AWS"
-echo "📁 S3 bucket: $S3_BUCKET_NAME"
 echo "📦 Lambda ZIP file: $LAMBDA_ZIP_FILE"
 
 # --- Build Lambda ZIP ---
@@ -45,6 +44,11 @@ if [[ "$USE_AWS" == "true" ]]; then
     deactivate
 fi
 
+# Convert to TF list: ["http://localhost:4200","https://your-site.com"]
+TF_CORS_ORIGINS=$(printf '"%s",' $(echo $ALLOWED_CORS_ORIGINS | tr ',' ' ')) 
+# Remove trailing comma
+TF_CORS_ORIGINS="[${TF_CORS_ORIGINS%,}]"
+
 # --- Generate terraform.auto.tfvars dynamically ---
 TFVARS_FILE="$TF_DIR/terraform.auto.tfvars"
 cat > "$TFVARS_FILE" <<EOF
@@ -53,6 +57,7 @@ client_secret    = "$CLIENT_SECRET"
 untappd_username = "$UNTAPPD_USERNAME"
 use_aws          =  $USE_AWS
 lambda_zip_file  = "$TOP_DIR/$LAMBDA_ZIP_FILE"
+allowed_cors_origins = $TF_CORS_ORIGINS
 EOF
 
 echo "📝 Generated $TFVARS_FILE"

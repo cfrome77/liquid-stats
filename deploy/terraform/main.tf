@@ -70,6 +70,20 @@ resource "aws_s3_bucket_policy" "public_jsons" {
   })
 }
 
+# --- CORS config for browser access ---
+resource "aws_s3_bucket_cors_configuration" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  dynamic "cors_rule" {
+    for_each = var.allowed_cors_origins
+    content {
+      allowed_methods = ["GET"]
+      allowed_origins = var.allowed_cors_origins
+      allowed_headers = ["*"]
+    }
+  }
+}
+
 # --- IAM Role ---
 resource "aws_iam_role" "lambda_execution" {
   name = "LambdaExecutionRole"
