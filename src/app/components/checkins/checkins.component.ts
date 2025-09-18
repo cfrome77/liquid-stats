@@ -4,9 +4,10 @@ import { Observable } from "rxjs";
 import { MatDialog } from '@angular/material/dialog';
 import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge-dialog.component';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
+import { DataService } from 'src/app/core/services/data.service';
 import { environment } from '../../../environments/environment';
 
-import { DateUtils } from '../../shared/date-utils';
+import { DateUtils } from '../../core/utils/date-utils';
 
 @Component({
   selector: "app-checkins",
@@ -18,19 +19,23 @@ export class CheckinsComponent implements OnInit {
   public transformedCheckins: BaseCardData[] = [];
   username: string;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {
+  constructor(private dataService: DataService, private dialog: MatDialog) {
     this.username = environment.untappdUsername;
   }
 
   ngOnInit(): void {
-    this.getJSON().subscribe((data) => {
-      this.checkins = data.response.checkins.items;
-      this.transformedCheckins = this.checkins.map((checkin: any) => this.transformCheckinData(checkin));
+    this.dataService.getCheckins().subscribe({
+      next: (data) => {
+        this.checkins = data.response.checkins.items;
+        this.transformedCheckins = this.checkins.map((checkin: any) => this.transformCheckinData(checkin));
+      },
+      error: (err) => {
+        console.error('Error fetching beers:', err);
+      },
+      complete: () => {
+        console.log('Beers fetch completed');
+      }
     });
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get("https://liquid-stats.s3.amazonaws.com/checkins.json");
   }
 
   public published(createdAt: string | Date): string {

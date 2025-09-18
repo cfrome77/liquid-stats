@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
-import { DateUtils } from '../../shared/date-utils';
+import { DataService } from 'src/app/core/services/data.service';
+import { DateUtils } from '../../core/utils/date-utils';
 
 @Component({
   selector: 'app-wishlist',
@@ -17,7 +17,7 @@ export class WishlistComponent implements OnInit {
   public totalItems: number = 0;
   public isLoading: boolean = true;
 
-  constructor(private http: HttpClient) { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
     this.fetchWishlistData();
@@ -25,22 +25,21 @@ export class WishlistComponent implements OnInit {
 
   private fetchWishlistData(): void {
     this.isLoading = true;
-    this.getJSON().subscribe(
-      (data) => {
+    this.dataService.getWishlist().subscribe({
+      next: (data) => {
         this.wishlist = data.response.beers.items;
         this.totalItems = this.wishlist.length;
         this.updatePaginatedWishlist();
         this.isLoading = false;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching wishlist:', error);
         this.isLoading = false;
+      },
+      complete: () => {
+        console.log('Badges fetch completed');
       }
-    );
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get('https://liquid-stats.s3.amazonaws.com/wishlist.json');
+    });
   }
 
   public transformWishlistData(item: any): BaseCardData {

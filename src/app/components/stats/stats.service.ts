@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { BeerCheckin, ProcessedStats, TopBeer, DayOfWeekCheckinCount, MonthlyCheckinCount, RatingOverTime } from './stats.model';
-import { DateUtils } from '../../shared/date-utils';
+import { DataService } from 'src/app/core/services/data.service';
+import { DateUtils } from '../../core/utils/date-utils';
 
 @Injectable({ providedIn: 'root' })
 export class StatsService {
-    constructor(private http: HttpClient) { }
+    constructor(private dataService: DataService) { }
 
     loadBeerData(): Observable<BeerCheckin[]> {
-        const url = `https://liquid-stats.s3.amazonaws.com/beers.json?cb=${Date.now()}`;
-        return this.http.get<{ beers: BeerCheckin[] }>(url).pipe(map(data => data.beers));
+        return this.dataService.getBeers().pipe(
+            map(data => data.beers || data)
+        );
     }
 
     computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {

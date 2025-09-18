@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { DateUtils } from 'src/app/shared/date-utils';
+import { environment } from 'src/environments/environment';
+import { DataService } from 'src/app/core/services/data.service';
+import { DateUtils } from 'src/app/core/utils/date-utils';
 
 @Component({
   selector: 'app-badges',
@@ -17,20 +16,24 @@ export class BadgesComponent implements OnInit {
   public paginatedBadges: any[] = [];
   username: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private dataService: DataService) {
     this.username = environment.untappdUsername;
   }
 
   ngOnInit(): void {
-    this.getJSON().subscribe((data) => {
-      this.badges = data;
-      this.totalItems = data.length;
-      this.updatePagination();
+    this.dataService.getBadges().subscribe({
+      next: (data) => {
+        this.badges = data;
+        this.totalItems = data.length;
+        this.updatePagination();
+      },
+      error: (err) => {
+        console.error('Error fetching badges:', err);
+      },
+      complete: () => {
+        console.log('Badges fetch completed');
+      }
     });
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get<any>('https://liquid-stats.s3.amazonaws.com/badges.json');
   }
 
   // Transform badge data into what your shared-card expects

@@ -21,8 +21,8 @@ The Untappd API requires that you register your application. Register your app [
 **Note:** We recommend using [NVM (Node Version Manager)](https://github.com/nvm-sh/nvm) to manage Node versions. This allows you to easily switch to Node 16 for this project:
 
 ```bash
-nvm install 16
-nvm use 16
+nvm install 20
+nvm use 20
 ```
 
 Check your installed versions with:
@@ -47,7 +47,7 @@ pip list
 
 ## Usage (AWS)
 
-1 - run the following command to create a .env file: `cp .env.example .env`. Fill in the variables in the `.env` file with your variable for Untappd (`client_secret`, `client_id`, and `untappd username`) and the ones for AWS (`CLOUDFORMATION_TEMPLATE`, `S3_BUCKET_NAME`, `STACK_NAME`, and `ZIP_FILE`). These variable will be read and used by the [`fetch_api_data.py`](fetch_api_data.py) and [`liquid-stats-lambda.json`](liquid-stats-lambda.json) files.
+1 - run the following command to create a .env file: `cp .env.example .env`. Fill in the variables in the `.env` file with your variable for Untappd (`client_secret`, `client_id`, and `untappd username`) and the ones for AWS (`CLOUDFORMATION_TEMPLATE`, `S3_BUCKET_NAME`, `STACK_NAME`, and `LAMBDA_ZIP_FILE`). These variable will be read and used by the [`fetch_api_data.py`](fetch_api_data.py) and [`liquid-stats-lambda.json`](liquid-stats-lambda.json) files.
 
 2 - Use the [`liquid-stats-lambda.sh`](liquid-stats-lambda.sh) file to deploy the needed resources to AWS for automating the retrevial of the Untappd data. The script will build the Lambda code zip that and upload it to S3. It will also deploy the ClouFormation template that creates the Lambda function using the uplodaed zip file and createds the needed permissions and resources to run the lambda on a schedule (cron).
 

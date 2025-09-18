@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { PopUpService } from './pop-up.service';
+import { DataService } from 'src/app/core/services/data.service';
 
 import * as L from 'leaflet';
 import "leaflet.markercluster";
@@ -13,7 +12,7 @@ export class MarkerService {
   private beersUrl: string = 'https://liquid-stats.s3.amazonaws.com/beers.json';
   public markers!: L.MarkerClusterGroup;
 
-  constructor(private http: HttpClient, private popupService: PopUpService) { }
+  constructor(private dataService: DataService) { }
 
   /**
    * Create brewery markers on the map.
@@ -44,67 +43,68 @@ export class MarkerService {
       }[];
     }> = {};
 
-    this.http.get(this.beersUrl).subscribe((res: any) => {
-      const beersList = filteredBeers && filteredBeers.length ? filteredBeers : res.beers;
+    this.dataService.getBeers().subscribe({
+      next: (res: any) => {
+        const beersList = filteredBeers && filteredBeers.length ? filteredBeers : res.beers;
 
-      for (const beer of beersList) {
-        const lat = beer.brewery.location.lat;
-        const lon = beer.brewery.location.lng;
-        const breweryId = beer.brewery.brewery_id;
-        const breweryName = beer.brewery.brewery_name;
-        const breweryCity = beer.brewery.location.brewery_city;
-        const breweryState = beer.brewery.location.brewery_state;
-        const breweryLogo = beer.brewery.brewery_label;
+        for (const beer of beersList) {
+          const lat = beer.brewery.location.lat;
+          const lon = beer.brewery.location.lng;
+          const breweryId = beer.brewery.brewery_id;
+          const breweryName = beer.brewery.brewery_name;
+          const breweryCity = beer.brewery.location.brewery_city;
+          const breweryState = beer.brewery.location.brewery_state;
+          const breweryLogo = beer.brewery.brewery_label;
 
-        const beerName = beer.beer.beer_name;
-        const beerLabel = beer.beer.beer_label || 'https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png';
-        const beerABV = beer.beer.beer_abv;
-        const beerStyle = beer.beer.beer_style;
-        const beerDescription = beer.beer.beer_description;
-        const rating = beer.rating_score;
-        const checkInDate = beer.recent_created_at ? new Date(beer.recent_created_at).toLocaleString() : 'Unknown Date';
-        const count = beer.count || 1;
+          const beerName = beer.beer.beer_name;
+          const beerLabel = beer.beer.beer_label || 'https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png';
+          const beerABV = beer.beer.beer_abv;
+          const beerStyle = beer.beer.beer_style;
+          const beerDescription = beer.beer.beer_description;
+          const rating = beer.rating_score;
+          const checkInDate = beer.recent_created_at ? new Date(beer.recent_created_at).toLocaleString() : 'Unknown Date';
+          const count = beer.count || 1;
 
-        // Use the actual brewery_id as the key
-        const uniqueKey = `${breweryId}`;
+          // Use the actual brewery_id as the key
+          const uniqueKey = `${breweryId}`;
 
-        if (!breweryCounts[uniqueKey]) {
-          breweryCounts[uniqueKey] = {
-            lat,
-            lon,
-            id: breweryId,
-            name: breweryName,
-            city: breweryCity,
-            state: breweryState,
-            logo: breweryLogo,
-            checkIns: []
-          };
+          if (!breweryCounts[uniqueKey]) {
+            breweryCounts[uniqueKey] = {
+              lat,
+              lon,
+              id: breweryId,
+              name: breweryName,
+              city: breweryCity,
+              state: breweryState,
+              logo: breweryLogo,
+              checkIns: []
+            };
+          }
+
+          breweryCounts[uniqueKey].checkIns.push({
+            beerName,
+            beerLabel,
+            beerABV,
+            beerStyle,
+            beerDescription,
+            rating,
+            checkInDate,
+            count
+          });
         }
 
-        breweryCounts[uniqueKey].checkIns.push({
-          beerName,
-          beerLabel,
-          beerABV,
-          beerStyle,
-          beerDescription,
-          rating,
-          checkInDate,
-          count
-        });
-      }
+        // Create markers
+        for (const key in breweryCounts) {
+          const { lat, lon, name, city, state, logo, checkIns, id } = breweryCounts[key];
 
-      // Create markers
-      for (const key in breweryCounts) {
-        const { lat, lon, name, city, state, logo, checkIns, id } = breweryCounts[key];
+          const totalCheckIns = checkIns.length;
 
-        const totalCheckIns = checkIns.length;
+          const checkInsList = checkIns.map(checkIn => {
+            const beerCheckInCount = checkIn.count;
+            // Updated to handle missing beer name data
+            const displayedBeerName = checkIn.beerName || 'Name not available';
 
-        const checkInsList = checkIns.map(checkIn => {
-          const beerCheckInCount = checkIn.count;
-          // Updated to handle missing beer name data
-          const displayedBeerName = checkIn.beerName || 'Name not available';
-
-          return `
+            return `
             <li style="color: black; list-style-type: none; margin-bottom: 10px;">
               <div style="display: flex; align-items: center;">
                 <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
@@ -118,9 +118,9 @@ export class MarkerService {
               </div>
             </li>
           `;
-        }).join('');
+          }).join('');
 
-        const popupContent = `
+          const popupContent = `
           <div style="text-align: left; color: black;">
             <div style="display: flex; align-items: center; margin-bottom: 10px;">
               <img src="${logo}" alt="${name}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"/>
@@ -138,15 +138,22 @@ export class MarkerService {
           </div>
         `;
 
-        const popup = L.popup().setContent(popupContent);
+          const popup = L.popup().setContent(popupContent);
 
-        const marker = L.marker([lat, lon], { icon: markerIcon }) as any;
-        marker.breweryId = id;
-        marker.bindPopup(popup);
-        this.markers.addLayer(marker);
+          const marker = L.marker([lat, lon], { icon: markerIcon }) as any;
+          marker.breweryId = id;
+          marker.bindPopup(popup);
+          this.markers.addLayer(marker);
+        }
+
+        this.markers.addTo(map);
+      },
+      error: (err) => {
+        console.error('Error fetching beers:', err);
+      },
+      complete: () => {
+        console.log('Beers fetch completed');
       }
-
-      this.markers.addTo(map);
     });
   }
 

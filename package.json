@@ -4,15 +4,14 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --project liquid-stats",
-    "build": "ng build --project liquid-stats",
-    "watch": "ng build --project liquid-stats --watch --configuration development",
+    "start": "node set-env.js --env=dev && ng serve --project liquid-stats",
+    "build": "node set-env.js --env=dev && ng build --project liquid-stats --configuration development",
+    "watch": "node set-env.js --env=dev && ng build --project liquid-stats --watch --configuration development",
+    "build:prod": "node set-env.js --env=prod && ng build --project liquid-stats --configuration production",
+    "start:dev": "npm run start",
+    "start:local": "npm run start",
     "test": "ng test --project liquid-stats",
     "lint": "ng lint --project liquid-stats",
-    "prebuild": "node set-env.js --env=dev",
-    "build:prod": "node set-env.js --env=prod && ng build --project liquid-stats --configuration production",
-    "start:dev": "node set-env.js --env=dev && ng serve --project liquid-stats",
-    "start:local": "node -r dotenv/config node set-env.js --env=dev && ng serve --project liquid-stats",
     "analyze": "webpack-bundle-analyzer dist/liquid-stats/stats.json"
   },
   "dependencies": {

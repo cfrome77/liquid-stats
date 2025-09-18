@@ -5,7 +5,7 @@ import { BeerCheckin, ProcessedStats } from './stats.model';
 import { BeerStyleDialogComponent, GenericBeersDialogData } from '../../shared/components/beer-style-dialog/beer-style-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ChartData } from 'chart.js';
-import { DateUtils } from '../../shared/date-utils';
+import { DateUtils } from '../../core/utils/date-utils';
 
 @Component({
   selector: 'app-stats',
@@ -48,9 +48,17 @@ export class StatsComponent implements OnInit {
   }
 
   loadBeerData(): void {
-    this.statsService.loadBeerData().subscribe((data: BeerCheckin[]) => {
-      this.beers = data;
-      this.onDateChange();
+    this.statsService.loadBeerData().subscribe({
+      next: (data: BeerCheckin[]) => {
+        this.beers = data;
+        this.onDateChange();
+      },
+      error: (err) => {
+        console.error('Error fetching beers:', err);
+      },
+      complete: () => {
+        console.log('Beers fetch completed');
+      }
     });
   }
 

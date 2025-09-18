@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
 import { environment } from '../../../environments/environment';
-import { DateUtils } from 'src/app/shared/date-utils';
+import { DataService } from 'src/app/core/services/data.service';
+import { DateUtils } from 'src/app/core/utils/date-utils';
 
 interface FilterField {
   field: string;
@@ -39,7 +38,7 @@ export class BeerHistoryComponent implements OnInit {
     { field: 'date_range', label: 'Date Range', options: [], selected: [], type: 'date' },
   ];
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private dataService: DataService, private router: Router) {
     this.username = environment.untappdUsername;
   }
 
@@ -48,58 +47,54 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   private fetchBeersData(): void {
-    this.getJSON().subscribe((data) => {
-      if (data && data.beers && Array.isArray(data.beers)) {
-        const parseDate = (dateStr: string): Date => {
-          const d = new Date(dateStr);
-          return isNaN(d.getTime()) ? new Date() : d;
-        };
+    this.dataService.getBeers().subscribe({
+      next: (data) => {
+        if (data && data.beers && Array.isArray(data.beers)) {
+          const parseDate = (dateStr: string): Date => {
+            const d = new Date(dateStr);
+            return isNaN(d.getTime()) ? new Date() : d;
+          };
 
-        // Separate invalid ones
-        const validBeers = data.beers.filter((b: { first_created_at: string; }) => !isNaN(parseDate(b.first_created_at).getTime()));
+          const validBeers = data.beers.filter((b: { first_created_at: string }) => !isNaN(parseDate(b.first_created_at).getTime()));
 
-        // Sort valid beers by date
-        this.beers = validBeers.sort(
-          (a: { first_created_at: string; }, b: { first_created_at: string; }) => parseDate(b.first_created_at).getTime() - parseDate(a.first_created_at).getTime()
-        );
+          this.beers = validBeers.sort(
+            (a: { first_created_at: string; }, b: { first_created_at: string; }) => parseDate(b.first_created_at).getTime() - parseDate(a.first_created_at).getTime()
+          );
 
-        // Build timestamps
-       const timestamps = this.beers.map(b => DateUtils.parseDate(b.first_created_at));
+          const timestamps = this.beers.map(b => DateUtils.parseDate(b.first_created_at));
 
-        this.filteredBeers = [...this.beers];
-        this.totalItems = this.beers.length;
+          this.filteredBeers = [...this.beers];
+          this.totalItems = this.beers.length;
 
-        const minDate = DateUtils.toISODate(DateUtils.minDate(timestamps));
-        const maxDate = DateUtils.toISODate(DateUtils.maxDate(timestamps));
+          const minDate = DateUtils.toISODate(DateUtils.minDate(timestamps));
+          const maxDate = DateUtils.toISODate(DateUtils.maxDate(timestamps));
+          const dateFilter = this.filterFields.find(f => f.field === 'date_range');
+          if (dateFilter) {
+            dateFilter.options = [minDate, maxDate];
+            dateFilter.selected = [minDate, maxDate];
+          }
 
-        const dateFilter = this.filterFields.find(f => f.field === 'date_range');
-        if (dateFilter) {
-          dateFilter.options = [minDate, maxDate];
-          dateFilter.selected = [minDate, maxDate];
+          // Update ratings and other filters...
+          const quarterPointScale = Array.from({ length: 21 }, (_, i) => (i * 0.25).toFixed(2));
+          const tenthPointScale = Array.from({ length: 51 }, (_, i) => (i * 0.1).toFixed(1));
+          const combinedRatings = Array.from(new Set([...quarterPointScale.map(val => parseFloat(val)), ...tenthPointScale.map(val => parseFloat(val))])).sort((a, b) => a - b);
+          const formattedRatings = combinedRatings.map(rating => Number.isInteger(rating * 100) && rating * 10 % 10 === 0 ? rating.toFixed(1) : rating.toFixed(2));
+
+          this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort();
+          this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort();
+          this.filterFields[2].options = this.getUniqueFieldValues('country').sort();
+          this.filterFields[3].options = this.getUniqueFieldValues('region').sort();
+          this.filterFields[4].options = formattedRatings;
+
+          this.updateOptionCounts();
+          this.resetFilters();
         }
-
-        // Build ratings list
-        const quarterPointScale = Array.from({ length: 21 }, (_, i) => (i * 0.25).toFixed(2));
-        const tenthPointScale = Array.from({ length: 51 }, (_, i) => (i * 0.1).toFixed(1));
-        const combinedRatings = Array.from(new Set([
-          ...quarterPointScale.map(val => parseFloat(val)),
-          ...tenthPointScale.map(val => parseFloat(val))
-        ])).sort((a, b) => a - b);
-
-        const formattedRatings = combinedRatings.map(rating =>
-          Number.isInteger(rating * 100) && rating * 10 % 10 === 0
-            ? rating.toFixed(1)
-            : rating.toFixed(2)
-        );
-
-        this.filterFields[0].options = this.getUniqueFieldValues('brewery').sort();
-        this.filterFields[1].options = this.getUniqueFieldValues('beer_style').sort();
-        this.filterFields[2].options = this.getUniqueFieldValues('country').sort();
-        this.filterFields[3].options = this.getUniqueFieldValues('region').sort();
-        this.filterFields[4].options = formattedRatings;
-
-        this.updateOptionCounts();
-        this.resetFilters();
+      },
+      error: (err) => {
+        console.error('Error fetching beers:', err);
+      },
+      complete: () => {
+        console.log('Beers fetch completed');
       }
     });
   }
@@ -132,10 +127,6 @@ export class BeerHistoryComponent implements OnInit {
         userName: this.username
       }
     };
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get('https://liquid-stats.s3.amazonaws.com/beers.json');
   }
 
   private getUniqueFieldValues(field: string): string[] {

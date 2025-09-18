@@ -4,9 +4,10 @@ import { Observable } from "rxjs";
 import { MatDialog } from '@angular/material/dialog';
 import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge-dialog.component';
 import { BaseCardData } from '../../shared/components/card/card-data.interface';
+import { DataService } from 'src/app/core/services/data.service';
 import { environment } from '../../../environments/environment';
 
-import { DateUtils } from '../../shared/date-utils';
+import { DateUtils } from '../../core/utils/date-utils';
 
 type DateRangeOption = { label: string; daysBack?: number; year?: number };
 
@@ -40,15 +41,23 @@ export class TopBeersComponent implements OnInit {
 
   username: string;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) { 
+  constructor(private dataService: DataService, private dialog: MatDialog) {
     this.username = environment.untappdUsername;
   }
 
   ngOnInit(): void {
     this.addYearOptions(2018);
-    this.getJSON().subscribe((data) => {
-      this.beers = data.beers;
-      this.applyFilters();
+    this.dataService.getBeers().subscribe({
+      next: (data) => {
+        this.beers = data.beers;
+        this.applyFilters();
+      },
+      error: (err) => {
+        console.error('Error fetching beers:', err);
+      },
+      complete: () => {
+        console.log('Beers fetch completed');
+      }
     });
   }
 
@@ -61,10 +70,6 @@ export class TopBeersComponent implements OnInit {
     }
 
     this.dateRangeOptions.push(...years);
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get("https://liquid-stats.s3.amazonaws.com/beers.json");
   }
 
   public published(createdAt: string | Date): string {
@@ -96,7 +101,7 @@ export class TopBeersComponent implements OnInit {
       .sort((a: any, b: any) => {
         if (b.rating_score === a.rating_score) {
           return DateUtils.toTimestamp(DateUtils.parseDate(b.recent_created_at)) -
-                 DateUtils.toTimestamp(DateUtils.parseDate(a.recent_created_at));
+            DateUtils.toTimestamp(DateUtils.parseDate(a.recent_created_at));
         }
         return b.rating_score - a.rating_score;
       })
