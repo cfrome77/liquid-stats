@@ -1,6 +1,5 @@
 <mat-card class="shared-card">
-    <mat-card-content class="beer no-padding-top-bottom">
-        <!-- Header Section: Beer + Brewery Info -->
+    <mat-card-content class="beer">
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px" class="header-section">
             <img *ngIf="cardData.mainImage" class="beer-label" [src]="cardData.mainImage" [alt]="cardData.title"
                 [title]="cardData.title" />
@@ -18,16 +17,13 @@
                 [alt]="cardData.breweryName" [title]="cardData.breweryName" />
         </div>
 
-        <!-- Description -->
         <span class="comment" *ngIf="cardData.description">{{ cardData.description }}</span>
         <span class="comment" *ngIf="cardData.hint">{{ cardData.hint }}</span>
 
-        <!-- Personal Rating -->
         <div class="rating-bar" fxLayout="row" fxLayoutAlign="space-between center">
             <app-rating *ngIf="cardData.rating != null" [ratingScore]="cardData.rating" fxFlex></app-rating>
         </div>
 
-        <!-- Global Rating OR Badges + Social Links -->
         <div class="badges-and-social-links" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
             <div *ngIf="cardData.globalRating != null" class="global-rating" fxLayout="row" fxLayoutAlign="start center"
                 fxLayoutGap="4px">
@@ -54,7 +50,6 @@
             </div>
         </div>
 
-        <!-- Footer -->
         <footer>
             <div class="footer-left">
                 <a class="location-link" [href]="cardData.footerInfo.link" target="_blank"

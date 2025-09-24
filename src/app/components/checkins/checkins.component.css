@@ -3,9 +3,7 @@ p {
   margin: 0 !important;
 }
 
-h1 {
-  color: white;
-}
+/* Removed conflicting h1 rule */
 
 .location {
   float: left;

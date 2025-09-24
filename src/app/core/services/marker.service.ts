@@ -121,22 +121,26 @@ export class MarkerService {
           }).join('');
 
           const popupContent = `
-          <div style="text-align: left; color: black;">
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-              <img src="${logo}" alt="${name}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"/>
-              <div>
-                <h3 style="margin: 0; color: black;">${name}</h3>
-                <p style="margin: 0; color: black;">${city}, ${state}</p>
-              </div>
-            </div>
-            <div style="color: black;">
-              Check-ins: ${totalCheckIns}
-            </div>
-            <ul style="max-height: 200px; overflow-y: scroll; padding-left: 0; color: black;">
-              ${checkInsList}
-            </ul>
-          </div>
-        `;
+  <div style="text-align: left; color: black; padding: 10px 12px 10px 12px;">
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+      <img src="${logo}" alt="${name}" 
+           style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"/>
+      <div>
+        <h3 style="margin: 0 0 4px 0; color: black; font-size: 16px; line-height: 1.2;">
+          ${name}
+        </h3>
+        <p style="margin: 0; color: black;">${city}, ${state}</p>
+      </div>
+    </div>
+    <div style="color: black; margin-bottom: 8px;">
+      Check-ins: ${totalCheckIns}
+    </div>
+    <ul style="max-height: 200px; overflow-y: auto; padding-left: 0; margin: 0; color: black;">
+      ${checkInsList}
+    </ul>
+  </div>
+`;
+
 
           const popup = L.popup().setContent(popupContent);
 

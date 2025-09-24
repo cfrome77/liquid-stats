@@ -7,7 +7,36 @@ h1 {
   color: white;
 }
 
+/* Existing style */
 .overallRating {
   float: left;
   clear: left;
+}
+
+/* New styles for Top Beers page */
+.filter-radio-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.filter-radio-group mat-radio-button {
+  margin-right: 20px;
+}
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.filter-controls mat-label {
+  color: white;
+}
+
+.filter-results {
+  text-align: center;
+  color: #ccc;
 }

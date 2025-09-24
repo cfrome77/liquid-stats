@@ -12,24 +12,59 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* This is the key to controlling the size. 
-  It defines the overall width and centers the content without affecting
-  the internal Flexbox behavior.
-*/
-.main-content-container {
-  width: 95%;
+/* Filter Card */
+.filter-card {
+  background-color: #fafafa;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  box-sizing: border-box;
+  text-align: left;
 }
 
-/* Styling for the White Cards */
-.white-card {
-  border: 1px solid #e0e0e0;
-  box-shadow: none;
-  border-radius: 8px;
-  padding: 15px;
-  text-align: center;
+/* Inner content */
+.filter-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   width: 100%;
+}
+
+/* Buttons container */
+.filter-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Search row */
+.filter-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Make the input fill available space */
+.form-field-wrapper {
+  flex: 1;
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+:host ::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+  border: 1px solid rgba(0, 0, 0, 0.12); /* Default outline color */
+}
+
+:host ::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-form-field-outline-thick {
+  border: 2px solid #3f51b5; /* Focused outline color from pink-bluegrey theme */
 }
 
 /* Beer Card Styling */
@@ -81,4 +116,20 @@ footer .beerInfo a:hover {
 footer .footer-time {
   font-size: 14px;
   color: #777;
+}
+
+/* ------------------------------
+   ✅ Responsive Adjustments
+-------------------------------*/
+
+/* Stack search input + button on small screens */
+@media (max-width: 600px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-row button {
+    width: 100%; /* full-width reset button */
+  }
 }

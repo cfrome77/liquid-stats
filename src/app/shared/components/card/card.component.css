@@ -1,20 +1,49 @@
 /* General card styling */
 .shared-card {
     background-color: #fafafa;
-    padding: 15px;
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 300px;
+    width: 100%;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
 }
 
-/* Make the cards wider on larger screens */
-@media (min-width: 768px) {
-    .shared-card {
-        width: 650px;
-    }
+/* Remove Angular Material default padding */
+.mat-mdc-card-content {
+    padding: 0 !important;
+}
+
+/* Adds specific padding to the internal sections */
+.header-section {
+    padding: 15px 15px 0 15px;
+}
+
+.comment {
+    color: #333;
+    line-height: 22px;
+    margin: 10px 15px 15px 15px;
+    display: block;
+    text-align: left;
+}
+
+.rating-bar {
+    padding: 0 15px 10px 15px;
+}
+
+.badges-and-social-links {
+    padding: 0 15px;
+    margin-top: 10px;
+}
+
+footer {
+    border-top: 1px solid #eee;
+    padding: 8px 15px 0px 15px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Image styling */
@@ -58,14 +87,6 @@
     margin-right: 6px;
 }
 
-.comment {
-    color: #333;
-    line-height: 22px;
-    margin: 10px 0 15px;
-    display: block;
-    text-align: left;
-}
-
 .rating-container {
     display: flex;
     justify-content: flex-end;
@@ -73,15 +94,6 @@
 }
 
 /* Footer styling */
-footer {
-    border-top: 1px solid #eee;
-    padding-top: 8px;
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 footer a {
     color: #1976d2;
     text-decoration: none;
@@ -144,7 +156,6 @@ footer .footer-time {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 10px;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -198,10 +209,6 @@ footer .footer-time {
 
 /* Adjust for small screens */
 @media (max-width: 480px) {
-    .shared-card {
-        width: 100%;
-    }
-
     .beer-label,
     .brewery-label {
         height: 40px;

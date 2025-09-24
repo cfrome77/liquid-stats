@@ -1,39 +1,21 @@
+/* Importing fonts and styles. */
 @import url(https://fonts.googleapis.com/css?family=Nunito);
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700");
 
-/* Color Palletes */
-/*Just change the color e.g. $red or $green or define you color as you like....*/
-/* Base Styles */
-*,
-*:before,
+/* Reset Styles - Resets the default browser stylesheet */
+*:not(.mat-mdc-form-field, .mat-mdc-form-field *),
+*:not(.mat-mdc-form-field, .mat-mdc-form-field *):before,
+*:not(.mat-mdc-form-field, .mat-mdc-form-field *):after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}*:before,
 *:after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  font-size: 100%;
-  font-family: "Nunito", Arial, sans-serif;
-  font-weight: normal;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-  overflow-x: hidden;
-}
-
-/**
-* @section Reset styles
-* These styles reset the default style sheet that comes with the user agent.
-*/
 body,
 h1,
 h2,
@@ -51,14 +33,6 @@ blockquote,
 pre,
 textarea {
   margin: 0;
-  color: #fff;
-}
-
-h1,
-strong {
-  color: #000;
-  margin: 15px 0 30px;
-  text-align: center;
 }
 
 ul,
@@ -74,9 +48,32 @@ fieldset {
   border: none;
 }
 
-/**
-* Clearfix
-*/
+/* Base Document Styles */
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  font-size: 100%;
+  font-family: "Nunito", "Montserrat", Roboto, Arial, sans-serif;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: #f7f5ef;
+  color: #333;
+}
+
+/* Global Typography */
+h1 {
+  color: #fff;
+  margin: 15px 0 30px;
+  text-align: center;
+}
+
+strong {
+  color: #000;
+}
+
+/* Clearfix Utility */
 .cf:before,
 .cf:after {
   content: " ";
@@ -87,13 +84,38 @@ fieldset {
   clear: both;
 }
 
-mat-card {
+/* Mat-Card and Card-related Styles */
+/* The mat-card component now uses the .mat-mdc-card class
+  as part of the Angular Material MDC migration.
+*/
+.mat-mdc-card {
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   margin: 0 auto 15px;
   padding: 15px;
-  width: 50%;
+}
+
+/* The base width for mat-card on larger screens */
+@media (min-width: 1025px) {
+
+  /*
+    UPDATED: Using the new .mat-mdc-card class selector for consistency.
+  */
+  .mat-mdc-card {
+    width: 50%;
+  }
+}
+
+/* Responsive widths for smaller screens */
+@media (max-width: 1024px) {
+
+  /*
+    UPDATED: Using the new .mat-mdc-card class selector for consistency.
+  */
+  .mat-mdc-card {
+    width: 100%;
+  }
 }
 
 .chip {
@@ -122,6 +144,7 @@ mat-card {
 .user,
 .checkin {
   margin-bottom: 15px;
+  color: #333;
 }
 
 .user {
@@ -148,6 +171,13 @@ mat-card {
   color: #999;
   font-size: 14px;
   padding-left: 12px;
+}
+
+/* Shared container */
+.main-content-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .checkin {
@@ -215,9 +245,7 @@ footer {
   width: 13px;
 }
 
-/**
-    * Image Replacement
-    */
+/* Image Replacement */
 .hide-text {
   text-indent: 100%;
   white-space: nowrap;
@@ -267,10 +295,7 @@ footer {
   text-decoration: none;
 }
 
-/**
-* @section HTML5 Elements
-* Set display:block for HTML5 block elements
-*/
+/* HTML5 Elements */
 main,
 article,
 aside,
@@ -286,32 +311,7 @@ section {
   display: block;
 }
 
-/**
-* @section General
-* Custom design for this app here
-*/
-body {
-  background-color: #f7f5ef;
-  color: #333;
-  font-family: "Montserrat", sans-serif;
-}
-
-h1 {
-  color: #000;
-  margin: 15px 0 30px;
-  text-align: center;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
+/* Custom Design for the App */
 .navbar-color {
   background-color: #494d50;
   color: white;
@@ -348,27 +348,62 @@ body {
   background-color: gainsboro;
 }
 
-/* Custom light-theme section, for datepicker only */
+.leaflet-popup-content {
+  margin: 8px 10px;   /* adds spacing inside content */
+  line-height: 1.4;
+}
+
+.leaflet-popup-content h3 {
+  margin-top: 0;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.leaflet-popup-content p {
+  margin: 0;
+}
+
+.leaflet-popup-content ul {
+  padding-left: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.leaflet-popup-close-button {
+  top: 6px !important;    /* move down a little */
+  right: 6px !important;  /* move left a little */
+  font-size: 18px;        /* optional: make bigger */
+  color: #333;            /* optional: darker color */
+}
+
+.leaflet-popup-tip-container {
+  display: none;
+}
+
+/* Datepicker specific styles */
 .light-theme {
   background-color: #ffffff;
   color: #000000;
 }
 
-.light-theme .mat-form-field-appearance-outline .mat-form-field-outline {
+/*
+  UPDATED: Datepicker form field selectors changed to the new MDC classes.
+*/
+.light-theme .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
   color: rgba(0, 0, 0, 0.12);
   border-color: rgba(0, 0, 0, 0.12);
 }
 
-.light-theme .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+.light-theme .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-form-field-outline-thick {
   color: #3f51b5;
   border-color: #3f51b5;
 }
 
-.light-theme .mat-form-field-label {
+.light-theme .mat-mdc-form-field-label {
   color: rgba(0, 0, 0, 0.6);
 }
 
-.light-theme .mat-input-element {
+.light-theme .mat-mdc-input-element {
   color: #000;
 }
 
@@ -380,75 +415,18 @@ body {
 }
 
 /* Fix datepicker toggle icon color in light theme */
-.light-theme .mat-datepicker-toggle-default-icon {
+/*
+  UPDATED: The toggle icon's class has changed to mat-mdc-datepicker-toggle-default-icon.
+*/
+.light-theme .mat-mdc-datepicker-toggle-default-icon {
   color: rgba(0, 0, 0, 0.54);
 }
 
 /* Optional: when hovered or focused */
-.light-theme .mat-datepicker-toggle:hover .mat-datepicker-toggle-default-icon,
-.light-theme .mat-datepicker-toggle.mat-focused .mat-datepicker-toggle-default-icon {
+/*
+  UPDATED: Datepicker toggle classes changed.
+*/
+.light-theme .mat-mdc-datepicker-toggle:hover .mat-mdc-datepicker-toggle-default-icon,
+.light-theme .mat-mdc-datepicker-toggle.mat-focused .mat-mdc-datepicker-toggle-default-icon {
   color: #3f51b5;
-}
-
-/** 
-  mobile view
-**/
-/* Media Query for Mobile Devices */
-@media (max-width: 480px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 100%;
-  }
-}
-
-/* Media Query for low resolution  Tablets, Ipads */
-@media (min-width: 481px) and (max-width: 767px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 100%;
-  }
-}
-
-/* Media Query for Tablets Ipads portrait mode */
-@media (min-width: 768px) and (max-width: 1024px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 100%;
-  }
-}
-
-/* Media Query for Laptops and Desktops */
-@media (min-width: 1025px) and (max-width: 1280px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 50%;
-  }
-}
-
-/* Media Query for Large screens */
-@media (min-width: 1281px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 50%;
-  }
 }
