@@ -2,6 +2,6 @@
 export const environment = {
   production: false,
   useAWS: true,
-  dataUrl: 'https://liquid-stats-46ea8b54.s3.amazonaws.com/',
-  untappdUsername: 'fromeca'
+  dataUrl: "https://liquid-stats-46ea8b54.s3.amazonaws.com/",
+  untappdUsername: "fromeca",
 };

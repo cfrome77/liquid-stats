@@ -2,13 +2,13 @@
 
 <div class="main-content-container">
   <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
-  <app-card
-    *ngFor="let checkin of transformedCheckins"
-    [cardData]="checkin"
-    (badgeClick)="openBadgeDialog($event)">
-  </app-card>
-</div>
-
+    <app-card
+      *ngFor="let checkin of transformedCheckins"
+      [cardData]="checkin"
+      (badgeClick)="openBadgeDialog($event)"
+    >
+    </app-card>
+  </div>
 </div>
 
 <app-powered-by></app-powered-by>

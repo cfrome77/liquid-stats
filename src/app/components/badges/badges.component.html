@@ -2,13 +2,21 @@
 
 <div class="main-content-container">
   <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
-    <app-card *ngFor="let badge of paginatedBadges" [cardData]="transformBadgeData(badge)">
+    <app-card
+      *ngFor="let badge of paginatedBadges"
+      [cardData]="transformBadgeData(badge)"
+    >
     </app-card>
   </div>
 </div>
 
-<app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
-  (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+<app-pagination
+  [currentPage]="currentPage"
+  [itemsPerPage]="itemsPerPage"
+  [totalItems]="totalItems"
+  (pageChange)="onPageChange($event)"
+  (itemsPerPageChange)="onItemsPerPageChange($event)"
+>
 </app-pagination>
 
 <app-powered-by></app-powered-by>

@@ -3,15 +3,19 @@
 <div class="main-content-container">
   <ng-container *ngIf="wishlist.length > 0; else noItemsBlock">
     <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
-      <app-card *ngFor="let item of paginatedWishlist" [cardData]="item"></app-card>
+      <app-card
+        *ngFor="let item of paginatedWishlist"
+        [cardData]="item"
+      ></app-card>
     </div>
 
-    <app-pagination 
-      *ngIf="totalItems > itemsPerPage" 
-      [totalItems]="totalItems" 
+    <app-pagination
+      *ngIf="totalItems > itemsPerPage"
+      [totalItems]="totalItems"
       [itemsPerPage]="itemsPerPage"
-      [currentPage]="currentPage" 
-      (pageChange)="goToPage($event)">
+      [currentPage]="currentPage"
+      (pageChange)="goToPage($event)"
+    >
     </app-pagination>
   </ng-container>
 

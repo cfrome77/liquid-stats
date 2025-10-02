@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 export interface GenericBeersDialogData {
   title: string;
@@ -14,15 +14,12 @@ export interface GenericBeersDialogData {
 }
 
 @Component({
-  selector: 'app-beer-style-dialog',
-  templateUrl: './beer-style-dialog.component.html',
-  styleUrls: ['./beer-style-dialog.component.css']
+  selector: "app-beer-style-dialog",
+  templateUrl: "./beer-style-dialog.component.html",
+  styleUrls: ["./beer-style-dialog.component.css"],
 })
 export class BeerStyleDialogComponent implements OnInit {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: GenericBeersDialogData) {}
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: GenericBeersDialogData) { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

@@ -1,23 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { BaseCardData } from '../../shared/components/card/card-data.interface';
-import { DataService } from 'src/app/core/services/data.service';
-import { DateUtils } from '../../core/utils/date-utils';
+import { Component, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
+import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { DataService } from "src/app/core/services/data.service";
+import { DateUtils } from "../../core/utils/date-utils";
 
 @Component({
-  selector: 'app-wishlist',
-  templateUrl: './wishlist.component.html',
-  styleUrls: ['./wishlist.component.css'],
+  selector: "app-wishlist",
+  templateUrl: "./wishlist.component.html",
+  styleUrls: ["./wishlist.component.css"],
 })
 export class WishlistComponent implements OnInit {
   public wishlist: any[] = [];
   public paginatedWishlist: BaseCardData[] = [];
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
-  public totalItems: number = 0;
-  public isLoading: boolean = true;
+  public currentPage = 1;
+  public itemsPerPage = 10;
+  public totalItems = 0;
+  public isLoading = true;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.fetchWishlistData();
@@ -33,12 +33,12 @@ export class WishlistComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error fetching wishlist:', error);
+        console.error("Error fetching wishlist:", error);
         this.isLoading = false;
       },
       complete: () => {
-        console.log('Badges fetch completed');
-      }
+        console.log("Badges fetch completed");
+      },
     });
   }
 
@@ -53,7 +53,7 @@ export class WishlistComponent implements OnInit {
       mainImage: item.beer.beer_label,
       secondaryImage: item.brewery.brewery_label,
       footerInfo: {
-        text: 'View Details',
+        text: "View Details",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
         timestamp: this.published(item.created_at),
       },
@@ -78,7 +78,7 @@ export class WishlistComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     const itemsToPaginate = this.wishlist.slice(startIndex, endIndex);
     this.paginatedWishlist = itemsToPaginate.map((item) =>
-      this.transformWishlistData(item)
+      this.transformWishlistData(item),
     );
   }
 

@@ -1,36 +1,48 @@
 <h1>Beer History</h1>
 
 <div class="main-content-container">
-  <mat-card class="filter-card">
+  <mat-card class="filter-card light-theme">
     <div class="filter-card-content">
-
       <div class="filter-buttons-container">
-        <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
+        <app-filter
+          [filterFields]="filterFields"
+          (filterChanged)="onFilterChange()"
+        ></app-filter>
       </div>
 
       <div class="filter-row">
-  <div class="form-field-wrapper">
-    <mat-form-field appearance="outline">
-      <mat-label>Search beers...</mat-label>
-      <input matInput type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" />
-    </mat-form-field>
-  </div>
-  <button mat-flat-button color="warn" (click)="resetFilters()">Reset Filters</button>
-</div>
-
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline">
+            <mat-label>Search beers...</mat-label>
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+            />
+          </mat-form-field>
+        </div>
+        <button mat-flat-button color="warn" (click)="resetFilters()">
+          Reset Filters
+        </button>
+      </div>
     </div>
   </mat-card>
 
   <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
-    <app-card *ngFor="let beerCard of paginatedBeers" [cardData]="beerCard"></app-card>
+    <app-card
+      *ngFor="let beerCard of paginatedBeers"
+      [cardData]="beerCard"
+    ></app-card>
   </div>
 
-  <app-pagination 
-    [currentPage]="currentPage" 
-    [itemsPerPage]="itemsPerPage" 
+  <app-pagination
+    [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage"
     [totalItems]="totalItems"
-    (pageChange)="goToPage($event)" 
-    (itemsPerPageChange)="changeItemsPerPage($event)">
+    (pageChange)="goToPage($event)"
+    (itemsPerPageChange)="changeItemsPerPage($event)"
+  >
   </app-pagination>
 </div>
 

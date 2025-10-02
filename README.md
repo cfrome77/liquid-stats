@@ -10,14 +10,14 @@ The Untappd API requires that you register your application. Register your app [
 
 ## Prerequisites
 
-| Tool / Package      | Required Version | Purpose |
-|--------------------|-----------------|---------|
-| Node.js             | v20.x           | Runtime for Angular and scripts |
-| npm                 | v10.x           | Package manager |
-| Angular CLI         | v14.x           | Building and serving the app |
-| Python              | 3.x             | Fetching Untappd data |
-| pip / python-dotenv | Latest          | Python dependency management |
-| Terraform           | v1.6.x          | Deploying AWS infrastructure |
+| Tool / Package      | Required Version | Purpose                         |
+| ------------------- | ---------------- | ------------------------------- |
+| Node.js             | v20.x            | Runtime for Angular and scripts |
+| npm                 | v10.x            | Package manager                 |
+| Angular CLI         | v14.x            | Building and serving the app    |
+| Python              | 3.x              | Fetching Untappd data           |
+| pip / python-dotenv | Latest           | Python dependency management    |
+| Terraform           | v1.6.x           | Deploying AWS infrastructure    |
 
 **Note:** We recommend using [NVM (Node Version Manager)](https://github.com/nvm/nvm) to manage Node versions. This allows you to easily switch to Node 16 for this project:
 
@@ -108,17 +108,17 @@ This script builds the Lambda zip from `lambda/`, uploads it to S3, and deploys 
 
 4. Once deployed, you can:
 
-- Run `lambda/fetch_api_data.py` locally to update your local JSON copies.  
+- Run `lambda/fetch_api_data.py` locally to update your local JSON copies.
 - Deploy the Angular app to your server; it will fetch the data from S3 according to the Lambda schedule.
 
 ---
 
 ## Terraform Notes
 
-- All Terraform files are in `deploy/terraform/`.  
-- Only sensitive or generated files are ignored (`terraform.auto.tfvars`, `.tfplan`, `.tfstate`, `.terraform/`).  
-- Core configuration files (`main.tf`, `provider.tf`, `outputs.tf`, `variables.tf`, `.terraform.lock.hcl`) are tracked in Git.  
-- `.terraform.lock.hcl` ensures consistent provider versions across environments.  
+- All Terraform files are in `deploy/terraform/`.
+- Only sensitive or generated files are ignored (`terraform.auto.tfvars`, `.tfplan`, `.tfstate`, `.terraform/`).
+- Core configuration files (`main.tf`, `provider.tf`, `outputs.tf`, `variables.tf`, `.terraform.lock.hcl`) are tracked in Git.
+- `.terraform.lock.hcl` ensures consistent provider versions across environments.
 
 ---
 

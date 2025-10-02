@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { DataService } from 'src/app/core/services/data.service';
-import { DateUtils } from 'src/app/core/utils/date-utils';
+import { Component, OnInit } from "@angular/core";
+import { environment } from "src/environments/environment";
+import { DataService } from "src/app/core/services/data.service";
+import { DateUtils } from "src/app/core/utils/date-utils";
+import { Badge, TransformedBadge } from "src/app/core/models/badge.model";
 
 @Component({
-  selector: 'app-badges',
-  templateUrl: './badges.component.html',
-  styleUrls: ['./badges.component.css']
+  selector: "app-badges",
+  templateUrl: "./badges.component.html",
+  styleUrls: ["./badges.component.css"],
 })
 export class BadgesComponent implements OnInit {
-  public badges: any[] = [];
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
+  public badges: Badge[] = [];
+  public paginatedBadges: Badge[] = [];
+  public currentPage = 1;
+  public itemsPerPage = 10;
   public totalItems!: number;
-  public paginatedBadges: any[] = [];
-  username: string;
+  public username: string;
 
   constructor(private dataService: DataService) {
     this.username = environment.untappdUsername;
@@ -22,22 +23,22 @@ export class BadgesComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.getBadges().subscribe({
-      next: (data) => {
+      next: (data: Badge[]) => {
         this.badges = data;
         this.totalItems = data.length;
         this.updatePagination();
       },
-      error: (err) => {
-        console.error('Error fetching badges:', err);
+      error: (err: any) => {
+        console.error("Error fetching badges:", err);
       },
       complete: () => {
-        console.log('Badges fetch completed');
-      }
+        console.log("Badges fetch completed");
+      },
     });
   }
 
   // Transform badge data into what your shared-card expects
-  public transformBadgeData(badge: any): any {
+  public transformBadgeData(badge: Badge): TransformedBadge {
     return {
       title: badge.badge_name,
       description: badge.badge_description,
@@ -46,22 +47,20 @@ export class BadgesComponent implements OnInit {
       footerInfo: {
         timestamp: this.published(badge.earned_at),
         link: `https://untappd.com/user/${this.username}/badges/${badge.user_badge_id}`,
-        text: 'Badge Page'
+        text: "Badge Page",
       },
-      extraData: {
-        // more optional data if needed
-      }
+      extraData: {},
     };
   }
 
   public published(createdAt: string): string {
     return DateUtils.formatDate(createdAt, {
-      hour: 'numeric',
-      minute: 'numeric',
+      hour: "numeric",
+      minute: "numeric",
       hour12: true,
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
   }
 

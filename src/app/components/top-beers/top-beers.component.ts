@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { MatDialog } from '@angular/material/dialog';
-import { BadgeDialogComponent } from '../../shared/components/badge-dialog/badge-dialog.component';
-import { BaseCardData } from '../../shared/components/card/card-data.interface';
-import { DataService } from 'src/app/core/services/data.service';
-import { environment } from '../../../environments/environment';
+import { MatDialog } from "@angular/material/dialog";
+import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
+import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { DataService } from "src/app/core/services/data.service";
+import { environment } from "../../../environments/environment";
 
-import { DateUtils } from '../../core/utils/date-utils';
+import { BeerCheckin } from "src/app/core/models/beer.model"; // ✅ use BeerCheckin
+import { DateUtils } from "../../core/utils/date-utils";
 
 type DateRangeOption = { label: string; daysBack?: number; year?: number };
 
@@ -17,16 +16,16 @@ type DateRangeOption = { label: string; daysBack?: number; year?: number };
   styleUrls: ["./top-beers.component.css"],
 })
 export class TopBeersComponent implements OnInit {
-  public beers: any[] = [];
+  public beers: BeerCheckin[] = []; // ✅ use BeerCheckin[]
+  public filteredBeers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
-  public filteredBeers: any[] = [];
 
   public dateRangeOptions: DateRangeOption[] = [
     { label: "Last 30 days", daysBack: 30 },
     { label: "Last 60 days", daysBack: 60 },
     { label: "Last 90 days", daysBack: 90 },
     { label: "Last 6 months", daysBack: 180 },
-    { label: "Last year", daysBack: 365 }
+    { label: "Last year", daysBack: 365 },
   ];
 
   public topXOptions = [5, 10, 15, 20];
@@ -36,28 +35,33 @@ export class TopBeersComponent implements OnInit {
   public topX = 10;
   public minCheckins = 3;
 
-  public useCustomDate: boolean = false;
+  public useCustomDate = false;
   public customStartDate: Date = new Date();
 
   username: string;
 
-  constructor(private dataService: DataService, private dialog: MatDialog) {
+  constructor(
+    private dataService: DataService,
+    private dialog: MatDialog
+  ) {
     this.username = environment.untappdUsername;
   }
 
   ngOnInit(): void {
     this.addYearOptions(2018);
+
+    // ✅ fetch BeerCheckin[] instead of Beer[]
     this.dataService.getBeers().subscribe({
       next: (data) => {
-        this.beers = data.beers;
+        this.beers = data.beers as BeerCheckin[];
         this.applyFilters();
       },
       error: (err) => {
-        console.error('Error fetching beers:', err);
+        console.error("Error fetching beers:", err);
       },
       complete: () => {
-        console.log('Beers fetch completed');
-      }
+        console.log("Beers fetch completed");
+      },
     });
   }
 
@@ -82,26 +86,28 @@ export class TopBeersComponent implements OnInit {
     if (this.useCustomDate && this.customStartDate) {
       cutoffDate = this.customStartDate;
     } else if (this.selectedRange?.year !== undefined) {
-      cutoffDate = new Date(this.selectedRange.year, 0, 1); // Jan 1 of year
+      cutoffDate = new Date(this.selectedRange.year, 0, 1);
     } else if (this.selectedRange?.daysBack !== undefined) {
       cutoffDate = DateUtils.subtractDays(this.selectedRange.daysBack);
     } else {
-      cutoffDate = DateUtils.subtractDays(30); // fallback last 30 days
+      cutoffDate = DateUtils.subtractDays(30);
     }
 
     const filtered = this.beers
-      .filter((b: any) => {
+      .filter((b: BeerCheckin) => {
         const checkinDate = DateUtils.parseDate(b.recent_created_at);
         return (
           b.rating_score > 0 &&
           checkinDate >= cutoffDate &&
-          b.count >= this.minCheckins
+          (b.count ?? 1) >= this.minCheckins
         );
       })
-      .sort((a: any, b: any) => {
+      .sort((a: BeerCheckin, b: BeerCheckin) => {
         if (b.rating_score === a.rating_score) {
-          return DateUtils.toTimestamp(DateUtils.parseDate(b.recent_created_at)) -
-            DateUtils.toTimestamp(DateUtils.parseDate(a.recent_created_at));
+          return (
+            DateUtils.toTimestamp(DateUtils.parseDate(b.recent_created_at)) -
+            DateUtils.toTimestamp(DateUtils.parseDate(a.recent_created_at))
+          );
         }
         return b.rating_score - a.rating_score;
       })
@@ -109,7 +115,7 @@ export class TopBeersComponent implements OnInit {
 
     this.filteredBeers = filtered;
 
-    this.transformedTopBeers = filtered.map((beer: any, index: number) =>
+    this.transformedTopBeers = filtered.map((beer: BeerCheckin, index: number) =>
       this.transformTopBeersData(beer, index + 1)
     );
   }
@@ -120,39 +126,41 @@ export class TopBeersComponent implements OnInit {
 
   openBadgeDialog(badge: any): void {
     this.dialog.open(BadgeDialogComponent, {
-      width: '400px',
-      data: badge
+      width: "400px",
+      data: badge,
     });
   }
 
-  transformTopBeersData(beer: any, rank?: number): BaseCardData {
+  transformTopBeersData(beer: BeerCheckin, rank?: number): BaseCardData {
     return {
       title: beer.beer.beer_name,
       subtitle: beer.beer.beer_style,
       breweryName: beer.brewery.brewery_name,
-      description: beer.beer.beer_description,
+      description: undefined,
       rating: beer.rating_score,
-      globalRating: beer.beer.rating_score > 0 ? beer.beer.rating_score : undefined,
+      globalRating: beer.rating_score > 0 ? beer.rating_score : undefined,
       mainImage: beer.beer.beer_label,
-      secondaryImage: beer.brewery.brewery_label,
+      secondaryImage: undefined,
       footerInfo: {
-        text: 'Beer Info',
-        link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
-        timestamp: this.published(beer.recent_created_at)
+        text: "Beer Info",
+        link: `https://untappd.com/b/${beer.beer.beer_name
+          .toLowerCase()
+          .replace(/ /g, "-")}/${beer.beer.bid}`,
+        timestamp: this.published(beer.recent_created_at),
       },
       extraData: {
         badges: [],
-        socialLinks: beer.brewery.contact,
+        socialLinks: undefined, // not in BeerCheckin
         mapData: {
-          lat: beer.brewery?.location?.lat,
-          lng: beer.brewery?.location?.lng,
-          breweryId: beer.brewery?.brewery_id
+          lat: undefined,
+          lng: undefined,
+          breweryId: undefined,
         },
         venueId: undefined,
-        checkinId: beer.recent_checkin_id,
-        userName: this.username
+        checkinId: undefined,
+        userName: this.username,
       },
-      rank
+      rank,
     };
   }
 }

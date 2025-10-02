@@ -1,4 +1,19 @@
-// Base interface for all card types
+export interface MapData {
+  lat?: number;
+  lng?: number;
+  breweryId?: number;
+}
+
+export interface CardExtraData {
+  badges?: any[];
+  socialLinks?: Record<string, any>;
+  mapData?: MapData;
+  venueId?: number;
+  checkinId?: number;
+  userName?: string;
+}
+
+// Base interface
 export interface BaseCardData {
   title: string;
   subtitle?: string;
@@ -14,13 +29,6 @@ export interface BaseCardData {
     link: string;
     timestamp: string;
   };
-  extraData?: {
-    badges?: any[];
-    socialLinks?: any;
-    mapData?: any;
-    venueId?: number;
-    checkinId?: number;
-    userName?: string;
-  };
+  extraData?: CardExtraData;
   rank?: number;
 }

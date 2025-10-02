@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Overlay } from "@angular/cdk/overlay";
 import { AboutComponent } from "./components/about/about.component";
-import { routes } from './app-routing.module';
+import { routes } from "./app-routing.module";
 
 @Component({
   selector: "app-root",
@@ -13,7 +13,10 @@ export class AppComponent {
   title = "liquid-stats";
   routes = routes;
 
-  constructor(private dialog: MatDialog, private overlay: Overlay) {}
+  constructor(
+    private dialog: MatDialog,
+    private overlay: Overlay,
+  ) {}
 
   openDialog() {
     const scrollStrategy = this.overlay.scrollStrategies.reposition();

@@ -172,17 +172,14 @@
   height: 100% !important;
 }
 
-
 /* Existing canvas styles (consider removing the old one if it conflicts with the new .chart-container canvas) */
 /* This specific rule might be redundant or conflict if not removed: */
 /* canvas {
   max-width: 100%;
 } */
 
-
 /* Responsive styles */
 @media (max-width: 600px) {
-
   .card,
   .card.beer-styles-breakdown {
     font-size: 0.9rem;

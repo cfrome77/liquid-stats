@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { of } from "rxjs";
 
-import { StatsComponent } from './stats.component';
-import { StatsService } from './stats.service';
+import { StatsComponent } from "./stats.component";
+import { StatsService } from "./stats.service";
 
-describe('StatsComponent', () => {
+describe("StatsComponent", () => {
   let component: StatsComponent;
   let fixture: ComponentFixture<StatsComponent>;
   let mockStatsService: any;
@@ -22,14 +22,14 @@ describe('StatsComponent', () => {
         beersPerDay: 0,
         totalVenues: 0,
         uniqueVenues: 0,
-        newVenueRatio: 0
-      })
+        newVenueRatio: 0,
+      }),
     };
 
     await TestBed.configureTestingModule({
       declarations: [StatsComponent],
       imports: [ReactiveFormsModule],
-      providers: [{ provide: StatsService, useValue: mockStatsService }]
+      providers: [{ provide: StatsService, useValue: mockStatsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StatsComponent);
@@ -37,13 +37,13 @@ describe('StatsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call updateStats on dateRange change', () => {
-    spyOn(component, 'updateStats');
-    component.dateRange.setValue('month');
+  it("should call updateStats on dateRange change", () => {
+    spyOn(component, "updateStats");
+    component.dateRange.setValue("month");
     expect(component.updateStats).toHaveBeenCalled();
   });
 });

@@ -1,18 +1,26 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
+  OnChanges,
+} from "@angular/core";
 
 @Component({
-  selector: 'app-pagination',
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.css']
+  selector: "app-pagination",
+  templateUrl: "./pagination.component.html",
+  styleUrls: ["./pagination.component.css"],
 })
 export class PaginationComponent implements OnChanges {
-  @Input() currentPage: number = 1;              // The current page
-  @Input() itemsPerPage: number = 10;             // Number of items per page
-  @Input() totalItems: number = 0;                // Total number of items
+  @Input() currentPage = 1; // The current page
+  @Input() itemsPerPage = 10; // Number of items per page
+  @Input() totalItems = 0; // Total number of items
   @Input() pageNumbers: (number | string)[] = []; // List of page numbers
-  
+
   @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
-  @Output() itemsPerPageChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() itemsPerPageChange: EventEmitter<number> =
+    new EventEmitter<number>();
 
   // Lifecycle hook to handle changes to the inputs
   ngOnChanges(changes: SimpleChanges): void {
@@ -37,13 +45,13 @@ export class PaginationComponent implements OnChanges {
     const range = 2; // Number of pages to show before and after the current page
 
     // Ensure that the first and last pages are always displayed when necessary
-    let startPage = Math.max(1, this.currentPage - range);
-    let endPage = Math.min(this.lastPage, this.currentPage + range);
+    const startPage = Math.max(1, this.currentPage - range);
+    const endPage = Math.min(this.lastPage, this.currentPage + range);
 
     // Add the first page if the startPage is greater than 1
     if (startPage > 1) {
       pageNumbers.push(1);
-      if (startPage > 2) pageNumbers.push('...');
+      if (startPage > 2) pageNumbers.push("...");
     }
 
     // Add pages in the range from startPage to endPage
@@ -53,7 +61,7 @@ export class PaginationComponent implements OnChanges {
 
     // Add the last page if the endPage is less than lastPage
     if (endPage < this.lastPage) {
-      if (endPage < this.lastPage - 1) pageNumbers.push('...');
+      if (endPage < this.lastPage - 1) pageNumbers.push("...");
       pageNumbers.push(this.lastPage);
     }
 
@@ -87,7 +95,7 @@ export class PaginationComponent implements OnChanges {
 
   // Check if a value is a number
   isNumber(value: string | number): value is number {
-    return typeof value === 'number';
+    return typeof value === "number";
   }
 
   // Navigate to a specific page

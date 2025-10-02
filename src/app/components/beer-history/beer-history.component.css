@@ -44,27 +44,20 @@ h1 {
 .filter-row {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: baseline; /* <-- Change to baseline */
   gap: 10px;
   width: 100%;
 }
 
-/* Make the input fill available space */
+/* Form Field Styling (Cleaned) */
 .form-field-wrapper {
   flex: 1;
   width: 100%;
+  /* Removed box-shadow: none and border-radius: 0 */
 }
 
 .mat-mdc-form-field {
   width: 100%;
-}
-
-:host ::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
-  border: 1px solid rgba(0, 0, 0, 0.12); /* Default outline color */
-}
-
-:host ::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-form-field-outline-thick {
-  border: 2px solid #3f51b5; /* Focused outline color from pink-bluegrey theme */
 }
 
 /* Beer Card Styling */
@@ -119,7 +112,7 @@ footer .footer-time {
 }
 
 /* ------------------------------
-   ✅ Responsive Adjustments
+   Responsive Adjustments
 -------------------------------*/
 
 /* Stack search input + button on small screens */
