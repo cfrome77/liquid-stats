@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ErrorHandler, OnInit } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "src/app/core/utils/date-utils";
 import { Badge, TransformedBadge } from "src/app/core/models/badge.model";
+import { LoggingService } from "src/app/core/services/logger.service";
 
 @Component({
   selector: "app-badges",
@@ -17,7 +18,7 @@ export class BadgesComponent implements OnInit {
   public totalItems!: number;
   public username: string;
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, private errorHandler: ErrorHandler, private logger: LoggingService) {
     this.username = environment.untappdUsername;
   }
 
@@ -27,12 +28,17 @@ export class BadgesComponent implements OnInit {
         this.badges = data;
         this.totalItems = data.length;
         this.updatePagination();
+        this.logger.info('Badges successfully fetched', data);
       },
-      error: (err: any) => {
-        console.error("Error fetching badges:", err);
+      error: (err: unknown) => {
+        // handled error → log it
+        this.logger.error('Error fetching badges', err);
+
+        // optionally also pass to global handler if you want it tracked
+        this.errorHandler.handleError(err);
       },
       complete: () => {
-        console.log("Badges fetch completed");
+        this.logger.log('Badges fetch completed');
       },
     });
   }

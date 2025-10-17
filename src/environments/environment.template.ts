@@ -3,4 +3,5 @@ export const environment = {
   useAWS: false,
   dataUrl: "",
   untappdUsername: "",
+  ga4MeasurementId: ""
 };
