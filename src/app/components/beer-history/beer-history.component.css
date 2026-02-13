@@ -16,6 +16,14 @@ h1 {
 /* ===============================
    Filter Card
    =============================== */
+.filter-card-wrapper {
+  padding: 0 8px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
 .filter-card {
   background-color: #fafafa;
   color: #333333;
@@ -26,6 +34,7 @@ h1 {
   width: 100%;
   max-width: 800px;
   box-sizing: border-box;
+  border-radius: 8px;
 }
 
 /* Inner content */
@@ -92,47 +101,37 @@ h1 {
 }
 
 /* ===============================
-   Dark Mode Search Input
+   Search Input Styling
    =============================== */
-:host ::ng-deep .dark-theme .mat-mdc-input-element {
-  background-color: #333333 !important;
-  color: #ffffff !important;
+:host ::ng-deep .mat-mdc-input-element {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  caret-color: #333333 !important;
   padding: 8px 12px !important;
   border-radius: 4px !important;
 }
 
-:host ::ng-deep .dark-theme .mat-mdc-input-element::placeholder {
-  color: #cccccc;
+:host ::ng-deep .mat-mdc-input-element::placeholder {
+  color: #999999;
 }
 
 /* Properly target MDC outline parts */
-:host ::ng-deep .dark-theme .mat-mdc-form-field .mat-mdc-notched-outline__leading,
-:host ::ng-deep .dark-theme .mat-mdc-form-field .mat-mdc-notched-outline__notch,
-:host
-  ::ng-deep
-  .dark-theme
-  .mat-mdc-form-field
-  .mat-mdc-notched-outline__trailing {
-  border-color: rgba(255, 255, 255, 0.38) !important;
+:host ::ng-deep .search-field .mdc-notched-outline__leading,
+:host ::ng-deep .search-field .mdc-notched-outline__notch,
+:host ::ng-deep .search-field .mdc-notched-outline__trailing {
+  border-color: rgba(0, 0, 0, 0.12) !important;
 }
 
-:host
-  ::ng-deep
-  .dark-theme
-  .mat-mdc-form-field.mat-focused
-  .mat-mdc-notched-outline__leading,
-:host
-  ::ng-deep
-  .dark-theme
-  .mat-mdc-form-field.mat-focused
-  .mat-mdc-notched-outline__notch,
-:host
-  ::ng-deep
-  .dark-theme
-  .mat-mdc-form-field.mat-focused
-  .mat-mdc-notched-outline__trailing {
-  border-color: #90caf9 !important;
+:host ::ng-deep .search-field.mat-focused .mdc-notched-outline__leading,
+:host ::ng-deep .search-field.mat-focused .mdc-notched-outline__notch,
+:host ::ng-deep .search-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #999999 !important;
   border-width: 2px !important;
+}
+
+/* Reset focus overlay for search box */
+:host ::ng-deep .search-field .mat-mdc-form-field-focus-overlay {
+  background-color: transparent !important;
 }
 
 /* ===============================
