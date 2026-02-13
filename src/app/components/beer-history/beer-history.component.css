@@ -17,7 +17,8 @@ h1 {
    Filter Card
    =============================== */
 .filter-card {
-  background-color: #fafafa;
+  background-color: #1e1e1e;
+  color: #ffffff;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -77,24 +78,38 @@ h1 {
 /* ===============================
    Dark Mode Search Input
    =============================== */
-.dark-theme .mat-mdc-input-element {
+::ng-deep .dark-theme .mat-mdc-input-element {
   background-color: #333333;
   color: #ffffff;
   padding: 8px 12px;
   border-radius: 4px;
 }
 
-.dark-theme .mat-mdc-input-element::placeholder {
+::ng-deep .dark-theme .mat-mdc-input-element::placeholder {
   color: #cccccc;
 }
 
-.dark-theme .mat-mdc-form-field .mat-mdc-notched-outline {
-  border-color: rgba(255, 255, 255, 0.38);
+/* Properly target MDC outline parts */
+::ng-deep .dark-theme .mat-mdc-form-field .mat-mdc-notched-outline__leading,
+::ng-deep .dark-theme .mat-mdc-form-field .mat-mdc-notched-outline__notch,
+::ng-deep .dark-theme .mat-mdc-form-field .mat-mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.38) !important;
 }
 
-.dark-theme .mat-mdc-form-field.mat-focused .mat-mdc-notched-outline {
-  border-color: #90caf9;
-  border-width: 2px;
+::ng-deep
+  .dark-theme
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline__leading,
+::ng-deep
+  .dark-theme
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline__notch,
+::ng-deep
+  .dark-theme
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline__trailing {
+  border-color: #90caf9 !important;
+  border-width: 2px !important;
 }
 
 /* ===============================
