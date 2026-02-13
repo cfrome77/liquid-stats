@@ -1,7 +1,7 @@
 <h1>Beer History</h1>
 
-<div class="main-content-container">
-  <mat-card class="filter-card light-theme">
+<div class="main-content-container dark-theme">
+  <div class="filter-card">
     <div class="filter-card-content">
       <div class="filter-buttons-container">
         <app-filter
@@ -12,22 +12,23 @@
 
       <div class="filter-row">
         <div class="form-field-wrapper">
-          <mat-form-field appearance="outline">
-            <mat-label>Search beers...</mat-label>
+          <mat-form-field class="search-field" appearance="outline">
             <input
               matInput
               type="text"
+              placeholder="Search beers..."
               [(ngModel)]="searchTerm"
               (input)="onSearchChange()"
             />
           </mat-form-field>
         </div>
-        <button mat-flat-button color="warn" (click)="resetFilters()">
+
+        <button mat-flat-button color="primary" (click)="resetFilters()">
           Reset Filters
         </button>
       </div>
     </div>
-  </mat-card>
+  </div>
 
   <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
     <app-card

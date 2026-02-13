@@ -2,7 +2,7 @@
 export const environment = {
   production: false,
   useAWS: true,
-  dataUrl: "https://liquid-stats-46ea8b54.s3.amazonaws.com/",
-  untappdUsername: "fromeca",
-  ga4MeasurementId: "G-0RG9WH8WMF"
+  dataUrl: 'https://liquid-stats-46ea8b54.s3.amazonaws.com/',
+  untappdUsername: 'fromeca',
+  ga4MeasurementId: 'G-XXXXXXXXXX'
 };

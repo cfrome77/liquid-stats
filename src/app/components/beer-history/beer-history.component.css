@@ -1,7 +1,8 @@
-/* General Styling */
+/* ===============================
+   General Typography
+   =============================== */
 p {
-  color: black;
-  margin: 0 !important;
+  margin: 0;
   font-size: 16px;
 }
 
@@ -12,17 +13,18 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* Filter Card */
+/* ===============================
+   Filter Card
+   =============================== */
 .filter-card {
   background-color: #fafafa;
-  padding: 15px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
   width: 100%;
   max-width: 800px;
   box-sizing: border-box;
-  text-align: left;
 }
 
 /* Inner content */
@@ -33,89 +35,71 @@ h1 {
   width: 100%;
 }
 
-/* Buttons container */
+/* ===============================
+   Filter Buttons
+   =============================== */
 .filter-buttons-container {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-/* Search row */
+/* ===============================
+   Search Row
+   =============================== */
 .filter-row {
   display: flex;
-  flex-direction: row;
-  align-items: baseline; /* <-- Change to baseline */
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   width: 100%;
 }
 
-/* Form Field Styling (Cleaned) */
+/* Search input wrapper */
 .form-field-wrapper {
   flex: 1;
-  width: 100%;
-  /* Removed box-shadow: none and border-radius: 0 */
+  display: flex;
+  align-items: center;
 }
 
+/* Material form field sizing only */
 .mat-mdc-form-field {
   width: 100%;
 }
 
-/* Beer Card Styling */
-.checkin {
-  background-color: #fafafa;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 100%;
+/* ===============================
+   Angular Material Cleanup
+   =============================== */
+/* Remove reserved space for hints/errors */
+::ng-deep .search-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
 }
 
-.beer-label {
-  height: 50px;
-  width: 50px;
+/* ===============================
+   Dark Mode Search Input
+   =============================== */
+.dark-theme .mat-mdc-input-element {
+  background-color: #333333;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 4px;
 }
 
-.brewery-label {
-  height: 50px;
-  width: 50px;
+.dark-theme .mat-mdc-input-element::placeholder {
+  color: #cccccc;
 }
 
-.comment {
-  color: #333;
-  line-height: 22px;
-  margin: 10px 0 15px;
-  display: block;
+.dark-theme .mat-mdc-form-field .mat-mdc-notched-outline {
+  border-color: rgba(255, 255, 255, 0.38);
 }
 
-.overallRating {
-  display: block;
+.dark-theme .mat-mdc-form-field.mat-focused .mat-mdc-notched-outline {
+  border-color: #90caf9;
+  border-width: 2px;
 }
 
-/* Footer Styling */
-footer {
-  border-top: 1px solid #eee;
-  padding-top: 8px;
-}
-
-footer .beerInfo a {
-  color: #1976d2;
-  text-decoration: none;
-}
-
-footer .beerInfo a:hover {
-  text-decoration: underline;
-}
-
-footer .footer-time {
-  font-size: 14px;
-  color: #777;
-}
-
-/* ------------------------------
-   Responsive Adjustments
--------------------------------*/
-
-/* Stack search input + button on small screens */
+/* ===============================
+   Responsive Layout
+   =============================== */
 @media (max-width: 600px) {
   .filter-row {
     flex-direction: column;
@@ -123,6 +107,6 @@ footer .footer-time {
   }
 
   .filter-row button {
-    width: 100%; /* full-width reset button */
+    width: 100%;
   }
 }

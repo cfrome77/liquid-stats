@@ -6,6 +6,8 @@ This project uses the Untappd API and allows you to keep track of what beers you
 
 The Untappd API requires that you register your application. Register your app [here](https://untappd.com/api/register?register=new). Currently, new apps cannot be created to get API access. Most likely, you will need to be an insider to gain the ability to download your Untappd JSON data.
 
+The local or AWS steps can be used for testing or production, just know that the data will need to be updated mainually if you go with local JSON files vs the use of the AWS automation.
+
 ---
 
 ## Prerequisites
