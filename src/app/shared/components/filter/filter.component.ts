@@ -134,4 +134,25 @@ export class FilterComponent implements OnChanges {
       ? parsed.toFixed(1)
       : parsed.toFixed(2);
   }
+
+  shouldShowOption(option: string): boolean {
+    if (!this.activeFilter) return false;
+
+    // Check if any option in the current list has a count > 0 or is already selected.
+    // We only hide zero-count options if there's at least one non-zero option to show.
+    const anyOptionHasMatches = this.activeFilter.options.some(
+      (opt) =>
+        (this.activeFilter!.countMap?.[opt] ?? 0) > 0 ||
+        this.activeFilter!.selected.includes(opt),
+    );
+
+    if (!anyOptionHasMatches) {
+      return true;
+    }
+
+    return (
+      (this.activeFilter.countMap?.[option] ?? 0) > 0 ||
+      this.activeFilter.selected.includes(option)
+    );
+  }
 }

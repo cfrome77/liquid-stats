@@ -21,8 +21,8 @@ interface FilterField {
   styleUrls: ["./beer-history.component.css"],
 })
 export class BeerHistoryComponent implements OnInit {
-  public beers: BeerCheckin[] = []; // ✅ switched from Beer
-  public filteredBeers: BeerCheckin[] = []; // ✅ switched from Beer
+  public beers: any[] = [];
+  public filteredBeers: any[] = [];
   public paginatedBeers: BaseCardData[] = [];
   public currentPage = 1;
   public itemsPerPage = 10;
@@ -89,25 +89,34 @@ export class BeerHistoryComponent implements OnInit {
   private fetchBeersData(): void {
     this.dataService.getBeers().subscribe({
       next: (data) => {
-        if (data && data.beers && Array.isArray(data.beers)) {
+        let beersArray: any[] = [];
+        if (Array.isArray(data)) {
+          beersArray = data;
+        } else if (data && data.beers && Array.isArray(data.beers)) {
+          beersArray = data.beers;
+        }
+
+        if (beersArray.length > 0) {
           const parseDate = (dateStr: string): Date => {
+            if (!dateStr) return new Date();
             const d = new Date(dateStr);
             return isNaN(d.getTime()) ? new Date() : d;
           };
 
-          const validBeers = data.beers.filter(
-            (b: { first_created_at: string }) =>
-              !isNaN(parseDate(b.first_created_at).getTime())
-          );
-
-          this.beers = validBeers.sort(
-            (a: BeerCheckin, b: BeerCheckin) =>
-              parseDate(b.first_created_at).getTime() -
-              parseDate(a.first_created_at).getTime()
-          );
+          this.beers = beersArray.sort((a, b) => {
+            const dateA = parseDate(
+              a.first_created_at || a.recent_created_at || a.footerInfo?.timestamp
+            );
+            const dateB = parseDate(
+              b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
+            );
+            return dateB.getTime() - dateA.getTime();
+          });
 
           const timestamps = this.beers.map((b) =>
-            DateUtils.parseDate(b.first_created_at)
+            parseDate(
+              b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
+            )
           );
 
           this.filteredBeers = [...this.beers];
@@ -122,7 +131,7 @@ export class BeerHistoryComponent implements OnInit {
           );
           if (dateFilter) {
             dateFilter.options = [minDate, maxDate];
-            // Initial selected range: today to maxDate
+            // Initial selected range: default "From" to today as requested
             dateFilter.selected = [today, maxDate];
           }
 
@@ -157,6 +166,8 @@ export class BeerHistoryComponent implements OnInit {
 
           this.updateOptionCounts();
           this.resetFilters();
+        } else {
+          console.error("Beers data is not in an expected format", data);
         }
       },
       error: (err) => {
@@ -169,20 +180,29 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   // ✅ Convert BeerCheckin into BaseCardData
-  public transformBeerData(beer: BeerCheckin): BaseCardData {
+  public transformBeerData(beer: any): BaseCardData {
+    if (beer.title && beer.subtitle) {
+      return beer as BaseCardData;
+    }
     return {
-      title: beer.beer.beer_name,
-      subtitle: beer.beer.beer_style,
-      breweryName: beer.brewery?.brewery_name,
-      description: (beer as any).beer?.beer_description, // optional
-      rating: beer.rating_score,
-      globalRating: beer.beer.rating_score,
-      mainImage: beer.beer.beer_label,
+      title: beer.beer?.beer_name || "Unknown Beer",
+      subtitle: beer.beer?.beer_style || "Unknown Style",
+      breweryName: beer.brewery?.brewery_name || "Unknown Brewery",
+      description: beer.beer?.beer_description || "",
+      rating: beer.rating_score || 0,
+      globalRating: beer.beer?.rating_score,
+      mainImage: beer.beer?.beer_label,
       secondaryImage: beer.brewery?.brewery_label,
       footerInfo: {
         text: "View Details",
-        link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
-        timestamp: this.published(beer.recent_created_at),
+        link: beer.beer
+          ? `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`
+          : "",
+        timestamp: this.published(
+          beer.recent_created_at ||
+            beer.first_created_at ||
+            beer.footerInfo?.timestamp
+        ),
       },
       extraData: {
         socialLinks: beer.brewery?.contact,
@@ -203,19 +223,19 @@ export class BeerHistoryComponent implements OnInit {
 
     if (field === "brewery") {
       values = this.beers
-        .map((beer) => beer.brewery?.brewery_name)
+        .map((beer) => beer.brewery?.brewery_name || beer.breweryName)
         .filter(Boolean) as string[];
     } else if (field === "beer_style") {
       values = this.beers
-        .map((beer) => beer.beer?.beer_style)
+        .map((beer) => beer.beer?.beer_style || beer.subtitle)
         .filter(Boolean) as string[];
     } else if (field === "country") {
       values = this.beers
-        .map((beer) => beer.brewery?.country_name)
+        .map((beer) => beer.brewery?.country_name || beer.country)
         .filter(Boolean) as string[];
     } else if (field === "region") {
       values = this.beers
-        .map((beer) => beer.brewery?.location?.brewery_state)
+        .map((beer) => beer.brewery?.location?.brewery_state || beer.state)
         .filter(Boolean) as string[];
     }
 
@@ -255,36 +275,49 @@ export class BeerHistoryComponent implements OnInit {
       : DateUtils.endOfDay(new Date());
 
     this.filteredBeers = this.beers.filter((beer) => {
-      const brewery = beer.brewery?.brewery_name || "";
-      const style = beer.beer?.beer_style || "";
-      const country = beer.brewery?.country_name || "";
-      const region = beer.brewery?.location?.brewery_state || "";
-      const rating = beer.rating_score || 0;
-      const beerDate = new Date(beer.first_created_at);
+      const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
+      const style = beer.beer?.beer_style || beer.subtitle || "";
+      const country = beer.brewery?.country_name || beer.country || "";
+      const region =
+        beer.brewery?.location?.brewery_state || beer.state || "";
+      const rating = beer.rating_score !== undefined ? beer.rating_score : (beer.rating || 0);
+      const beerDate = new Date(
+        beer.first_created_at || beer.recent_created_at || beer.footerInfo?.timestamp
+      );
 
       const matchBrewery =
-        selectedBreweries.length === 0 || selectedBreweries.includes(brewery);
+        !selectedBreweries ||
+        selectedBreweries.length === 0 ||
+        selectedBreweries.includes(brewery);
       const matchStyle =
-        selectedStyles.length === 0 || selectedStyles.includes(style);
+        !selectedStyles ||
+        selectedStyles.length === 0 ||
+        selectedStyles.includes(style);
       const matchCountry =
-        selectedCountries.length === 0 || selectedCountries.includes(country);
+        !selectedCountries ||
+        selectedCountries.length === 0 ||
+        selectedCountries.includes(country);
       const matchRegion =
-        selectedRegions.length === 0 || selectedRegions.includes(region);
+        !selectedRegions ||
+        selectedRegions.length === 0 ||
+        selectedRegions.includes(region);
       const matchRating =
-        selectedRatings.length === 0 || selectedRatings.includes(rating);
+        !selectedRatings ||
+        selectedRatings.length === 0 ||
+        selectedRatings.includes(rating);
       const matchDate = beerDate >= startDate && beerDate <= endDate;
+
+      const beerName = beer.beer?.beer_name || beer.title || "";
+      const beerDesc = beer.beer?.beer_description || beer.description || "";
 
       const matchSearch =
         this.searchTerm === "" ||
-        beer.beer.beer_name.toLowerCase().includes(searchTermLower) ||
+        beerName.toLowerCase().includes(searchTermLower) ||
         style.toLowerCase().includes(searchTermLower) ||
         brewery.toLowerCase().includes(searchTermLower) ||
         country.toLowerCase().includes(searchTermLower) ||
         region.toLowerCase().includes(searchTermLower) ||
-        ((beer.beer as any).beer_description
-          ?.toLowerCase()
-          .includes(searchTermLower) ??
-          false);
+        beerDesc.toLowerCase().includes(searchTermLower);
 
       return (
         matchBrewery &&
@@ -309,25 +342,37 @@ export class BeerHistoryComponent implements OnInit {
       this.beers.forEach((beer) => {
         const passesOtherFilters = this.filterFields.every((f) => {
           if (f === currentFilter) return true;
-          if (!f.selected.length) return true;
+          if (!f.selected || f.selected.length === 0) return true;
 
           let beerValue = "";
           if (f.field === "brewery")
-            beerValue = beer.brewery?.brewery_name || "";
+            beerValue = beer.brewery?.brewery_name || beer.breweryName || "";
           else if (f.field === "beer_style")
-            beerValue = beer.beer?.beer_style || "";
+            beerValue = beer.beer?.beer_style || beer.subtitle || "";
           else if (f.field === "country")
-            beerValue = beer.brewery?.country_name || "";
+            beerValue = beer.brewery?.country_name || beer.country || "";
           else if (f.field === "region")
-            beerValue = beer.brewery?.location?.brewery_state || "";
+            beerValue = beer.brewery?.location?.brewery_state || beer.state || "";
           else if (f.field === "rating") {
-            const raw = beer.rating_score;
+            const raw = beer.rating_score !== undefined ? beer.rating_score : beer.rating;
             if (raw !== undefined && raw !== null) {
+              const numRaw = typeof raw === 'string' ? parseFloat(raw) : raw;
               beerValue =
-                Number.isInteger(raw * 100) && (raw * 10) % 10 === 0
-                  ? raw.toFixed(1)
-                  : raw.toFixed(2);
+                Number.isInteger(numRaw * 100) && (numRaw * 10) % 10 === 0
+                  ? numRaw.toFixed(1)
+                  : numRaw.toFixed(2);
             }
+          } else if (f.field === "date_range") {
+            const beerDate = new Date(
+              beer.first_created_at || beer.recent_created_at || beer.footerInfo?.timestamp
+            );
+            const startDate = f.selected[0]
+              ? DateUtils.startOfDay(f.selected[0])
+              : new Date("1900-01-01");
+            const endDate = f.selected[1]
+              ? DateUtils.endOfDay(f.selected[1])
+              : DateUtils.endOfDay(new Date());
+            return beerDate >= startDate && beerDate <= endDate;
           }
           return f.selected.includes(beerValue);
         });
@@ -336,20 +381,21 @@ export class BeerHistoryComponent implements OnInit {
 
         let value = "";
         if (currentFilter.field === "brewery")
-          value = beer.brewery?.brewery_name || "";
+          value = beer.brewery?.brewery_name || beer.breweryName || "";
         else if (currentFilter.field === "beer_style")
-          value = beer.beer?.beer_style || "";
+          value = beer.beer?.beer_style || beer.subtitle || "";
         else if (currentFilter.field === "country")
-          value = beer.brewery?.country_name || "";
+          value = beer.brewery?.country_name || beer.country || "";
         else if (currentFilter.field === "region")
-          value = beer.brewery?.location?.brewery_state || "";
+          value = beer.brewery?.location?.brewery_state || beer.state || "";
         else if (currentFilter.field === "rating") {
-          const raw = beer.rating_score;
+          const raw = beer.rating_score !== undefined ? beer.rating_score : beer.rating;
           if (raw !== undefined && raw !== null) {
+            const numRaw = typeof raw === 'string' ? parseFloat(raw) : raw;
             value =
-              Number.isInteger(raw * 100) && (raw * 10) % 10 === 0
-                ? raw.toFixed(1)
-                : raw.toFixed(2);
+              Number.isInteger(numRaw * 100) && (numRaw * 10) % 10 === 0
+                ? numRaw.toFixed(1)
+                : numRaw.toFixed(2);
           }
         }
 
@@ -365,10 +411,10 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   resetFilters(): void {
-    const today = DateUtils.toISODate(new Date());
     this.filterFields.forEach((f) => {
       if (f.field === "date_range") {
-        // Reset date range to: today to maxDate (stored in f.options[1])
+        const today = DateUtils.toISODate(new Date());
+        // Reset "From" to today and "To" to the latest available beer date
         f.selected = [today, f.options[1]];
       } else {
         f.selected = [];
@@ -397,10 +443,10 @@ export class BeerHistoryComponent implements OnInit {
     );
   }
 
-  viewOnMap(beer: BeerCheckin): void {
-    const lat = beer.brewery?.location?.lat;
-    const lng = beer.brewery?.location?.lng;
-    const breweryId = beer.brewery?.brewery_id;
+  viewOnMap(beer: any): void {
+    const lat = beer.brewery?.location?.lat || beer.extraData?.mapData?.lat;
+    const lng = beer.brewery?.location?.lng || beer.extraData?.mapData?.lng;
+    const breweryId = beer.brewery?.brewery_id || beer.extraData?.mapData?.breweryId;
 
     if (lat && lng && breweryId) {
       this.router.navigate(["/map"], { queryParams: { lat, lng, breweryId } });

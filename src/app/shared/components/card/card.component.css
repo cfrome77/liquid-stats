@@ -101,6 +101,10 @@
   box-sizing: border-box;
 }
 
+.global-rating {
+  color: #333;
+}
+
 /* Badges and Social Links */
 .badges-and-social-links {
   display: flex !important;
@@ -191,6 +195,7 @@ footer a.view-details:hover {
 
   .global-rating {
     font-size: 0.95rem;
+    color: #333;
   }
 
   .beer-info h3 {
