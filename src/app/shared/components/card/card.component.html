@@ -120,13 +120,13 @@
         <div class="footer-time">
           <time>{{ cardData.footerInfo.timestamp }}</time>
           <a
-            class="checkin-page hide-text view-details"
+            class="checkin-page view-details"
             href="https://untappd.com/user/{{
               cardData.extraData?.userName
             }}/checkin/{{ cardData.extraData?.checkinId }}"
             target="_blank"
             title="View Details"
-            >View Details</a
+            ><span class="hide-text">View Details</span></a
           >
         </div>
       </footer>
