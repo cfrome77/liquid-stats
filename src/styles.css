@@ -152,6 +152,8 @@ strong {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  padding: 0 8px;
+  box-sizing: border-box;
 }
 
 .checkin {
@@ -361,4 +363,45 @@ footer {
 }
 .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
   color: var(--search-focus-outline, #3f51b5);
+}
+
+/* ===============================
+   Filter Card Utility
+   =============================== */
+.filter-card {
+  background-color: #fafafa;
+  color: #333333;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-card h1, .filter-card h2, .filter-card h3 {
+  color: #333333 !important;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+/* Form fields inside filter-card */
+.filter-card .mat-mdc-form-field .mdc-notched-outline__leading,
+.filter-card .mat-mdc-form-field .mdc-notched-outline__notch,
+.filter-card .mat-mdc-form-field .mdc-notched-outline__trailing {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.filter-card .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.filter-card .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.filter-card .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #999999 !important;
+  border-width: 2px !important;
+}
+
+.filter-card .mat-mdc-input-element {
+  color: #333333 !important;
 }

@@ -78,7 +78,13 @@
 
       <ng-container *ngIf="activeFilter.type !== 'date'">
         <div *ngFor="let option of activeFilter.options">
-          <label class="filter-option-label">
+          <label
+            class="filter-option-label"
+            *ngIf="
+              (activeFilter.countMap?.[option] ?? 0) > 0 ||
+              activeFilter.selected.includes(option)
+            "
+          >
             <input
               type="checkbox"
               [checked]="activeFilter.selected.includes(option)"

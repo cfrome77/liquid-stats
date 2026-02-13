@@ -2,9 +2,7 @@
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px; /* consistent horizontal and vertical spacing */
   justify-content: flex-start;
-  padding: 8px;
   box-sizing: border-box;
 }
 
@@ -14,7 +12,6 @@
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 800px;
   display: flex;
   flex-direction: column;
   overflow: hidden;

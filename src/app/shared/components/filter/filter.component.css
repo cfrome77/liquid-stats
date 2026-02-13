@@ -168,3 +168,35 @@
 .stats-filter-button:active {
   background-color: #004085;
 }
+
+/* Material Date Picker Styling in Modal */
+.date-range-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+}
+
+:host ::ng-deep .modal-body .mat-mdc-form-field {
+  width: 100%;
+}
+
+:host ::ng-deep .modal-body .mdc-notched-outline__leading,
+:host ::ng-deep .modal-body .mdc-notched-outline__notch,
+:host ::ng-deep .modal-body .mdc-notched-outline__trailing {
+  border-color: rgba(0, 0, 0, 0.38) !important;
+}
+
+:host ::ng-deep .modal-body .mat-mdc-form-field-label,
+:host ::ng-deep .modal-body .mat-mdc-floating-label,
+:host ::ng-deep .modal-body .mat-mdc-floating-label mat-label {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+:host ::ng-deep .modal-body .mat-datepicker-toggle {
+  color: rgba(0, 0, 0, 0.54) !important;
+}
+
+:host ::ng-deep .modal-body .mat-mdc-input-element {
+  color: #000 !important;
+}

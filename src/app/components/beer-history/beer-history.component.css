@@ -13,30 +13,6 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* ===============================
-   Filter Card
-   =============================== */
-.filter-card-wrapper {
-  padding: 0 8px;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-}
-
-.filter-card {
-  background-color: #fafafa;
-  color: #333333;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 800px;
-  box-sizing: border-box;
-  border-radius: 8px;
-}
-
 /* Inner content */
 .filter-card-content {
   display: flex;
@@ -78,7 +54,8 @@ h1 {
 
 :host ::ng-deep .search-field .mat-mdc-text-field-wrapper {
   height: 40px !important;
-  padding: 0 12px !important;
+  padding: 0 !important;
+  background-color: #fafafa !important;
 }
 
 :host ::ng-deep .search-field .mat-mdc-form-field-infix {
@@ -103,8 +80,8 @@ h1 {
 /* ===============================
    Search Input Styling
    =============================== */
-:host ::ng-deep .mat-mdc-input-element {
-  background-color: #ffffff !important;
+:host ::ng-deep .search-field .mat-mdc-input-element {
+  background-color: transparent !important;
   color: #333333 !important;
   caret-color: #333333 !important;
   padding: 8px 12px !important;
@@ -112,7 +89,8 @@ h1 {
 }
 
 :host ::ng-deep .mat-mdc-input-element::placeholder {
-  color: #999999;
+  color: #666666 !important;
+  opacity: 1 !important;
 }
 
 /* Properly target MDC outline parts */

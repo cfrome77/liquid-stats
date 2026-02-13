@@ -32,21 +32,12 @@ export class FilterComponent implements OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes["filterFields"] && this.filterFields) {
-      this.filterFields.forEach((filter) => {
-        if (!filter.selected || filter.selected.length === 0) {
-          filter.selected = [...filter.options];
-        }
-      });
-    }
+    // No longer auto-filling selected options to allow hiding options with 0 matches
   }
 
   openFilterModal(filter: FilterField) {
     this.isModalOpen = true;
     this.activeFilter = { ...filter, selected: [...filter.selected] };
-    if (this.activeFilter.selected.length === 0) {
-      this.activeFilter.selected = [...this.activeFilter.options];
-    }
   }
 
   closeModal() {

@@ -2,7 +2,7 @@
 
 <div class="main-content-container">
   <ng-container *ngIf="wishlist.length > 0; else noItemsBlock">
-    <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+    <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
       <app-card
         *ngFor="let item of paginatedWishlist"
         [cardData]="item"

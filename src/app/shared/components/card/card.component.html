@@ -114,7 +114,9 @@
             *ngIf="cardData.extraData?.venueId"
           >
             <mat-icon class="location-icon">location_on</mat-icon>
-            {{ cardData.footerInfo.text }}
+            <span class="location-text hide-text">{{
+              cardData.footerInfo.text
+            }}</span>
           </a>
         </div>
         <div class="footer-time">
