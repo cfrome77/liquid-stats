@@ -138,21 +138,12 @@ export class FilterComponent implements OnChanges {
   shouldShowOption(option: string): boolean {
     if (!this.activeFilter) return false;
 
-    // Check if any option in the current list has a count > 0 or is already selected.
-    // We only hide zero-count options if there's at least one non-zero option to show.
-    const anyOptionHasMatches = this.activeFilter.options.some(
-      (opt) =>
-        (this.activeFilter!.countMap?.[opt] ?? 0) > 0 ||
-        this.activeFilter!.selected.includes(opt),
-    );
+    const count = this.activeFilter.countMap?.[option] ?? 0;
+    if (count > 0) return true;
 
-    if (!anyOptionHasMatches) {
-      return true;
-    }
-
-    return (
-      (this.activeFilter.countMap?.[option] ?? 0) > 0 ||
-      this.activeFilter.selected.includes(option)
-    );
+    // If count is 0, hide it to keep the list clean and only allow valid combinations.
+    // However, if the user has specifically selected it (and not all are selected),
+    // we show it so they can see their active filters and potentially unselect it.
+    return this.activeFilter.selected.includes(option) && !this.allSelected;
   }
 }

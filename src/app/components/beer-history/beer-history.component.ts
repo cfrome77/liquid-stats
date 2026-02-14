@@ -21,8 +21,8 @@ interface FilterField {
   styleUrls: ["./beer-history.component.css"],
 })
 export class BeerHistoryComponent implements OnInit {
-  public beers: any[] = [];
-  public filteredBeers: any[] = [];
+  public beers: (BeerCheckin | BaseCardData)[] = [];
+  public filteredBeers: (BeerCheckin | BaseCardData)[] = [];
   public paginatedBeers: BaseCardData[] = [];
   public currentPage = 1;
   public itemsPerPage = 10;
@@ -89,7 +89,7 @@ export class BeerHistoryComponent implements OnInit {
   private fetchBeersData(): void {
     this.dataService.getBeers().subscribe({
       next: (data) => {
-        let beersArray: any[] = [];
+        let beersArray: (BeerCheckin | BaseCardData)[] = [];
         if (Array.isArray(data)) {
           beersArray = data;
         } else if (data && data.beers && Array.isArray(data.beers)) {
@@ -136,6 +136,12 @@ export class BeerHistoryComponent implements OnInit {
           }
 
           // setup ratings
+          const existingRatings = this.beers
+            .map((b) =>
+              b.rating_score !== undefined ? b.rating_score : b.rating
+            )
+            .filter((r) => r !== undefined && r !== null);
+
           const quarterPointScale = Array.from({ length: 21 }, (_, i) =>
             (i * 0.25).toFixed(2)
           );
@@ -146,6 +152,9 @@ export class BeerHistoryComponent implements OnInit {
             new Set([
               ...quarterPointScale.map((val) => parseFloat(val)),
               ...tenthPointScale.map((val) => parseFloat(val)),
+              ...existingRatings.map((val) =>
+                typeof val === "string" ? parseFloat(val) : val
+              ),
             ])
           ).sort((a, b) => a - b);
           const formattedRatings = combinedRatings.map((rating) =>
@@ -154,18 +163,29 @@ export class BeerHistoryComponent implements OnInit {
               : rating.toFixed(2)
           );
 
-          this.filterFields[0].options =
-            this.getUniqueFieldValues("brewery").sort();
-          this.filterFields[1].options =
-            this.getUniqueFieldValues("beer_style").sort();
-          this.filterFields[2].options =
-            this.getUniqueFieldValues("country").sort();
-          this.filterFields[3].options =
-            this.getUniqueFieldValues("region").sort();
-          this.filterFields[4].options = formattedRatings;
+          const setOptions = (field: string, options: string[]) => {
+            const f = this.filterFields.find((f) => f.field === field);
+            if (f) f.options = options;
+          };
+
+          setOptions("brewery", this.getUniqueFieldValues("brewery").sort());
+          setOptions(
+            "beer_style",
+            this.getUniqueFieldValues("beer_style").sort()
+          );
+          setOptions("country", this.getUniqueFieldValues("country").sort());
+          setOptions("region", this.getUniqueFieldValues("region").sort());
+          setOptions("rating", formattedRatings);
+
+          // Initialize selected options with all options by default
+          this.filterFields.forEach((f) => {
+            if (f.type !== "date") {
+              f.selected = [...f.options];
+            }
+          });
 
           this.updateOptionCounts();
-          this.resetFilters();
+          this.applyFilters();
         } else {
           console.error("Beers data is not in an expected format", data);
         }
@@ -180,39 +200,38 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   // ✅ Convert BeerCheckin into BaseCardData
-  public transformBeerData(beer: any): BaseCardData {
-    if (beer.title && beer.subtitle) {
+  public transformBeerData(beer: BeerCheckin | BaseCardData): BaseCardData {
+    if ("title" in beer && "subtitle" in beer) {
       return beer as BaseCardData;
     }
+    const b = beer as BeerCheckin;
     return {
-      title: beer.beer?.beer_name || "Unknown Beer",
-      subtitle: beer.beer?.beer_style || "Unknown Style",
-      breweryName: beer.brewery?.brewery_name || "Unknown Brewery",
-      description: beer.beer?.beer_description || "",
-      rating: beer.rating_score || 0,
-      globalRating: beer.beer?.rating_score,
-      mainImage: beer.beer?.beer_label,
-      secondaryImage: beer.brewery?.brewery_label,
+      title: b.beer?.beer_name || "Unknown Beer",
+      subtitle: b.beer?.beer_style || "Unknown Style",
+      breweryName: b.brewery?.brewery_name || "Unknown Brewery",
+      description: b.beer?.beer_description || "",
+      rating: b.rating_score || 0,
+      globalRating: b.beer?.rating_score,
+      mainImage: b.beer?.beer_label,
+      secondaryImage: b.brewery?.brewery_label,
       footerInfo: {
         text: "View Details",
-        link: beer.beer
-          ? `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`
+        link: b.beer
+          ? `https://untappd.com/b/${b.beer.beer_slug}/${b.beer.bid}`
           : "",
         timestamp: this.published(
-          beer.recent_created_at ||
-            beer.first_created_at ||
-            beer.footerInfo?.timestamp
+          b.recent_created_at || b.first_created_at || ""
         ),
       },
       extraData: {
-        socialLinks: beer.brewery?.contact,
+        socialLinks: b.brewery?.contact,
         mapData: {
-          lat: beer.brewery?.location?.lat,
-          lng: beer.brewery?.location?.lng,
-          breweryId: beer.brewery?.brewery_id,
+          lat: b.brewery?.location?.lat,
+          lng: b.brewery?.location?.lng,
+          breweryId: b.brewery?.brewery_id,
         },
-        venueId: beer.brewery?.brewery_id,
-        checkinId: beer.recent_checkin_id,
+        venueId: b.brewery?.brewery_id,
+        checkinId: b.recent_checkin_id,
         userName: this.username,
       },
     };
@@ -223,19 +242,19 @@ export class BeerHistoryComponent implements OnInit {
 
     if (field === "brewery") {
       values = this.beers
-        .map((beer) => beer.brewery?.brewery_name || beer.breweryName)
+        .map((beer: any) => beer.brewery?.brewery_name || beer.breweryName)
         .filter(Boolean) as string[];
     } else if (field === "beer_style") {
       values = this.beers
-        .map((beer) => beer.beer?.beer_style || beer.subtitle)
+        .map((beer: any) => beer.beer?.beer_style || beer.subtitle)
         .filter(Boolean) as string[];
     } else if (field === "country") {
       values = this.beers
-        .map((beer) => beer.brewery?.country_name || beer.country)
+        .map((beer: any) => beer.brewery?.country_name || beer.country)
         .filter(Boolean) as string[];
     } else if (field === "region") {
       values = this.beers
-        .map((beer) => beer.brewery?.location?.brewery_state || beer.state)
+        .map((beer: any) => beer.brewery?.location?.brewery_state || beer.state)
         .filter(Boolean) as string[];
     }
 
@@ -260,9 +279,7 @@ export class BeerHistoryComponent implements OnInit {
     const selectedRegions =
       this.filterFields.find((f) => f.field === "region")?.selected || [];
     const selectedRatings =
-      this.filterFields
-        .find((f) => f.field === "rating")
-        ?.selected.map((r) => parseFloat(r)) || [];
+      this.filterFields.find((f) => f.field === "rating")?.selected || [];
     const dateRange =
       this.filterFields.find((f) => f.field === "date_range")?.selected || [];
     const searchTermLower = this.searchTerm.toLowerCase();
@@ -274,37 +291,29 @@ export class BeerHistoryComponent implements OnInit {
       ? DateUtils.endOfDay(dateRange[1])
       : DateUtils.endOfDay(new Date());
 
-    this.filteredBeers = this.beers.filter((beer) => {
+    this.filteredBeers = this.beers.filter((beer: any) => {
       const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
       const style = beer.beer?.beer_style || beer.subtitle || "";
       const country = beer.brewery?.country_name || beer.country || "";
       const region =
         beer.brewery?.location?.brewery_state || beer.state || "";
-      const rating = beer.rating_score !== undefined ? beer.rating_score : (beer.rating || 0);
+      const rawRating =
+        beer.rating_score !== undefined ? beer.rating_score : beer.rating || 0;
+      const ratingStr =
+        Number.isInteger(rawRating * 100) && (rawRating * 10) % 10 === 0
+          ? rawRating.toFixed(1)
+          : rawRating.toFixed(2);
       const beerDate = new Date(
-        beer.first_created_at || beer.recent_created_at || beer.footerInfo?.timestamp
+        beer.first_created_at ||
+          beer.recent_created_at ||
+          beer.footerInfo?.timestamp
       );
 
-      const matchBrewery =
-        !selectedBreweries ||
-        selectedBreweries.length === 0 ||
-        selectedBreweries.includes(brewery);
-      const matchStyle =
-        !selectedStyles ||
-        selectedStyles.length === 0 ||
-        selectedStyles.includes(style);
-      const matchCountry =
-        !selectedCountries ||
-        selectedCountries.length === 0 ||
-        selectedCountries.includes(country);
-      const matchRegion =
-        !selectedRegions ||
-        selectedRegions.length === 0 ||
-        selectedRegions.includes(region);
-      const matchRating =
-        !selectedRatings ||
-        selectedRatings.length === 0 ||
-        selectedRatings.includes(rating);
+      const matchBrewery = selectedBreweries.includes(brewery);
+      const matchStyle = selectedStyles.includes(style);
+      const matchCountry = selectedCountries.includes(country);
+      const matchRegion = selectedRegions.includes(region);
+      const matchRating = selectedRatings.includes(ratingStr);
       const matchDate = beerDate >= startDate && beerDate <= endDate;
 
       const beerName = beer.beer?.beer_name || beer.title || "";
@@ -336,13 +345,32 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   updateOptionCounts(): void {
+    const searchTermLower = this.searchTerm.toLowerCase();
     this.filterFields.forEach((currentFilter) => {
       const countMap: { [option: string]: number } = {};
 
-      this.beers.forEach((beer) => {
+      this.beers.forEach((beer: any) => {
+        // Search term check
+        const beerName = beer.beer?.beer_name || beer.title || "";
+        const style = beer.beer?.beer_style || beer.subtitle || "";
+        const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
+        const country = beer.brewery?.country_name || beer.country || "";
+        const region = beer.brewery?.location?.brewery_state || beer.state || "";
+        const beerDesc = beer.beer?.beer_description || beer.description || "";
+
+        const matchSearch =
+          this.searchTerm === "" ||
+          beerName.toLowerCase().includes(searchTermLower) ||
+          style.toLowerCase().includes(searchTermLower) ||
+          brewery.toLowerCase().includes(searchTermLower) ||
+          country.toLowerCase().includes(searchTermLower) ||
+          region.toLowerCase().includes(searchTermLower) ||
+          beerDesc.toLowerCase().includes(searchTermLower);
+
+        if (!matchSearch) return;
+
         const passesOtherFilters = this.filterFields.every((f) => {
           if (f === currentFilter) return true;
-          if (!f.selected || f.selected.length === 0) return true;
 
           let beerValue = "";
           if (f.field === "brewery")
@@ -417,7 +445,7 @@ export class BeerHistoryComponent implements OnInit {
         // Reset "From" to today and "To" to the latest available beer date
         f.selected = [today, f.options[1]];
       } else {
-        f.selected = [];
+        f.selected = [...f.options];
       }
     });
     this.searchTerm = "";
@@ -443,10 +471,11 @@ export class BeerHistoryComponent implements OnInit {
     );
   }
 
-  viewOnMap(beer: any): void {
-    const lat = beer.brewery?.location?.lat || beer.extraData?.mapData?.lat;
-    const lng = beer.brewery?.location?.lng || beer.extraData?.mapData?.lng;
-    const breweryId = beer.brewery?.brewery_id || beer.extraData?.mapData?.breweryId;
+  viewOnMap(beer: BeerCheckin | BaseCardData): void {
+    const b = beer as any;
+    const lat = b.brewery?.location?.lat || b.extraData?.mapData?.lat;
+    const lng = b.brewery?.location?.lng || b.extraData?.mapData?.lng;
+    const breweryId = b.brewery?.brewery_id || b.extraData?.mapData?.breweryId;
 
     if (lat && lng && breweryId) {
       this.router.navigate(["/map"], { queryParams: { lat, lng, breweryId } });
