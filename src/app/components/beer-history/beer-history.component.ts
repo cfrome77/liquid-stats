@@ -103,7 +103,7 @@ export class BeerHistoryComponent implements OnInit {
             return isNaN(d.getTime()) ? new Date() : d;
           };
 
-          this.beers = beersArray.sort((a, b) => {
+          this.beers = beersArray.sort((a: any, b: any) => {
             const dateA = parseDate(
               a.first_created_at || a.recent_created_at || a.footerInfo?.timestamp
             );
@@ -113,7 +113,7 @@ export class BeerHistoryComponent implements OnInit {
             return dateB.getTime() - dateA.getTime();
           });
 
-          const timestamps = this.beers.map((b) =>
+          const timestamps = this.beers.map((b: any) =>
             parseDate(
               b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
             )
@@ -137,7 +137,7 @@ export class BeerHistoryComponent implements OnInit {
 
           // setup ratings
           const existingRatings = this.beers
-            .map((b) =>
+            .map((b: any) =>
               b.rating_score !== undefined ? b.rating_score : b.rating
             )
             .filter((r) => r !== undefined && r !== null);
