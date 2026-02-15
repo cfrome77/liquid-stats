@@ -123,16 +123,18 @@ export class BeerHistoryComponent implements OnInit {
           this.totalItems = this.beers.length;
 
           // setup date range filter
+          const todayDate = new Date();
           const minDate = DateUtils.toISODate(DateUtils.minDate(timestamps));
           const maxDate = DateUtils.toISODate(DateUtils.maxDate(timestamps));
-          const today = DateUtils.toISODate(new Date());
+          const today = DateUtils.toISODate(todayDate);
           const dateFilter = this.filterFields.find(
             (f) => f.field === "date_range"
           );
           if (dateFilter) {
             dateFilter.options = [minDate, maxDate];
             // Initial selected range: default "From" to today as requested
-            dateFilter.selected = [today, maxDate];
+            // Ensure end date is at least today to avoid empty default range if today > maxDate
+            dateFilter.selected = [today, maxDate > today ? maxDate : today];
           }
 
           // setup ratings
@@ -442,8 +444,8 @@ export class BeerHistoryComponent implements OnInit {
     this.filterFields.forEach((f) => {
       if (f.field === "date_range") {
         const today = DateUtils.toISODate(new Date());
-        // Reset "From" to today and "To" to the latest available beer date
-        f.selected = [today, f.options[1]];
+        // Reset "From" to today and "To" to the latest available beer date (or today)
+        f.selected = [today, f.options[1] > today ? f.options[1] : today];
       } else {
         f.selected = [...f.options];
       }
