@@ -132,9 +132,8 @@ export class BeerHistoryComponent implements OnInit {
           );
           if (dateFilter) {
             dateFilter.options = [minDate, maxDate];
-            // Initial selected range: default "From" to today as requested
-            // Ensure end date is at least today to avoid empty default range if today > maxDate
-            dateFilter.selected = [today, maxDate > today ? maxDate : today];
+            // Initial selected range: show all data by default
+            dateFilter.selected = [minDate, maxDate];
           }
 
           // setup ratings
@@ -160,9 +159,7 @@ export class BeerHistoryComponent implements OnInit {
             ])
           ).sort((a, b) => a - b);
           const formattedRatings = combinedRatings.map((rating) =>
-            Number.isInteger(rating * 100) && (rating * 10) % 10 === 0
-              ? rating.toFixed(1)
-              : rating.toFixed(2)
+            (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2)
           );
 
           const setOptions = (field: string, options: string[]) => {
@@ -302,20 +299,39 @@ export class BeerHistoryComponent implements OnInit {
       const rawRating =
         beer.rating_score !== undefined ? beer.rating_score : beer.rating || 0;
       const ratingStr =
-        Number.isInteger(rawRating * 100) && (rawRating * 10) % 10 === 0
-          ? rawRating.toFixed(1)
-          : rawRating.toFixed(2);
-      const beerDate = new Date(
+        (rawRating * 10) % 1 === 0 ? rawRating.toFixed(1) : rawRating.toFixed(2);
+      const beerDate = DateUtils.parseDate(
         beer.first_created_at ||
           beer.recent_created_at ||
           beer.footerInfo?.timestamp
       );
 
-      const matchBrewery = selectedBreweries.includes(brewery);
-      const matchStyle = selectedStyles.includes(style);
-      const matchCountry = selectedCountries.includes(country);
-      const matchRegion = selectedRegions.includes(region);
-      const matchRating = selectedRatings.includes(ratingStr);
+      const isAllBreweries =
+        selectedBreweries.length ===
+        this.filterFields.find((f) => f.field === "brewery")?.options.length;
+      const isAllStyles =
+        selectedStyles.length ===
+        this.filterFields.find((f) => f.field === "beer_style")?.options.length;
+      const isAllCountries =
+        selectedCountries.length ===
+        this.filterFields.find((f) => f.field === "country")?.options.length;
+      const isAllRegions =
+        selectedRegions.length ===
+        this.filterFields.find((f) => f.field === "region")?.options.length;
+      const isAllRatings =
+        selectedRatings.length ===
+        this.filterFields.find((f) => f.field === "rating")?.options.length;
+
+      const matchBrewery =
+        selectedBreweries.includes(brewery) || (brewery === "" && isAllBreweries);
+      const matchStyle =
+        selectedStyles.includes(style) || (style === "" && isAllStyles);
+      const matchCountry =
+        selectedCountries.includes(country) || (country === "" && isAllCountries);
+      const matchRegion =
+        selectedRegions.includes(region) || (region === "" && isAllRegions);
+      const matchRating =
+        selectedRatings.includes(ratingStr) || (ratingStr === "0.0" && isAllRatings);
       const matchDate = beerDate >= startDate && beerDate <= endDate;
 
       const beerName = beer.beer?.beer_name || beer.title || "";
@@ -388,13 +404,13 @@ export class BeerHistoryComponent implements OnInit {
             if (raw !== undefined && raw !== null) {
               const numRaw = typeof raw === 'string' ? parseFloat(raw) : raw;
               beerValue =
-                Number.isInteger(numRaw * 100) && (numRaw * 10) % 10 === 0
-                  ? numRaw.toFixed(1)
-                  : numRaw.toFixed(2);
+                (numRaw * 10) % 1 === 0 ? numRaw.toFixed(1) : numRaw.toFixed(2);
             }
           } else if (f.field === "date_range") {
-            const beerDate = new Date(
-              beer.first_created_at || beer.recent_created_at || beer.footerInfo?.timestamp
+            const beerDate = DateUtils.parseDate(
+              beer.first_created_at ||
+                beer.recent_created_at ||
+                beer.footerInfo?.timestamp
             );
             const startDate = f.selected[0]
               ? DateUtils.startOfDay(f.selected[0])
@@ -404,7 +420,10 @@ export class BeerHistoryComponent implements OnInit {
               : DateUtils.endOfDay(new Date());
             return beerDate >= startDate && beerDate <= endDate;
           }
-          return f.selected.includes(beerValue);
+          const isAllSelected = f.selected.length === f.options.length;
+          return (
+            f.selected.includes(beerValue) || (beerValue === "" && isAllSelected)
+          );
         });
 
         if (!passesOtherFilters) return;
@@ -423,9 +442,7 @@ export class BeerHistoryComponent implements OnInit {
           if (raw !== undefined && raw !== null) {
             const numRaw = typeof raw === 'string' ? parseFloat(raw) : raw;
             value =
-              Number.isInteger(numRaw * 100) && (numRaw * 10) % 10 === 0
-                ? numRaw.toFixed(1)
-                : numRaw.toFixed(2);
+              (numRaw * 10) % 1 === 0 ? numRaw.toFixed(1) : numRaw.toFixed(2);
           }
         }
 
@@ -443,9 +460,8 @@ export class BeerHistoryComponent implements OnInit {
   resetFilters(): void {
     this.filterFields.forEach((f) => {
       if (f.field === "date_range") {
-        const today = DateUtils.toISODate(new Date());
-        // Reset "From" to today and "To" to the latest available beer date (or today)
-        f.selected = [today, f.options[1] > today ? f.options[1] : today];
+        // Reset to full range
+        f.selected = [f.options[0], f.options[1]];
       } else {
         f.selected = [...f.options];
       }

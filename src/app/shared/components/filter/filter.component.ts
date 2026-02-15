@@ -130,9 +130,7 @@ export class FilterComponent implements OnChanges {
     if (value === "0.0" || value === "0.00") return "No Rating";
     const parsed = parseFloat(value);
     if (isNaN(parsed)) return value;
-    return Number.isInteger(parsed * 100) && (parsed * 10) % 10 === 0
-      ? parsed.toFixed(1)
-      : parsed.toFixed(2);
+    return (parsed * 10) % 1 === 0 ? parsed.toFixed(1) : parsed.toFixed(2);
   }
 
   shouldShowOption(option: string): boolean {
