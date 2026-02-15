@@ -97,24 +97,18 @@ export class BeerHistoryComponent implements OnInit {
         }
 
         if (beersArray.length > 0) {
-          const parseDate = (dateStr: string): Date => {
-            if (!dateStr) return new Date();
-            const d = new Date(dateStr);
-            return isNaN(d.getTime()) ? new Date() : d;
-          };
-
           this.beers = beersArray.sort((a: any, b: any) => {
-            const dateA = parseDate(
+            const dateA = DateUtils.parseDate(
               a.first_created_at || a.recent_created_at || a.footerInfo?.timestamp
             );
-            const dateB = parseDate(
+            const dateB = DateUtils.parseDate(
               b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
             );
             return dateB.getTime() - dateA.getTime();
           });
 
           const timestamps = this.beers.map((b: any) =>
-            parseDate(
+            DateUtils.parseDate(
               b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
             )
           );
