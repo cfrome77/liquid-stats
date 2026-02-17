@@ -7,7 +7,59 @@ h1 {
   color: white;
 }
 
+/* Existing style */
 .overallRating {
   float: left;
   clear: left;
+}
+
+/* New styles for Top Beers page */
+.filter-radio-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.filter-radio-group mat-radio-button {
+  margin-right: 20px;
+}
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.filter-controls mat-form-field {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filter-results {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px !important;
+}
+
+/* Ensure labels are visible on light card */
+:host ::ng-deep .filter-card mat-label {
+  color: #333 !important;
+}
+
+:host ::ng-deep .filter-card .mat-mdc-select-value,
+:host ::ng-deep .filter-card .mat-mdc-select-arrow,
+:host ::ng-deep .filter-card .mat-mdc-radio-button label {
+  color: black !important;
+}
+
+/* Material Radio Button internal colors for light theme */
+:host ::ng-deep .filter-card .mat-mdc-radio-button .mdc-radio__outer-circle {
+  border-color: rgba(0, 0, 0, 0.54) !important;
+}
+
+:host ::ng-deep .filter-card .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__outer-circle {
+  border-color: #3f51b5 !important;
 }

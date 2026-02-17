@@ -1,23 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { BaseCardData } from '../../shared/components/card/card-data.interface';
-import { DateUtils } from '../../shared/date-utils';
+import { Component, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
+import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { DataService } from "src/app/core/services/data.service";
+import { DateUtils } from "../../core/utils/date-utils";
 
 @Component({
-  selector: 'app-wishlist',
-  templateUrl: './wishlist.component.html',
-  styleUrls: ['./wishlist.component.css'],
+  selector: "app-wishlist",
+  templateUrl: "./wishlist.component.html",
+  styleUrls: ["./wishlist.component.css"],
 })
 export class WishlistComponent implements OnInit {
   public wishlist: any[] = [];
   public paginatedWishlist: BaseCardData[] = [];
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
-  public totalItems: number = 0;
-  public isLoading: boolean = true;
+  public currentPage = 1;
+  public itemsPerPage = 10;
+  public totalItems = 0;
+  public isLoading = true;
 
-  constructor(private http: HttpClient) { }
+  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.fetchWishlistData();
@@ -25,22 +25,21 @@ export class WishlistComponent implements OnInit {
 
   private fetchWishlistData(): void {
     this.isLoading = true;
-    this.getJSON().subscribe(
-      (data) => {
+    this.dataService.getWishlist().subscribe({
+      next: (data) => {
         this.wishlist = data.response.beers.items;
         this.totalItems = this.wishlist.length;
         this.updatePaginatedWishlist();
         this.isLoading = false;
       },
-      (error) => {
-        console.error('Error fetching wishlist:', error);
+      error: (error) => {
+        console.error("Error fetching wishlist:", error);
         this.isLoading = false;
-      }
-    );
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get('https://liquid-stats.s3.amazonaws.com/wishlist.json');
+      },
+      complete: () => {
+        console.log("Badges fetch completed");
+      },
+    });
   }
 
   public transformWishlistData(item: any): BaseCardData {
@@ -54,7 +53,7 @@ export class WishlistComponent implements OnInit {
       mainImage: item.beer.beer_label,
       secondaryImage: item.brewery.brewery_label,
       footerInfo: {
-        text: 'View Details',
+        text: "View Details",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
         timestamp: this.published(item.created_at),
       },
@@ -79,7 +78,7 @@ export class WishlistComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     const itemsToPaginate = this.wishlist.slice(startIndex, endIndex);
     this.paginatedWishlist = itemsToPaginate.map((item) =>
-      this.transformWishlistData(item)
+      this.transformWishlistData(item),
     );
   }
 

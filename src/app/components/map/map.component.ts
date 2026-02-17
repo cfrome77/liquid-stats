@@ -1,22 +1,21 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MarkerService } from '../../core/services/marker.service';
-import { MapService } from '../../core/services/map.service';
-import * as L from 'leaflet';
-import 'leaflet.markercluster';
+import { AfterViewInit, Component, OnDestroy } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MarkerService } from "../../core/services/marker.service";
+import { MapService } from "../../core/services/map.service";
+import * as L from "leaflet";
+import "leaflet.markercluster";
 
-const iconRetinaUrl = '/assets/images/marker-icon-2x.png';
-const iconUrl = '/assets/images/marker-icon.png';
-const shadowUrl = '/assets/images/marker-shadow.png';
+const iconRetinaUrl = "/assets/images/marker-icon-2x.png";
+const iconUrl = "/assets/images/marker-icon.png";
+const shadowUrl = "/assets/images/marker-shadow.png";
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  selector: "app-map",
+  templateUrl: "./map.component.html",
+  styleUrls: ["./map.component.css"],
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
-
-  public mapId: string = 'myMap';
+  public mapId = "myMap";
   private map: L.Map | undefined;
 
   private markerIcon = L.icon({
@@ -27,18 +26,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     tooltipAnchor: [16, -28],
-    shadowSize: [41, 41]
+    shadowSize: [41, 41],
   });
 
   constructor(
     private markerService: MarkerService,
     private mapService: MapService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+  ) {}
 
   ngAfterViewInit(): void {
-    this.route.data.subscribe(data => {
-      this.mapId = data['mapId'] || 'myMap';
+    this.route.data.subscribe((data) => {
+      this.mapId = data["mapId"] || "myMap";
 
       setTimeout(() => {
         this.initMap();
@@ -47,12 +46,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         this.markerService.makeBreweryMarkers(this.map, this.markerIcon);
 
-        this.route.queryParams.subscribe(params => {
-          const lat = parseFloat(params['lat']);
-          const lng = parseFloat(params['lng']);
-          const breweryId = params['breweryId'];
+        this.route.queryParams.subscribe((params) => {
+          const lat = parseFloat(params["lat"]);
+          const lng = parseFloat(params["lng"]);
+          const breweryId = params["breweryId"];
 
-          if (!isNaN(lat) && !isNaN(lng) && breweryId && this.markerService.markers) {
+          if (
+            !isNaN(lat) &&
+            !isNaN(lng) &&
+            breweryId &&
+            this.markerService.markers
+          ) {
             const marker = this.markerService.getMarkerByBreweryId(breweryId);
 
             if (marker) {
@@ -79,13 +83,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // Check if the marker is already visible on the map (not in a cluster).
     if (this.map.hasLayer(marker)) {
       const targetZoom = maxZoom;
-      this.map.setView(marker.getLatLng(), targetZoom, { animate: true, duration: 0.5 });
+      this.map.setView(marker.getLatLng(), targetZoom, {
+        animate: true,
+        duration: 0.5,
+      });
       setTimeout(() => marker.openPopup(), 500);
     } else {
       // If the marker is in a cluster, use zoomToShowLayer to expand it.
       this.markerService.markers.zoomToShowLayer(marker, () => {
         const targetZoom = maxZoom;
-        this.map!.setView(marker.getLatLng(), targetZoom, { animate: true, duration: 0.5 });
+        this.map!.setView(marker.getLatLng(), targetZoom, {
+          animate: true,
+          duration: 0.5,
+        });
         setTimeout(() => marker.openPopup(), 500);
       });
     }
@@ -99,26 +109,32 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     const mapElement = document.getElementById(this.mapId);
     if (!mapElement) {
-      console.error(`Map container with id '${this.mapId}' not found in the DOM.`);
+      console.error(
+        `Map container with id '${this.mapId}' not found in the DOM.`,
+      );
       return;
     }
 
     if (!this.map) {
       this.map = L.map(this.mapId, {
         center: [39.8282, -98.5795], // Coordinates for the USA
-        zoom: 3
+        zoom: 3,
       });
 
-      const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      });
+      const tiles = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        },
+      );
 
       tiles.addTo(this.map);
       this.mapService.addMap(this.mapId, this.map);
 
       this.setMapHeight();
-      window.addEventListener('resize', this.setMapHeight.bind(this));
+      window.addEventListener("resize", this.setMapHeight.bind(this));
     }
   }
 
@@ -137,6 +153,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.map.remove();
       this.mapService.removeMap(this.mapId);
     }
-    window.removeEventListener('resize', this.setMapHeight.bind(this));
+    window.removeEventListener("resize", this.setMapHeight.bind(this));
   }
 }

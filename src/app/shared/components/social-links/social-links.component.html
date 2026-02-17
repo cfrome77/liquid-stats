@@ -1,16 +1,33 @@
 <div class="social-links" *ngIf="contact">
-    <a *ngIf="contact.url" [href]="contact.url" target="_blank" title="Website">
-        <mat-icon>language</mat-icon>
-    </a>
-    <a *ngIf="contact.facebook" [href]="contact.facebook" target="_blank" title="Facebook">
-        <mat-icon>facebook</mat-icon>
-    </a>
-    <a *ngIf="contact.instagram" [href]="'https://instagram.com/' + contact.instagram" target="_blank"
-        title="Instagram">
-        <mat-icon svgIcon="instagram"></mat-icon>
-    </a>
-    <a *ngIf="mapData" [routerLink]="['/map']"
-        [queryParams]="{ lat: mapData.lat, lng: mapData.lng, breweryId: mapData.breweryId }" title="View on Map">
-        <mat-icon>map</mat-icon>
-    </a>
+  <a *ngIf="contact.url" [href]="contact.url" target="_blank" title="Website">
+    <mat-icon>language</mat-icon>
+  </a>
+  <a
+    *ngIf="contact.facebook"
+    [href]="contact.facebook"
+    target="_blank"
+    title="Facebook"
+  >
+    <mat-icon>facebook</mat-icon>
+  </a>
+  <a
+    *ngIf="contact.instagram"
+    [href]="'https://instagram.com/' + contact.instagram"
+    target="_blank"
+    title="Instagram"
+  >
+    <mat-icon svgIcon="instagram"></mat-icon>
+  </a>
+  <a
+    *ngIf="mapData"
+    [routerLink]="['/map']"
+    [queryParams]="{
+      lat: mapData.lat,
+      lng: mapData.lng,
+      breweryId: mapData.breweryId,
+    }"
+    title="View on Map"
+  >
+    <mat-icon>map</mat-icon>
+  </a>
 </div>

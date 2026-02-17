@@ -1,10 +1,22 @@
 <h1>Badges Earned</h1>
 
-<app-card *ngFor="let badge of paginatedBadges" [cardData]="transformBadgeData(badge)">
-</app-card>
+<div class="main-content-container">
+  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+    <app-card
+      *ngFor="let badge of paginatedBadges"
+      [cardData]="transformBadgeData(badge)"
+    >
+    </app-card>
+  </div>
+</div>
 
-<app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
-  (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+<app-pagination
+  [currentPage]="currentPage"
+  [itemsPerPage]="itemsPerPage"
+  [totalItems]="totalItems"
+  (pageChange)="onPageChange($event)"
+  (itemsPerPageChange)="onItemsPerPageChange($event)"
+>
 </app-pagination>
 
 <app-powered-by></app-powered-by>

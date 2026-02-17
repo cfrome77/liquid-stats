@@ -1,12 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MarkerService } from "./marker.service";
 
-import { MarkerService } from './marker.service';
+describe("MarkerService", () => {
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+    }),
+  );
 
-describe('MarkerService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
-
-  it('should be created', () => {
-    const service: MarkerService = TestBed.get(MarkerService);
+  it("should be created", () => {
+    const service: MarkerService = TestBed.inject(MarkerService);
     expect(service).toBeTruthy();
   });
 });
