@@ -217,7 +217,7 @@ export class BeerHistoryComponent implements OnInit {
       mainImage: b.beer?.beer_label,
       secondaryImage: b.brewery?.brewery_label,
       footerInfo: {
-        text: "View Details",
+        text: "Beer Info",
         link: b.beer
           ? `https://untappd.com/b/${b.beer.beer_slug}/${b.beer.bid}`
           : "",
