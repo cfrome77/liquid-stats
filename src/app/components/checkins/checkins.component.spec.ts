@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { CheckinsComponent } from "./checkins.component";
-import { SharedTestingModule } from "src/app/testing/shared-testing.module";
 
 describe("CheckinsComponent", () => {
   let component: CheckinsComponent;
@@ -10,7 +9,6 @@ describe("CheckinsComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CheckinsComponent],
-      imports: [SharedTestingModule],
     }).compileComponents();
   });
 

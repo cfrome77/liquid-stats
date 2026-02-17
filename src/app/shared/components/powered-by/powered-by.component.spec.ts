@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { PoweredByComponent } from "./powered-by.component";
-import { SharedTestingModule } from "src/app/testing/shared-testing.module";
 
 describe("PoweredByComponent", () => {
   let component: PoweredByComponent;
@@ -10,7 +9,6 @@ describe("PoweredByComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [PoweredByComponent],
-      imports: [SharedTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PoweredByComponent);

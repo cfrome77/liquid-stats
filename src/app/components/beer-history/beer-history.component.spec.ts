@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { BeerHistoryComponent } from "./beer-history.component";
-import { SharedTestingModule } from "src/app/testing/shared-testing.module";
 
 describe("BeerHistoryComponent", () => {
   let component: BeerHistoryComponent;
@@ -10,7 +9,6 @@ describe("BeerHistoryComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [BeerHistoryComponent],
-      imports: [SharedTestingModule],
     }).compileComponents();
   });
 

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { WishlistComponent } from "./wishlist.component";
-import { SharedTestingModule } from "src/app/testing/shared-testing.module";
 
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
@@ -10,7 +9,6 @@ describe("WishlistComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [WishlistComponent],
-      imports: [SharedTestingModule],
     }).compileComponents();
   });
 
