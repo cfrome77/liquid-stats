@@ -1,12 +1,7 @@
 <div class="card-container">
   <mat-card class="shared-card">
     <mat-card-content class="beer">
-      <div
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        fxLayoutGap="10px"
-        class="header-section"
-      >
+      <div class="header-section">
         <img
           *ngIf="cardData.mainImage"
           class="beer-label"
@@ -15,12 +10,7 @@
           [title]="cardData.title"
         />
 
-        <div
-          fxFlex
-          fxLayout="column"
-          fxLayoutAlign="center center"
-          class="beer-info"
-        >
+        <div class="beer-info">
           <h3>
             <span *ngIf="cardData.rank" class="rank">#{{ cardData.rank }}</span>
             {{ cardData.title }}
@@ -43,36 +33,25 @@
       }}</span>
       <span class="comment" *ngIf="cardData.hint">{{ cardData.hint }}</span>
 
-      <div
-        class="rating-bar"
-        fxLayout="row"
-        fxLayoutAlign="space-between center"
-      >
+      <div class="rating-bar">
         <app-rating
           *ngIf="cardData.rating != null"
           [ratingScore]="cardData.rating"
-          fxFlex
+          style="flex: 1 1 auto"
         ></app-rating>
       </div>
 
-      <div
-        class="badges-and-social-links"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        fxLayoutGap="10px"
-      >
+      <div class="badges-and-social-links">
         <div
           *ngIf="cardData.globalRating != null"
           class="global-rating"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-          fxLayoutGap="4px"
+          style="display: flex; align-items: center; gap: 4px"
         >
           <span class="global-rating-label">Overall Rating:</span>
           <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
+        <div style="display: flex; align-items: center; flex: 1 1 auto">
           <mat-chip-listbox
             class="chip"
             selectable="false"
@@ -94,7 +73,14 @@
           </mat-chip-listbox>
         </div>
 
-        <div fxShrink="0" fxLayoutAlign="center center">
+        <div
+          style="
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
           <app-social-links
             *ngIf="cardData.extraData?.socialLinks"
             [contact]="cardData.extraData.socialLinks"

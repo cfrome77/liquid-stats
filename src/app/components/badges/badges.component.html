@@ -1,7 +1,7 @@
 <h1>Badges Earned</h1>
 
 <div class="main-content-container">
-  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+  <div class="flex-column" style="align-items: stretch; gap: 10px">
     <app-card
       *ngFor="let badge of paginatedBadges"
       [cardData]="transformBadgeData(badge)"

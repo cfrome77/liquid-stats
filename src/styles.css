@@ -1,6 +1,25 @@
 /* Importing fonts and styles */
 @import url("https://fonts.googleapis.com/css?family=Nunito|Montserrat:400,700");
 
+:root {
+  --primary-color: #494d50;
+  --primary-dark: #414548;
+  --toolbar-color: #616466;
+  --bg-dark: #121212;
+  --card-bg: #fafafa;
+  --card-bg-white: #ffffff;
+  --text-dark: #333333;
+  --text-grey: #666666;
+  --text-light: #ffffff;
+  --accent-blue: #1976d2;
+  --accent-indigo: #3f51b5;
+  --success-green: #28a745;
+  --btn-primary: #007bff;
+  --spacing-unit: 8px;
+  --card-gap: 10px;
+  --touch-target-min: 48px;
+}
+
 /* Reset Styles */
 *,
 *:before,
@@ -73,6 +92,41 @@ strong {
 }
 .cf:after {
   clear: both;
+}
+
+/* Global Layout Utilities */
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Mobile Touch Targets */
+@media (max-width: 600px) {
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-flat-button,
+  .mat-mdc-stroked-button,
+  button,
+  .btn {
+    min-height: var(--touch-target-min) !important;
+  }
 }
 
 /* Mat-Card and Card-related Styles */

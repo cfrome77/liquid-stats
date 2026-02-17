@@ -81,3 +81,23 @@ mat-toolbar {
 .mat-toolbar .mat-mdc-button .mat-icon {
   margin-right: 8px;
 }
+
+.desktop-nav {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 959px) {
+  .desktop-nav {
+    display: none;
+  }
+}
+
+.drawer-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.background {
+  background-color: var(--bg-dark);
+}
