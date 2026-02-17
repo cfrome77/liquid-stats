@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatCardModule } from "@angular/material/card";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -8,6 +10,8 @@ describe("CardComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CardComponent],
+      imports: [MatCardModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CardComponent);
