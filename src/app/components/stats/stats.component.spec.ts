@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MatDialogModule } from "@angular/material/dialog";
 import { of } from "rxjs";
 
 import { StatsComponent } from "./stats.component";
@@ -28,7 +30,7 @@ describe("StatsComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [StatsComponent],
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, HttpClientTestingModule, MatDialogModule],
       providers: [{ provide: StatsService, useValue: mockStatsService }],
     }).compileComponents();
 
@@ -41,9 +43,9 @@ describe("StatsComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should call updateStats on dateRange change", () => {
-    spyOn(component, "updateStats");
+  it("should call onDateChange on dateRange change", () => {
+    spyOn(component, "onDateChange");
     component.dateRange.setValue("month");
-    expect(component.updateStats).toHaveBeenCalled();
+    expect(component.onDateChange).toHaveBeenCalled();
   });
 });

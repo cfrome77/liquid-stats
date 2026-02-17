@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -13,6 +12,18 @@ describe("CardComponent", () => {
 
     fixture = TestBed.createComponent(CardComponent);
     component = fixture.componentInstance;
+    component.cardData = {
+      title: "Test Beer",
+      subtitle: "Test Style",
+      breweryName: "Test Brewery",
+      rating: 4,
+      mainImage: "test.jpg",
+      footerInfo: {
+        text: "Test Footer",
+        link: "http://test.com",
+        timestamp: "2023-01-01",
+      },
+    };
     fixture.detectChanges();
   });
 
