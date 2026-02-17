@@ -1,4 +1,6 @@
 // src/app/core/models/badge.model.ts
+import { BaseCardData } from "../../shared/components/card/card-data.interface";
+
 export interface Badge {
   badge_name: string;
   badge_description: string;
@@ -10,15 +12,4 @@ export interface Badge {
   user_badge_id: string | number;
 }
 
-export interface TransformedBadge {
-  title: string;
-  description: string;
-  hint: string;
-  mainImage: string;
-  footerInfo: {
-    timestamp: string;
-    link: string;
-    text: string;
-  };
-  extraData?: Record<string, unknown>;
-}
+export interface TransformedBadge extends BaseCardData {}

@@ -157,11 +157,16 @@ footer {
   color: #777;
 }
 
+.footer-text {
+  font-size: 14px;
+  color: #777;
+}
+
 /* Footer right: timestamp / view details */
 .footer-time {
   display: flex !important;
   align-items: center !important;
-  gap: 4px;
+  gap: 8px; /* increased gap */
   font-size: 14px;
   color: #777;
 }
@@ -171,6 +176,16 @@ footer a.view-details {
   text-decoration: none;
   font-weight: normal;
   font-size: 14px;
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  width: auto !important; /* Override fixed width from styles.css */
+  height: auto !important;
+  background-position: right center !important; /* Move icon to the right of text if it's background */
+  padding-right: 18px; /* space for the background icon */
+}
+
+.footer-right-text {
   display: inline-block;
 }
 
