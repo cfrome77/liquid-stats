@@ -23,6 +23,10 @@
   line-height: 1;
 }
 
+.rating-number strong {
+  color: inherit !important;
+}
+
 /* Styling for the SVG stars */
 .star {
   width: 2.2em;

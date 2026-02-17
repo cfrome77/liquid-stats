@@ -1,9 +1,8 @@
-/* tsconfig.spec.json */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["node", "jest", "jasmine"]
+    "types": ["jasmine", "node"]
   },
   "files": ["src/test.ts", "src/polyfills.ts"],
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]

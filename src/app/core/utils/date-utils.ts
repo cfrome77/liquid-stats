@@ -3,6 +3,10 @@ export class DateUtils {
   // Parse a date string, number, or Date into a Date object
   static parseDate(date: string | number | Date): Date {
     if (date instanceof Date) return date;
+    if (typeof date === "string") {
+      // Remove commas to improve cross-browser parsing of human-readable formats like "Feb 7, 2026, 8:50 PM"
+      date = date.replace(/,/g, "");
+    }
     const parsed = new Date(date);
     if (!isNaN(parsed.getTime())) return parsed;
     // Fallback for edge cases

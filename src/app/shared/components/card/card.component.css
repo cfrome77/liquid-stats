@@ -2,9 +2,7 @@
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px; /* consistent horizontal and vertical spacing */
   justify-content: flex-start;
-  padding: 8px;
   box-sizing: border-box;
 }
 
@@ -14,7 +12,6 @@
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 800px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -104,6 +101,10 @@
   box-sizing: border-box;
 }
 
+.global-rating {
+  color: #333;
+}
+
 /* Badges and Social Links */
 .badges-and-social-links {
   display: flex !important;
@@ -170,6 +171,14 @@ footer a.view-details {
   text-decoration: none;
   font-weight: normal;
   font-size: 14px;
+  display: inline-block;
+}
+
+.hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
 }
 
 footer a.view-details:hover {
@@ -186,6 +195,7 @@ footer a.view-details:hover {
 
   .global-rating {
     font-size: 0.95rem;
+    color: #333;
   }
 
   .beer-info h3 {

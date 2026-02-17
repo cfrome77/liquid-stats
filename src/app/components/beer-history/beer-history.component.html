@@ -1,36 +1,36 @@
 <h1>Beer History</h1>
 
-<div class="main-content-container dark-theme">
+<div class="main-content-container">
   <div class="filter-card">
     <div class="filter-card-content">
-      <div class="filter-buttons-container">
-        <app-filter
-          [filterFields]="filterFields"
-          (filterChanged)="onFilterChange()"
-        ></app-filter>
-      </div>
-
-      <div class="filter-row">
-        <div class="form-field-wrapper">
-          <mat-form-field class="search-field" appearance="outline">
-            <input
-              matInput
-              type="text"
-              placeholder="Search beers..."
-              [(ngModel)]="searchTerm"
-              (input)="onSearchChange()"
-            />
-          </mat-form-field>
+        <div class="filter-buttons-container">
+          <app-filter
+            [filterFields]="filterFields"
+            (filterChanged)="onFilterChange()"
+          ></app-filter>
         </div>
 
-        <button mat-flat-button color="primary" (click)="resetFilters()">
-          Reset Filters
-        </button>
+        <div class="filter-row">
+          <div class="form-field-wrapper">
+            <mat-form-field class="search-field" appearance="outline">
+              <input
+                matInput
+                type="text"
+                placeholder="Search beers..."
+                [(ngModel)]="searchTerm"
+                (input)="onSearchChange()"
+              />
+            </mat-form-field>
+          </div>
+
+          <button mat-flat-button color="primary" (click)="resetFilters()">
+            Reset Filters
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
     <app-card
       *ngFor="let beerCard of paginatedBeers"
       [cardData]="beerCard"

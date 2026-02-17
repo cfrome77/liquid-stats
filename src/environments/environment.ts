@@ -4,5 +4,5 @@ export const environment = {
   useAWS: true,
   dataUrl: 'https://liquid-stats-46ea8b54.s3.amazonaws.com/',
   untappdUsername: 'fromeca',
-  ga4MeasurementId: 'G-XXXXXXXXXX'
+  ga4MeasurementId: 'G-K425XQJT21'
 };
