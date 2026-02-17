@@ -158,11 +158,16 @@ footer {
   color: #777;
 }
 
+.footer-text {
+  font-size: 14px;
+  color: #777;
+}
+
 /* Footer right: timestamp / view details */
 .footer-time {
   display: flex !important;
   align-items: center !important;
-  gap: 4px;
+  gap: 8px; /* increased gap */
   font-size: 14px;
   color: #777;
 }

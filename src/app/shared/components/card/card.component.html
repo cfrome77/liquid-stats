@@ -107,9 +107,10 @@
       <footer>
         <div class="footer-left">
           <a
-            class="location-link"
-            [href]="cardData.footerInfo.link"
+            *ngIf="cardData.footerInfo.link"
             target="_blank"
+            [href]="cardData.footerInfo.link"
+            class="location-link"
             [title]="cardData.footerInfo.text"
             *ngIf="cardData.footerInfo.link"
           >
