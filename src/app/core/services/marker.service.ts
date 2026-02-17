@@ -124,7 +124,7 @@ export class MarkerService {
 
               return `
             <li style="color: black; list-style-type: none; margin-bottom: 5px; padding-bottom: 5px;">
-              <a href="${untappdUrl}" target="_blank" class="checkin-entry">
+              <a href="${untappdUrl}" target="_blank" class="checkin-entry" style="text-decoration: none; color: black;">
                 <div style="display: flex; align-items: center; padding: 5px;">
                   <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
                   <div style="color: black;">

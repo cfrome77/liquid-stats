@@ -251,6 +251,19 @@ strong {
   background-color: gainsboro;
 }
 
+/* ============================= */
+/* About Dialog */
+/* ============================= */
+.about-dialog-panel .mat-mdc-dialog-container {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Optional: subtle elevation boost */
+.about-dialog-panel .mat-mdc-dialog-surface {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
 /* ===============================
    Light Theme Base (Original)
    =============================== */

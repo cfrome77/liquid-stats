@@ -107,7 +107,6 @@
       <footer>
         <div class="footer-left">
           <a
-            *ngIf="cardData.footerInfo.link"
             target="_blank"
             [href]="cardData.footerInfo.link"
             class="location-link"
@@ -137,7 +136,7 @@
                 : cardData.footerInfo.link
             "
             target="_blank"
-            title="Checkin Details"
+            title="{{cardData.footerInfo?.rightLinkText || 'View Details'}}"
           >
             <mat-icon>open_in_new</mat-icon>
           </a>

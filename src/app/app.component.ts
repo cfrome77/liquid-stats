@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     private dialog: MatDialog,
     private overlay: Overlay,
     private router: Router,
-    private ga4Service: Ga4TrackingService
+    private ga4Service: Ga4TrackingService,
   ) {}
 
   ngOnInit(): void {
@@ -31,8 +31,8 @@ export class AppComponent implements OnInit {
     this.router.events
       .pipe(
         filter(
-          (event): event is NavigationEnd => event instanceof NavigationEnd
-        )
+          (event): event is NavigationEnd => event instanceof NavigationEnd,
+        ),
       )
       .subscribe((event) => {
         const newPath = event.urlAfterRedirects;
@@ -44,10 +44,18 @@ export class AppComponent implements OnInit {
 
   openDialog(): void {
     const scrollStrategy = this.overlay.scrollStrategies.reposition();
+
     this.dialog.open(AboutComponent, {
-      panelClass: "dialog",
+      panelClass: "about-dialog-panel",
       autoFocus: false,
       scrollStrategy,
+
+      width: "95vw",
+      maxWidth: "750px",
+      maxHeight: "85vh",
+
+      enterAnimationDuration: "250ms",
+      exitAnimationDuration: "200ms",
     });
   }
 }

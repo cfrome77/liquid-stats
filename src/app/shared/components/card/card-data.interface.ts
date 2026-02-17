@@ -25,8 +25,8 @@ export interface BaseCardData {
   mainImage?: string;
   secondaryImage?: string;
   footerInfo: {
-    text: string;
-    link: string;
+    text: string | undefined;
+    link: string | undefined;
     timestamp: string;
     rightLinkText?: string;
   };
