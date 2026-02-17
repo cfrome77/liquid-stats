@@ -111,12 +111,12 @@
             [href]="cardData.footerInfo.link"
             target="_blank"
             [title]="cardData.footerInfo.text"
-            *ngIf="cardData.extraData?.venueId"
+            *ngIf="cardData.footerInfo.link"
           >
-            <mat-icon class="location-icon">location_on</mat-icon>
-            <span class="location-text hide-text">{{
-              cardData.footerInfo.text
-            }}</span>
+            <mat-icon class="location-icon">{{
+              cardData.extraData?.venueId ? "location_on" : "info"
+            }}</mat-icon>
+            <span class="location-text">{{ cardData.footerInfo.text }}</span>
           </a>
         </div>
         <div class="footer-time">
@@ -127,13 +127,19 @@
           >
           <a
             class="checkin-page view-details"
-            href="https://untappd.com/user/{{
-              cardData.extraData?.userName
-            }}/checkin/{{ cardData.extraData?.checkinId }}"
+            [href]="
+              cardData.extraData?.userName && cardData.extraData?.checkinId
+                ? 'https://untappd.com/user/' +
+                  cardData.extraData.userName +
+                  '/checkin/' +
+                  cardData.extraData.checkinId
+                : cardData.footerInfo.link
+            "
             target="_blank"
             title="Checkin Details"
-            ><span class="hide-text">Checkin Details</span></a
           >
+            <mat-icon>open_in_new</mat-icon>
+          </a>
         </div>
       </footer>
     </mat-card-content>

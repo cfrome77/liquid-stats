@@ -137,6 +137,7 @@ footer {
   padding: 8px 12px 8px 12px;
   margin: 4px 0 0 0;
   box-sizing: border-box;
+  clear: both;
 }
 
 /* Footer left link */
@@ -166,12 +167,26 @@ footer {
   color: #777;
 }
 
+.footer-time time {
+  color: #a9a9a9;
+  font-size: 14px;
+  display: inline-block;
+}
+
 footer a.view-details {
   color: #777;
   text-decoration: none;
   font-weight: normal;
   font-size: 14px;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
+footer a.view-details mat-icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  color: #777;
 }
 
 .hide-text {
