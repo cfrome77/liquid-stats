@@ -191,28 +191,16 @@ strong {
   display: block;
 }
 
-/* Footer */
-footer {
-  border-top: 1px solid #eee;
-  clear: both;
-  padding-top: 8px;
-}
-.footer-time {
-  float: right;
-}
-.footer-time time {
+/* Beer Info Links */
+.beerInfo a {
   color: #a9a9a9;
-  font-size: 14px;
-  display: inline-block;
-}
-.footer-time .checkin-page {
-  background: url("./assets/images/ico_checkin_page.png") no-repeat left top
-    rgba(0, 0, 0, 0);
-  display: inline-block;
-  height: 18px;
-  width: 13px;
-  margin-left: 4px;
-  vertical-align: top;
+  display: flex;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 230px;
+  white-space: nowrap;
+  text-decoration: none;
 }
 
 /* Top Button */
@@ -233,18 +221,6 @@ footer {
 }
 #topButton:hover {
   background-color: #555;
-}
-
-/* Beer Info Links */
-.beerInfo a {
-  color: #a9a9a9;
-  display: flex;
-  font-size: 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 230px;
-  white-space: nowrap;
-  text-decoration: none;
 }
 
 /* Navbar & Toolbar */
@@ -273,6 +249,19 @@ footer {
 }
 .selected {
   background-color: gainsboro;
+}
+
+/* ============================= */
+/* About Dialog */
+/* ============================= */
+.about-dialog-panel .mat-mdc-dialog-container {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Optional: subtle elevation boost */
+.about-dialog-panel .mat-mdc-dialog-surface {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 /* ===============================

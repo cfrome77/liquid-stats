@@ -56,8 +56,8 @@ export class BadgesComponent implements OnInit {
       mainImage: badge.media.badge_image_sm,
       footerInfo: {
         timestamp: this.published(badge.earned_at),
-        link: `https://untappd.com/user/${this.username}/badges/${badge.user_badge_id}`,
-        text: "Badge Info",
+        link: undefined,
+        text: undefined,
         rightLinkText: "Badge Details",
       },
       extraData: {},
