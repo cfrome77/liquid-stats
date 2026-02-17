@@ -6,7 +6,7 @@ describe("PopUpService", () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it("should be created", () => {
-    const service: PopUpService = TestBed.get(PopUpService);
+    const service: PopUpService = TestBed.inject(PopUpService);
     expect(service).toBeTruthy();
   });
 });
