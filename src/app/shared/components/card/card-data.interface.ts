@@ -28,6 +28,7 @@ export interface BaseCardData {
     text: string;
     link: string;
     timestamp: string;
+    rightLinkText?: string;
   };
   extraData?: CardExtraData;
   rank?: number;

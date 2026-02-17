@@ -24,7 +24,7 @@ export class CheckinsComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.username = environment.untappdUsername;
   }
@@ -34,7 +34,7 @@ export class CheckinsComponent implements OnInit {
       next: (data) => {
         this.checkins = data.response.checkins.items;
         this.transformedCheckins = this.checkins.map((checkin) =>
-          this.transformCheckinData(checkin)
+          this.transformCheckinData(checkin),
         );
       },
       error: (err) => {
@@ -89,6 +89,7 @@ export class CheckinsComponent implements OnInit {
           ? `https://untappd.com/venue/${checkin.venue.venue_id}`
           : `https://untappd.com/b/${checkin.beer.beer_slug}/${checkin.beer.bid}`,
         timestamp: this.published(checkin.created_at),
+        rightLinkText: "Checkin Details",
       },
       extraData,
     };
