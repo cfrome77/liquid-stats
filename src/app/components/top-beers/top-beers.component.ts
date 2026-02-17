@@ -42,7 +42,7 @@ export class TopBeersComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.username = environment.untappdUsername;
   }
@@ -116,7 +116,7 @@ export class TopBeersComponent implements OnInit {
     this.filteredBeers = filtered;
 
     this.transformedTopBeers = filtered.map((beer: BeerCheckin, index: number) =>
-      this.transformTopBeersData(beer, index + 1)
+      this.transformTopBeersData(beer, index + 1),
     );
   }
 
@@ -132,6 +132,9 @@ export class TopBeersComponent implements OnInit {
   }
 
   transformTopBeersData(beer: BeerCheckin, rank?: number): BaseCardData {
+    const beerSlug =
+      beer.beer.beer_slug ||
+      beer.beer.beer_name.toLowerCase().replace(/ /g, "-");
     return {
       title: beer.beer.beer_name,
       subtitle: beer.beer.beer_style,
@@ -143,10 +146,9 @@ export class TopBeersComponent implements OnInit {
       secondaryImage: undefined,
       footerInfo: {
         text: "Beer Info",
-        link: `https://untappd.com/b/${beer.beer.beer_name
-          .toLowerCase()
-          .replace(/ /g, "-")}/${beer.beer.bid}`,
+        link: `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
         timestamp: this.published(beer.recent_created_at),
+        rightLinkText: "Beer Details",
       },
       extraData: {
         badges: [],
@@ -157,7 +159,7 @@ export class TopBeersComponent implements OnInit {
           breweryId: undefined,
         },
         venueId: undefined,
-        checkinId: undefined,
+        checkinId: beer.recent_checkin_id,
         userName: this.username,
       },
       rank,

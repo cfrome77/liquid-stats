@@ -18,7 +18,11 @@ export class BadgesComponent implements OnInit {
   public totalItems!: number;
   public username: string;
 
-  constructor(private dataService: DataService, private errorHandler: ErrorHandler, private logger: LoggingService) {
+  constructor(
+    private dataService: DataService,
+    private errorHandler: ErrorHandler,
+    private logger: LoggingService,
+  ) {
     this.username = environment.untappdUsername;
   }
 
@@ -28,17 +32,17 @@ export class BadgesComponent implements OnInit {
         this.badges = data;
         this.totalItems = data.length;
         this.updatePagination();
-        this.logger.info('Badges successfully fetched', data);
+        this.logger.info("Badges successfully fetched", data);
       },
       error: (err: unknown) => {
         // handled error → log it
-        this.logger.error('Error fetching badges', err);
+        this.logger.error("Error fetching badges", err);
 
         // optionally also pass to global handler if you want it tracked
         this.errorHandler.handleError(err);
       },
       complete: () => {
-        this.logger.log('Badges fetch completed');
+        this.logger.log("Badges fetch completed");
       },
     });
   }
@@ -53,7 +57,8 @@ export class BadgesComponent implements OnInit {
       footerInfo: {
         timestamp: this.published(badge.earned_at),
         link: `https://untappd.com/user/${this.username}/badges/${badge.user_badge_id}`,
-        text: "Badge Page",
+        text: "Badge Info",
+        rightLinkText: "Badge Details",
       },
       extraData: {},
     };
