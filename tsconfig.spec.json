@@ -1,4 +1,3 @@
-/* tsconfig.spec.json */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {

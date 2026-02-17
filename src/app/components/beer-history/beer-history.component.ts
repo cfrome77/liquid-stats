@@ -77,7 +77,7 @@ export class BeerHistoryComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private router: Router
+    private router: Router,
   ) {
     this.username = environment.untappdUsername;
   }
@@ -122,7 +122,7 @@ export class BeerHistoryComponent implements OnInit {
           const maxDate = DateUtils.toISODate(DateUtils.maxDate(timestamps));
           const today = DateUtils.toISODate(todayDate);
           const dateFilter = this.filterFields.find(
-            (f) => f.field === "date_range"
+            (f) => f.field === "date_range",
           );
           if (dateFilter) {
             dateFilter.options = [minDate, maxDate];
@@ -138,10 +138,10 @@ export class BeerHistoryComponent implements OnInit {
             .filter((r) => r !== undefined && r !== null);
 
           const quarterPointScale = Array.from({ length: 21 }, (_, i) =>
-            (i * 0.25).toFixed(2)
+            (i * 0.25).toFixed(2),
           );
           const tenthPointScale = Array.from({ length: 51 }, (_, i) =>
-            (i * 0.1).toFixed(1)
+            (i * 0.1).toFixed(1),
           );
           const combinedRatings = Array.from(
             new Set([
@@ -479,7 +479,7 @@ export class BeerHistoryComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     const beersToPaginate = this.filteredBeers.slice(startIndex, endIndex);
     this.paginatedBeers = beersToPaginate.map((beer) =>
-      this.transformBeerData(beer)
+      this.transformBeerData(beer),
     );
   }
 
