@@ -16,6 +16,7 @@ export interface BeerCheckin {
   brewery: {
     brewery_id?: number;
     brewery_label?: string;
+    brewery_page_url?: string;
     contact?: any;
     location: {
       lat?: number;

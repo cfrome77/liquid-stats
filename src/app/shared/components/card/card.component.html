@@ -107,16 +107,16 @@
       <footer>
         <div class="footer-left">
           <a
-            *ngIf="cardData.footerInfo.link"
             target="_blank"
             [href]="cardData.footerInfo.link"
             class="location-link"
             [title]="cardData.footerInfo.text"
+            *ngIf="cardData.footerInfo.link"
           >
             <mat-icon class="location-icon">{{
               cardData.extraData?.venueId ? "location_on" : "info"
             }}</mat-icon>
-            <span class="footer-text">{{ cardData.footerInfo.text }}</span>
+            <span class="location-text">{{ cardData.footerInfo.text }}</span>
           </a>
         </div>
         <div class="footer-time">
@@ -136,11 +136,9 @@
                 : cardData.footerInfo.link
             "
             target="_blank"
-            [title]="cardData.footerInfo.rightLinkText || 'Checkin Details'"
+            title="{{cardData.footerInfo?.rightLinkText || 'View Details'}}"
           >
-            <span class="footer-right-text">{{
-              cardData.footerInfo.rightLinkText || "Checkin Details"
-            }}</span>
+            <mat-icon>open_in_new</mat-icon>
           </a>
         </div>
       </footer>

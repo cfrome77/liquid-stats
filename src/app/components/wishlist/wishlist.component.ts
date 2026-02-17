@@ -53,8 +53,8 @@ export class WishlistComponent implements OnInit {
       mainImage: item.beer.beer_label,
       secondaryImage: item.brewery.brewery_label,
       footerInfo: {
-        text: "Beer Info",
-        link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
+        text: "Brewery Info",
+        link: `https://untappd.com${item.brewery.brewery_page_url}`,
         timestamp: this.published(item.created_at),
         rightLinkText: "Beer Details",
       },

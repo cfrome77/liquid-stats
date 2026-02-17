@@ -145,8 +145,8 @@ export class TopBeersComponent implements OnInit {
       mainImage: beer.beer.beer_label,
       secondaryImage: undefined,
       footerInfo: {
-        text: "Beer Info",
-        link: `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
+        text: "Brewery Info",
+        link: `https://untappd.com${beer.brewery.brewery_page_url}` || `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
         timestamp: this.published(beer.recent_created_at),
         rightLinkText: "Beer Details",
       },

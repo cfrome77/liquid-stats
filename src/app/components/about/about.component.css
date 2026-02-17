@@ -1,9 +1,142 @@
-h1 {
-  color: #fff;
+/* ============================= */
+/* Dialog Container Animation */
+/* ============================= */
+.about-content {
+  animation: fadeSlideIn 300ms ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 75vh;
+  overflow-y: auto;
+  padding-top: 10px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Fade + slight lift */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================= */
+/* Title */
+/* ============================= */
+.about-title {
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ============================= */
+/* HERO SECTION */
+/* ============================= */
+.hero-section {
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffb74d, #ff8a65);
+  color: white;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero-content img {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Desktop hero layout */
+@media (min-width: 768px) {
+  .hero-content {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .hero-content img {
+    max-width: 240px;
+    flex-shrink: 0;
+  }
+}
+
+/* ============================= */
+/* Feature Cards */
+/* ============================= */
+.about-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.05));
+  border-left: 4px solid #ffb74d;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.about-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.about-card mat-icon {
+  font-size: 20px;
+  color: #ffb74d;
+}
+
+/* ============================= */
+/* Contact */
+/* ============================= */
+.contact-card {
   text-align: center;
 }
 
-img {
-  float: left;
-  margin: 0px 15px 15px 0px;
+.contact-link {
+  display: inline-block;
+  margin-top: 6px;
+  color: #64b5f6;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+/* ============================= */
+/* Scrollbar Styling */
+/* ============================= */
+.about-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.about-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 183, 77, 0.6);
+  border-radius: 6px;
+}
+
+.about-content::-webkit-scrollbar-track {
+  background: transparent;
 }
