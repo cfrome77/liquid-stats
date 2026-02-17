@@ -77,7 +77,7 @@ export class BeerHistoryComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private router: Router
+    private router: Router,
   ) {
     this.username = environment.untappdUsername;
   }
@@ -99,18 +99,24 @@ export class BeerHistoryComponent implements OnInit {
         if (beersArray.length > 0) {
           this.beers = beersArray.sort((a: any, b: any) => {
             const dateA = DateUtils.parseDate(
-              a.first_created_at || a.recent_created_at || a.footerInfo?.timestamp
+              a.first_created_at ||
+                a.recent_created_at ||
+                a.footerInfo?.timestamp,
             );
             const dateB = DateUtils.parseDate(
-              b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
+              b.first_created_at ||
+                b.recent_created_at ||
+                b.footerInfo?.timestamp,
             );
             return dateB.getTime() - dateA.getTime();
           });
 
           const timestamps = this.beers.map((b: any) =>
             DateUtils.parseDate(
-              b.first_created_at || b.recent_created_at || b.footerInfo?.timestamp
-            )
+              b.first_created_at ||
+                b.recent_created_at ||
+                b.footerInfo?.timestamp,
+            ),
           );
 
           this.filteredBeers = [...this.beers];
@@ -118,11 +124,14 @@ export class BeerHistoryComponent implements OnInit {
 
           // setup date range filter
           const todayDate = new Date();
-          const minDate = DateUtils.toISODate(DateUtils.minDate(timestamps));
-          const maxDate = DateUtils.toISODate(DateUtils.maxDate(timestamps));
-          const today = DateUtils.toISODate(todayDate);
+          const minDateObj = DateUtils.startOfDay(
+            DateUtils.minDate(timestamps),
+          );
+          const maxDateObj = DateUtils.endOfDay(DateUtils.maxDate(timestamps));
+          const minDate = DateUtils.toISODate(minDateObj);
+          const maxDate = DateUtils.toISODate(maxDateObj);
           const dateFilter = this.filterFields.find(
-            (f) => f.field === "date_range"
+            (f) => f.field === "date_range",
           );
           if (dateFilter) {
             dateFilter.options = [minDate, maxDate];
@@ -133,27 +142,27 @@ export class BeerHistoryComponent implements OnInit {
           // setup ratings
           const existingRatings = this.beers
             .map((b: any) =>
-              b.rating_score !== undefined ? b.rating_score : b.rating
+              b.rating_score !== undefined ? b.rating_score : b.rating,
             )
             .filter((r) => r !== undefined && r !== null);
 
           const quarterPointScale = Array.from({ length: 21 }, (_, i) =>
-            (i * 0.25).toFixed(2)
+            (i * 0.25).toFixed(2),
           );
           const tenthPointScale = Array.from({ length: 51 }, (_, i) =>
-            (i * 0.1).toFixed(1)
+            (i * 0.1).toFixed(1),
           );
           const combinedRatings = Array.from(
             new Set([
               ...quarterPointScale.map((val) => parseFloat(val)),
               ...tenthPointScale.map((val) => parseFloat(val)),
               ...existingRatings.map((val) =>
-                typeof val === "string" ? parseFloat(val) : val
+                typeof val === "string" ? parseFloat(val) : val,
               ),
-            ])
+            ]),
           ).sort((a, b) => a - b);
           const formattedRatings = combinedRatings.map((rating) =>
-            (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2)
+            (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2),
           );
 
           const setOptions = (field: string, options: string[]) => {
@@ -164,7 +173,7 @@ export class BeerHistoryComponent implements OnInit {
           setOptions("brewery", this.getUniqueFieldValues("brewery").sort());
           setOptions(
             "beer_style",
-            this.getUniqueFieldValues("beer_style").sort()
+            this.getUniqueFieldValues("beer_style").sort(),
           );
           setOptions("country", this.getUniqueFieldValues("country").sort());
           setOptions("region", this.getUniqueFieldValues("region").sort());
@@ -213,7 +222,7 @@ export class BeerHistoryComponent implements OnInit {
           ? `https://untappd.com/b/${b.beer.beer_slug}/${b.beer.bid}`
           : "",
         timestamp: this.published(
-          b.recent_created_at || b.first_created_at || ""
+          b.recent_created_at || b.first_created_at || "",
         ),
       },
       extraData: {
@@ -288,16 +297,17 @@ export class BeerHistoryComponent implements OnInit {
       const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
       const style = beer.beer?.beer_style || beer.subtitle || "";
       const country = beer.brewery?.country_name || beer.country || "";
-      const region =
-        beer.brewery?.location?.brewery_state || beer.state || "";
+      const region = beer.brewery?.location?.brewery_state || beer.state || "";
       const rawRating =
         beer.rating_score !== undefined ? beer.rating_score : beer.rating || 0;
       const ratingStr =
-        (rawRating * 10) % 1 === 0 ? rawRating.toFixed(1) : rawRating.toFixed(2);
+        (rawRating * 10) % 1 === 0
+          ? rawRating.toFixed(1)
+          : rawRating.toFixed(2);
       const beerDate = DateUtils.parseDate(
         beer.first_created_at ||
           beer.recent_created_at ||
-          beer.footerInfo?.timestamp
+          beer.footerInfo?.timestamp,
       );
 
       const isAllBreweries =
@@ -317,15 +327,18 @@ export class BeerHistoryComponent implements OnInit {
         this.filterFields.find((f) => f.field === "rating")?.options.length;
 
       const matchBrewery =
-        selectedBreweries.includes(brewery) || (brewery === "" && isAllBreweries);
+        selectedBreweries.includes(brewery) ||
+        (brewery === "" && isAllBreweries);
       const matchStyle =
         selectedStyles.includes(style) || (style === "" && isAllStyles);
       const matchCountry =
-        selectedCountries.includes(country) || (country === "" && isAllCountries);
+        selectedCountries.includes(country) ||
+        (country === "" && isAllCountries);
       const matchRegion =
         selectedRegions.includes(region) || (region === "" && isAllRegions);
       const matchRating =
-        selectedRatings.includes(ratingStr) || (ratingStr === "0.0" && isAllRatings);
+        selectedRatings.includes(ratingStr) ||
+        (ratingStr === "0.0" && isAllRatings);
       const matchDate = beerDate >= startDate && beerDate <= endDate;
 
       const beerName = beer.beer?.beer_name || beer.title || "";
@@ -367,7 +380,8 @@ export class BeerHistoryComponent implements OnInit {
         const style = beer.beer?.beer_style || beer.subtitle || "";
         const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
         const country = beer.brewery?.country_name || beer.country || "";
-        const region = beer.brewery?.location?.brewery_state || beer.state || "";
+        const region =
+          beer.brewery?.location?.brewery_state || beer.state || "";
         const beerDesc = beer.beer?.beer_description || beer.description || "";
 
         const matchSearch =
@@ -392,11 +406,13 @@ export class BeerHistoryComponent implements OnInit {
           else if (f.field === "country")
             beerValue = beer.brewery?.country_name || beer.country || "";
           else if (f.field === "region")
-            beerValue = beer.brewery?.location?.brewery_state || beer.state || "";
+            beerValue =
+              beer.brewery?.location?.brewery_state || beer.state || "";
           else if (f.field === "rating") {
-            const raw = beer.rating_score !== undefined ? beer.rating_score : beer.rating;
+            const raw =
+              beer.rating_score !== undefined ? beer.rating_score : beer.rating;
             if (raw !== undefined && raw !== null) {
-              const numRaw = typeof raw === 'string' ? parseFloat(raw) : raw;
+              const numRaw = typeof raw === "string" ? parseFloat(raw) : raw;
               beerValue =
                 (numRaw * 10) % 1 === 0 ? numRaw.toFixed(1) : numRaw.toFixed(2);
             }
@@ -404,7 +420,7 @@ export class BeerHistoryComponent implements OnInit {
             const beerDate = DateUtils.parseDate(
               beer.first_created_at ||
                 beer.recent_created_at ||
-                beer.footerInfo?.timestamp
+                beer.footerInfo?.timestamp,
             );
             const startDate = f.selected[0]
               ? DateUtils.startOfDay(f.selected[0])
@@ -416,7 +432,8 @@ export class BeerHistoryComponent implements OnInit {
           }
           const isAllSelected = f.selected.length === f.options.length;
           return (
-            f.selected.includes(beerValue) || (beerValue === "" && isAllSelected)
+            f.selected.includes(beerValue) ||
+            (beerValue === "" && isAllSelected)
           );
         });
 
@@ -432,9 +449,10 @@ export class BeerHistoryComponent implements OnInit {
         else if (currentFilter.field === "region")
           value = beer.brewery?.location?.brewery_state || beer.state || "";
         else if (currentFilter.field === "rating") {
-          const raw = beer.rating_score !== undefined ? beer.rating_score : beer.rating;
+          const raw =
+            beer.rating_score !== undefined ? beer.rating_score : beer.rating;
           if (raw !== undefined && raw !== null) {
-            const numRaw = typeof raw === 'string' ? parseFloat(raw) : raw;
+            const numRaw = typeof raw === "string" ? parseFloat(raw) : raw;
             value =
               (numRaw * 10) % 1 === 0 ? numRaw.toFixed(1) : numRaw.toFixed(2);
           }
@@ -479,7 +497,7 @@ export class BeerHistoryComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     const beersToPaginate = this.filteredBeers.slice(startIndex, endIndex);
     this.paginatedBeers = beersToPaginate.map((beer) =>
-      this.transformBeerData(beer)
+      this.transformBeerData(beer),
     );
   }
 

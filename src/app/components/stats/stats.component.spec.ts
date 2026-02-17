@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ReactiveFormsModule } from "@angular/forms";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from "rxjs";
 
+import { MarkerService } from "src/app/core/services/marker.service";
 import { StatsComponent } from "./stats.component";
 import { StatsService } from "./stats.service";
+import { SharedTestingModule } from "../../testing/shared-testing.module";
 
 describe("StatsComponent", () => {
   let component: StatsComponent;
@@ -15,35 +17,87 @@ describe("StatsComponent", () => {
       loadBeerData: () => of([]),
       getDateRange: () => ({ start: new Date(), end: new Date() }),
       computeStats: () => ({
-        total: 0,
-        uniqueBeers: 0,
-        averageRating: 0,
+        totalUniqueBeers: 0,
+        totalCheckins: 0,
+        newBeersCount: 0,
         newBeerRatio: 0,
-        beersPerDay: 0,
-        totalVenues: 0,
-        uniqueVenues: 0,
-        newVenueRatio: 0,
+        averageRating: 0,
+        totalUniqueBreweries: 0,
+        beerStylesCount: {},
+        topBeers: [],
+        topCountries: {},
+        topStates: {},
+        recentActivityByDate: [],
+        checkinsByHour: [],
+        checkinsByDay: [],
+        checkinsByDayOfWeek: [],
+        checkinsByMonth: [],
+        averageRatingsOverTime: [],
       }),
     };
 
     await TestBed.configureTestingModule({
-      declarations: [StatsComponent],
-      imports: [ReactiveFormsModule],
-      providers: [{ provide: StatsService, useValue: mockStatsService }],
-    }).compileComponents();
+  declarations: [StatsComponent],
+  imports: [
+    SharedTestingModule,
+    HttpClientTestingModule,
+  ],
+  providers: [
+    { provide: StatsService, useValue: mockStatsService }
+  ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(StatsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should call updateStats on dateRange change", () => {
-    spyOn(component, "updateStats");
-    component.dateRange.setValue("month");
-    expect(component.updateStats).toHaveBeenCalled();
+  it("should load beer data and compute stats on init", () => {
+    const mockBeers = [
+      {
+        beer: {
+          bid: 1,
+          beer_name: "Test IPA",
+          beer_style: "IPA",
+        },
+        brewery: {
+          brewery_name: "Test Brewery",
+          country_name: "United States",
+        },
+        rating_score: 4.5,
+        first_checkin_date: "2024-01-01",
+      },
+      {
+        beer: {
+          bid: 2,
+          beer_name: "Test Stout",
+          beer_style: "Stout",
+        },
+        brewery: {
+          brewery_name: "Another Brewery",
+          country_name: "Germany",
+        },
+        rating_score: 4.0,
+        first_checkin_date: "2024-02-01",
+      },
+    ];
+
+    spyOn(mockStatsService, "loadBeerData").and.returnValue(of(mockBeers));
+    const computeSpy = spyOn(
+      mockStatsService,
+      "computeStats",
+    ).and.callThrough();
+
+    component.ngOnInit();
+
+    expect(mockStatsService.loadBeerData).toHaveBeenCalled();
+    expect(computeSpy).toHaveBeenCalledWith(
+      mockBeers,
+      jasmine.any(Date),
+      jasmine.any(Date),
+    );
   });
 });

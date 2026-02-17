@@ -1,19 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TopbeersComponent } from "./topbeers.component";
+import { TopBeersComponent } from "./top-beers.component";
+import { SharedTestingModule } from "src/app/testing/shared-testing.module";
 
 describe("TopbeersComponent", () => {
-  let component: TopbeersComponent;
-  let fixture: ComponentFixture<TopbeersComponent>;
+  let component: TopBeersComponent;
+  let fixture: ComponentFixture<TopBeersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TopbeersComponent],
+      declarations: [TopBeersComponent],
+      imports: [SharedTestingModule],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TopbeersComponent);
+    fixture = TestBed.createComponent(TopBeersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

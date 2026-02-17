@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PoweredByComponent } from "./powered-by.component";
+import { PaginationComponent } from "./pagination.component";
 import { SharedTestingModule } from "src/app/testing/shared-testing.module";
 
-describe("PoweredByComponent", () => {
-  let component: PoweredByComponent;
-  let fixture: ComponentFixture<PoweredByComponent>;
+describe("PaginationComponent", () => {
+  let component: PaginationComponent;
+  let fixture: ComponentFixture<PaginationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PoweredByComponent],
+      declarations: [PaginationComponent],
       imports: [SharedTestingModule],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PoweredByComponent);
+    fixture = TestBed.createComponent(PaginationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
