@@ -1,4 +1,7 @@
 export const environment = {
   production: false,
-  untappdUsername: 'username-here'
+  useAWS: false,
+  dataUrl: "",
+  untappdUsername: "",
+  ga4MeasurementId: ""
 };

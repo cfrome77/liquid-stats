@@ -1,44 +1,59 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { StatsService } from './stats.service';
-import { BeerCheckin, ProcessedStats } from './stats.model';
-import { BeerStyleDialogComponent, GenericBeersDialogData } from '../../shared/components/beer-style-dialog/beer-style-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ChartData } from 'chart.js';
-import { DateUtils } from '../../shared/date-utils';
+import { Component, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { StatsService } from "./stats.service";
+import { BeerCheckin } from "src/app/core/models/beer.model";
+import { ProcessedStats } from "src/app/core/models/stats.model";
+import {
+  BeerStyleDialogComponent,
+  GenericBeersDialogData,
+} from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { ChartData } from "chart.js";
+import { DateUtils } from "../../core/utils/date-utils";
 
 @Component({
-  selector: 'app-stats',
-  templateUrl: './stats.component.html',
-  styleUrls: ['./stats.component.css']
+  selector: "app-stats",
+  templateUrl: "./stats.component.html",
+  styleUrls: ["./stats.component.css"],
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
 
-  dateRange = new FormControl('year');
-  customStartDate = new FormControl(DateUtils.toISODate(DateUtils.subtractDays(365)));
+  dateRange = new FormControl("year");
+  customStartDate = new FormControl(
+    DateUtils.toISODate(DateUtils.subtractDays(365)),
+  );
   customEndDate = new FormControl(DateUtils.toISODate(new Date()));
 
-  hourChartLabels: string[] = Array.from({ length: 24 }, (_, i) => i.toString());
-  hourChartData: ChartData<'bar', number[], string> = {
+  hourChartLabels: string[] = Array.from({ length: 24 }, (_, i) =>
+    i.toString(),
+  );
+  hourChartData: ChartData<"bar", number[], string> = {
     labels: this.hourChartLabels,
     datasets: [
-      { label: 'Check-ins by Hour', data: [], backgroundColor: 'rgba(63,81,181,0.8)' }
-    ]
+      {
+        label: "Check-ins by Hour",
+        data: [],
+        backgroundColor: "rgba(63,81,181,0.8)",
+      },
+    ],
   };
 
   recentActivityChartLabels: string[] = [];
-  recentActivityChartData?: ChartData<'line', number[], string>;
+  recentActivityChartData?: ChartData<"line", number[], string>;
   checkinsByDayLabels: string[] = [];
-  dayChartData: ChartData<'bar'> = { labels: [], datasets: [] };
-  monthChartData: ChartData<'bar'> = { labels: [], datasets: [] };
-  ratingChartData: ChartData<'line'> = { labels: [], datasets: [] };
+  dayChartData: ChartData<"bar"> = { labels: [], datasets: [] };
+  monthChartData: ChartData<"bar"> = { labels: [], datasets: [] };
+  ratingChartData: ChartData<"line"> = { labels: [], datasets: [] };
 
   chartOptions = { responsive: true, maintainAspectRatio: false };
   objectKeys = Object.keys;
 
-  constructor(private statsService: StatsService, private dialog: MatDialog) { }
+  constructor(
+    private statsService: StatsService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.loadBeerData();
@@ -48,9 +63,17 @@ export class StatsComponent implements OnInit {
   }
 
   loadBeerData(): void {
-    this.statsService.loadBeerData().subscribe((data: BeerCheckin[]) => {
-      this.beers = data;
-      this.onDateChange();
+    this.statsService.loadBeerData().subscribe({
+      next: (data: BeerCheckin[]) => {
+        this.beers = data;
+        this.onDateChange();
+      },
+      error: (err) => {
+        console.error("Error fetching beers:", err);
+      },
+      complete: () => {
+        console.log("Beers fetch completed");
+      },
     });
   }
 
@@ -65,20 +88,36 @@ export class StatsComponent implements OnInit {
     let rangeStart: Date;
     let rangeEnd: Date = new Date();
 
-    if (rangeType === 'custom') {
-      rangeStart = this.customStartDate.value ? new Date(this.customStartDate.value) : new Date();
-      rangeEnd = this.customEndDate.value ? new Date(this.customEndDate.value) : new Date();
+    if (rangeType === "custom") {
+      rangeStart = this.customStartDate.value
+        ? new Date(this.customStartDate.value)
+        : new Date();
+      rangeEnd = this.customEndDate.value
+        ? new Date(this.customEndDate.value)
+        : new Date();
     } else {
       switch (rangeType) {
-        case 'week': rangeStart = DateUtils.subtractDays(7); break;
-        case 'month': rangeStart = DateUtils.subtractMonths(1); break;
-        case 'year': rangeStart = DateUtils.subtractMonths(12); break;
-        case 'all':
-        default: rangeStart = new Date('2000-01-01'); break;
+        case "week":
+          rangeStart = DateUtils.subtractDays(7);
+          break;
+        case "month":
+          rangeStart = DateUtils.subtractMonths(1);
+          break;
+        case "year":
+          rangeStart = DateUtils.subtractMonths(12);
+          break;
+        case "all":
+        default:
+          rangeStart = new Date("2000-01-01");
+          break;
       }
     }
 
-    const stats = this.statsService.computeStats(this.beers, rangeStart, rangeEnd);
+    const stats = this.statsService.computeStats(
+      this.beers,
+      rangeStart,
+      rangeEnd,
+    );
 
     this.processedStats = {
       totalUniqueBeers: stats.totalUniqueBeers ?? 0,
@@ -96,7 +135,7 @@ export class StatsComponent implements OnInit {
       checkinsByDay: stats.checkinsByDay ?? [],
       checkinsByDayOfWeek: stats.checkinsByDayOfWeek ?? [],
       checkinsByMonth: stats.checkinsByMonth ?? [],
-      averageRatingsOverTime: stats.averageRatingsOverTime ?? []
+      averageRatingsOverTime: stats.averageRatingsOverTime ?? [],
     };
 
     // Update charts
@@ -107,7 +146,9 @@ export class StatsComponent implements OnInit {
     const labels: string[] = [];
     for (let i = days - 1; i >= 0; i--) {
       const date = DateUtils.subtractDays(i);
-      labels.push(date.toLocaleString('en-US', { month: 'short', day: 'numeric' }));
+      labels.push(
+        date.toLocaleString("en-US", { month: "short", day: "numeric" }),
+      );
     }
     return labels;
   }
@@ -115,17 +156,24 @@ export class StatsComponent implements OnInit {
   getStartDate(): Date | null {
     const range = this.dateRange.value;
     switch (range) {
-      case 'week': return DateUtils.subtractDays(7);
-      case 'month': return DateUtils.subtractMonths(1);
-      case 'year': return DateUtils.subtractMonths(12);
-      case 'custom': return this.customStartDate.value ? new Date(this.customStartDate.value) : null;
-      case 'all':
-      default: return null;
+      case "week":
+        return DateUtils.subtractDays(7);
+      case "month":
+        return DateUtils.subtractMonths(1);
+      case "year":
+        return DateUtils.subtractMonths(12);
+      case "custom":
+        return this.customStartDate.value
+          ? new Date(this.customStartDate.value)
+          : null;
+      case "all":
+      default:
+        return null;
     }
   }
 
   getEndDate(): Date | null {
-    return (this.dateRange.value === 'custom' && this.customEndDate.value)
+    return this.dateRange.value === "custom" && this.customEndDate.value
       ? new Date(this.customEndDate.value)
       : new Date();
   }
@@ -146,82 +194,152 @@ export class StatsComponent implements OnInit {
     // Hour chart
     this.hourChartData = {
       labels: this.hourChartLabels,
-      datasets: [{ data: this.processedStats.checkinsByHour, label: 'Check-ins by Hour', backgroundColor: 'rgba(63,81,181,0.8)' }]
+      datasets: [
+        {
+          data: this.processedStats.checkinsByHour,
+          label: "Check-ins by Hour",
+          backgroundColor: "rgba(63,81,181,0.8)",
+        },
+      ],
     };
 
     // Recent activity
-    this.recentActivityChartLabels = this.processedStats.recentActivityByDate.map(d => d.date);
+    this.recentActivityChartLabels =
+      this.processedStats.recentActivityByDate.map((d: { date: any; }) => d.date);
     this.recentActivityChartData = {
       labels: this.recentActivityChartLabels,
-      datasets: [{
-        data: this.processedStats.recentActivityByDate.map(d => d.count),
-        label: 'Beers Checked In',
-        fill: false,
-        borderColor: 'rgba(255,235,59,0.9)',
-        tension: 0.3
-      }]
+      datasets: [
+        {
+          data: this.processedStats.recentActivityByDate.map((d: { count: any; }) => d.count),
+          label: "Beers Checked In",
+          fill: false,
+          borderColor: "rgba(255,235,59,0.9)",
+          tension: 0.3,
+        },
+      ],
     };
 
     // Check-ins by day
     this.checkinsByDayLabels = this.generateLastNDaysLabels(7);
-    const checkinsCountByDayMap = new Map(this.processedStats.checkinsByDay.map(d => [d.date, d.count]));
-    const checkinsData = this.checkinsByDayLabels.map(label => {
+    const checkinsCountByDayMap = new Map(
+      this.processedStats.checkinsByDay.map((d: { date: any; count: any; }) => [d.date, d.count]),
+    );
+    const checkinsData = this.checkinsByDayLabels.map((label) => {
       const labelDate = DateUtils.toISODate(new Date(label));
       return checkinsCountByDayMap.get(labelDate) || 0;
     });
 
     // Check-ins by day of week
-    const dayOfWeekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayOfWeekLabels = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const dayOfWeekCounts = new Array(7).fill(0);
-    this.processedStats.checkinsByDayOfWeek?.forEach(item => {
+    this.processedStats.checkinsByDayOfWeek?.forEach((item: { day: string; count: any; }) => {
       const index = dayOfWeekLabels.indexOf(item.day);
       if (index !== -1) dayOfWeekCounts[index] = item.count;
     });
-    this.dayChartData = { labels: dayOfWeekLabels, datasets: [{ data: dayOfWeekCounts, label: 'Check-ins by Day of Week', backgroundColor: 'rgba(255,167,38,0.8)' }] };
+    this.dayChartData = {
+      labels: dayOfWeekLabels,
+      datasets: [
+        {
+          data: dayOfWeekCounts,
+          label: "Check-ins by Day of Week",
+          backgroundColor: "rgba(255,167,38,0.8)",
+        },
+      ],
+    };
 
     // Check-ins by month
-    const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthLabels = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const monthCounts = new Array(12).fill(0);
-    this.processedStats.checkinsByMonth?.forEach(item => {
+    this.processedStats.checkinsByMonth?.forEach((item: { month: string; count: any; }) => {
       const index = monthLabels.indexOf(item.month);
       if (index !== -1) monthCounts[index] = item.count;
     });
-    this.monthChartData = { labels: monthLabels, datasets: [{ data: monthCounts, label: 'Check-ins by Month', backgroundColor: 'rgba(171,71,188,0.8)' }] };
+    this.monthChartData = {
+      labels: monthLabels,
+      datasets: [
+        {
+          data: monthCounts,
+          label: "Check-ins by Month",
+          backgroundColor: "rgba(171,71,188,0.8)",
+        },
+      ],
+    };
 
     // Average ratings
     this.ratingChartData = {
-      labels: this.processedStats.averageRatingsOverTime?.map(item => item.date) || [],
-      datasets: [{
-        data: this.processedStats.averageRatingsOverTime?.map(item => item.rating) || [],
-        label: 'Average Rating',
-        fill: false,
-        borderColor: 'rgba(255,82,82,0.9)',
-        tension: 0.2
-      }]
+      labels:
+        this.processedStats.averageRatingsOverTime?.map((item: { date: any; }) => item.date) ||
+        [],
+      datasets: [
+        {
+          data:
+            this.processedStats.averageRatingsOverTime?.map(
+              (item: { rating: any; }) => item.rating,
+            ) || [],
+          label: "Average Rating",
+          fill: false,
+          borderColor: "rgba(255,82,82,0.9)",
+          tension: 0.2,
+        },
+      ],
     };
   }
 
   // Beer styles list
   beerStylesList(): string[] {
     return Object.keys(this.processedStats?.beerStylesCount || {}).sort(
-      (a, b) => this.processedStats!.beerStylesCount[b] - this.processedStats!.beerStylesCount[a]
+      (a, b) =>
+        this.processedStats!.beerStylesCount[b] -
+        this.processedStats!.beerStylesCount[a],
     );
   }
 
-  private openGenericBeersDialog(title: string, filteredBeers: BeerCheckin[]): void {
+  private openGenericBeersDialog(
+    title: string,
+    filteredBeers: BeerCheckin[],
+  ): void {
     const dialogData: GenericBeersDialogData = {
       title,
-      beers: filteredBeers.map(b => ({
+      beers: filteredBeers.map((b) => ({
         beerName: b.beer.beer_name,
-        beerLabel: b.beer.beer_label || 'https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png',
+        beerLabel:
+          b.beer.beer_label ||
+          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
         breweryName: b.brewery.brewery_name,
         beerABV: b.beer.beer_abv,
         rating: b.rating_score,
-        checkInDate: b.recent_created_at ? DateUtils.formatTimestamp(b.recent_created_at) : 'Unknown Date'
-      }))
+        checkInDate: b.recent_created_at
+          ? DateUtils.formatTimestamp(b.recent_created_at)
+          : "Unknown Date",
+      })),
     };
 
-    this.dialog.open(BeerStyleDialogComponent, { data: dialogData, width: '350px', maxHeight: '80vh' });
+    this.dialog.open(BeerStyleDialogComponent, {
+      data: dialogData,
+      width: "350px",
+      maxHeight: "80vh",
+    });
   }
 
   // Open by style, top beer, country, state
@@ -230,9 +348,15 @@ export class StatsComponent implements OnInit {
     const endDate = this.getEndDate();
     const normalize = (s: string) => s.trim().toLowerCase();
 
-    const filtered = this.beers.filter(b => {
+    const filtered = this.beers.filter((b) => {
       const beerStyle = normalize(b.beer.beer_style);
-      return beerStyle === normalize(style) && (!startDate || !endDate || (DateUtils.parseDate(b.recent_created_at) >= startDate && DateUtils.parseDate(b.recent_created_at) <= endDate));
+      return (
+        beerStyle === normalize(style) &&
+        (!startDate ||
+          !endDate ||
+          (DateUtils.parseDate(b.recent_created_at) >= startDate &&
+            DateUtils.parseDate(b.recent_created_at) <= endDate))
+      );
     });
     this.openGenericBeersDialog(`Beers with Style: ${style}`, filtered);
   }
@@ -241,9 +365,12 @@ export class StatsComponent implements OnInit {
     const startDate = this.getStartDate();
     const endDate = this.getEndDate();
 
-    const filtered = this.beers.filter(b => {
+    const filtered = this.beers.filter((b) => {
       const d = DateUtils.parseDate(b.recent_created_at);
-      return b.beer.beer_name === beerName && (!startDate || !endDate || (d >= startDate && d <= endDate));
+      return (
+        b.beer.beer_name === beerName &&
+        (!startDate || !endDate || (d >= startDate && d <= endDate))
+      );
     });
     this.openGenericBeersDialog(`All Check-ins for: ${beerName}`, filtered);
   }
@@ -252,9 +379,12 @@ export class StatsComponent implements OnInit {
     const startDate = this.getStartDate();
     const endDate = this.getEndDate();
 
-    const filtered = this.beers.filter(b => {
+    const filtered = this.beers.filter((b) => {
       const d = DateUtils.parseDate(b.recent_created_at);
-      return b.brewery.country_name === country && (!startDate || !endDate || (d >= startDate && d <= endDate));
+      return (
+        b.brewery.country_name === country &&
+        (!startDate || !endDate || (d >= startDate && d <= endDate))
+      );
     });
     this.openGenericBeersDialog(`Beers from: ${country}`, filtered);
   }
@@ -263,9 +393,12 @@ export class StatsComponent implements OnInit {
     const startDate = this.getStartDate();
     const endDate = this.getEndDate();
 
-    const filtered = this.beers.filter(b => {
+    const filtered = this.beers.filter((b) => {
       const d = DateUtils.parseDate(b.recent_created_at);
-      return b.brewery.location.brewery_state === state && (!startDate || !endDate || (d >= startDate && d <= endDate));
+      return (
+        b.brewery.location.brewery_state === state &&
+        (!startDate || !endDate || (d >= startDate && d <= endDate))
+      );
     });
     this.openGenericBeersDialog(`Beers from: ${state}`, filtered);
   }

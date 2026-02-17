@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: 'app-rating',
-  templateUrl: './rating.component.html',
-  styleUrls: ['./rating.component.css']
+  selector: "app-rating",
+  templateUrl: "./rating.component.html",
+  styleUrls: ["./rating.component.css"],
 })
 export class RatingComponent {
   @Input() ratingScore: number | null = null;
@@ -12,7 +12,7 @@ export class RatingComponent {
   uniqueId = Math.random().toString(36).substring(2, 9);
 
   get hasRating(): boolean {
-    return typeof this.ratingScore === 'number' && this.ratingScore > 0;
+    return typeof this.ratingScore === "number" && this.ratingScore > 0;
   }
 
   get starFills(): number[] {

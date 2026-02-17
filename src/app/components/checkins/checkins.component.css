@@ -3,16 +3,15 @@ p {
   margin: 0 !important;
 }
 
-h1 {
-  color: white;
-}
+/* Removed conflicting h1 rule */
 
 .location {
   float: left;
 }
 
 .location a {
-  background: url("../../../assets/images/ico_location.png") no-repeat left center rgba(0, 0, 0, 0);
+  background: url("../../../assets/images/ico_location.png") no-repeat left
+    center rgba(0, 0, 0, 0);
   color: #a9a9a9;
   display: flex;
   width: 230px;

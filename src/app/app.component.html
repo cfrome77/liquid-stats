@@ -1,6 +1,9 @@
 <div fxLayout="column" fxFlexFill>
-  <mat-toolbar class="navbar-color mat-elevation-z8 p-0" fxLayout="row" fxLayoutAlign="start stretch"
-    style="z-index: 2">
+  <mat-toolbar
+    class="navbar-color mat-elevation-z8 p-0"
+    fxLayout="row"
+    style="z-index: 2"
+  >
     <button mat-button (click)="drawer.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
@@ -12,25 +15,53 @@
     <span fxFlex></span>
 
     <div fxLayout="row" fxShow="false" fxShow.gt-sm>
-      <button mat-button routerLink="/checkins" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/checkins"
+        routerLinkActive="router-link-active no-border"
+      >
         Checkins
       </button>
-      <button mat-button routerLink="/top-beers" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/top-beers"
+        routerLinkActive="router-link-active no-border"
+      >
         Top Beers
       </button>
-      <button mat-button routerLink="/badges" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/badges"
+        routerLinkActive="router-link-active no-border"
+      >
         Badges
       </button>
-      <button mat-button routerLink="/map" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/map"
+        routerLinkActive="router-link-active no-border"
+      >
         Breweries Map
       </button>
-      <button mat-button routerLink="/beer-history" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/beer-history"
+        routerLinkActive="router-link-active no-border"
+      >
         Beer History
       </button>
-       <button mat-button routerLink="/stats" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/stats"
+        routerLinkActive="router-link-active no-border"
+      >
         Stats
       </button>
-      <button mat-button routerLink="/wishlist" routerLinkActive="router-link-active no-border">
+      <button
+        mat-button
+        routerLink="/wishlist"
+        routerLinkActive="router-link-active no-border"
+      >
         Wishlist
       </button>
     </div>
@@ -39,38 +70,72 @@
   <mat-drawer-container fxFlex autosize class="background">
     <mat-drawer #drawer>
       <div fxLayout="column">
-        <button mat-button routerLink="/checkins" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/checkins"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>room</mat-icon>Checkins
         </button>
         <mat-divider></mat-divider>
-        <button mat-button routerLink="/top-beers" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/top-beers"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>emoji_events</mat-icon>Top Beers
         </button>
         <mat-divider></mat-divider>
-        <button mat-button routerLink="/badges" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/badges"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>badge</mat-icon>Badges
         </button>
         <mat-divider></mat-divider>
-        <button mat-button routerLink="/map" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/map"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>map</mat-icon>Map
         </button>
         <mat-divider></mat-divider>
-        <button mat-button routerLink="/beer-history" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/beer-history"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>history</mat-icon>Beer History
         </button>
         <mat-divider></mat-divider>
-        <button mat-button routerLink="/stats" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/stats"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>insert_chart</mat-icon>Stats
         </button>
         <mat-divider></mat-divider>
-        <button mat-button routerLink="/wishlist" routerLinkActive="selected no-border txt-bold" fxLayoutAlign="start">
+        <button
+          mat-button
+          routerLink="/wishlist"
+          routerLinkActive="selected no-border txt-bold"
+          fxLayoutAlign="start"
+        >
           <mat-icon>list</mat-icon>Wishlist
         </button>
         <mat-divider></mat-divider>
       </div>
     </mat-drawer>
 
-    <!--Show page-->
     <div>
       <router-outlet></router-outlet>
     </div>

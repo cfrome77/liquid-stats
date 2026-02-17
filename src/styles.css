@@ -1,39 +1,13 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);
+/* Importing fonts and styles */
+@import url("https://fonts.googleapis.com/css?family=Nunito|Montserrat:400,700");
 
-/* Color Palletes */
-/*Just change the color e.g. $red or $green or define you color as you like....*/
-/* Base Styles */
+/* Reset Styles */
 *,
 *:before,
 *:after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-html {
-  font-size: 100%;
-  font-family: "Nunito", Arial, sans-serif;
-  font-weight: normal;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-  overflow-x: hidden;
-}
-
-/**
-* @section Reset styles
-* These styles reset the default style sheet that comes with the user agent.
-*/
 body,
 h1,
 h2,
@@ -51,14 +25,6 @@ blockquote,
 pre,
 textarea {
   margin: 0;
-  color: #fff;
-}
-
-h1,
-strong {
-  color: #000;
-  margin: 15px 0 30px;
-  text-align: center;
 }
 
 ul,
@@ -74,26 +40,58 @@ fieldset {
   border: none;
 }
 
-/**
-* Clearfix
-*/
+/* Base Document Styles */
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  font-size: 100%;
+  font-family: "Nunito", "Montserrat", Roboto, Arial, sans-serif;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: #121212; /* Dark page background */
+  color: #ffffff;
+}
+
+/* Global Typography */
+h1 {
+  color: #fff;
+  margin: 15px 0 30px;
+  text-align: center;
+}
+
+strong {
+  color: #fff;
+}
+
+/* Clearfix Utility */
 .cf:before,
 .cf:after {
   content: " ";
   display: table;
 }
-
 .cf:after {
   clear: both;
 }
 
-mat-card {
-  background-color: #fff;
+/* Mat-Card and Card-related Styles */
+.mat-mdc-card {
+  background-color: #ffffff; /* White cards */
   border-radius: 2px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   margin: 0 auto 15px;
   padding: 15px;
-  width: 50%;
+}
+@media (min-width: 1025px) {
+  .mat-mdc-card {
+    width: 50%;
+  }
+}
+@media (max-width: 1024px) {
+  .mat-mdc-card {
+    width: 100%;
+  }
 }
 
 .chip {
@@ -104,10 +102,8 @@ mat-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
-
 .overallRating {
   float: left;
   clear: left;
@@ -122,6 +118,7 @@ mat-card {
 .user,
 .checkin {
   margin-bottom: 15px;
+  color: #333;
 }
 
 .user {
@@ -150,12 +147,20 @@ mat-card {
   padding-left: 12px;
 }
 
+/* Shared container */
+.main-content-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
 .checkin {
   background-color: #ffffff;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   padding: 15px;
 }
-
 .checkin:last-of-type {
   margin-bottom: 0;
 }
@@ -165,72 +170,52 @@ mat-card {
   margin-bottom: 16px;
   min-height: 50px;
 }
-
 .beer span {
   color: #666;
 }
 
-.beer-label {
+.beer-label,
+.brewery-label {
   float: left;
   height: 50px;
   width: 50px;
 }
-
 .brewery-label {
   float: right;
-  height: 50px;
-  width: 50px;
 }
 
 .comment {
   color: #666;
   line-height: 22px;
-  margin-top: 10px;
-  margin-bottom: 15px;
+  margin: 10px 0 15px;
   display: block;
 }
 
+/* Footer */
 footer {
   border-top: 1px solid #eee;
   clear: both;
   padding-top: 8px;
 }
-
 .footer-time {
   float: right;
 }
-
 .footer-time time {
   color: #a9a9a9;
-  display: inline-block;
   font-size: 14px;
+  display: inline-block;
 }
-
 .footer-time .checkin-page {
-  background: url("./assets/images/ico_checkin_page.png") no-repeat left top rgba(0, 0, 0, 0);
+  background: url("./assets/images/ico_checkin_page.png") no-repeat left top
+    rgba(0, 0, 0, 0);
   display: inline-block;
   height: 18px;
+  width: 13px;
   margin-left: 4px;
   vertical-align: top;
-  width: 13px;
 }
 
-/**
-    * Image Replacement
-    */
-.hide-text {
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-#button {
-  line-height: 60px;
-  font-size: 25px;
-  margin-top: 2%;
-  text-align: center;
-}
-
+/* Top Button */
 #topButton {
   display: none;
   position: fixed;
@@ -246,16 +231,11 @@ footer {
   padding: 15px;
   border-radius: 4px;
 }
-
 #topButton:hover {
   background-color: #555;
 }
 
-.beerInfo {
-  float: left;
-  clear: left;
-}
-
+/* Beer Info Links */
 .beerInfo a {
   color: #a9a9a9;
   display: flex;
@@ -267,64 +247,14 @@ footer {
   text-decoration: none;
 }
 
-/**
-* @section HTML5 Elements
-* Set display:block for HTML5 block elements
-*/
-main,
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
-/**
-* @section General
-* Custom design for this app here
-*/
-body {
-  background-color: #f7f5ef;
-  color: #333;
-  font-family: "Montserrat", sans-serif;
-}
-
-h1 {
-  color: #000;
-  margin: 15px 0 30px;
-  text-align: center;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
+/* Navbar & Toolbar */
 .navbar-color {
   background-color: #494d50;
   color: white;
 }
-
 .router-link-active {
   background-color: #414548;
 }
-
-.no-border {
-  border-radius: 0px;
-}
-
 .toolbar-color {
   background-color: #616466;
   color: white;
@@ -334,121 +264,144 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-
 .v-center {
   margin-top: auto;
   margin-bottom: auto;
 }
-
 .txt-bold {
   font-weight: bold;
 }
-
 .selected {
   background-color: gainsboro;
 }
 
-/* Custom light-theme section, for datepicker only */
+/* ===============================
+   Light Theme Base (Original)
+   =============================== */
 .light-theme {
   background-color: #ffffff;
   color: #000000;
+
+  --app-primary: #3f51b5;
+  --mdc-theme-primary: var(--app-primary);
+
+  /* OUTLINED Text Fields */
+  --mdc-outlined-text-field-outline-color: rgba(0, 0, 0, 0.38);
+  --mdc-outlined-text-field-hover-outline-color: rgba(0, 0, 0, 0.6);
+  --mdc-outlined-text-field-focus-outline-color: var(--mdc-theme-primary);
+  --mdc-outlined-text-field-focus-outline-width: 2px;
 }
 
-.light-theme .mat-form-field-appearance-outline .mat-form-field-outline {
-  color: rgba(0, 0, 0, 0.12);
-  border-color: rgba(0, 0, 0, 0.12);
+.light-theme .mat-mdc-input-element {
+  color: #212121;
+  caret-color: var(--mdc-theme-primary);
 }
-
-.light-theme .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-  color: #3f51b5;
-  border-color: #3f51b5;
+.light-theme .mat-mdc-input-element::placeholder {
+  color: rgba(0, 0, 0, 0.54);
 }
-
-.light-theme .mat-form-field-label {
+.light-theme .mat-mdc-form-field-label {
   color: rgba(0, 0, 0, 0.6);
 }
 
-.light-theme .mat-input-element {
-  color: #000;
-}
-
-/* Datepicker popup panel override */
+/* Datepicker */
 .light-theme .mat-datepicker-content,
 .light-theme .mat-calendar {
-  background-color: white !important;
-  color: black !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
 }
 
-/* Fix datepicker toggle icon color in light theme */
-.light-theme .mat-datepicker-toggle-default-icon {
+.light-theme .mat-mdc-datepicker-toggle-default-icon {
   color: rgba(0, 0, 0, 0.54);
 }
-
-/* Optional: when hovered or focused */
-.light-theme .mat-datepicker-toggle:hover .mat-datepicker-toggle-default-icon,
-.light-theme .mat-datepicker-toggle.mat-focused .mat-datepicker-toggle-default-icon {
-  color: #3f51b5;
+.light-theme
+  .mat-mdc-datepicker-toggle:hover
+  .mat-mdc-datepicker-toggle-default-icon,
+.light-theme
+  .mat-mdc-datepicker-toggle.mat-focused
+  .mat-mdc-datepicker-toggle-default-icon {
+  color: var(--mdc-theme-primary);
 }
 
-/** 
-  mobile view
-**/
-/* Media Query for Mobile Devices */
-@media (max-width: 480px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 100%;
-  }
+/* Buttons */
+.light-theme .mat-mdc-button,
+.light-theme .mat-mdc-stroked-button,
+.light-theme .mat-mdc-flat-button,
+.light-theme .mat-mdc-raised-button {
+  --mdc-text-button-label-text-color: var(--mdc-theme-primary);
+  --mdc-filled-button-container-color: var(--mdc-theme-primary);
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-outlined-button-outline-color: var(--mdc-theme-primary);
 }
 
-/* Media Query for low resolution  Tablets, Ipads */
-@media (min-width: 481px) and (max-width: 767px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 100%;
-  }
+/* ===============================
+   Dark Theme Additions
+   =============================== */
+.dark-theme {
+  --search-bg: #333333;
+  --search-text: #ffffff;
+  --search-placeholder: #cccccc;
+  --search-outline: rgba(255, 255, 255, 0.38);
+  --search-focus-outline: #90caf9;
 }
 
-/* Media Query for Tablets Ipads portrait mode */
-@media (min-width: 768px) and (max-width: 1024px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 100%;
-  }
+/* Dual-theme Material Input */
+.mat-mdc-input-element {
+  background-color: var(--search-bg, #ffffff);
+  color: var(--search-text, #000000);
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+.mat-mdc-input-element::placeholder {
+  color: var(--search-placeholder, #666666);
+}
+.mat-mdc-form-field .mat-mdc-notched-outline {
+  border-color: var(--search-outline, rgba(0, 0, 0, 0.38));
+}
+.mat-mdc-form-field.mat-focused .mat-mdc-notched-outline {
+  border-color: var(--search-focus-outline, #3f51b5);
+  border-width: 2px;
+}
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--search-focus-outline, #3f51b5);
 }
 
-/* Media Query for Laptops and Desktops */
-@media (min-width: 1025px) and (max-width: 1280px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 50%;
-  }
+/* ===============================
+   Filter Card Utility
+   =============================== */
+.filter-card {
+  background-color: #fafafa;
+  color: #333333;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Media Query for Large screens */
-@media (min-width: 1281px) {
-  mat-card {
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 0 auto 15px;
-    padding: 15px;
-    width: 50%;
-  }
+.filter-card h1, .filter-card h2, .filter-card h3 {
+  color: #333333 !important;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+/* Form fields inside filter-card */
+.filter-card .mat-mdc-form-field .mdc-notched-outline__leading,
+.filter-card .mat-mdc-form-field .mdc-notched-outline__notch,
+.filter-card .mat-mdc-form-field .mdc-notched-outline__trailing {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.filter-card .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.filter-card .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.filter-card .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #999999 !important;
+  border-width: 2px !important;
+}
+
+.filter-card .mat-mdc-input-element {
+  color: #333333 !important;
 }

@@ -5,10 +5,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -86.279118,
-          32.361538
-        ]
+        "coordinates": [-86.279118, 32.361538]
       },
       "properties": {
         "state": "Alabama",
@@ -20,10 +17,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -134.41974,
-          58.301935
-        ]
+        "coordinates": [-134.41974, 58.301935]
       },
       "properties": {
         "state": "Alaska",
@@ -35,10 +29,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -112.073844,
-          33.448457
-        ]
+        "coordinates": [-112.073844, 33.448457]
       },
       "properties": {
         "state": "Arizona",
@@ -50,10 +41,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -92.331122,
-          34.736009
-        ]
+        "coordinates": [-92.331122, 34.736009]
       },
       "properties": {
         "state": "Arkansas",
@@ -65,10 +53,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -121.468926,
-          38.555605
-        ]
+        "coordinates": [-121.468926, 38.555605]
       },
       "properties": {
         "state": "California",
@@ -80,10 +65,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -104.984167,
-          39.7391667
-        ]
+        "coordinates": [-104.984167, 39.7391667]
       },
       "properties": {
         "state": "Colorado",
@@ -95,10 +77,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -72.677,
-          41.767
-        ]
+        "coordinates": [-72.677, 41.767]
       },
       "properties": {
         "state": "Connecticut",
@@ -110,10 +89,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -75.526755,
-          39.161921
-        ]
+        "coordinates": [-75.526755, 39.161921]
       },
       "properties": {
         "state": "Delaware",
@@ -125,10 +101,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -84.27277,
-          30.4518
-        ]
+        "coordinates": [-84.27277, 30.4518]
       },
       "properties": {
         "state": "Florida",
@@ -140,10 +113,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -84.39,
-          33.76
-        ]
+        "coordinates": [-84.39, 33.76]
       },
       "properties": {
         "state": "Georgia",
@@ -155,10 +125,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -157.826182,
-          21.30895
-        ]
+        "coordinates": [-157.826182, 21.30895]
       },
       "properties": {
         "state": "Hawaii",
@@ -170,10 +137,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -116.237651,
-          43.613739
-        ]
+        "coordinates": [-116.237651, 43.613739]
       },
       "properties": {
         "state": "Idaho",
@@ -185,10 +149,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -89.650373,
-          39.78325
-        ]
+        "coordinates": [-89.650373, 39.78325]
       },
       "properties": {
         "state": "Illinois",
@@ -200,10 +161,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -86.147685,
-          39.790942
-        ]
+        "coordinates": [-86.147685, 39.790942]
       },
       "properties": {
         "state": "Indiana",
@@ -215,10 +173,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -93.620866,
-          41.590939
-        ]
+        "coordinates": [-93.620866, 41.590939]
       },
       "properties": {
         "state": "Iowa",
@@ -230,10 +185,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -95.69,
-          39.04
-        ]
+        "coordinates": [-95.69, 39.04]
       },
       "properties": {
         "state": "Kansas",
@@ -245,10 +197,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -84.86311,
-          38.197274
-        ]
+        "coordinates": [-84.86311, 38.197274]
       },
       "properties": {
         "state": "Kentucky",
@@ -260,10 +209,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -91.140229,
-          30.45809
-        ]
+        "coordinates": [-91.140229, 30.45809]
       },
       "properties": {
         "state": "Louisiana",
@@ -275,10 +221,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -69.765261,
-          44.323535
-        ]
+        "coordinates": [-69.765261, 44.323535]
       },
       "properties": {
         "state": "Maine",
@@ -290,10 +233,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -76.501157,
-          38.972945
-        ]
+        "coordinates": [-76.501157, 38.972945]
       },
       "properties": {
         "state": "Maryland",
@@ -305,10 +245,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -71.0275,
-          42.2352
-        ]
+        "coordinates": [-71.0275, 42.2352]
       },
       "properties": {
         "state": "Massachusetts",
@@ -320,10 +257,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -84.5467,
-          42.7335
-        ]
+        "coordinates": [-84.5467, 42.7335]
       },
       "properties": {
         "state": "Michigan",
@@ -335,10 +269,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -93.094,
-          44.95
-        ]
+        "coordinates": [-93.094, 44.95]
       },
       "properties": {
         "state": "Minnesota",
@@ -350,10 +281,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -90.207,
-          32.32
-        ]
+        "coordinates": [-90.207, 32.32]
       },
       "properties": {
         "state": "Mississippi",
@@ -365,10 +293,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -92.189283,
-          38.572954
-        ]
+        "coordinates": [-92.189283, 38.572954]
       },
       "properties": {
         "state": "Missouri",
@@ -380,10 +305,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -112.027031,
-          46.595805
-        ]
+        "coordinates": [-112.027031, 46.595805]
       },
       "properties": {
         "state": "Montana",
@@ -395,10 +317,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -96.675345,
-          40.809868
-        ]
+        "coordinates": [-96.675345, 40.809868]
       },
       "properties": {
         "state": "Nebraska",
@@ -410,10 +329,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -119.753877,
-          39.160949
-        ]
+        "coordinates": [-119.753877, 39.160949]
       },
       "properties": {
         "state": "Nevada",
@@ -425,10 +341,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -71.549127,
-          43.220093
-        ]
+        "coordinates": [-71.549127, 43.220093]
       },
       "properties": {
         "state": "New Hampshire",
@@ -440,10 +353,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -74.756138,
-          40.221741
-        ]
+        "coordinates": [-74.756138, 40.221741]
       },
       "properties": {
         "state": "New Jersey",
@@ -455,10 +365,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -105.964575,
-          35.667231
-        ]
+        "coordinates": [-105.964575, 35.667231]
       },
       "properties": {
         "state": "New Mexico",
@@ -470,10 +377,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -73.781339,
-          42.659829
-        ]
+        "coordinates": [-73.781339, 42.659829]
       },
       "properties": {
         "state": "New York",
@@ -485,10 +389,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -78.638,
-          35.771
-        ]
+        "coordinates": [-78.638, 35.771]
       },
       "properties": {
         "state": "North Carolina",
@@ -500,10 +401,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -100.7837,
-          46.8083
-        ]
+        "coordinates": [-100.7837, 46.8083]
       },
       "properties": {
         "state": "North Dakota",
@@ -515,10 +413,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -83.000647,
-          39.962245
-        ]
+        "coordinates": [-83.000647, 39.962245]
       },
       "properties": {
         "state": "Ohio",
@@ -530,10 +425,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -97.534994,
-          35.482309
-        ]
+        "coordinates": [-97.534994, 35.482309]
       },
       "properties": {
         "state": "Oklahoma",
@@ -545,10 +437,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -123.029159,
-          44.931109
-        ]
+        "coordinates": [-123.029159, 44.931109]
       },
       "properties": {
         "state": "Oregon",
@@ -560,10 +449,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -76.875613,
-          40.269789
-        ]
+        "coordinates": [-76.875613, 40.269789]
       },
       "properties": {
         "state": "Pennsylvania",
@@ -575,10 +461,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -71.422132,
-          41.82355
-        ]
+        "coordinates": [-71.422132, 41.82355]
       },
       "properties": {
         "state": "Rhode Island",
@@ -590,10 +473,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -81.035,
-          34
-        ]
+        "coordinates": [-81.035, 34]
       },
       "properties": {
         "state": "South Carolina",
@@ -605,10 +485,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -100.336378,
-          44.367966
-        ]
+        "coordinates": [-100.336378, 44.367966]
       },
       "properties": {
         "state": "South Dakota",
@@ -620,10 +497,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -86.784,
-          36.165
-        ]
+        "coordinates": [-86.784, 36.165]
       },
       "properties": {
         "state": "Tennessee",
@@ -635,10 +509,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -97.75,
-          30.266667
-        ]
+        "coordinates": [-97.75, 30.266667]
       },
       "properties": {
         "state": "Texas",
@@ -650,10 +521,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -111.892622,
-          40.7547
-        ]
+        "coordinates": [-111.892622, 40.7547]
       },
       "properties": {
         "state": "Utah",
@@ -665,10 +533,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -72.57194,
-          44.26639
-        ]
+        "coordinates": [-72.57194, 44.26639]
       },
       "properties": {
         "state": "Vermont",
@@ -680,10 +545,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -77.46,
-          37.54
-        ]
+        "coordinates": [-77.46, 37.54]
       },
       "properties": {
         "state": "Virginia",
@@ -695,10 +557,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -122.893077,
-          47.042418
-        ]
+        "coordinates": [-122.893077, 47.042418]
       },
       "properties": {
         "state": "Washington",
@@ -710,10 +569,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -81.633294,
-          38.349497
-        ]
+        "coordinates": [-81.633294, 38.349497]
       },
       "properties": {
         "state": "West Virginia",
@@ -725,10 +581,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -89.384444,
-          43.074722
-        ]
+        "coordinates": [-89.384444, 43.074722]
       },
       "properties": {
         "state": "Wisconsin",
@@ -740,10 +593,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -104.802042,
-          41.145548
-        ]
+        "coordinates": [-104.802042, 41.145548]
       },
       "properties": {
         "state": "Wyoming",

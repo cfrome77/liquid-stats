@@ -1,29 +1,49 @@
 <h1>Beer History</h1>
 
-<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="20px" class="main-content-container">
-  <mat-card class="white-card">
-    <div fxLayout="column" fxLayoutGap="10px">
+<div class="main-content-container">
+  <div class="filter-card">
+    <div class="filter-card-content">
+        <div class="filter-buttons-container">
+          <app-filter
+            [filterFields]="filterFields"
+            (filterChanged)="onFilterChange()"
+          ></app-filter>
+        </div>
 
-      <div class="filter-buttons-container">
-        <app-filter [filterFields]="filterFields" (filterChanged)="onFilterChange()"></app-filter>
-      </div>
+        <div class="filter-row">
+          <div class="form-field-wrapper">
+            <mat-form-field class="search-field" appearance="outline">
+              <input
+                matInput
+                type="text"
+                placeholder="Search beers..."
+                [(ngModel)]="searchTerm"
+                (input)="onSearchChange()"
+              />
+            </mat-form-field>
+          </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
-        <mat-form-field appearance="outline" fxFlex>
-          <input matInput type="text" placeholder="Search beers..." [(ngModel)]="searchTerm"
-            (input)="onSearchChange()" />
-        </mat-form-field>
-        <button mat-flat-button color="warn" (click)="resetFilters()">Reset Filters</button>
+          <button mat-flat-button color="primary" (click)="resetFilters()">
+            Reset Filters
+          </button>
+        </div>
       </div>
     </div>
-  </mat-card>
 
-  <ng-container *ngFor="let beerCard of paginatedBeers">
-    <app-card [cardData]="beerCard"></app-card>
-  </ng-container>
+  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+    <app-card
+      *ngFor="let beerCard of paginatedBeers"
+      [cardData]="beerCard"
+    ></app-card>
+  </div>
 
-  <app-pagination [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems"
-    (pageChange)="goToPage($event)" (itemsPerPageChange)="changeItemsPerPage($event)">
+  <app-pagination
+    [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage"
+    [totalItems]="totalItems"
+    (pageChange)="goToPage($event)"
+    (itemsPerPageChange)="changeItemsPerPage($event)"
+  >
   </app-pagination>
 </div>
 

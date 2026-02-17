@@ -30,14 +30,14 @@
   align-items: center;
 }
 
-.fab-container>div {
+.fab-container > div {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-bottom: 5px;
 }
 
-.fab-container>div button {
+.fab-container > div button {
   margin-left: 10px;
 }
 
@@ -52,4 +52,32 @@
   right: 0;
   bottom: 0;
   z-index: 99;
+}
+
+/* These are the core rules that now work correctly
+   since the HTML property was removed. */
+mat-toolbar {
+  align-items: center;
+  min-height: 64px;
+}
+
+.mat-toolbar .mat-mdc-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-toolbar mat-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+}
+
+.mat-toolbar .mat-mdc-button .mdc-button__label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mat-toolbar .mat-mdc-button .mat-icon {
+  margin-right: 8px;
 }

@@ -1,60 +1,75 @@
-<h1 style="color: white">Top {{ topX }} Beers</h1>
-
-<!-- Filters -->
-<div style="display: flex; justify-content: center; margin-bottom: 10px;">
-  <mat-radio-group [(ngModel)]="useCustomDate" (change)="onFilterChange()">
-    <mat-radio-button [value]="false" style="margin-right: 20px;">
-      Predefined Range
-    </mat-radio-button>
-    <mat-radio-button [value]="true">
-      Custom Start Date
-    </mat-radio-button>
-  </mat-radio-group>
-</div>
-
-<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 20px;">
-  <!-- Predefined Range -->
-  <mat-form-field appearance="outline" *ngIf="!useCustomDate">
-    <mat-label style="color: white">Time Range</mat-label>
-    <mat-select [(ngModel)]="selectedRange" (selectionChange)="onFilterChange()">
-      <mat-option *ngFor="let option of dateRangeOptions" [value]="option">{{ option.label }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- Custom Date Picker -->
-  <mat-form-field appearance="outline" *ngIf="useCustomDate">
-    <mat-label style="color: white">Custom Start Date</mat-label>
-    <input matInput [matDatepicker]="picker" [(ngModel)]="customStartDate" (dateChange)="onFilterChange()" />
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-
-  <!-- Top X -->
-  <mat-form-field appearance="outline">
-    <mat-label style="color: white">Top X Beers</mat-label>
-    <mat-select [(ngModel)]="topX" (selectionChange)="onFilterChange()">
-      <mat-option *ngFor="let option of topXOptions" [value]="option">{{ option }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- Min Check-ins -->
-  <mat-form-field appearance="outline">
-    <mat-label style="color: white">Minimum Check-ins</mat-label>
-    <mat-select [(ngModel)]="minCheckins" (selectionChange)="onFilterChange()">
-      <mat-option *ngFor="let option of minCheckinOptions" [value]="option">{{ option }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-
-<p *ngIf="transformedTopBeers.length < topX" style="text-align: center; color: #ccc;">
-  {{ transformedTopBeers.length }} beers matched the criteria.
-</p>
+<h1>Top {{ topX }} Beers</h1>
 
 <div class="main-content-container">
-  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="20px">
-    <app-card *ngFor="let beer of transformedTopBeers; index as i"
+  <!-- Filters Section -->
+  <div class="filter-card">
+      <div class="filter-radio-group">
+        <mat-radio-group [(ngModel)]="useCustomDate" (change)="onFilterChange()">
+          <mat-radio-button [value]="false"> Predefined Range </mat-radio-button>
+          <mat-radio-button [value]="true"> Custom Start Date </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div class="filter-controls">
+        <!-- Predefined Range -->
+        <mat-form-field appearance="outline" *ngIf="!useCustomDate">
+          <mat-label>Time Range</mat-label>
+          <mat-select
+            [(ngModel)]="selectedRange"
+            (selectionChange)="onFilterChange()"
+          >
+            <mat-option *ngFor="let option of dateRangeOptions" [value]="option">{{
+              option.label
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Custom Date Picker -->
+        <mat-form-field appearance="outline" *ngIf="useCustomDate">
+          <mat-label>Custom Start Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [(ngModel)]="customStartDate"
+            (dateChange)="onFilterChange()"
+          />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Top X -->
+        <mat-form-field appearance="outline">
+          <mat-label>Top X Beers</mat-label>
+          <mat-select [(ngModel)]="topX" (selectionChange)="onFilterChange()">
+            <mat-option *ngFor="let option of topXOptions" [value]="option">{{
+              option
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Min Check-ins -->
+        <mat-form-field appearance="outline">
+          <mat-label>Minimum Check-ins</mat-label>
+          <mat-select [(ngModel)]="minCheckins" (selectionChange)="onFilterChange()">
+            <mat-option *ngFor="let option of minCheckinOptions" [value]="option">{{
+              option
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <p *ngIf="transformedTopBeers.length < topX" class="filter-results">
+        {{ transformedTopBeers.length }} beers matched the criteria.
+      </p>
+    </div>
+
+  <!-- Main container for cards -->
+  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+    <app-card
+      *ngFor="let beer of transformedTopBeers; index as i"
       [cardData]="beer"
-      (badgeClick)="openBadgeDialog($event)">
+      (badgeClick)="openBadgeDialog($event)"
+    >
     </app-card>
   </div>
 </div>
