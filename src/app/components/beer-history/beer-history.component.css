@@ -82,28 +82,28 @@ h1 {
    =============================== */
 :host ::ng-deep .search-field .mat-mdc-input-element {
   background-color: transparent !important;
-  color: #333333 !important;
-  caret-color: #333333 !important;
+  color: var(--input-text) !important;
+  caret-color: var(--input-text) !important;
   padding: 8px 12px !important;
   border-radius: 4px !important;
 }
 
 :host ::ng-deep .mat-mdc-input-element::placeholder {
-  color: #666666 !important;
-  opacity: 1 !important;
+  color: var(--input-text) !important;
+  opacity: 0.6 !important;
 }
 
 /* Properly target MDC outline parts */
 :host ::ng-deep .search-field .mdc-notched-outline__leading,
 :host ::ng-deep .search-field .mdc-notched-outline__notch,
 :host ::ng-deep .search-field .mdc-notched-outline__trailing {
-  border-color: rgba(0, 0, 0, 0.12) !important;
+  border-color: var(--input-outline) !important;
 }
 
 :host ::ng-deep .search-field.mat-focused .mdc-notched-outline__leading,
 :host ::ng-deep .search-field.mat-focused .mdc-notched-outline__notch,
 :host ::ng-deep .search-field.mat-focused .mdc-notched-outline__trailing {
-  border-color: #999999 !important;
+  border-color: var(--accent-blue) !important;
   border-width: 2px !important;
 }
 

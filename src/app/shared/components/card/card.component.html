@@ -61,13 +61,11 @@
               *ngFor="let badge of cardData.extraData.badges"
               (click)="onBadgeClick(badge)"
             >
-              <mat-chip-avatar>
-                <img
-                  class="avatar-image"
-                  [src]="badge.badge_image.sm"
-                  alt="badge"
-                />
-              </mat-chip-avatar>
+              <img
+                matChipAvatar
+                [src]="badge.badge_image.sm"
+                alt="badge"
+              />
               {{ badge.badge_name }}
             </mat-chip>
           </mat-chip-listbox>

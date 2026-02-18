@@ -79,11 +79,10 @@
 .comment {
   display: block;
   margin: 8px 12px;
-  padding: 6px 10px;
   line-height: 1.5em;
   color: var(--text-color);
-  background-color: var(--chip-bg);
   border-left: 3px solid var(--accent-blue);
+  padding-left: 10px;
   border-radius: 4px;
   text-align: left;
   font-style: italic;

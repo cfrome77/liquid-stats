@@ -101,3 +101,20 @@ mat-toolbar {
 .background {
   background-color: var(--bg-color);
 }
+
+.full-screen {
+  height: 100vh;
+  width: 100%;
+}
+
+.navbar-header {
+  z-index: 2;
+}
+
+.main-container {
+  flex: 1 1 auto;
+}
+
+.drawer-nav-button {
+  justify-content: flex-start !important;
+}
