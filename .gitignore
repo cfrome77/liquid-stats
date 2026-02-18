@@ -6,6 +6,9 @@
 *.log
 node_modules
 
+# Angular build and cache artifacts
+.angular/
+
 # Include when developing application packages.
 pubspec.lock
 .c9
@@ -27,9 +30,13 @@ modules/.vscode
 
 # Don't check in secret files
 *secret.js
+.env
+.env.local
+.env.*.local
 
 # Don't include fetched json files
 /src/assets/badges.json
+/src/assets/*.json
 
 # Ignore npm/yarn debug log
 npm-debug.log
@@ -59,8 +66,24 @@ tools/gulp-tasks/cldr/cldr-data/
 # Husky
 .husky/_
 
-#environment variables
-.env
+# Angular environment files (auto-generated)
+src/environments/environment.*.ts
+!src/environments/environment.template.ts
 
-#angular cache
-.angular/cache/
+# Python virtual environment
+venv/
+.venv_packages_hash
+
+# Terraform
+/deploy/terraform/terraform.auto.tfvars
+/deploy/terraform/*.tfplan
+/deploy/terraform/tfplan
+/deploy/terraform/*.tfstate
+/deploy/terraform/*.tfstate.backup
+/deploy/terraform/.terraform/
+
+# Lambda / Python build artifacts
+lambda/package/
+lambda/fetch_api_data.py
+liquid-stats-lambda.json
+liquid-stats-lambda.zip

@@ -1,0 +1,67 @@
+p {
+  color: var(--text-color);
+  margin: 0 !important;
+}
+
+h1 {
+  color: var(--header-text);
+}
+
+/* Existing style */
+.overallRating {
+  float: left;
+  clear: left;
+}
+
+/* New styles for Top Beers page */
+.filter-radio-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.filter-radio-group mat-radio-button {
+  margin-right: 20px;
+}
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.filter-controls mat-form-field {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filter-results {
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.7;
+  font-size: 0.9rem;
+  margin-top: 10px !important;
+}
+
+/* Ensure labels are visible on card */
+:host ::ng-deep .filter-card mat-label {
+  color: var(--text-color) !important;
+  opacity: 0.8;
+}
+
+:host ::ng-deep .filter-card .mat-mdc-select-value,
+:host ::ng-deep .filter-card .mat-mdc-select-arrow,
+:host ::ng-deep .filter-card .mat-mdc-radio-button label {
+  color: var(--text-color) !important;
+}
+
+/* Material Radio Button internal colors */
+:host ::ng-deep .filter-card .mat-mdc-radio-button .mdc-radio__outer-circle {
+  border-color: var(--input-outline) !important;
+}
+
+:host ::ng-deep .filter-card .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__outer-circle {
+  border-color: var(--accent-blue) !important;
+}
