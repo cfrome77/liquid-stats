@@ -136,6 +136,18 @@ strong {
   flex: 1 1 auto;
 }
 
+.flex-1 {
+  flex: 1;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+.gap-4 {
+  gap: 4px;
+}
+
 /* Mobile Touch Targets */
 @media (max-width: 600px) {
   .mat-mdc-button,
