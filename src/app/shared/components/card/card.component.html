@@ -1,12 +1,7 @@
 <div class="card-container">
   <mat-card class="shared-card">
     <mat-card-content class="beer">
-      <div
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        fxLayoutGap="10px"
-        class="header-section"
-      >
+      <div class="header-section">
         <img
           *ngIf="cardData.mainImage"
           class="beer-label"
@@ -15,12 +10,7 @@
           [title]="cardData.title"
         />
 
-        <div
-          fxFlex
-          fxLayout="column"
-          fxLayoutAlign="center center"
-          class="beer-info"
-        >
+        <div class="beer-info">
           <h3>
             <span *ngIf="cardData.rank" class="rank">#{{ cardData.rank }}</span>
             {{ cardData.title }}
@@ -43,36 +33,24 @@
       }}</span>
       <span class="comment" *ngIf="cardData.hint">{{ cardData.hint }}</span>
 
-      <div
-        class="rating-bar"
-        fxLayout="row"
-        fxLayoutAlign="space-between center"
-      >
+      <div class="rating-bar">
         <app-rating
           *ngIf="cardData.rating != null"
           [ratingScore]="cardData.rating"
-          fxFlex
+          class="flex-1"
         ></app-rating>
       </div>
 
-      <div
-        class="badges-and-social-links"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        fxLayoutGap="10px"
-      >
+      <div class="badges-and-social-links">
         <div
           *ngIf="cardData.globalRating != null"
-          class="global-rating"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-          fxLayoutGap="4px"
+          class="global-rating flex-row align-center gap-4"
         >
           <span class="global-rating-label">Overall Rating:</span>
           <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
+        <div class="flex-row align-center min-w-0">
           <mat-chip-listbox
             class="chip"
             selectable="false"
@@ -82,19 +60,17 @@
               *ngFor="let badge of cardData.extraData.badges"
               (click)="onBadgeClick(badge)"
             >
-              <mat-chip-avatar>
-                <img
-                  class="avatar-image"
-                  [src]="badge.badge_image.sm"
-                  alt="badge"
-                />
-              </mat-chip-avatar>
+              <img
+                matChipAvatar
+                [src]="badge.badge_image.sm"
+                alt="badge"
+              />
               {{ badge.badge_name }}
             </mat-chip>
           </mat-chip-listbox>
         </div>
 
-        <div fxShrink="0" fxLayoutAlign="center center">
+        <div class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper">
           <app-social-links
             *ngIf="cardData.extraData?.socialLinks"
             [contact]="cardData.extraData.socialLinks"

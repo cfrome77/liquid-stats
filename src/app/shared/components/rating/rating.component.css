@@ -16,7 +16,7 @@
 /* Styling for the numeric rating text */
 .rating-number {
   font-size: 1.25em;
-  color: #333;
+  color: var(--text-color);
   display: inline-block;
   white-space: nowrap;
   flex-shrink: 0;

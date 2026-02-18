@@ -8,7 +8,7 @@
 
 /* Shared Card */
 .shared-card {
-  background-color: #fafafa;
+  background-color: var(--card-bg);
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -30,10 +30,10 @@
 
 /* Header Section */
 .header-section {
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   padding: 4px 12px 2px 12px;
   margin: 0;
   gap: 6px;
@@ -51,10 +51,11 @@
 
 /* Beer Info */
 .beer-info {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin: 0;
   padding: 2px 0;
@@ -64,24 +65,24 @@
   margin: 2px 0 2px 0;
   font-size: 1.15rem;
   font-weight: bold;
-  color: black;
+  color: var(--header-text);
 }
 
 .beer-info p {
   margin: 0;
   font-size: 0.875rem;
-  color: #555;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
 /* Comment / Description */
 .comment {
   display: block;
   margin: 8px 12px;
-  padding: 6px 10px;
   line-height: 1.5em;
-  color: #333;
-  background-color: #f9f9f9;
-  border-left: 3px solid #1976d2;
+  color: var(--text-color);
+  border-left: 3px solid var(--accent-blue);
+  padding-left: 10px;
   border-radius: 4px;
   text-align: left;
   font-style: italic;
@@ -92,7 +93,7 @@
 
 /* Rating Bar */
 .rating-bar {
-  display: flex !important;
+  display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
@@ -102,14 +103,14 @@
 }
 
 .global-rating {
-  color: #333;
+  color: var(--text-color);
 }
 
 /* Badges and Social Links */
 .badges-and-social-links {
-  display: flex !important;
+  display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: 8px;
   margin: 4px 12px;
@@ -118,10 +119,14 @@
   min-height: 40px;
 }
 
+.social-links-wrapper {
+  margin-left: auto;
+}
+
 /* Chips */
 .chip {
-  display: flex !important;
-  flex-wrap: wrap !important;
+  display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   margin: 0;
   padding: 0;
@@ -130,10 +135,10 @@
 
 /* Footer */
 footer {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--divider-color);
   padding: 8px 12px 8px 12px;
   margin: 4px 0 0 0;
   box-sizing: border-box;
@@ -142,12 +147,13 @@ footer {
 
 /* Footer left link */
 .location-link {
-  display: flex !important;
-  align-items: center !important;
+  display: flex;
+  align-items: center;
   gap: 4px;
   margin: 0;
   padding: 0;
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
   text-decoration: none;
 }
 
@@ -155,31 +161,35 @@ footer {
   font-size: 18px !important;
   width: 18px;
   height: 18px;
-  color: #777;
+  color: inherit;
 }
 
 .footer-text {
   font-size: 14px;
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 /* Footer right: timestamp / view details */
 .footer-time {
-  display: flex !important;
-  align-items: center !important;
+  display: flex;
+  align-items: center;
   gap: 8px; /* increased gap */
   font-size: 14px;
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 .footer-time time {
-  color: #a9a9a9;
+  color: var(--text-color);
+  opacity: 0.6;
   font-size: 14px;
   display: inline-block;
 }
 
 footer a.view-details {
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
   text-decoration: none;
   font-weight: normal;
   font-size: 14px;
@@ -191,7 +201,7 @@ footer a.view-details mat-icon {
   font-size: 18px !important;
   width: 18px;
   height: 18px;
-  color: #777;
+  color: inherit;
 }
 
 .hide-text {
@@ -215,7 +225,7 @@ footer a.view-details:hover {
 
   .global-rating {
     font-size: 0.95rem;
-    color: #333;
+    color: var(--text-color);
   }
 
   .beer-info h3 {
