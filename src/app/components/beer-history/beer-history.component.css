@@ -7,7 +7,7 @@ p {
 }
 
 h1 {
-  color: white;
+  color: var(--header-text);
   font-size: 24px;
   text-align: center;
   margin-bottom: 20px;
@@ -55,7 +55,7 @@ h1 {
 :host ::ng-deep .search-field .mat-mdc-text-field-wrapper {
   height: 40px !important;
   padding: 0 !important;
-  background-color: #fafafa !important;
+  background-color: var(--input-bg) !important;
 }
 
 :host ::ng-deep .search-field .mat-mdc-form-field-infix {

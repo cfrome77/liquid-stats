@@ -99,5 +99,5 @@ mat-toolbar {
 }
 
 .background {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-color);
 }

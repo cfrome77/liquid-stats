@@ -65,13 +65,14 @@
   margin: 2px 0 2px 0;
   font-size: 1.15rem;
   font-weight: bold;
-  color: black;
+  color: var(--header-text);
 }
 
 .beer-info p {
   margin: 0;
   font-size: 0.875rem;
-  color: #555;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
 /* Comment / Description */
@@ -80,8 +81,8 @@
   margin: 8px 12px;
   padding: 6px 10px;
   line-height: 1.5em;
-  color: var(--text-dark);
-  background-color: #f9f9f9;
+  color: var(--text-color);
+  background-color: var(--chip-bg);
   border-left: 3px solid var(--accent-blue);
   border-radius: 4px;
   text-align: left;
@@ -103,7 +104,7 @@
 }
 
 .global-rating {
-  color: #333;
+  color: var(--text-color);
 }
 
 /* Badges and Social Links */
@@ -134,7 +135,7 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--divider-color);
   padding: 8px 12px 8px 12px;
   margin: 4px 0 0 0;
   box-sizing: border-box;
@@ -148,7 +149,8 @@ footer {
   gap: 4px;
   margin: 0;
   padding: 0;
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
   text-decoration: none;
 }
 
@@ -156,12 +158,13 @@ footer {
   font-size: 18px !important;
   width: 18px;
   height: 18px;
-  color: #777;
+  color: inherit;
 }
 
 .footer-text {
   font-size: 14px;
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 /* Footer right: timestamp / view details */
@@ -170,17 +173,20 @@ footer {
   align-items: center;
   gap: 8px; /* increased gap */
   font-size: 14px;
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 .footer-time time {
-  color: #a9a9a9;
+  color: var(--text-color);
+  opacity: 0.6;
   font-size: 14px;
   display: inline-block;
 }
 
 footer a.view-details {
-  color: #777;
+  color: var(--text-color);
+  opacity: 0.7;
   text-decoration: none;
   font-weight: normal;
   font-size: 14px;
@@ -192,7 +198,7 @@ footer a.view-details mat-icon {
   font-size: 18px !important;
   width: 18px;
   height: 18px;
-  color: #777;
+  color: inherit;
 }
 
 .hide-text {
@@ -216,7 +222,7 @@ footer a.view-details:hover {
 
   .global-rating {
     font-size: 0.95rem;
-    color: #333;
+    color: var(--text-color);
   }
 
   .beer-info h3 {
