@@ -13,8 +13,8 @@
 }
 
 .modal-content {
-  background-color: white;
-  color: black;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   padding: 0;
   border-radius: 8px;
   width: 300px;
@@ -34,7 +34,7 @@
   align-items: center;
   width: 100%;
   padding: 10px;
-  background-color: white;
+  background-color: var(--card-bg);
   gap: 15px;
 }
 
@@ -70,12 +70,13 @@
   background: none;
   border: none;
   font-size: 20px;
-  color: #aaa;
+  color: var(--text-color);
+  opacity: 0.6;
   cursor: pointer;
 }
 
 .back-button:hover {
-  color: #000;
+  opacity: 1;
 }
 
 .reset-button {
@@ -92,7 +93,7 @@
 
 .modal-body {
   font-size: 14px;
-  color: #333;
+  color: var(--text-color);
   padding-top: 10px;
   flex-grow: 1;
   overflow-y: auto;
@@ -184,19 +185,21 @@
 :host ::ng-deep .modal-body .mdc-notched-outline__leading,
 :host ::ng-deep .modal-body .mdc-notched-outline__notch,
 :host ::ng-deep .modal-body .mdc-notched-outline__trailing {
-  border-color: rgba(0, 0, 0, 0.38) !important;
+  border-color: var(--input-outline) !important;
 }
 
 :host ::ng-deep .modal-body .mat-mdc-form-field-label,
 :host ::ng-deep .modal-body .mat-mdc-floating-label,
 :host ::ng-deep .modal-body .mat-mdc-floating-label mat-label {
-  color: rgba(0, 0, 0, 0.87) !important;
+  color: var(--text-color) !important;
+  opacity: 0.7;
 }
 
 :host ::ng-deep .modal-body .mat-datepicker-toggle {
-  color: rgba(0, 0, 0, 0.54) !important;
+  color: var(--text-color) !important;
+  opacity: 0.7;
 }
 
 :host ::ng-deep .modal-body .mat-mdc-input-element {
-  color: #000 !important;
+  color: var(--input-text) !important;
 }

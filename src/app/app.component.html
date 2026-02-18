@@ -1,8 +1,6 @@
-<div fxLayout="column" fxFlexFill>
+<div class="flex-column full-screen">
   <mat-toolbar
-    class="navbar-color mat-elevation-z8 p-0"
-    fxLayout="row"
-    style="z-index: 2"
+    class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
     <button mat-button (click)="drawer.toggle()">
       <mat-icon>menu</mat-icon>
@@ -12,9 +10,13 @@
       <mat-icon>home</mat-icon>
     </button>
 
-    <span fxFlex></span>
+    <span class="spacer"></span>
 
-    <div fxLayout="row" fxShow="false" fxShow.gt-sm>
+    <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle dark/light mode">
+      <mat-icon>{{ currentTheme === 'light-theme' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+    </button>
+
+    <div class="desktop-nav">
       <button
         mat-button
         routerLink="/checkins"
@@ -67,14 +69,14 @@
     </div>
   </mat-toolbar>
 
-  <mat-drawer-container fxFlex autosize class="background">
+  <mat-drawer-container autosize class="background main-container">
     <mat-drawer #drawer>
-      <div fxLayout="column">
+      <div class="flex-column">
         <button
           mat-button
           routerLink="/checkins"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>room</mat-icon>Checkins
         </button>
@@ -83,7 +85,7 @@
           mat-button
           routerLink="/top-beers"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>emoji_events</mat-icon>Top Beers
         </button>
@@ -92,7 +94,7 @@
           mat-button
           routerLink="/badges"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>badge</mat-icon>Badges
         </button>
@@ -101,7 +103,7 @@
           mat-button
           routerLink="/map"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>map</mat-icon>Map
         </button>
@@ -110,7 +112,7 @@
           mat-button
           routerLink="/beer-history"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>history</mat-icon>Beer History
         </button>
@@ -119,7 +121,7 @@
           mat-button
           routerLink="/stats"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>insert_chart</mat-icon>Stats
         </button>
@@ -128,7 +130,7 @@
           mat-button
           routerLink="/wishlist"
           routerLinkActive="selected no-border txt-bold"
-          fxLayoutAlign="start"
+          class="drawer-nav-button"
         >
           <mat-icon>list</mat-icon>Wishlist
         </button>

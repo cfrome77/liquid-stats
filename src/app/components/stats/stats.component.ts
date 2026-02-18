@@ -8,8 +8,10 @@ import {
   GenericBeersDialogData,
 } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import { ChartData } from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
 import { DateUtils } from "../../core/utils/date-utils";
+import { ThemeService } from "src/app/core/services/theme.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-stats",
@@ -43,16 +45,64 @@ export class StatsComponent implements OnInit {
   recentActivityChartLabels: string[] = [];
   recentActivityChartData?: ChartData<"line", number[], string>;
   checkinsByDayLabels: string[] = [];
-  dayChartData: ChartData<"bar"> = { labels: [], datasets: [] };
-  monthChartData: ChartData<"bar"> = { labels: [], datasets: [] };
-  ratingChartData: ChartData<"line"> = { labels: [], datasets: [] };
+  dayChartData: ChartData<"bar"> = {
+    labels: [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ],
+    datasets: [{ data: [], label: "Check-ins by Day of Week", backgroundColor: "rgba(255,167,38,0.8)" }],
+  };
+  monthChartData: ChartData<"bar"> = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: [{ data: [], label: "Check-ins by Month", backgroundColor: "rgba(171,71,188,0.8)" }],
+  };
+  ratingChartData: ChartData<"line"> = {
+    labels: [],
+    datasets: [{ data: [], label: "Average Rating", borderColor: "rgba(255,82,82,0.9)", fill: false }],
+  };
 
-  chartOptions = { responsive: true, maintainAspectRatio: false };
+  chartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#666'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(0,0,0,0.1)'
+        },
+        ticks: {
+          color: '#666'
+        }
+      },
+      x: {
+        grid: {
+          color: 'rgba(0,0,0,0.1)'
+        },
+        ticks: {
+          color: '#666'
+        }
+      }
+    }
+  };
   objectKeys = Object.keys;
+  private themeSubscription?: Subscription;
 
   constructor(
     private statsService: StatsService,
     private dialog: MatDialog,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +110,56 @@ export class StatsComponent implements OnInit {
     this.dateRange.valueChanges.subscribe(() => this.onDateChange());
     this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
     this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
+
+    this.themeSubscription = this.themeService.theme$.subscribe(theme => {
+      this.updateChartOptions(theme);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
+  }
+
+  private updateChartOptions(theme: 'light-theme' | 'dark-theme'): void {
+    const isDark = theme === 'dark-theme';
+    const textColor = isDark ? '#e0e0e0' : '#666';
+    const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+
+    this.chartOptions = {
+      ...this.chartOptions,
+      plugins: {
+        ...this.chartOptions.plugins,
+        legend: {
+          ...this.chartOptions.plugins?.legend,
+          labels: {
+            ...this.chartOptions.plugins?.legend?.labels,
+            color: textColor
+          }
+        }
+      },
+      scales: {
+        y: {
+          ...this.chartOptions.scales?.y,
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor
+          }
+        },
+        x: {
+          ...this.chartOptions.scales?.x,
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor
+          }
+        }
+      }
+    };
   }
 
   loadBeerData(): void {
@@ -191,7 +291,7 @@ export class StatsComponent implements OnInit {
   private updateCharts(): void {
     if (!this.processedStats) return;
 
-    // Hour chart
+    // Re-assign to trigger change detection in ng2-charts
     this.hourChartData = {
       labels: this.hourChartLabels,
       datasets: [
@@ -218,16 +318,6 @@ export class StatsComponent implements OnInit {
         },
       ],
     };
-
-    // Check-ins by day
-    this.checkinsByDayLabels = this.generateLastNDaysLabels(7);
-    const checkinsCountByDayMap = new Map(
-      this.processedStats.checkinsByDay.map((d: { date: any; count: any; }) => [d.date, d.count]),
-    );
-    const checkinsData = this.checkinsByDayLabels.map((label) => {
-      const labelDate = DateUtils.toISODate(new Date(label));
-      return checkinsCountByDayMap.get(labelDate) || 0;
-    });
 
     // Check-ins by day of week
     const dayOfWeekLabels = [

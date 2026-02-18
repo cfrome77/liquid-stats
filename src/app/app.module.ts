@@ -14,7 +14,6 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatSelectModule } from "@angular/material/select";
 import { MatOptionModule } from "@angular/material/core";
-import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -87,7 +86,6 @@ import { CardComponent } from "./shared/components/card/card.component";
     MatSidenavModule,
     MatSelectModule,
     MatOptionModule,
-    FlexLayoutModule,
     MatDividerModule,
     MatCheckboxModule,
     MatFormFieldModule,

@@ -1,7 +1,7 @@
 <h1>Recent Checkin List</h1>
 
 <div class="main-content-container">
-  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+  <div class="flex-column" style="align-items: stretch; gap: 10px">
     <app-card
       *ngFor="let checkin of transformedCheckins"
       [cardData]="checkin"
