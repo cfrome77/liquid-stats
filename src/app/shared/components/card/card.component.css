@@ -110,9 +110,9 @@
 /* Badges and Social Links */
 .badges-and-social-links {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   margin: 4px 12px;
   padding: 0;
