@@ -37,21 +37,20 @@
         <app-rating
           *ngIf="cardData.rating != null"
           [ratingScore]="cardData.rating"
-          style="flex: 1 1 auto"
+          class="flex-1"
         ></app-rating>
       </div>
 
       <div class="badges-and-social-links">
         <div
           *ngIf="cardData.globalRating != null"
-          class="global-rating"
-          style="display: flex; align-items: center; gap: 4px"
+          class="global-rating flex-row align-center gap-4"
         >
           <span class="global-rating-label">Overall Rating:</span>
           <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
         </div>
 
-        <div style="display: flex; align-items: center; flex: 1 1 auto; min-width: 0">
+        <div class="flex-row align-center flex-1 min-w-0">
           <mat-chip-listbox
             class="chip"
             selectable="false"
@@ -71,14 +70,7 @@
           </mat-chip-listbox>
         </div>
 
-        <div
-          style="
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          "
-        >
+        <div class="flex-shrink-0 flex-row align-center justify-center">
           <app-social-links
             *ngIf="cardData.extraData?.socialLinks"
             [contact]="cardData.extraData.socialLinks"

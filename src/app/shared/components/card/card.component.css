@@ -119,6 +119,12 @@
   min-height: 40px;
 }
 
+@media (max-width: 600px) {
+  .badges-and-social-links {
+    flex-wrap: wrap;
+  }
+}
+
 /* Chips */
 .chip {
   display: flex;
