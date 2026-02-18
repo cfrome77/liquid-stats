@@ -1,0 +1,29 @@
+<h1>Wishlist</h1>
+
+<div class="main-content-container">
+  <ng-container *ngIf="wishlist.length > 0; else noItemsBlock">
+  <div class="flex-column" style="align-items: stretch; gap: 10px">
+      <app-card
+        *ngFor="let item of paginatedWishlist"
+        [cardData]="item"
+      ></app-card>
+    </div>
+
+    <app-pagination
+      *ngIf="totalItems > itemsPerPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      (pageChange)="goToPage($event)"
+    >
+    </app-pagination>
+  </ng-container>
+
+  <ng-template #noItemsBlock>
+    <div class="empty-state">
+      <p>Sorry, no items have been added to this wishlist.</p>
+    </div>
+  </ng-template>
+</div>
+
+<app-powered-by></app-powered-by>

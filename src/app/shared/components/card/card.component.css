@@ -1,0 +1,239 @@
+/* Card container for spacing between cards */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+/* Shared Card */
+.shared-card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  padding-bottom: 8px; /* breathing room at bottom */
+  box-sizing: border-box;
+}
+
+/* Remove default mat-card content padding */
+.shared-card .mat-mdc-card-content,
+.shared-card .beer {
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px 2px 12px;
+  margin: 0;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+/* Logos */
+.beer-label,
+.brewery-label {
+  height: 50px;
+  width: 50px;
+  margin: 0 6px;
+  padding: 0;
+}
+
+/* Beer Info */
+.beer-info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+  padding: 2px 0;
+}
+
+.beer-info h3 {
+  margin: 2px 0 2px 0;
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: var(--header-text);
+}
+
+.beer-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+/* Comment / Description */
+.comment {
+  display: block;
+  margin: 8px 12px;
+  line-height: 1.5em;
+  color: var(--text-color);
+  border-left: 3px solid var(--accent-blue);
+  padding-left: 10px;
+  border-radius: 4px;
+  text-align: left;
+  font-style: italic;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  font-size: 0.95rem;
+}
+
+/* Rating Bar */
+.rating-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 4px 12px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.global-rating {
+  color: var(--text-color);
+}
+
+/* Badges and Social Links */
+.badges-and-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 12px;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 40px;
+}
+
+.social-links-wrapper {
+  margin-left: auto;
+}
+
+/* Chips */
+.chip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Footer */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--divider-color);
+  padding: 8px 12px 8px 12px;
+  margin: 4px 0 0 0;
+  box-sizing: border-box;
+  clear: both;
+}
+
+/* Footer left link */
+.location-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-color);
+  opacity: 0.7;
+  text-decoration: none;
+}
+
+.location-link mat-icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  color: inherit;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* Footer right: timestamp / view details */
+.footer-time {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* increased gap */
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.footer-time time {
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 14px;
+  display: inline-block;
+}
+
+footer a.view-details {
+  color: var(--text-color);
+  opacity: 0.7;
+  text-decoration: none;
+  font-weight: normal;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+footer a.view-details mat-icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  color: inherit;
+}
+
+.hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+}
+
+footer a.view-details:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .beer-label,
+  .brewery-label {
+    height: 40px;
+    width: 40px;
+  }
+
+  .global-rating {
+    font-size: 0.95rem;
+    color: var(--text-color);
+  }
+
+  .beer-info h3 {
+    font-size: 1.05rem;
+  }
+
+  .beer-info p,
+  .comment {
+    font-size: 0.85rem;
+  }
+}

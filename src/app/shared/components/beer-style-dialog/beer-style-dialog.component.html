@@ -1,0 +1,42 @@
+<h2 mat-dialog-title style="margin-bottom: 16px">{{ data.title }}</h2>
+
+<div mat-dialog-content style="max-height: 400px; overflow-y: auto">
+  <div
+    *ngIf="data.beers.length === 0"
+    style="padding: 20px; text-align: center; color: #888; font-style: italic"
+  >
+    No beers found for this selection within the current date range.
+  </div>
+  <ul style="padding-left: 0; list-style-type: none">
+    <li *ngFor="let beer of data.beers" style="margin-bottom: 10px">
+      <div style="display: flex; align-items: center">
+        <img
+          [src]="
+            beer.beerLabel ||
+            'https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png'
+          "
+          [alt]="beer.beerName"
+          style="
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            object-fit: cover;
+          "
+        />
+        <div>
+          <strong style="color: white">{{ beer.beerName }}</strong
+          ><br />
+          <strong style="color: white">{{ beer.breweryName }}</strong
+          ><br />
+          <small>ABV: {{ beer.beerABV }}%</small><br />
+          <small>Rating: {{ beer.rating.toFixed(2) }}/5</small><br />
+          <small>Date: {{ beer.checkInDate }}</small>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</div>

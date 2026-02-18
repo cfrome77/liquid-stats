@@ -1,0 +1,14 @@
+<h1>Recent Checkin List</h1>
+
+<div class="main-content-container">
+  <div class="flex-column" style="align-items: stretch; gap: 10px">
+    <app-card
+      *ngFor="let checkin of transformedCheckins"
+      [cardData]="checkin"
+      (badgeClick)="openBadgeDialog($event)"
+    >
+    </app-card>
+  </div>
+</div>
+
+<app-powered-by></app-powered-by>
