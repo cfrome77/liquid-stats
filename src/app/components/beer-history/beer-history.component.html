@@ -3,38 +3,36 @@
 <div class="main-content-container">
   <div class="filter-card">
     <div class="filter-card-content">
-        <div class="filter-buttons-container">
-          <app-filter
-            [filterFields]="filterFields"
-            (filterChanged)="onFilterChange()"
-          ></app-filter>
+      <div class="filter-buttons-container">
+        <app-filter
+          [filterFields]="filterFields"
+          (filterChanged)="onFilterChange()"
+        ></app-filter>
+      </div>
+
+      <div class="filter-row">
+        <div class="form-field-wrapper">
+          <mat-form-field class="search-field" appearance="outline">
+            <input
+              matInput
+              type="text"
+              placeholder="Search beers..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+            />
+          </mat-form-field>
         </div>
 
-        <div class="filter-row">
-          <div class="form-field-wrapper">
-            <mat-form-field class="search-field" appearance="outline">
-              <input
-                matInput
-                type="text"
-                placeholder="Search beers..."
-                [(ngModel)]="searchTerm"
-                (input)="onSearchChange()"
-              />
-            </mat-form-field>
-          </div>
-
-          <button mat-flat-button color="primary" (click)="resetFilters()">
-            Reset Filters
-          </button>
-        </div>
+        <button mat-flat-button color="primary" (click)="resetFilters()">
+          Reset Filters
+        </button>
       </div>
     </div>
+  </div>
 
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (beerCard of paginatedBeers; track beerCard.title) {
-      <app-card
-        [cardData]="beerCard"
-      ></app-card>
+      <app-card [cardData]="beerCard"></app-card>
     }
   </div>
 

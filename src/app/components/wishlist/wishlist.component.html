@@ -4,9 +4,7 @@
   @if (wishlist.length > 0) {
     <div class="flex-column" style="align-items: stretch; gap: 10px">
       @for (item of paginatedWishlist; track item.title) {
-        <app-card
-          [cardData]="item"
-        ></app-card>
+        <app-card [cardData]="item"></app-card>
       }
     </div>
 

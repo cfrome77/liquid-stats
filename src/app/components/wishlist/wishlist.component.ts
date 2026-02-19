@@ -18,7 +18,10 @@ export class WishlistComponent implements OnInit {
   public totalItems = 0;
   public isLoading = true;
 
-  constructor(private dataService: DataService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.fetchWishlistData();

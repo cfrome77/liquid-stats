@@ -3,10 +3,7 @@
 <div class="main-content-container">
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (badge of paginatedBadges; track badge.badge_name) {
-      <app-card
-        [cardData]="transformBadgeData(badge)"
-      >
-      </app-card>
+      <app-card [cardData]="transformBadgeData(badge)"> </app-card>
     }
   </div>
 </div>

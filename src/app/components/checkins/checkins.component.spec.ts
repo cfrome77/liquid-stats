@@ -14,8 +14,7 @@ describe("CheckinsComponent", () => {
 
   beforeEach(async () => {
     mockDataService = {
-      getCheckins: () =>
-        of({ response: { checkins: { items: [] } } }),
+      getCheckins: () => of({ response: { checkins: { items: [] } } }),
     };
 
     await TestBed.configureTestingModule({

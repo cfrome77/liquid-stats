@@ -23,7 +23,7 @@
           <mat-icon>arrow_back</mat-icon>
         </button>
         <div class="modal-button-container">
-          @if (activeFilter.type !== 'date') {
+          @if (activeFilter.type !== "date") {
             <button
               type="button"
               class="reset-button"
@@ -40,10 +40,8 @@
 
       <!-- Body -->
       <div class="modal-body">
-        @if (activeFilter.type === 'date') {
-          <div
-            class="date-range-filter light-theme"
-          >
+        @if (activeFilter.type === "date") {
+          <div class="date-range-filter light-theme">
             <mat-form-field appearance="outline" class="date-picker-field">
               <mat-label>From</mat-label>
               <input
@@ -80,7 +78,7 @@
           </div>
         }
 
-        @if (activeFilter.type !== 'date') {
+        @if (activeFilter.type !== "date") {
           @for (option of activeFilter.options; track option) {
             @if (shouldShowOption(option)) {
               <div>
@@ -91,7 +89,9 @@
                     (change)="onCheckboxChange(option, $event)"
                   />
                   {{
-                    activeFilter.field === "rating" ? formatRating(option) : option
+                    activeFilter.field === "rating"
+                      ? formatRating(option)
+                      : option
                   }}&nbsp;
                   <span>({{ activeFilter.countMap?.[option] ?? 0 }})</span>
                 </label>
