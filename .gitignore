@@ -92,5 +92,5 @@ liquid-stats-lambda.zip
 .env
 .env.local
 .env.*.local
-src/environments/environment.*.ts
+src/environments/environment.ts
 !src/environments/environment.template.ts
