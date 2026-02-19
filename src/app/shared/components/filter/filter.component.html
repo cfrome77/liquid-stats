@@ -1,96 +1,105 @@
 <!-- Filter Buttons -->
 <div class="filter-container-wrapper">
-  <label *ngFor="let filter of filterFields">
-    <button
-      type="button"
-      class="btn btn-primary stats-filter-button"
-      (click)="openFilterModal(filter)"
-    >
-      {{ filter.label }}
-    </button>
-  </label>
+  @for (filter of filterFields; track filter.field) {
+    <label>
+      <button
+        type="button"
+        class="btn btn-primary stats-filter-button"
+        (click)="openFilterModal(filter)"
+      >
+        {{ filter.label }}
+      </button>
+    </label>
+  }
 </div>
 
 <!-- Modal -->
-<div *ngIf="activeFilter" class="modal-overlay">
-  <div class="modal-content">
-    <!-- Header -->
-    <div class="modal-header">
-      <button type="button" class="back-button" (click)="closeModal()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <div class="modal-button-container">
-        <ng-container *ngIf="activeFilter.type !== 'date'">
-          <button
-            type="button"
-            class="reset-button"
-            (click)="toggleSelectDeselect()"
-          >
-            {{ allSelected ? "Deselect All" : "Select All" }}
-          </button>
-        </ng-container>
-        <button type="button" class="apply-button" (click)="applyFilter()">
-          Apply
+@if (activeFilter) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <button type="button" class="back-button" (click)="closeModal()">
+          <mat-icon>arrow_back</mat-icon>
         </button>
-      </div>
-    </div>
-
-    <!-- Body -->
-    <div class="modal-body">
-      <div
-        *ngIf="activeFilter.type === 'date'"
-        class="date-range-filter light-theme"
-      >
-        <mat-form-field appearance="outline" class="date-picker-field">
-          <mat-label>From</mat-label>
-          <input
-            matInput
-            [matDatepicker]="pickerFrom"
-            [min]="toDate(activeFilter.options[0])"
-            [max]="toDate(activeFilter.options[1])"
-            [value]="toDate(activeFilter.selected[0])"
-            (dateChange)="onDateFromChange($event)"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerFrom"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #pickerFrom></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="date-picker-field">
-          <mat-label>To</mat-label>
-          <input
-            matInput
-            [matDatepicker]="pickerTo"
-            [min]="toDate(activeFilter.options[0])"
-            [max]="toDate(activeFilter.options[1])"
-            [value]="toDate(activeFilter.selected[1])"
-            (dateChange)="onDateToChange($event)"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerTo"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #pickerTo></mat-datepicker>
-        </mat-form-field>
-      </div>
-
-      <ng-container *ngIf="activeFilter.type !== 'date'">
-        <div *ngFor="let option of activeFilter.options">
-          <label class="filter-option-label" *ngIf="shouldShowOption(option)">
-            <input
-              type="checkbox"
-              [checked]="activeFilter.selected.includes(option)"
-              (change)="onCheckboxChange(option, $event)"
-            />
-            {{
-              activeFilter.field === "rating" ? formatRating(option) : option
-            }}&nbsp;
-            <span>({{ activeFilter.countMap?.[option] ?? 0 }})</span>
-          </label>
+        <div class="modal-button-container">
+          @if (activeFilter.type !== 'date') {
+            <button
+              type="button"
+              class="reset-button"
+              (click)="toggleSelectDeselect()"
+            >
+              {{ allSelected ? "Deselect All" : "Select All" }}
+            </button>
+          }
+          <button type="button" class="apply-button" (click)="applyFilter()">
+            Apply
+          </button>
         </div>
-      </ng-container>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        @if (activeFilter.type === 'date') {
+          <div
+            class="date-range-filter light-theme"
+          >
+            <mat-form-field appearance="outline" class="date-picker-field">
+              <mat-label>From</mat-label>
+              <input
+                matInput
+                [matDatepicker]="pickerFrom"
+                [min]="toDate(activeFilter.options[0])"
+                [max]="toDate(activeFilter.options[1])"
+                [value]="toDate(activeFilter.selected[0])"
+                (dateChange)="onDateFromChange($event)"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerFrom"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="date-picker-field">
+              <mat-label>To</mat-label>
+              <input
+                matInput
+                [matDatepicker]="pickerTo"
+                [min]="toDate(activeFilter.options[0])"
+                [max]="toDate(activeFilter.options[1])"
+                [value]="toDate(activeFilter.selected[1])"
+                (dateChange)="onDateToChange($event)"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerTo"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #pickerTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+        }
+
+        @if (activeFilter.type !== 'date') {
+          @for (option of activeFilter.options; track option) {
+            @if (shouldShowOption(option)) {
+              <div>
+                <label class="filter-option-label">
+                  <input
+                    type="checkbox"
+                    [checked]="activeFilter.selected.includes(option)"
+                    (change)="onCheckboxChange(option, $event)"
+                  />
+                  {{
+                    activeFilter.field === "rating" ? formatRating(option) : option
+                  }}&nbsp;
+                  <span>({{ activeFilter.countMap?.[option] ?? 0 }})</span>
+                </label>
+              </div>
+            }
+          }
+        }
+      </div>
     </div>
   </div>
-</div>
+}

@@ -11,6 +11,7 @@ import {
   selector: "app-pagination",
   templateUrl: "./pagination.component.html",
   styleUrls: ["./pagination.component.css"],
+  standalone: false,
 })
 export class PaginationComponent implements OnChanges {
   @Input() currentPage = 1; // The current page

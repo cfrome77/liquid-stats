@@ -26,12 +26,6 @@ import { BeerStyleDialogComponent } from 'src/app/shared/components/beer-style-d
 
 @NgModule({
   declarations: [
-    FilterComponent,
-    PaginationComponent,
-    PoweredByComponent,
-    CardComponent,
-    BadgeDialogComponent,
-    BeerStyleDialogComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -51,12 +45,6 @@ import { BeerStyleDialogComponent } from 'src/app/shared/components/beer-style-d
     MatRadioModule,
   ],
   exports: [
-    FilterComponent,
-    PaginationComponent,
-    PoweredByComponent,
-    CardComponent,
-    BadgeDialogComponent,
-    BeerStyleDialogComponent,
     ReactiveFormsModule,
     FormsModule,
     HttpClientTestingModule,

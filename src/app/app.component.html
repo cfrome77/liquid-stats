@@ -13,7 +13,13 @@
     <span class="spacer"></span>
 
     <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle dark/light mode">
-      <mat-icon>{{ currentTheme === 'light-theme' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+      <mat-icon>
+        @if (currentTheme === 'light-theme') {
+          dark_mode
+        } @else {
+          light_mode
+        }
+      </mat-icon>
     </button>
 
     <div class="desktop-nav">

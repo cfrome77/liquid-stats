@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
   selector: "app-badge-dialog",
   templateUrl: "./badge-dialog.component.html",
   styleUrls: ["./badge-dialog.component.css"],
+  standalone: false,
 })
 export class BadgeDialogComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}

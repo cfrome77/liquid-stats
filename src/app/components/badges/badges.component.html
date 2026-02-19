@@ -2,11 +2,12 @@
 
 <div class="main-content-container">
   <div class="flex-column" style="align-items: stretch; gap: 10px">
-    <app-card
-      *ngFor="let badge of paginatedBadges"
-      [cardData]="transformBadgeData(badge)"
-    >
-    </app-card>
+    @for (badge of paginatedBadges; track badge.badge_name) {
+      <app-card
+        [cardData]="transformBadgeData(badge)"
+      >
+      </app-card>
+    }
   </div>
 </div>
 

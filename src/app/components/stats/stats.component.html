@@ -11,177 +11,169 @@
       <option value="custom">Custom</option>
     </select>
 
-    <div *ngIf="dateRange.value === 'custom'" class="custom-date-range">
-      <input
-        type="date"
-        [formControl]="customStartDate"
-        placeholder="Start Date"
-      />
-      <input type="date" [formControl]="customEndDate" placeholder="End Date" />
-    </div>
-  </div>
-
-  <div class="stats-cards" *ngIf="processedStats">
-    <div class="card">
-      Total Unique Beers: {{ processedStats.totalUniqueBeers }}
-    </div>
-    <div class="card">Total Check-ins: {{ processedStats.totalCheckins }}</div>
-    <div class="card">New Beers Count: {{ processedStats.newBeersCount }}</div>
-    <div class="card">
-      New Beer Ratio: {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
-    </div>
-    <div class="card">
-      Average Rating: {{ processedStats.averageRating.toFixed(2) }}
-    </div>
-    <div class="card short-card">
-      Total Unique Breweries: {{ processedStats.totalUniqueBreweries }}
-    </div>
-
-    <div class="card beer-styles-breakdown">
-      <h3>Beer Styles Breakdown</h3>
-      <ul>
-        <ng-container *ngFor="let style of beerStylesList()">
-          <li
-            *ngIf="processedStats.beerStylesCount[style] > 0"
-            class="clickable"
-            [title]="style + ': ' + processedStats.beerStylesCount[style]"
-            (click)="openBeersByStyle(style)"
-          >
-            <span class="style-name">{{ style }}</span>
-            <span class="style-count">{{
-              processedStats.beerStylesCount[style]
-            }}</span>
-          </li>
-        </ng-container>
-      </ul>
-    </div>
-
-    <div class="card top-beers" *ngIf="processedStats.topBeers?.length">
-      <h3>Top Beers</h3>
-      <ul>
-        <li
-          *ngFor="let beer of processedStats.topBeers"
-          class="clickable"
-          (click)="openBeersByTopBeer(beer.name)"
-        >
-          {{ beer.name }} - {{ beer.count }} check-ins (Avg:
-          {{ beer.avgRating.toFixed(2) }})
-        </li>
-      </ul>
-    </div>
-
-    <div
-      class="card"
-      *ngIf="objectKeys(processedStats.topCountries ?? {}).length > 0"
-    >
-      <h3>Top Countries</h3>
-      <ul>
-        <li
-          *ngFor="let country of objectKeys(processedStats?.topCountries ?? {})"
-          class="clickable"
-          (click)="openBeersByCountry(country)"
-        >
-          {{ country }} - {{ processedStats.topCountries[country] }} check-ins
-        </li>
-      </ul>
-    </div>
-
-    <div
-      class="card"
-      *ngIf="objectKeys(processedStats.topStates ?? {}).length > 0"
-    >
-      <h3>Top States</h3>
-      <ul>
-        <li
-          *ngFor="let state of objectKeys(processedStats?.topStates ?? {})"
-          class="clickable"
-          (click)="openBeersByState(state)"
-        >
-          {{ state }} - {{ processedStats.topStates[state] }} check-ins
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="charts-section" *ngIf="processedStats">
-    <h3>Check-ins by Hour</h3>
-    <div class="chart-container">
-      <canvas
-        baseChart
-        *ngIf="
-          hourChartData &&
-          hourChartData.labels &&
-          hourChartData.labels.length > 0
-        "
-        [data]="hourChartData"
-        [options]="chartOptions"
-        [type]="'bar'"
-      >
-      </canvas>
-    </div>
-
-    <h3>Check-ins by Day of Week</h3>
-    <div class="chart-container">
-      <canvas
-        baseChart
-        *ngIf="
-          dayChartData && dayChartData.labels && dayChartData.labels.length > 0
-        "
-        [data]="dayChartData"
-        [options]="chartOptions"
-        [type]="'bar'"
-      >
-      </canvas>
-    </div>
-
-    <h3>Check-ins by Month</h3>
-    <div class="chart-container">
-      <canvas
-        baseChart
-        *ngIf="
-          monthChartData &&
-          monthChartData.labels &&
-          monthChartData.labels.length > 0
-        "
-        [data]="monthChartData"
-        [options]="chartOptions"
-        [type]="'bar'"
-      >
-      </canvas>
-    </div>
-
-    <h3>Average Ratings Over Time</h3>
-    <div class="chart-container">
-      <canvas
-        baseChart
-        *ngIf="
-          ratingChartData &&
-          ratingChartData.labels &&
-          ratingChartData.labels.length > 0
-        "
-        [data]="ratingChartData"
-        [options]="chartOptions"
-        [type]="'line'"
-      >
-      </canvas>
-    </div>
-
-    <ng-container
-      *ngIf="
-        recentActivityChartData &&
-        recentActivityChartData.labels &&
-        recentActivityChartData.labels.length > 0
-      "
-    >
-      <h3>Recent Activity</h3>
-      <div class="chart-container">
-        <canvas
-          baseChart
-          [data]="recentActivityChartData"
-          [options]="chartOptions"
-          [type]="'line'"
-        ></canvas>
+    @if (dateRange.value === 'custom') {
+      <div class="custom-date-range">
+        <input
+          type="date"
+          [formControl]="customStartDate"
+          placeholder="Start Date"
+        />
+        <input type="date" [formControl]="customEndDate" placeholder="End Date" />
       </div>
-    </ng-container>
+    }
   </div>
+
+  @if (processedStats) {
+    <div class="stats-cards">
+      <div class="card">
+        Total Unique Beers: {{ processedStats.totalUniqueBeers }}
+      </div>
+      <div class="card">Total Check-ins: {{ processedStats.totalCheckins }}</div>
+      <div class="card">New Beers Count: {{ processedStats.newBeersCount }}</div>
+      <div class="card">
+        New Beer Ratio: {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
+      </div>
+      <div class="card">
+        Average Rating: {{ processedStats.averageRating.toFixed(2) }}
+      </div>
+      <div class="card short-card">
+        Total Unique Breweries: {{ processedStats.totalUniqueBreweries }}
+      </div>
+
+      <div class="card beer-styles-breakdown">
+        <h3>Beer Styles Breakdown</h3>
+        <ul>
+          @for (style of beerStylesList(); track style) {
+            @if (processedStats.beerStylesCount[style] > 0) {
+              <li
+                class="clickable"
+                [title]="style + ': ' + processedStats.beerStylesCount[style]"
+                (click)="openBeersByStyle(style)"
+              >
+                <span class="style-name">{{ style }}</span>
+                <span class="style-count">{{
+                  processedStats.beerStylesCount[style]
+                }}</span>
+              </li>
+            }
+          }
+        </ul>
+      </div>
+
+      @if (processedStats.topBeers?.length) {
+        <div class="card top-beers">
+          <h3>Top Beers</h3>
+          <ul>
+            @for (beer of processedStats.topBeers; track beer.name) {
+              <li
+                class="clickable"
+                (click)="openBeersByTopBeer(beer.name)"
+              >
+                {{ beer.name }} - {{ beer.count }} check-ins (Avg:
+                {{ beer.avgRating.toFixed(2) }})
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (objectKeys(processedStats.topCountries).length > 0) {
+        <div class="card">
+          <h3>Top Countries</h3>
+          <ul>
+            @for (country of objectKeys(processedStats.topCountries); track country) {
+              <li
+                class="clickable"
+                (click)="openBeersByCountry(country)"
+              >
+                {{ country }} - {{ processedStats.topCountries[country] }} check-ins
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (objectKeys(processedStats.topStates).length > 0) {
+        <div class="card">
+          <h3>Top States</h3>
+          <ul>
+            @for (state of objectKeys(processedStats.topStates); track state) {
+              <li
+                class="clickable"
+                (click)="openBeersByState(state)"
+              >
+                {{ state }} - {{ processedStats.topStates[state] }} check-ins
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+    <div class="charts-section">
+      <h3>Check-ins by Hour</h3>
+      <div class="chart-container">
+        @if (hourChartData?.labels?.length) {
+          <canvas
+            baseChart
+            [data]="hourChartData"
+            [options]="chartOptions"
+            [type]="'bar'"
+          >
+          </canvas>
+        }
+      </div>
+
+      <h3>Check-ins by Day of Week</h3>
+      <div class="chart-container">
+        @if (dayChartData?.labels?.length) {
+          <canvas
+            baseChart
+            [data]="dayChartData"
+            [options]="chartOptions"
+            [type]="'bar'"
+          >
+          </canvas>
+        }
+      </div>
+
+      <h3>Check-ins by Month</h3>
+      <div class="chart-container">
+        @if (monthChartData?.labels?.length) {
+          <canvas
+            baseChart
+            [data]="monthChartData"
+            [options]="chartOptions"
+            [type]="'bar'"
+          >
+          </canvas>
+        }
+      </div>
+
+      <h3>Average Ratings Over Time</h3>
+      <div class="chart-container">
+        @if (ratingChartData?.labels?.length) {
+          <canvas
+            baseChart
+            [data]="ratingChartData"
+            [options]="chartOptions"
+            [type]="'line'"
+          >
+          </canvas>
+        }
+      </div>
+
+      @if (recentActivityChartData?.labels?.length) {
+        <h3>Recent Activity</h3>
+        <div class="chart-container">
+          <canvas
+            baseChart
+            [data]="recentActivityChartData"
+            [options]="chartOptions"
+            [type]="'line'"
+          ></canvas>
+        </div>
+      }
+    </div>
+  }
 </div>

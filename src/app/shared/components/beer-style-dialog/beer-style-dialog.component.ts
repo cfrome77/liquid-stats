@@ -17,6 +17,7 @@ export interface GenericBeersDialogData {
   selector: "app-beer-style-dialog",
   templateUrl: "./beer-style-dialog.component.html",
   styleUrls: ["./beer-style-dialog.component.css"],
+  standalone: false,
 })
 export class BeerStyleDialogComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: GenericBeersDialogData) {}

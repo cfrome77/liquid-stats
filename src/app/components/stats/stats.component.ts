@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
@@ -17,6 +17,7 @@ import { Subscription } from "rxjs";
   selector: "app-stats",
   templateUrl: "./stats.component.html",
   styleUrls: ["./stats.component.css"],
+  standalone: false,
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
@@ -102,7 +103,8 @@ export class StatsComponent implements OnInit {
   constructor(
     private statsService: StatsService,
     private dialog: MatDialog,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -167,6 +169,7 @@ export class StatsComponent implements OnInit {
       next: (data: BeerCheckin[]) => {
         this.beers = data;
         this.onDateChange();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Error fetching beers:", err);

@@ -60,24 +60,33 @@
                   "maximumError": "4kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "liquid-stats:build"
+            "buildTarget": "liquid-stats:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "liquid-stats:build:production"
+              "buildTarget": "liquid-stats:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "liquid-stats:build"
+            "buildTarget": "liquid-stats:build"
           }
         },
         "test": {
