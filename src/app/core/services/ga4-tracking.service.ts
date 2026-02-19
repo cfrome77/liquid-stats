@@ -8,7 +8,7 @@ declare let gtag: Function;
   providedIn: "root",
 })
 export class Ga4TrackingService {
-  private readonly MEASUREMENT_ID = environment.ga4MeasurementId;
+  private readonly MEASUREMENT_ID = environment.GA4_MEASUREMENT_ID;
   private isScriptLoaded = false;
 
   /**

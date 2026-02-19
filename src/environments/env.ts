@@ -1,15 +1,8 @@
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-
-// Only load .env if running locally (not on Netlify)
-if (!process.env.NETLIFY) {
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-}
-
+// src/environments/env.ts
 export const env = {
-  UNTAPPD_USERNAME: process.env.UNTAPPD_USERNAME!,
-  DATA_URL: process.env.DATA_URL!,
-  GA4_MEASUREMENT_ID: process.env.GA4_MEASUREMENT_ID!,
-  S3_BUCKET_NAME: process.env.S3_BUCKET_NAME!,
-  LAMBDA_ZIP_FILE: process.env.LAMBDA_ZIP_FILE!,
+  UNTAPPD_USERNAME: (window as any).__env?.UNTAPPD_USERNAME || '',
+  DATA_URL: (window as any).__env?.DATA_URL || '/assets/',
+  GA4_MEASUREMENT_ID: (window as any).__env?.GA4_MEASUREMENT_ID || '',
+  S3_BUCKET_NAME: (window as any).__env?.S3_BUCKET_NAME || '',
+  LAMBDA_ZIP_FILE: (window as any).__env?.LAMBDA_ZIP_FILE || '',
 };

@@ -30,7 +30,7 @@ export class BadgesComponent implements OnInit {
     private logger: LoggingService,
     private cdr: ChangeDetectorRef,
   ) {
-    this.username = environment.untappdUsername;
+    this.username = environment.UNTAPPD_USERNAME;
   }
 
   ngOnInit(): void {

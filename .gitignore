@@ -33,6 +33,7 @@ modules/.vscode
 .env
 .env.local
 .env.*.local
+/src/assets/env.js
 
 # Don't include fetched json files
 /src/assets/badges.json
@@ -65,10 +66,6 @@ tools/gulp-tasks/cldr/cldr-data/
 
 # Husky
 .husky/_
-
-# Angular environment files (auto-generated)
-src/environments/environment.*.ts
-!src/environments/environment.template.ts
 
 # Python virtual environment
 venv/

@@ -81,7 +81,7 @@ export class BeerHistoryComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
   ) {
-    this.username = environment.untappdUsername;
+    this.username = environment.UNTAPPD_USERNAME;
   }
 
   ngOnInit(): void {
