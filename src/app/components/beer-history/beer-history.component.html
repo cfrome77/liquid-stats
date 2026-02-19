@@ -31,10 +31,11 @@
     </div>
 
   <div class="flex-column" style="align-items: stretch; gap: 10px">
-    <app-card
-      *ngFor="let beerCard of paginatedBeers"
-      [cardData]="beerCard"
-    ></app-card>
+    @for (beerCard of paginatedBeers; track beerCard.title) {
+      <app-card
+        [cardData]="beerCard"
+      ></app-card>
+    }
   </div>
 
   <app-pagination

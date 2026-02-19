@@ -13,6 +13,7 @@ const shadowUrl = "/assets/images/marker-shadow.png";
   selector: "app-map",
   templateUrl: "./map.component.html",
   styleUrls: ["./map.component.css"],
+  standalone: false,
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
   public mapId = "myMap";

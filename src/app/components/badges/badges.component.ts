@@ -1,4 +1,4 @@
-import { Component, ErrorHandler, OnInit } from "@angular/core";
+import { Component, ErrorHandler, OnInit, ChangeDetectorRef } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "src/app/core/utils/date-utils";
@@ -9,6 +9,7 @@ import { LoggingService } from "src/app/core/services/logger.service";
   selector: "app-badges",
   templateUrl: "./badges.component.html",
   styleUrls: ["./badges.component.css"],
+  standalone: false,
 })
 export class BadgesComponent implements OnInit {
   public badges: Badge[] = [];
@@ -22,6 +23,7 @@ export class BadgesComponent implements OnInit {
     private dataService: DataService,
     private errorHandler: ErrorHandler,
     private logger: LoggingService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.username = environment.untappdUsername;
   }
@@ -33,6 +35,7 @@ export class BadgesComponent implements OnInit {
         this.totalItems = data.length;
         this.updatePagination();
         this.logger.info("Badges successfully fetched", data);
+        this.cdr.detectChanges();
       },
       error: (err: unknown) => {
         // handled error → log it

@@ -2,98 +2,116 @@
   <mat-card class="shared-card">
     <mat-card-content class="beer">
       <div class="header-section">
-        <img
-          *ngIf="cardData.mainImage"
-          class="beer-label"
-          [src]="cardData.mainImage"
-          [alt]="cardData.title"
-          [title]="cardData.title"
-        />
+        @if (cardData.mainImage) {
+          <img
+            class="beer-label"
+            [src]="cardData.mainImage"
+            [alt]="cardData.title"
+            [title]="cardData.title"
+          />
+        }
 
         <div class="beer-info">
           <h3>
-            <span *ngIf="cardData.rank" class="rank">#{{ cardData.rank }}</span>
+            @if (cardData.rank) {
+              <span class="rank">#{{ cardData.rank }}</span>
+            }
             {{ cardData.title }}
           </h3>
-          <p *ngIf="cardData.subtitle">{{ cardData.subtitle }}</p>
-          <p *ngIf="cardData.breweryName">{{ cardData.breweryName }}</p>
+          @if (cardData.subtitle) {
+            <p>{{ cardData.subtitle }}</p>
+          }
+          @if (cardData.breweryName) {
+            <p>{{ cardData.breweryName }}</p>
+          }
         </div>
 
-        <img
-          *ngIf="cardData.secondaryImage"
-          class="brewery-label"
-          [src]="cardData.secondaryImage"
-          [alt]="cardData.breweryName"
-          [title]="cardData.breweryName"
-        />
+        @if (cardData.secondaryImage) {
+          <img
+            class="brewery-label"
+            [src]="cardData.secondaryImage"
+            [alt]="cardData.breweryName"
+            [title]="cardData.breweryName"
+          />
+        }
       </div>
 
-      <span class="comment" *ngIf="cardData.description">{{
-        cardData.description
-      }}</span>
-      <span class="comment" *ngIf="cardData.hint">{{ cardData.hint }}</span>
+      @if (cardData.description) {
+        <span class="comment">{{
+          cardData.description
+        }}</span>
+      }
+      @if (cardData.hint) {
+        <span class="comment">{{ cardData.hint }}</span>
+      }
 
       <div class="rating-bar">
-        <app-rating
-          *ngIf="cardData.rating != null"
-          [ratingScore]="cardData.rating"
-          class="flex-1"
-        ></app-rating>
+        @if (cardData.rating != null) {
+          <app-rating
+            [ratingScore]="cardData.rating"
+            class="flex-1"
+          ></app-rating>
+        }
       </div>
 
       <div class="badges-and-social-links">
-        <div
-          *ngIf="cardData.globalRating != null"
-          class="global-rating flex-row align-center gap-4"
-        >
-          <span class="global-rating-label">Overall Rating:</span>
-          <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
-        </div>
+        @if (cardData.globalRating != null) {
+          <div
+            class="global-rating flex-row align-center gap-4"
+          >
+            <span class="global-rating-label">Overall Rating:</span>
+            <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
+          </div>
+        }
 
         <div class="flex-row align-center min-w-0">
-          <mat-chip-listbox
-            class="chip"
-            selectable="false"
-            *ngIf="cardData.extraData?.badges && cardData.globalRating == null"
-          >
-            <mat-chip
-              *ngFor="let badge of cardData.extraData.badges"
-              (click)="onBadgeClick(badge)"
+          @if (cardData.extraData?.badges && cardData.globalRating == null) {
+            <mat-chip-listbox
+              class="chip"
+              selectable="false"
             >
-              <img
-                matChipAvatar
-                [src]="badge.badge_image.sm"
-                alt="badge"
-              />
-              {{ badge.badge_name }}
-            </mat-chip>
-          </mat-chip-listbox>
+              @for (badge of cardData.extraData.badges; track badge.badge_name) {
+                <mat-chip
+                  (click)="onBadgeClick(badge)"
+                >
+                  <img
+                    matChipAvatar
+                    [src]="badge.badge_image.sm"
+                    alt="badge"
+                  />
+                  {{ badge.badge_name }}
+                </mat-chip>
+              }
+            </mat-chip-listbox>
+          }
         </div>
 
         <div class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper">
-          <app-social-links
-            *ngIf="cardData.extraData?.socialLinks"
-            [contact]="cardData.extraData.socialLinks"
-            [mapData]="cardData.extraData.mapData"
-          >
-          </app-social-links>
+          @if (cardData.extraData?.socialLinks) {
+            <app-social-links
+              [contact]="cardData.extraData.socialLinks"
+              [mapData]="cardData.extraData.mapData"
+            >
+            </app-social-links>
+          }
         </div>
       </div>
 
       <footer>
         <div class="footer-left">
-          <a
-            target="_blank"
-            [href]="cardData.footerInfo.link"
-            class="location-link"
-            [title]="cardData.footerInfo.text"
-            *ngIf="cardData.footerInfo.link"
-          >
-            <mat-icon class="location-icon">{{
-              cardData.extraData?.venueId ? "location_on" : "info"
-            }}</mat-icon>
-            <span class="location-text">{{ cardData.footerInfo.text }}</span>
-          </a>
+          @if (cardData.footerInfo.link) {
+            <a
+              target="_blank"
+              [href]="cardData.footerInfo.link"
+              class="location-link"
+              [title]="cardData.footerInfo.text"
+            >
+              <mat-icon class="location-icon">{{
+                cardData.extraData?.venueId ? "location_on" : "info"
+              }}</mat-icon>
+              <span class="location-text">{{ cardData.footerInfo.text }}</span>
+            </a>
+          }
         </div>
         <div class="footer-time">
           <time

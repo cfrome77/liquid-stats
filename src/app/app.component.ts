@@ -14,6 +14,7 @@ import { DOCUMENT } from "@angular/common";
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
+  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = "liquid-stats";

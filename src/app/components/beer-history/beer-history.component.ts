@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { environment } from "../../../environments/environment";
@@ -19,6 +19,7 @@ interface FilterField {
   selector: "app-beer-history",
   templateUrl: "./beer-history.component.html",
   styleUrls: ["./beer-history.component.css"],
+  standalone: false,
 })
 export class BeerHistoryComponent implements OnInit {
   public beers: (BeerCheckin | BaseCardData)[] = [];
@@ -78,6 +79,7 @@ export class BeerHistoryComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {
     this.username = environment.untappdUsername;
   }
@@ -193,6 +195,7 @@ export class BeerHistoryComponent implements OnInit {
       },
       complete: () => {
         console.log("Beers fetch completed");
+        this.cdr.detectChanges();
       },
     });
   }
@@ -262,10 +265,12 @@ export class BeerHistoryComponent implements OnInit {
 
   onSearchChange(): void {
     this.applyFilters();
+    this.cdr.detectChanges();
   }
 
   onFilterChange(): void {
     this.applyFilters();
+    this.cdr.detectChanges();
   }
 
   public applyFilters(): void {
