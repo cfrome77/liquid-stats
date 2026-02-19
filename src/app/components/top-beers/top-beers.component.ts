@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
@@ -14,6 +14,7 @@ type DateRangeOption = { label: string; daysBack?: number; year?: number };
   selector: "app-top-beers",
   templateUrl: "./top-beers.component.html",
   styleUrls: ["./top-beers.component.css"],
+  standalone: false,
 })
 export class TopBeersComponent implements OnInit {
   public beers: BeerCheckin[] = []; // ✅ use BeerCheckin[]
@@ -43,8 +44,9 @@ export class TopBeersComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
   ) {
-    this.username = environment.untappdUsername;
+    this.username = environment.UNTAPPD_USERNAME;
   }
 
   ngOnInit(): void {
@@ -55,6 +57,7 @@ export class TopBeersComponent implements OnInit {
       next: (data) => {
         this.beers = data.beers as BeerCheckin[];
         this.applyFilters();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Error fetching beers:", err);
@@ -115,9 +118,11 @@ export class TopBeersComponent implements OnInit {
 
     this.filteredBeers = filtered;
 
-    this.transformedTopBeers = filtered.map((beer: BeerCheckin, index: number) =>
-      this.transformTopBeersData(beer, index + 1),
+    this.transformedTopBeers = filtered.map(
+      (beer: BeerCheckin, index: number) =>
+        this.transformTopBeersData(beer, index + 1),
     );
+    this.cdr.detectChanges();
   }
 
   public onFilterChange(): void {
@@ -146,7 +151,9 @@ export class TopBeersComponent implements OnInit {
       secondaryImage: undefined,
       footerInfo: {
         text: "Brewery Info",
-        link: `https://untappd.com${beer.brewery.brewery_page_url}` || `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
+        link:
+          `https://untappd.com${beer.brewery.brewery_page_url}` ||
+          `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
         timestamp: this.published(beer.recent_created_at),
         rightLinkText: "Beer Details",
       },

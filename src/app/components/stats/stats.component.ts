@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
@@ -17,6 +17,7 @@ import { Subscription } from "rxjs";
   selector: "app-stats",
   templateUrl: "./stats.component.html",
   styleUrls: ["./stats.component.css"],
+  standalone: false,
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
@@ -43,7 +44,10 @@ export class StatsComponent implements OnInit {
   };
 
   recentActivityChartLabels: string[] = [];
-  recentActivityChartData?: ChartData<"line", number[], string>;
+  recentActivityChartData: ChartData<"line", number[], string> = {
+    labels: [],
+    datasets: [],
+  };
   checkinsByDayLabels: string[] = [];
   dayChartData: ChartData<"bar"> = {
     labels: [
@@ -55,15 +59,47 @@ export class StatsComponent implements OnInit {
       "Friday",
       "Saturday",
     ],
-    datasets: [{ data: [], label: "Check-ins by Day of Week", backgroundColor: "rgba(255,167,38,0.8)" }],
+    datasets: [
+      {
+        data: [],
+        label: "Check-ins by Day of Week",
+        backgroundColor: "rgba(255,167,38,0.8)",
+      },
+    ],
   };
   monthChartData: ChartData<"bar"> = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: [{ data: [], label: "Check-ins by Month", backgroundColor: "rgba(171,71,188,0.8)" }],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    datasets: [
+      {
+        data: [],
+        label: "Check-ins by Month",
+        backgroundColor: "rgba(171,71,188,0.8)",
+      },
+    ],
   };
   ratingChartData: ChartData<"line"> = {
     labels: [],
-    datasets: [{ data: [], label: "Average Rating", borderColor: "rgba(255,82,82,0.9)", fill: false }],
+    datasets: [
+      {
+        data: [],
+        label: "Average Rating",
+        borderColor: "rgba(255,82,82,0.9)",
+        fill: false,
+      },
+    ],
   };
 
   chartOptions: ChartOptions = {
@@ -72,29 +108,29 @@ export class StatsComponent implements OnInit {
     plugins: {
       legend: {
         labels: {
-          color: '#666'
-        }
-      }
+          color: "#666",
+        },
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(0,0,0,0.1)'
+          color: "rgba(0,0,0,0.1)",
         },
         ticks: {
-          color: '#666'
-        }
+          color: "#666",
+        },
       },
       x: {
         grid: {
-          color: 'rgba(0,0,0,0.1)'
+          color: "rgba(0,0,0,0.1)",
         },
         ticks: {
-          color: '#666'
-        }
-      }
-    }
+          color: "#666",
+        },
+      },
+    },
   };
   objectKeys = Object.keys;
   private themeSubscription?: Subscription;
@@ -102,7 +138,8 @@ export class StatsComponent implements OnInit {
   constructor(
     private statsService: StatsService,
     private dialog: MatDialog,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +148,7 @@ export class StatsComponent implements OnInit {
     this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
     this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
 
-    this.themeSubscription = this.themeService.theme$.subscribe(theme => {
+    this.themeSubscription = this.themeService.theme$.subscribe((theme) => {
       this.updateChartOptions(theme);
     });
   }
@@ -122,10 +159,10 @@ export class StatsComponent implements OnInit {
     }
   }
 
-  private updateChartOptions(theme: 'light-theme' | 'dark-theme'): void {
-    const isDark = theme === 'dark-theme';
-    const textColor = isDark ? '#e0e0e0' : '#666';
-    const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+  private updateChartOptions(theme: "light-theme" | "dark-theme"): void {
+    const isDark = theme === "dark-theme";
+    const textColor = isDark ? "#e0e0e0" : "#666";
+    const gridColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)";
 
     this.chartOptions = {
       ...this.chartOptions,
@@ -135,30 +172,30 @@ export class StatsComponent implements OnInit {
           ...this.chartOptions.plugins?.legend,
           labels: {
             ...this.chartOptions.plugins?.legend?.labels,
-            color: textColor
-          }
-        }
+            color: textColor,
+          },
+        },
       },
       scales: {
         y: {
           ...this.chartOptions.scales?.y,
           grid: {
-            color: gridColor
+            color: gridColor,
           },
           ticks: {
-            color: textColor
-          }
+            color: textColor,
+          },
         },
         x: {
           ...this.chartOptions.scales?.x,
           grid: {
-            color: gridColor
+            color: gridColor,
           },
           ticks: {
-            color: textColor
-          }
-        }
-      }
+            color: textColor,
+          },
+        },
+      },
     };
   }
 
@@ -167,6 +204,7 @@ export class StatsComponent implements OnInit {
       next: (data: BeerCheckin[]) => {
         this.beers = data;
         this.onDateChange();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Error fetching beers:", err);
@@ -281,7 +319,7 @@ export class StatsComponent implements OnInit {
   private clearChartData(): void {
     this.hourChartData.datasets[0].data = [];
     this.recentActivityChartLabels = [];
-    this.recentActivityChartData = undefined;
+    this.recentActivityChartData = { labels: [], datasets: [] };
     this.checkinsByDayLabels = [];
     this.dayChartData = { labels: [], datasets: [] };
     this.monthChartData = { labels: [], datasets: [] };
@@ -305,12 +343,16 @@ export class StatsComponent implements OnInit {
 
     // Recent activity
     this.recentActivityChartLabels =
-      this.processedStats.recentActivityByDate.map((d: { date: any; }) => d.date);
+      this.processedStats.recentActivityByDate.map(
+        (d: { date: any }) => d.date,
+      );
     this.recentActivityChartData = {
       labels: this.recentActivityChartLabels,
       datasets: [
         {
-          data: this.processedStats.recentActivityByDate.map((d: { count: any; }) => d.count),
+          data: this.processedStats.recentActivityByDate.map(
+            (d: { count: any }) => d.count,
+          ),
           label: "Beers Checked In",
           fill: false,
           borderColor: "rgba(255,235,59,0.9)",
@@ -330,10 +372,12 @@ export class StatsComponent implements OnInit {
       "Saturday",
     ];
     const dayOfWeekCounts = new Array(7).fill(0);
-    this.processedStats.checkinsByDayOfWeek?.forEach((item: { day: string; count: any; }) => {
-      const index = dayOfWeekLabels.indexOf(item.day);
-      if (index !== -1) dayOfWeekCounts[index] = item.count;
-    });
+    this.processedStats.checkinsByDayOfWeek?.forEach(
+      (item: { day: string; count: any }) => {
+        const index = dayOfWeekLabels.indexOf(item.day);
+        if (index !== -1) dayOfWeekCounts[index] = item.count;
+      },
+    );
     this.dayChartData = {
       labels: dayOfWeekLabels,
       datasets: [
@@ -361,10 +405,12 @@ export class StatsComponent implements OnInit {
       "Dec",
     ];
     const monthCounts = new Array(12).fill(0);
-    this.processedStats.checkinsByMonth?.forEach((item: { month: string; count: any; }) => {
-      const index = monthLabels.indexOf(item.month);
-      if (index !== -1) monthCounts[index] = item.count;
-    });
+    this.processedStats.checkinsByMonth?.forEach(
+      (item: { month: string; count: any }) => {
+        const index = monthLabels.indexOf(item.month);
+        if (index !== -1) monthCounts[index] = item.count;
+      },
+    );
     this.monthChartData = {
       labels: monthLabels,
       datasets: [
@@ -379,13 +425,14 @@ export class StatsComponent implements OnInit {
     // Average ratings
     this.ratingChartData = {
       labels:
-        this.processedStats.averageRatingsOverTime?.map((item: { date: any; }) => item.date) ||
-        [],
+        this.processedStats.averageRatingsOverTime?.map(
+          (item: { date: any }) => item.date,
+        ) || [],
       datasets: [
         {
           data:
             this.processedStats.averageRatingsOverTime?.map(
-              (item: { rating: any; }) => item.rating,
+              (item: { rating: any }) => item.rating,
             ) || [],
           label: "Average Rating",
           fill: false,

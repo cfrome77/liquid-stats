@@ -11,16 +11,21 @@
   </button>
 
   <!-- Page numbers with ellipses -->
-  <button
-    mat-button
-    *ngFor="let page of pageNumbers"
-    (click)="isNumber(page) && goToPage(page)"
-    [class.active]="page === currentPage"
-    class="page-number"
-  >
-    <span *ngIf="isNumber(page)">{{ page }}</span>
-    <span *ngIf="page === '...'" class="ellipsis">{{ page }}</span>
-  </button>
+  @for (page of pageNumbers; track page) {
+    <button
+      mat-button
+      (click)="isNumber(page) && goToPage(page)"
+      [class.active]="page === currentPage"
+      class="page-number"
+    >
+      @if (isNumber(page)) {
+        <span>{{ page }}</span>
+      }
+      @if (page === "...") {
+        <span class="ellipsis">{{ page }}</span>
+      }
+    </button>
+  }
 
   <!-- Next page button -->
   <button mat-button (click)="nextPage()" [disabled]="currentPage === lastPage">
@@ -45,12 +50,10 @@
     (change)="changeItemsPerPage($event)"
     [value]="itemsPerPage"
   >
-    <option
-      *ngFor="let value of [10, 20, 30, 50]"
-      [value]="value"
-      [selected]="value === itemsPerPage"
-    >
-      {{ value }}
-    </option>
+    @for (value of [10, 20, 30, 50]; track value) {
+      <option [value]="value" [selected]="value === itemsPerPage">
+        {{ value }}
+      </option>
+    }
   </select>
 </div>

@@ -4,6 +4,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
   selector: "app-card",
   templateUrl: "./card.component.html",
   styleUrls: ["./card.component.css"],
+  standalone: false,
 })
 export class CardComponent implements OnInit {
   @Input() cardData: any;

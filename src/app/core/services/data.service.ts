@@ -9,7 +9,7 @@ import { CheckinResponse } from "../models/checkin.model";
   providedIn: "root",
 })
 export class DataService {
-  private baseUrl = environment.dataUrl;
+  private baseUrl = environment.DATA_URL;
 
   constructor(private http: HttpClient) {}
 

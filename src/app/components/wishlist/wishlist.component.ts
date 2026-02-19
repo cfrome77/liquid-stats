@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { Observable } from "rxjs";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { DataService } from "src/app/core/services/data.service";
@@ -8,6 +8,7 @@ import { DateUtils } from "../../core/utils/date-utils";
   selector: "app-wishlist",
   templateUrl: "./wishlist.component.html",
   styleUrls: ["./wishlist.component.css"],
+  standalone: false,
 })
 export class WishlistComponent implements OnInit {
   public wishlist: any[] = [];
@@ -17,7 +18,10 @@ export class WishlistComponent implements OnInit {
   public totalItems = 0;
   public isLoading = true;
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.fetchWishlistData();
@@ -31,6 +35,7 @@ export class WishlistComponent implements OnInit {
         this.totalItems = this.wishlist.length;
         this.updatePaginatedWishlist();
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error("Error fetching wishlist:", error);

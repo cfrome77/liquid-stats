@@ -75,7 +75,8 @@ ul,
 ol,
 td,
 th,
-fieldset, legend {
+fieldset,
+legend {
   padding: 0;
 }
 
@@ -95,11 +96,16 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Global Typography */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   color: var(--header-text);
   margin-bottom: 1rem;
 }
@@ -113,37 +119,30 @@ strong {
   color: var(--strong-text);
 }
 
-/* Global Layout Utilities */
+/* Layout Utilities */
 .flex-column {
   display: flex;
   flex-direction: column;
 }
-
 .flex-row {
   display: flex;
   flex-direction: row;
 }
-
 .align-center {
   align-items: center;
 }
-
 .justify-center {
   justify-content: center;
 }
-
 .spacer {
   flex: 1 1 auto;
 }
-
 .flex-1 {
   flex: 1;
 }
-
 .min-w-0 {
   min-width: 0;
 }
-
 .gap-4 {
   gap: 4px;
 }
@@ -160,7 +159,7 @@ strong {
   }
 }
 
-/* Mat-Card and Card-related Styles */
+/* Material Card */
 .mat-mdc-card {
   background-color: var(--card-bg) !important;
   color: var(--text-color) !important;
@@ -168,7 +167,9 @@ strong {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin: 0 auto 15px;
   padding: 15px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 @media (min-width: 1025px) {
@@ -182,6 +183,21 @@ strong {
   }
 }
 
+/* 🔥 FIX: Proper MDC Chip Theming Inside Cards */
+.mat-mdc-card .mdc-evolution-chip {
+  background-color: var(--chip-bg) !important;
+}
+
+.mat-mdc-card .mdc-evolution-chip__text-label {
+  color: var(--text-color) !important;
+  opacity: 1 !important;
+}
+
+.mat-mdc-card mat-chip {
+  font-weight: 500;
+  cursor: pointer;
+}
+
 /* Shared container */
 .main-content-container {
   width: 100%;
@@ -191,7 +207,7 @@ strong {
   box-sizing: border-box;
 }
 
-/* Navbar & Toolbar */
+/* Navbar */
 .navbar-color {
   background-color: var(--navbar-bg) !important;
   color: var(--navbar-text) !important;
@@ -206,7 +222,7 @@ strong {
   color: var(--text-color) !important;
 }
 
-/* Material Input Styling */
+/* Material Input */
 .mat-mdc-form-field {
   width: 100%;
 }
@@ -221,7 +237,7 @@ strong {
   border-color: var(--input-outline) !important;
 }
 
-/* Filter Card Utility */
+/* Filter Card */
 .filter-card {
   background-color: var(--card-bg);
   color: var(--text-color);
@@ -236,7 +252,9 @@ strong {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.filter-card h1, .filter-card h2, .filter-card h3 {
+.filter-card h1,
+.filter-card h2,
+.filter-card h3 {
   color: var(--header-text) !important;
   margin: 0 0 10px 0;
   text-align: center;

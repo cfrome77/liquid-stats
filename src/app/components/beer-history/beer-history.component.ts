@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { environment } from "../../../environments/environment";
@@ -19,6 +19,7 @@ interface FilterField {
   selector: "app-beer-history",
   templateUrl: "./beer-history.component.html",
   styleUrls: ["./beer-history.component.css"],
+  standalone: false,
 })
 export class BeerHistoryComponent implements OnInit {
   public beers: (BeerCheckin | BaseCardData)[] = [];
@@ -78,8 +79,9 @@ export class BeerHistoryComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {
-    this.username = environment.untappdUsername;
+    this.username = environment.UNTAPPD_USERNAME;
   }
 
   ngOnInit(): void {
@@ -193,6 +195,7 @@ export class BeerHistoryComponent implements OnInit {
       },
       complete: () => {
         console.log("Beers fetch completed");
+        this.cdr.detectChanges();
       },
     });
   }
@@ -262,10 +265,12 @@ export class BeerHistoryComponent implements OnInit {
 
   onSearchChange(): void {
     this.applyFilters();
+    this.cdr.detectChanges();
   }
 
   onFilterChange(): void {
     this.applyFilters();
+    this.cdr.detectChanges();
   }
 
   public applyFilters(): void {
@@ -298,7 +303,9 @@ export class BeerHistoryComponent implements OnInit {
       const rawRating =
         beer.rating_score !== undefined ? beer.rating_score : beer.rating || 0;
       const ratingStr =
-        (rawRating * 10) % 1 === 0 ? rawRating.toFixed(1) : rawRating.toFixed(2);
+        (rawRating * 10) % 1 === 0
+          ? rawRating.toFixed(1)
+          : rawRating.toFixed(2);
       const beerDate = DateUtils.parseDate(
         beer.first_created_at ||
           beer.recent_created_at ||
@@ -322,11 +329,13 @@ export class BeerHistoryComponent implements OnInit {
         this.filterFields.find((f) => f.field === "rating")?.options.length;
 
       const matchBrewery =
-        selectedBreweries.includes(brewery) || (brewery === "" && isAllBreweries);
+        selectedBreweries.includes(brewery) ||
+        (brewery === "" && isAllBreweries);
       const matchStyle =
         selectedStyles.includes(style) || (style === "" && isAllStyles);
       const matchCountry =
-        selectedCountries.includes(country) || (country === "" && isAllCountries);
+        selectedCountries.includes(country) ||
+        (country === "" && isAllCountries);
       const matchRegion =
         selectedRegions.includes(region) || (region === "" && isAllRegions);
       const matchRating =
@@ -373,7 +382,8 @@ export class BeerHistoryComponent implements OnInit {
         const style = beer.beer?.beer_style || beer.subtitle || "";
         const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
         const country = beer.brewery?.country_name || beer.country || "";
-        const region = beer.brewery?.location?.brewery_state || beer.state || "";
+        const region =
+          beer.brewery?.location?.brewery_state || beer.state || "";
         const beerDesc = beer.beer?.beer_description || beer.description || "";
 
         const matchSearch =
@@ -424,7 +434,8 @@ export class BeerHistoryComponent implements OnInit {
           }
           const isAllSelected = f.selected.length === f.options.length;
           return (
-            f.selected.includes(beerValue) || (beerValue === "" && isAllSelected)
+            f.selected.includes(beerValue) ||
+            (beerValue === "" && isAllSelected)
           );
         });
 

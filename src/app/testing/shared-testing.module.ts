@@ -4,35 +4,32 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 // Angular Material Modules
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import {
+  MatDialogModule,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from "@angular/material/dialog";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatRadioModule } from "@angular/material/radio";
 
 // Your shared / custom components
-import { FilterComponent } from 'src/app/shared/components/filter/filter.component';
-import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
-import { PoweredByComponent } from 'src/app/shared/components/powered-by/powered-by.component';
-import { CardComponent } from 'src/app/shared/components/card/card.component';
-import { BadgeDialogComponent } from 'src/app/shared/components/badge-dialog/badge-dialog.component';
-import { BeerStyleDialogComponent } from 'src/app/shared/components/beer-style-dialog/beer-style-dialog.component';
+import { FilterComponent } from "src/app/shared/components/filter/filter.component";
+import { PaginationComponent } from "src/app/shared/components/pagination/pagination.component";
+import { PoweredByComponent } from "src/app/shared/components/powered-by/powered-by.component";
+import { CardComponent } from "src/app/shared/components/card/card.component";
+import { BadgeDialogComponent } from "src/app/shared/components/badge-dialog/badge-dialog.component";
+import { BeerStyleDialogComponent } from "src/app/shared/components/beer-style-dialog/beer-style-dialog.component";
 
 @NgModule({
-  declarations: [
-    FilterComponent,
-    PaginationComponent,
-    PoweredByComponent,
-    CardComponent,
-    BadgeDialogComponent,
-    BeerStyleDialogComponent,
-  ],
+  declarations: [],
   imports: [
     ReactiveFormsModule,
     FormsModule,
@@ -51,12 +48,6 @@ import { BeerStyleDialogComponent } from 'src/app/shared/components/beer-style-d
     MatRadioModule,
   ],
   exports: [
-    FilterComponent,
-    PaginationComponent,
-    PoweredByComponent,
-    CardComponent,
-    BadgeDialogComponent,
-    BeerStyleDialogComponent,
     ReactiveFormsModule,
     FormsModule,
     HttpClientTestingModule,

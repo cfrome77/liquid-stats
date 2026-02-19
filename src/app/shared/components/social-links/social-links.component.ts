@@ -6,6 +6,7 @@ import { MatIconRegistry } from "@angular/material/icon";
   selector: "app-social-links",
   templateUrl: "./social-links.component.html",
   styleUrls: ["./social-links.component.css"],
+  standalone: false,
 })
 export class SocialLinksComponent implements OnInit {
   constructor(

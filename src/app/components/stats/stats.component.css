@@ -1,4 +1,3 @@
-
 /* Filters section */
 .filters {
   margin-bottom: 1rem;
@@ -8,7 +7,8 @@
   color: var(--text-color);
 }
 
-.filters input[type="date"], .filters select {
+.filters input[type="date"],
+.filters select {
   max-width: 200px;
   background-color: var(--input-bg);
   color: var(--input-text);

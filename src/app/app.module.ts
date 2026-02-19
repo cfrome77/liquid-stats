@@ -1,5 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { MarkerService } from "./core/services/marker.service";
 import { PopUpService } from "./core/services/pop-up.service";
@@ -22,7 +23,11 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
-import { NgChartsModule } from "ng2-charts";
+import {
+  BaseChartDirective,
+  provideCharts,
+  withDefaultRegisterables,
+} from "ng2-charts";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -71,6 +76,7 @@ import { CardComponent } from "./shared/components/card/card.component";
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
@@ -94,11 +100,14 @@ import { CardComponent } from "./shared/components/card/card.component";
     MatNativeDateModule,
     MatTooltipModule,
     ReactiveFormsModule,
-    NgChartsModule,
+    BaseChartDirective,
   ],
   exports: [],
-  providers: [MarkerService, PopUpService],
+  providers: [
+    MarkerService,
+    PopUpService,
+    provideCharts(withDefaultRegisterables()),
+  ],
   bootstrap: [AppComponent],
-  entryComponents: [AboutComponent],
 })
 export class AppModule {}

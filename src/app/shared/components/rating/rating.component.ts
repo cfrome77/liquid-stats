@@ -4,6 +4,7 @@ import { Component, Input } from "@angular/core";
   selector: "app-rating",
   templateUrl: "./rating.component.html",
   styleUrls: ["./rating.component.css"],
+  standalone: false,
 })
 export class RatingComponent {
   @Input() ratingScore: number | null = null;

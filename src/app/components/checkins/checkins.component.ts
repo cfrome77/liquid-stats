@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
 import {
@@ -16,6 +16,7 @@ import { DateUtils } from "../../core/utils/date-utils";
   selector: "app-checkins",
   templateUrl: "./checkins.component.html",
   styleUrls: ["./checkins.component.css"],
+  standalone: false,
 })
 export class CheckinsComponent implements OnInit {
   public checkins: Checkin[] = [];
@@ -25,8 +26,9 @@ export class CheckinsComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
   ) {
-    this.username = environment.untappdUsername;
+    this.username = environment.UNTAPPD_USERNAME;
   }
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class CheckinsComponent implements OnInit {
         this.transformedCheckins = this.checkins.map((checkin) =>
           this.transformCheckinData(checkin),
         );
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Error fetching checkins:", err);

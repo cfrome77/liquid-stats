@@ -1,4 +1,10 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, flush } from "@angular/core/testing";
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  flush,
+} from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute } from "@angular/router";
@@ -18,13 +24,13 @@ describe("MapComponent", () => {
       makeBreweryMarkers: jasmine.createSpy("makeBreweryMarkers"),
       getMarkerByBreweryId: jasmine.createSpy("getMarkerByBreweryId"),
       markers: {
-        zoomToShowLayer: jasmine.createSpy("zoomToShowLayer")
-      }
+        zoomToShowLayer: jasmine.createSpy("zoomToShowLayer"),
+      },
     };
 
     mockMapService = {
       addMap: jasmine.createSpy("addMap"),
-      removeMap: jasmine.createSpy("removeMap")
+      removeMap: jasmine.createSpy("removeMap"),
     };
 
     await TestBed.configureTestingModule({
@@ -37,10 +43,10 @@ describe("MapComponent", () => {
           provide: ActivatedRoute,
           useValue: {
             data: of({ mapId: "myMap" }),
-            queryParams: of({})
-          }
-        }
-      ]
+            queryParams: of({}),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapComponent);
@@ -53,8 +59,8 @@ describe("MapComponent", () => {
 
   it("should initialize map on AfterViewInit", fakeAsync(() => {
     // We need a div with the mapId in the DOM for Leaflet to initialize
-    const mapDiv = document.createElement('div');
-    mapDiv.id = 'myMap';
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
     document.body.appendChild(mapDiv);
 
     fixture.detectChanges();
