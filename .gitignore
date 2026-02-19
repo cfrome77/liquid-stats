@@ -87,3 +87,10 @@ lambda/package/
 lambda/fetch_api_data.py
 liquid-stats-lambda.json
 liquid-stats-lambda.zip
+
+# Environment variable files
+.env
+.env.local
+.env.*.local
+src/environments/environment.*.ts
+!src/environments/environment.template.ts
