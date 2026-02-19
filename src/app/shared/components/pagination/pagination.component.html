@@ -21,7 +21,7 @@
       @if (isNumber(page)) {
         <span>{{ page }}</span>
       }
-      @if (page === '...') {
+      @if (page === "...") {
         <span class="ellipsis">{{ page }}</span>
       }
     </button>
@@ -51,10 +51,7 @@
     [value]="itemsPerPage"
   >
     @for (value of [10, 20, 30, 50]; track value) {
-      <option
-        [value]="value"
-        [selected]="value === itemsPerPage"
-      >
+      <option [value]="value" [selected]="value === itemsPerPage">
         {{ value }}
       </option>
     }

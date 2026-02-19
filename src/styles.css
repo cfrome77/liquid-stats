@@ -75,7 +75,8 @@ ul,
 ol,
 td,
 th,
-fieldset, legend {
+fieldset,
+legend {
   padding: 0;
 }
 
@@ -95,11 +96,16 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Global Typography */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   color: var(--header-text);
   margin-bottom: 1rem;
 }
@@ -168,7 +174,9 @@ strong {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin: 0 auto 15px;
   padding: 15px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 @media (min-width: 1025px) {
@@ -236,7 +244,9 @@ strong {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.filter-card h1, .filter-card h2, .filter-card h3 {
+.filter-card h1,
+.filter-card h2,
+.filter-card h3 {
   color: var(--header-text) !important;
   margin: 0 0 10px 0;
   text-align: center;

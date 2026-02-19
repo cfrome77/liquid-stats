@@ -62,6 +62,10 @@ h1 {
   border-color: var(--input-outline) !important;
 }
 
-:host ::ng-deep .filter-card .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__outer-circle {
+:host
+  ::ng-deep
+  .filter-card
+  .mat-mdc-radio-button.mat-mdc-radio-checked
+  .mdc-radio__outer-circle {
   border-color: var(--accent-blue) !important;
 }

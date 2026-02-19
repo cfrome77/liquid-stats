@@ -11,14 +11,18 @@
       <option value="custom">Custom</option>
     </select>
 
-    @if (dateRange.value === 'custom') {
+    @if (dateRange.value === "custom") {
       <div class="custom-date-range">
         <input
           type="date"
           [formControl]="customStartDate"
           placeholder="Start Date"
         />
-        <input type="date" [formControl]="customEndDate" placeholder="End Date" />
+        <input
+          type="date"
+          [formControl]="customEndDate"
+          placeholder="End Date"
+        />
       </div>
     }
   </div>
@@ -28,8 +32,12 @@
       <div class="card">
         Total Unique Beers: {{ processedStats.totalUniqueBeers }}
       </div>
-      <div class="card">Total Check-ins: {{ processedStats.totalCheckins }}</div>
-      <div class="card">New Beers Count: {{ processedStats.newBeersCount }}</div>
+      <div class="card">
+        Total Check-ins: {{ processedStats.totalCheckins }}
+      </div>
+      <div class="card">
+        New Beers Count: {{ processedStats.newBeersCount }}
+      </div>
       <div class="card">
         New Beer Ratio: {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
       </div>
@@ -65,10 +73,7 @@
           <h3>Top Beers</h3>
           <ul>
             @for (beer of processedStats.topBeers; track beer.name) {
-              <li
-                class="clickable"
-                (click)="openBeersByTopBeer(beer.name)"
-              >
+              <li class="clickable" (click)="openBeersByTopBeer(beer.name)">
                 {{ beer.name }} - {{ beer.count }} check-ins (Avg:
                 {{ beer.avgRating.toFixed(2) }})
               </li>
@@ -81,12 +86,13 @@
         <div class="card">
           <h3>Top Countries</h3>
           <ul>
-            @for (country of objectKeys(processedStats.topCountries); track country) {
-              <li
-                class="clickable"
-                (click)="openBeersByCountry(country)"
-              >
-                {{ country }} - {{ processedStats.topCountries[country] }} check-ins
+            @for (
+              country of objectKeys(processedStats.topCountries);
+              track country
+            ) {
+              <li class="clickable" (click)="openBeersByCountry(country)">
+                {{ country }} -
+                {{ processedStats.topCountries[country] }} check-ins
               </li>
             }
           </ul>
@@ -98,10 +104,7 @@
           <h3>Top States</h3>
           <ul>
             @for (state of objectKeys(processedStats.topStates); track state) {
-              <li
-                class="clickable"
-                (click)="openBeersByState(state)"
-              >
+              <li class="clickable" (click)="openBeersByState(state)">
                 {{ state }} - {{ processedStats.topStates[state] }} check-ins
               </li>
             }

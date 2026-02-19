@@ -37,9 +37,7 @@
       </div>
 
       @if (cardData.description) {
-        <span class="comment">{{
-          cardData.description
-        }}</span>
+        <span class="comment">{{ cardData.description }}</span>
       }
       @if (cardData.hint) {
         <span class="comment">{{ cardData.hint }}</span>
@@ -56,9 +54,7 @@
 
       <div class="badges-and-social-links">
         @if (cardData.globalRating != null) {
-          <div
-            class="global-rating flex-row align-center gap-4"
-          >
+          <div class="global-rating flex-row align-center gap-4">
             <span class="global-rating-label">Overall Rating:</span>
             <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
           </div>
@@ -66,19 +62,13 @@
 
         <div class="flex-row align-center min-w-0">
           @if (cardData.extraData?.badges && cardData.globalRating == null) {
-            <mat-chip-listbox
-              class="chip"
-              selectable="false"
-            >
-              @for (badge of cardData.extraData.badges; track badge.badge_name) {
-                <mat-chip
-                  (click)="onBadgeClick(badge)"
-                >
-                  <img
-                    matChipAvatar
-                    [src]="badge.badge_image.sm"
-                    alt="badge"
-                  />
+            <mat-chip-listbox class="chip" selectable="false">
+              @for (
+                badge of cardData.extraData.badges;
+                track badge.badge_name
+              ) {
+                <mat-chip (click)="onBadgeClick(badge)">
+                  <img matChipAvatar [src]="badge.badge_image.sm" alt="badge" />
                   {{ badge.badge_name }}
                 </mat-chip>
               }
@@ -86,7 +76,9 @@
           }
         </div>
 
-        <div class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper">
+        <div
+          class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
+        >
           @if (cardData.extraData?.socialLinks) {
             <app-social-links
               [contact]="cardData.extraData.socialLinks"
@@ -130,7 +122,7 @@
                 : cardData.footerInfo.link
             "
             target="_blank"
-            title="{{cardData.footerInfo?.rightLinkText || 'View Details'}}"
+            title="{{ cardData.footerInfo?.rightLinkText || 'View Details' }}"
           >
             <mat-icon>open_in_new</mat-icon>
           </a>

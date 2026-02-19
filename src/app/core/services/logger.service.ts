@@ -5,20 +5,19 @@ import { Injectable, isDevMode } from "@angular/core";
 declare var gtag: (
   command: string,
   eventName: string,
-  params: { [key: string]: any }
+  params: { [key: string]: any },
 ) => void;
 
 @Injectable({ providedIn: "root" })
 export class LoggingService {
   private readonly devMode = isDevMode();
-  
+
   // Define maximum character length for GA4 custom dimensions (100 characters)
   private readonly MAX_GA4_PARAM_LENGTH = 100;
 
   private sendGaEvent(level: string, message: string, data?: unknown): void {
     // Check if gtag is loaded before attempting to use it
     if (typeof gtag !== "undefined") {
-      
       // Use 'exception' for errors/warnings, and 'app_log' for info.
       const eventName =
         level === "error" || level === "warn" ? "exception" : "app_log";

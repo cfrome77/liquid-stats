@@ -118,8 +118,9 @@ export class TopBeersComponent implements OnInit {
 
     this.filteredBeers = filtered;
 
-    this.transformedTopBeers = filtered.map((beer: BeerCheckin, index: number) =>
-      this.transformTopBeersData(beer, index + 1),
+    this.transformedTopBeers = filtered.map(
+      (beer: BeerCheckin, index: number) =>
+        this.transformTopBeersData(beer, index + 1),
     );
     this.cdr.detectChanges();
   }
@@ -150,7 +151,9 @@ export class TopBeersComponent implements OnInit {
       secondaryImage: undefined,
       footerInfo: {
         text: "Brewery Info",
-        link: `https://untappd.com${beer.brewery.brewery_page_url}` || `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
+        link:
+          `https://untappd.com${beer.brewery.brewery_page_url}` ||
+          `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
         timestamp: this.published(beer.recent_created_at),
         rightLinkText: "Beer Details",
       },

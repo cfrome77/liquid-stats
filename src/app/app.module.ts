@@ -23,7 +23,11 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BaseChartDirective, provideCharts, withDefaultRegisterables } from "ng2-charts";
+import {
+  BaseChartDirective,
+  provideCharts,
+  withDefaultRegisterables,
+} from "ng2-charts";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -102,7 +106,7 @@ import { CardComponent } from "./shared/components/card/card.component";
   providers: [
     MarkerService,
     PopUpService,
-    provideCharts(withDefaultRegisterables())
+    provideCharts(withDefaultRegisterables()),
   ],
   bootstrap: [AppComponent],
 })

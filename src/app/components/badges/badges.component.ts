@@ -1,4 +1,9 @@
-import { Component, ErrorHandler, OnInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  ErrorHandler,
+  OnInit,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { environment } from "src/environments/environment";
 import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "src/app/core/utils/date-utils";

@@ -303,7 +303,9 @@ export class BeerHistoryComponent implements OnInit {
       const rawRating =
         beer.rating_score !== undefined ? beer.rating_score : beer.rating || 0;
       const ratingStr =
-        (rawRating * 10) % 1 === 0 ? rawRating.toFixed(1) : rawRating.toFixed(2);
+        (rawRating * 10) % 1 === 0
+          ? rawRating.toFixed(1)
+          : rawRating.toFixed(2);
       const beerDate = DateUtils.parseDate(
         beer.first_created_at ||
           beer.recent_created_at ||
@@ -327,11 +329,13 @@ export class BeerHistoryComponent implements OnInit {
         this.filterFields.find((f) => f.field === "rating")?.options.length;
 
       const matchBrewery =
-        selectedBreweries.includes(brewery) || (brewery === "" && isAllBreweries);
+        selectedBreweries.includes(brewery) ||
+        (brewery === "" && isAllBreweries);
       const matchStyle =
         selectedStyles.includes(style) || (style === "" && isAllStyles);
       const matchCountry =
-        selectedCountries.includes(country) || (country === "" && isAllCountries);
+        selectedCountries.includes(country) ||
+        (country === "" && isAllCountries);
       const matchRegion =
         selectedRegions.includes(region) || (region === "" && isAllRegions);
       const matchRating =
@@ -378,7 +382,8 @@ export class BeerHistoryComponent implements OnInit {
         const style = beer.beer?.beer_style || beer.subtitle || "";
         const brewery = beer.brewery?.brewery_name || beer.breweryName || "";
         const country = beer.brewery?.country_name || beer.country || "";
-        const region = beer.brewery?.location?.brewery_state || beer.state || "";
+        const region =
+          beer.brewery?.location?.brewery_state || beer.state || "";
         const beerDesc = beer.beer?.beer_description || beer.description || "";
 
         const matchSearch =
@@ -429,7 +434,8 @@ export class BeerHistoryComponent implements OnInit {
           }
           const isAllSelected = f.selected.length === f.options.length;
           return (
-            f.selected.includes(beerValue) || (beerValue === "" && isAllSelected)
+            f.selected.includes(beerValue) ||
+            (beerValue === "" && isAllSelected)
           );
         });
 

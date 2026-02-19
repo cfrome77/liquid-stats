@@ -22,7 +22,6 @@ export interface FilterField {
   templateUrl: "./filter.component.html",
   styleUrls: ["./filter.component.css"],
   standalone: false,
-
 })
 export class FilterComponent implements OnChanges {
   @Input() filterFields: FilterField[] = [];

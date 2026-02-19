@@ -3,10 +3,7 @@
 <div class="main-content-container">
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (checkin of transformedCheckins; track checkin.title) {
-      <app-card
-        [cardData]="checkin"
-        (badgeClick)="openBadgeDialog($event)"
-      >
+      <app-card [cardData]="checkin" (badgeClick)="openBadgeDialog($event)">
       </app-card>
     }
   </div>
