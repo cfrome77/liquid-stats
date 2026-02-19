@@ -44,7 +44,10 @@ export class StatsComponent implements OnInit {
   };
 
   recentActivityChartLabels: string[] = [];
-  recentActivityChartData?: ChartData<"line", number[], string>;
+  recentActivityChartData: ChartData<"line", number[], string> = {
+    labels: [],
+    datasets: [],
+  };
   checkinsByDayLabels: string[] = [];
   dayChartData: ChartData<"bar"> = {
     labels: [
@@ -316,7 +319,7 @@ export class StatsComponent implements OnInit {
   private clearChartData(): void {
     this.hourChartData.datasets[0].data = [];
     this.recentActivityChartLabels = [];
-    this.recentActivityChartData = undefined;
+    this.recentActivityChartData = { labels: [], datasets: [] };
     this.checkinsByDayLabels = [];
     this.dayChartData = { labels: [], datasets: [] };
     this.monthChartData = { labels: [], datasets: [] };

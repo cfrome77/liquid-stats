@@ -68,7 +68,7 @@
         </ul>
       </div>
 
-      @if (processedStats.topBeers?.length) {
+      @if (processedStats.topBeers.length) {
         <div class="card top-beers">
           <h3>Top Beers</h3>
           <ul>
@@ -116,7 +116,7 @@
     <div class="charts-section">
       <h3>Check-ins by Hour</h3>
       <div class="chart-container">
-        @if (hourChartData?.labels?.length) {
+        @if (hourChartData.labels && hourChartData.labels.length > 0) {
           <canvas
             baseChart
             [data]="hourChartData"
@@ -129,7 +129,7 @@
 
       <h3>Check-ins by Day of Week</h3>
       <div class="chart-container">
-        @if (dayChartData?.labels?.length) {
+        @if (dayChartData.labels && dayChartData.labels.length > 0) {
           <canvas
             baseChart
             [data]="dayChartData"
@@ -142,7 +142,7 @@
 
       <h3>Check-ins by Month</h3>
       <div class="chart-container">
-        @if (monthChartData?.labels?.length) {
+        @if (monthChartData.labels && monthChartData.labels.length > 0) {
           <canvas
             baseChart
             [data]="monthChartData"
@@ -155,7 +155,7 @@
 
       <h3>Average Ratings Over Time</h3>
       <div class="chart-container">
-        @if (ratingChartData?.labels?.length) {
+        @if (ratingChartData.labels && ratingChartData.labels.length > 0) {
           <canvas
             baseChart
             [data]="ratingChartData"
@@ -166,7 +166,10 @@
         }
       </div>
 
-      @if (recentActivityChartData?.labels?.length) {
+      @if (
+        recentActivityChartData.labels &&
+        recentActivityChartData.labels.length > 0
+      ) {
         <h3>Recent Activity</h3>
         <div class="chart-container">
           <canvas
@@ -174,7 +177,8 @@
             [data]="recentActivityChartData"
             [options]="chartOptions"
             [type]="'line'"
-          ></canvas>
+          >
+          </canvas>
         </div>
       }
     </div>

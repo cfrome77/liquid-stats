@@ -119,37 +119,30 @@ strong {
   color: var(--strong-text);
 }
 
-/* Global Layout Utilities */
+/* Layout Utilities */
 .flex-column {
   display: flex;
   flex-direction: column;
 }
-
 .flex-row {
   display: flex;
   flex-direction: row;
 }
-
 .align-center {
   align-items: center;
 }
-
 .justify-center {
   justify-content: center;
 }
-
 .spacer {
   flex: 1 1 auto;
 }
-
 .flex-1 {
   flex: 1;
 }
-
 .min-w-0 {
   min-width: 0;
 }
-
 .gap-4 {
   gap: 4px;
 }
@@ -166,7 +159,7 @@ strong {
   }
 }
 
-/* Mat-Card and Card-related Styles */
+/* Material Card */
 .mat-mdc-card {
   background-color: var(--card-bg) !important;
   color: var(--text-color) !important;
@@ -190,6 +183,21 @@ strong {
   }
 }
 
+/* 🔥 FIX: Proper MDC Chip Theming Inside Cards */
+.mat-mdc-card .mdc-evolution-chip {
+  background-color: var(--chip-bg) !important;
+}
+
+.mat-mdc-card .mdc-evolution-chip__text-label {
+  color: var(--text-color) !important;
+  opacity: 1 !important;
+}
+
+.mat-mdc-card mat-chip {
+  font-weight: 500;
+  cursor: pointer;
+}
+
 /* Shared container */
 .main-content-container {
   width: 100%;
@@ -199,7 +207,7 @@ strong {
   box-sizing: border-box;
 }
 
-/* Navbar & Toolbar */
+/* Navbar */
 .navbar-color {
   background-color: var(--navbar-bg) !important;
   color: var(--navbar-text) !important;
@@ -214,7 +222,7 @@ strong {
   color: var(--text-color) !important;
 }
 
-/* Material Input Styling */
+/* Material Input */
 .mat-mdc-form-field {
   width: 100%;
 }
@@ -229,7 +237,7 @@ strong {
   border-color: var(--input-outline) !important;
 }
 
-/* Filter Card Utility */
+/* Filter Card */
 .filter-card {
   background-color: var(--card-bg);
   color: var(--text-color);
