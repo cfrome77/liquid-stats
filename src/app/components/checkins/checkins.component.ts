@@ -97,4 +97,48 @@ export class CheckinsComponent implements OnInit {
       extraData,
     };
   }
+
+  openBadgeDialog(badge: any): void {
+    this.dialog.open(BadgeDialogComponent, {
+      width: "400px",
+      data: badge,
+    });
+  }
+
+  transformCheckinData(checkin: Checkin): BaseCardData {
+    const mapData: MapData | undefined = checkin.brewery?.location
+      ? {
+          lat: checkin.brewery.location.lat,
+          lng: checkin.brewery.location.lng,
+          breweryId: checkin.brewery.brewery_id,
+        }
+      : undefined;
+
+    const extraData: CardExtraData = {
+      badges: checkin.badges?.items ?? [],
+      socialLinks: checkin.brewery.contact,
+      mapData,
+      venueId: checkin.venue?.venue_id,
+      checkinId: checkin.checkin_id,
+      userName: this.username,
+    };
+
+    return {
+      title: checkin.beer.beer_name,
+      subtitle: checkin.beer.beer_style,
+      breweryName: checkin.brewery.brewery_name,
+      description: checkin.checkin_comment,
+      rating: checkin.rating_score,
+      mainImage: checkin.beer.beer_label,
+      secondaryImage: checkin.brewery.brewery_label,
+      footerInfo: {
+        text: checkin.venue?.venue_name ?? "Beer Info",
+        link: checkin.venue
+          ? `https://untappd.com/venue/${checkin.venue.venue_id}`
+          : `https://untappd.com/b/${checkin.beer.beer_slug}/${checkin.beer.bid}`,
+        timestamp: this.published(checkin.created_at),
+      },
+      extraData,
+    };
+  }
 }

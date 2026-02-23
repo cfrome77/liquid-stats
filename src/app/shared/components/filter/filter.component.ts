@@ -32,6 +32,8 @@ export class FilterComponent implements OnChanges {
 
   ngOnInit(): void {}
 
+  ngOnInit(): void {}
+
   ngOnChanges(changes: SimpleChanges) {
     // No longer auto-filling selected options to allow hiding options with 0 matches
   }

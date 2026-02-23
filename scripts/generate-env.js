@@ -1,23 +1,31 @@
-// scripts/generate-env.js
-const fs = require('fs');
-const dotenv = require('dotenv');
+const fs = require("fs");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") }); // <-- load .env file
 
-// Load local .env if it exists
-if (fs.existsSync('.env')) {
-  dotenv.config();
-}
+// Paths
+const templatePath = path.resolve(
+  __dirname,
+  "../src/environments/environment.template.ts",
+);
+const targetPath = path.resolve(
+  __dirname,
+  "../src/environments/environment.ts",
+);
 
-const targetPath = './src/assets/env.js';
+// Read template
+let template = fs.readFileSync(templatePath, "utf8");
 
-const envConfigFile = `
-window.__env = {
-  UNTAPPD_USERNAME: "${process.env.UNTAPPD_USERNAME || ''}",
-  DATA_URL: "${process.env.DATA_URL || ''}",
-  GA4_MEASUREMENT_ID: "${process.env.GA4_MEASUREMENT_ID || ''}",
-  S3_BUCKET_NAME: "${process.env.S3_BUCKET_NAME || ''}",
-  LAMBDA_ZIP_FILE: "${process.env.LAMBDA_ZIP_FILE || ''}"
-};
-`;
+// Replace placeholders with values from .env
+template = template
+  .replace(
+    "__PRODUCTION__",
+    process.env.NODE_ENV === "production" ? "true" : "false",
+  )
+  .replace("__DATA_URL__", process.env.DATA_URL || "")
+  .replace("__UNTAPPD_USERNAME__", process.env.UNTAPPD_USERNAME || "")
+  .replace("__GA4_MEASUREMENT_ID__", process.env.GA4_MEASUREMENT_ID || "");
 
-fs.writeFileSync(targetPath, envConfigFile);
-console.log(`Generated ${targetPath} from ${process.env.NETLIFY ? 'Netlify env variables' : '.env file'}`);
+// Write generated file
+fs.writeFileSync(targetPath, template);
+
+console.log("✅ Generated environment.ts");
