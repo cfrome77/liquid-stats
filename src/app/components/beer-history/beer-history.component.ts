@@ -259,11 +259,6 @@ export class BeerHistoryComponent implements OnInit {
         .map((beer: any) => beer.brewery?.location?.brewery_state || beer.state)
         .filter(Boolean) as string[];
     }
-    else if (field === 'region') {
-      values = this.beers
-        .map(beer => beer.brewery?.location?.brewery_state)
-        .filter(Boolean);
-    }
 
     return [...new Set(values)];
   }
@@ -520,20 +515,7 @@ export class BeerHistoryComponent implements OnInit {
       console.warn("No location data available for this brewery");
     }
   }
-
-  viewOnMap(beer: BeerCheckin | BaseCardData): void {
-    const b = beer as any;
-    const lat = b.brewery?.location?.lat || b.extraData?.mapData?.lat;
-    const lng = b.brewery?.location?.lng || b.extraData?.mapData?.lng;
-    const breweryId = b.brewery?.brewery_id || b.extraData?.mapData?.breweryId;
-
-    if (lat && lng && breweryId) {
-      this.router.navigate(["/map"], { queryParams: { lat, lng, breweryId } });
-    } else {
-      console.warn("No location data available for this brewery");
-    }
-  }
-
+  
   public published(createdAt: string): string {
     return DateUtils.formatDate(createdAt, {
       hour: "numeric",
