@@ -39,6 +39,10 @@ modules/.vscode
 /src/assets/badges.json
 /src/assets/*.json
 
+# Don't include fetched json files
+/src/assets/badges.json
+/src/assets/*.json
+
 # Ignore npm/yarn debug log
 npm-debug.log
 yarn-error.log

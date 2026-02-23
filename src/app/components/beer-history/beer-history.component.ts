@@ -515,7 +515,7 @@ export class BeerHistoryComponent implements OnInit {
       console.warn("No location data available for this brewery");
     }
   }
-
+  
   public published(createdAt: string): string {
     return DateUtils.formatDate(createdAt, {
       hour: "numeric",
