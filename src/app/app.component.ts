@@ -1,9 +1,10 @@
-import { Component, OnInit, Renderer2, Inject, OnDestroy } from "@angular/core";
+import { Component, OnInit, Renderer2, Inject, OnDestroy, effect } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Overlay } from "@angular/cdk/overlay";
 import { Router, NavigationEnd } from "@angular/router";
 import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
+import { slideInAnimation } from "./animations";
 import { AboutComponent } from "./components/about/about.component";
 import { routes } from "./app-routing.module";
 import { Ga4TrackingService } from "./core/services/ga4-tracking.service";
@@ -15,6 +16,7 @@ import { DOCUMENT } from "@angular/common";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
   standalone: false,
+  animations: [slideInAnimation],
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = "liquid-stats";
@@ -30,18 +32,18 @@ export class AppComponent implements OnInit, OnDestroy {
     private themeService: ThemeService,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document,
-  ) {}
+  ) {
+    // Consume the theme signal using an effect
+    effect(() => {
+      const theme = this.themeService.currentTheme();
+      this.currentTheme = theme;
+      this.applyTheme(theme);
+    });
+  }
 
   ngOnInit(): void {
     // Load and initialize GA4
     this.ga4Service.loadAndInitialize();
-
-    this.themeService.theme$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((theme) => {
-        this.currentTheme = theme;
-        this.applyTheme(theme);
-      });
 
     // Subscribe to only NavigationEnd events for GA tracking
     this.router.events
@@ -73,6 +75,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  prepareRoute(outlet: any) {
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 
   openDialog(): void {

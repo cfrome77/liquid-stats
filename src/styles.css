@@ -258,8 +258,3 @@ strong {
   margin: 0 0 10px 0;
   text-align: center;
 }
-
-/* About Dialog Panel Styling - Use container variables for internal theming */
-.about-dialog-panel .mat-mdc-dialog-surface {
-  border-radius: 12px !important;
-}

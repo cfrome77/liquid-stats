@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, effect } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
@@ -11,7 +11,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { ChartData, ChartOptions } from "chart.js";
 import { DateUtils } from "../../core/utils/date-utils";
 import { ThemeService } from "src/app/core/services/theme.service";
-import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-stats",
@@ -19,7 +18,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./stats.component.css"],
   standalone: false,
 })
-export class StatsComponent implements OnInit, OnDestroy {
+export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
 
@@ -133,31 +132,28 @@ export class StatsComponent implements OnInit, OnDestroy {
     },
   };
   objectKeys = Object.keys;
-  private themeSubscription?: Subscription;
 
   constructor(
     private statsService: StatsService,
     private dialog: MatDialog,
     private themeService: ThemeService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) {
+    // Consume the theme signal using an effect
+    effect(() => {
+      const theme = this.themeService.currentTheme();
+      this.updateChartOptions(theme);
+    });
+  }
 
   ngOnInit(): void {
     this.loadBeerData();
     this.dateRange.valueChanges.subscribe(() => this.onDateChange());
     this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
     this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
-
-    this.themeSubscription = this.themeService.theme$.subscribe((theme) => {
-      this.updateChartOptions(theme);
-    });
   }
 
-  ngOnDestroy(): void {
-    if (this.themeSubscription) {
-      this.themeSubscription.unsubscribe();
-    }
-  }
+  ngOnDestroy(): void {}
 
   private updateChartOptions(theme: "light-theme" | "dark-theme"): void {
     const isDark = theme === "dark-theme";

@@ -2,15 +2,11 @@
   <mat-toolbar
     class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
-    <button
-      mat-button
-      (click)="drawer.toggle()"
-      aria-label="Toggle navigation menu"
-    >
+    <button mat-button (click)="drawer.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <button mat-button routerLink="/" aria-label="Home">
+    <button mat-button routerLink="/">
       <mat-icon>home</mat-icon>
     </button>
 
@@ -57,14 +53,14 @@
         routerLink="/map"
         routerLinkActive="router-link-active no-border"
       >
-        Breweries Map
+        Map
       </button>
       <button
         mat-button
         routerLink="/beer-history"
         routerLinkActive="router-link-active no-border"
       >
-        Beer History
+        History
       </button>
       <button
         mat-button
@@ -82,6 +78,29 @@
       </button>
     </div>
   </mat-toolbar>
+
+  <nav class="mobile-bottom-nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </a>
+    <a routerLink="/beer-history" routerLinkActive="active">
+      <mat-icon>history</mat-icon>
+      <span>History</span>
+    </a>
+    <a routerLink="/map" routerLinkActive="active">
+      <mat-icon>map</mat-icon>
+      <span>Map</span>
+    </a>
+    <a routerLink="/stats" routerLinkActive="active">
+      <mat-icon>insert_chart</mat-icon>
+      <span>Stats</span>
+    </a>
+    <a routerLink="/wishlist" routerLinkActive="active">
+      <mat-icon>list</mat-icon>
+      <span>Wishlist</span>
+    </a>
+  </nav>
 
   <mat-drawer-container autosize class="background main-container">
     <mat-drawer #drawer>
@@ -152,17 +171,12 @@
       </div>
     </mat-drawer>
 
-    <div>
-      <router-outlet></router-outlet>
+    <div [@routeAnimations]="prepareRoute(outlet)">
+      <router-outlet #outlet="outlet"></router-outlet>
     </div>
   </mat-drawer-container>
   <div class="fab-container">
-    <button
-      mat-fab
-      class="fab-toggler"
-      (click)="openDialog()"
-      aria-label="App Information"
-    >
+    <button mat-fab class="fab-toggler" (click)="openDialog()">
       <mat-icon>info</mat-icon>
     </button>
   </div>

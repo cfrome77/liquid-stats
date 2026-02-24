@@ -13,15 +13,15 @@ import { AboutComponent } from "./components/about/about.component";
 
 export const routes: Routes = [
   { path: "", redirectTo: "/home", pathMatch: "full" },
-  { path: "home", component: HomeComponent },
-  { path: "checkins", component: CheckinsComponent },
-  { path: "top-beers", component: TopBeersComponent },
-  { path: "badges", component: BadgesComponent },
-  { path: "map", component: MapComponent, data: { mapId: "myMap" } },
-  { path: "beer-history", component: BeerHistoryComponent },
-  { path: "stats", component: StatsComponent },
-  { path: "wishlist", component: WishlistComponent },
-  { path: "about", component: AboutComponent },
+  { path: "home", component: HomeComponent, data: { animation: "HomePage" } },
+  { path: "checkins", component: CheckinsComponent, data: { animation: "CheckinsPage" } },
+  { path: "top-beers", component: TopBeersComponent, data: { animation: "TopBeersPage" } },
+  { path: "badges", component: BadgesComponent, data: { animation: "BadgesPage" } },
+  { path: "map", component: MapComponent, data: { mapId: "myMap", animation: "MapPage" } },
+  { path: "beer-history", component: BeerHistoryComponent, data: { animation: "HistoryPage" } },
+  { path: "stats", component: StatsComponent, data: { animation: "StatsPage" } },
+  { path: "wishlist", component: WishlistComponent, data: { animation: "WishlistPage" } },
+  { path: "about", component: AboutComponent, data: { animation: "AboutPage" } },
 ];
 
 @NgModule({
