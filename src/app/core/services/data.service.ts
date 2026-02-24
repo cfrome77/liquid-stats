@@ -15,17 +15,19 @@ export class DataService {
 
   private determineBaseUrl(): string {
     const url = environment.DATA_URL || "";
-    const isNetlify =
+    const isLocalhost =
       typeof window !== "undefined" &&
-      (window.location.hostname.endsWith(".netlify.app") ||
-        window.location.hostname.includes("netlify.app"));
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1");
 
-    // If we're on Netlify and the DATA_URL is set to S3, use the local proxy to avoid CORS issues
-    if (isNetlify && url.includes("s3.amazonaws.com")) {
-      console.log("[DataService] On Netlify, using /api-data/ proxy for S3");
+    // If we're not on localhost and the DATA_URL is set to S3, use the local proxy to avoid CORS issues.
+    // This works for both Netlify subdomains and custom domains because of the netlify.toml redirect.
+    if (!isLocalhost && url.includes("s3.amazonaws.com")) {
+      console.log("[DataService] Remote environment, using /api-data/ proxy for S3");
       return "/api-data/";
     }
 
+    if (!url) return "";
     return url.endsWith("/") ? url : `${url}/`;
   }
 
