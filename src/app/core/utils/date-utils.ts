@@ -4,6 +4,14 @@ export class DateUtils {
   static parseDate(date: string | number | Date): Date {
     if (date instanceof Date) return date;
     if (typeof date === "string") {
+      // If it's a YYYY-MM-DD string, parse it as a local date
+      const isoDateMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoDateMatch) {
+        const year = parseInt(isoDateMatch[1], 10);
+        const month = parseInt(isoDateMatch[2], 10) - 1;
+        const day = parseInt(isoDateMatch[3], 10);
+        return new Date(year, month, day);
+      }
       // Remove commas to improve cross-browser parsing of human-readable formats like "Feb 7, 2026, 8:50 PM"
       date = date.replace(/,/g, "");
     }
@@ -79,9 +87,13 @@ export class DateUtils {
     return DateUtils.parseDate(date).getTime();
   }
 
-  // Format as YYYY-MM-DD
+  // Format as YYYY-MM-DD using local time
   static toISODate(date: string | Date): string {
-    return DateUtils.parseDate(date).toISOString().split("T")[0];
+    const d = DateUtils.parseDate(date);
+    const year = d.getFullYear();
+    const month = `${d.getMonth() + 1}`.padStart(2, "0");
+    const day = `${d.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
   // Format a Date into a readable timestamp

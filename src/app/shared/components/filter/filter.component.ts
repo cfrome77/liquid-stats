@@ -7,6 +7,7 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { MatDatepickerInputEvent } from "@angular/material/datepicker";
+import { DateUtils } from "../../../core/utils/date-utils";
 
 export interface FilterField {
   field: string;
@@ -82,7 +83,7 @@ export class FilterComponent implements OnChanges {
   onDateFromChange(event: MatDatepickerInputEvent<Date>) {
     const date = event.value;
     if (date && this.activeFilter) {
-      const localDate = this.formatDateToYMD(date);
+      const localDate = DateUtils.toISODate(date);
       this.activeFilter.selected[0] = localDate;
     }
   }
@@ -90,16 +91,9 @@ export class FilterComponent implements OnChanges {
   onDateToChange(event: MatDatepickerInputEvent<Date>) {
     const date = event.value;
     if (date && this.activeFilter) {
-      const localDate = this.formatDateToYMD(date);
+      const localDate = DateUtils.toISODate(date);
       this.activeFilter.selected[1] = localDate;
     }
-  }
-
-  formatDateToYMD(date: Date): string {
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, "0");
-    const day = `${date.getDate()}`.padStart(2, "0");
-    return `${year}-${month}-${day}`;
   }
 
   toDate(dateStr: string): Date | null {
