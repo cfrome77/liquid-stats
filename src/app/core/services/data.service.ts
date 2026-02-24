@@ -9,7 +9,9 @@ import { CheckinResponse } from "../models/checkin.model";
   providedIn: "root",
 })
 export class DataService {
-  private baseUrl = environment.DATA_URL;
+  private baseUrl = environment.DATA_URL.endsWith("/")
+    ? environment.DATA_URL
+    : `${environment.DATA_URL}/`;
 
   constructor(private http: HttpClient) {}
 
