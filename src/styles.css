@@ -258,3 +258,9 @@ strong {
   margin: 0 0 10px 0;
   text-align: center;
 }
+
+/* About Dialog Panel Styling */
+.about-dialog-panel .mat-mdc-dialog-surface {
+  background-color: #1a1a1a !important;
+  border-radius: 20px !important;
+}
