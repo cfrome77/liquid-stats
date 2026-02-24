@@ -2,185 +2,251 @@
   <h2>Your Beer Statistics</h2>
 
   <div class="filters">
-    <label for="date-range">Date Range:</label>
-    <select [formControl]="dateRange">
-      <option value="week">Last Week</option>
-      <option value="month">Last Month</option>
-      <option value="year">Last Year</option>
-      <option value="all">All Time</option>
-      <option value="custom">Custom</option>
-    </select>
+    <mat-form-field appearance="outline">
+      <mat-label>Date Range</mat-label>
+      <mat-select [formControl]="dateRange">
+        <mat-option value="week">Last Week</mat-option>
+        <mat-option value="month">Last Month</mat-option>
+        <mat-option value="year">Last Year</mat-option>
+        <mat-option value="all">All Time</mat-option>
+        <mat-option value="custom">Custom</mat-option>
+      </mat-select>
+    </mat-form-field>
 
     @if (dateRange.value === "custom") {
       <div class="custom-date-range">
-        <input
-          type="date"
-          [formControl]="customStartDate"
-          placeholder="Start Date"
-        />
-        <input
-          type="date"
-          [formControl]="customEndDate"
-          placeholder="End Date"
-        />
+        <mat-form-field appearance="outline">
+          <mat-label>Start Date</mat-label>
+          <input matInput type="date" [formControl]="customStartDate" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>End Date</mat-label>
+          <input matInput type="date" [formControl]="customEndDate" />
+        </mat-form-field>
       </div>
     }
   </div>
 
   @if (processedStats) {
     <div class="stats-cards">
-      <div class="card">
-        Total Unique Beers: {{ processedStats.totalUniqueBeers }}
-      </div>
-      <div class="card">
-        Total Check-ins: {{ processedStats.totalCheckins }}
-      </div>
-      <div class="card">
-        New Beers Count: {{ processedStats.newBeersCount }}
-      </div>
-      <div class="card">
-        New Beer Ratio: {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
-      </div>
-      <div class="card">
-        Average Rating: {{ processedStats.averageRating.toFixed(2) }}
-      </div>
-      <div class="card short-card">
-        Total Unique Breweries: {{ processedStats.totalUniqueBreweries }}
-      </div>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-value">{{ processedStats.totalUniqueBeers }}</span>
+          <span class="summary-label">Unique Beers</span>
+        </mat-card-content>
+      </mat-card>
 
-      <div class="card beer-styles-breakdown">
-        <h3>Beer Styles Breakdown</h3>
-        <ul>
-          @for (style of beerStylesList(); track style) {
-            @if (processedStats.beerStylesCount[style] > 0) {
-              <li
-                class="clickable"
-                [title]="style + ': ' + processedStats.beerStylesCount[style]"
-                (click)="openBeersByStyle(style)"
-              >
-                <span class="style-name">{{ style }}</span>
-                <span class="style-count">{{
-                  processedStats.beerStylesCount[style]
-                }}</span>
-              </li>
-            }
-          }
-        </ul>
-      </div>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-value">{{ processedStats.totalCheckins }}</span>
+          <span class="summary-label">Total Check-ins</span>
+        </mat-card-content>
+      </mat-card>
 
-      @if (processedStats.topBeers.length) {
-        <div class="card top-beers">
-          <h3>Top Beers</h3>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-value">{{ processedStats.newBeersCount }}</span>
+          <span class="summary-label">New Beers</span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-value"
+            >{{ (processedStats.newBeerRatio * 100).toFixed(0) }}%</span
+          >
+          <span class="summary-label">New Beer Ratio</span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-value">{{
+            processedStats.averageRating.toFixed(2)
+          }}</span>
+          <span class="summary-label">Average Rating</span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <span class="summary-value">{{
+            processedStats.totalUniqueBreweries
+          }}</span>
+          <span class="summary-label">Breweries</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="breakdown-grid">
+      <mat-card class="breakdown-card">
+        <mat-card-header>
+          <mat-card-title>Beer Styles Breakdown</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="scrollable-list">
           <ul>
-            @for (beer of processedStats.topBeers; track beer.name) {
-              <li class="clickable" (click)="openBeersByTopBeer(beer.name)">
-                {{ beer.name }} - {{ beer.count }} check-ins (Avg:
-                {{ beer.avgRating.toFixed(2) }})
-              </li>
+            @for (style of beerStylesList(); track style) {
+              @if (processedStats.beerStylesCount[style] > 0) {
+                <li
+                  class="clickable"
+                  [title]="style + ': ' + processedStats.beerStylesCount[style]"
+                  (click)="openBeersByStyle(style)"
+                >
+                  <span class="style-name">{{ style }}</span>
+                  <span class="style-count">{{
+                    processedStats.beerStylesCount[style]
+                  }}</span>
+                </li>
+              }
             }
           </ul>
-        </div>
+        </mat-card-content>
+      </mat-card>
+
+      @if (processedStats.topBeers.length) {
+        <mat-card class="breakdown-card">
+          <mat-card-header>
+            <mat-card-title>Top Beers</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="scrollable-list">
+            <ul>
+              @for (beer of processedStats.topBeers; track beer.name) {
+                <li class="clickable" (click)="openBeersByTopBeer(beer.name)">
+                  <span class="style-name">{{ beer.name }}</span>
+                  <span class="style-count"
+                    >{{ beer.count }} ({{ beer.avgRating.toFixed(2) }})</span
+                  >
+                </li>
+              }
+            </ul>
+          </mat-card-content>
+        </mat-card>
       }
 
       @if (objectKeys(processedStats.topCountries).length > 0) {
-        <div class="card">
-          <h3>Top Countries</h3>
-          <ul>
-            @for (
-              country of objectKeys(processedStats.topCountries);
-              track country
-            ) {
-              <li class="clickable" (click)="openBeersByCountry(country)">
-                {{ country }} -
-                {{ processedStats.topCountries[country] }} check-ins
-              </li>
-            }
-          </ul>
-        </div>
+        <mat-card class="breakdown-card">
+          <mat-card-header>
+            <mat-card-title>Top Countries</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="scrollable-list">
+            <ul>
+              @for (
+                country of objectKeys(processedStats.topCountries);
+                track country
+              ) {
+                <li class="clickable" (click)="openBeersByCountry(country)">
+                  <span class="style-name">{{ country }}</span>
+                  <span class="style-count">{{
+                    processedStats.topCountries[country]
+                  }}</span>
+                </li>
+              }
+            </ul>
+          </mat-card-content>
+        </mat-card>
       }
 
       @if (objectKeys(processedStats.topStates).length > 0) {
-        <div class="card">
-          <h3>Top States</h3>
-          <ul>
-            @for (state of objectKeys(processedStats.topStates); track state) {
-              <li class="clickable" (click)="openBeersByState(state)">
-                {{ state }} - {{ processedStats.topStates[state] }} check-ins
-              </li>
-            }
-          </ul>
-        </div>
+        <mat-card class="breakdown-card">
+          <mat-card-header>
+            <mat-card-title>Top States</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="scrollable-list">
+            <ul>
+              @for (state of objectKeys(processedStats.topStates); track state) {
+                <li class="clickable" (click)="openBeersByState(state)">
+                  <span class="style-name">{{ state }}</span>
+                  <span class="style-count">{{
+                    processedStats.topStates[state]
+                  }}</span>
+                </li>
+              }
+            </ul>
+          </mat-card-content>
+        </mat-card>
       }
     </div>
 
     <div class="charts-section">
-      <h3>Check-ins by Hour</h3>
-      <div class="chart-container">
-        @if (hourChartData.labels && hourChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="hourChartData"
-            [options]="chartOptions"
-            [type]="'bar'"
-          >
-          </canvas>
-        }
-      </div>
+      <mat-card class="chart-card">
+        <h3>Check-ins by Hour</h3>
+        <div class="chart-container">
+          @if (hourChartData.labels && hourChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="hourChartData"
+              [options]="chartOptions"
+              [type]="'bar'"
+            >
+            </canvas>
+          }
+        </div>
+      </mat-card>
 
-      <h3>Check-ins by Day of Week</h3>
-      <div class="chart-container">
-        @if (dayChartData.labels && dayChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="dayChartData"
-            [options]="chartOptions"
-            [type]="'bar'"
-          >
-          </canvas>
-        }
-      </div>
+      <mat-card class="chart-card">
+        <h3>Check-ins by Day of Week</h3>
+        <div class="chart-container">
+          @if (dayChartData.labels && dayChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="dayChartData"
+              [options]="chartOptions"
+              [type]="'bar'"
+            >
+            </canvas>
+          }
+        </div>
+      </mat-card>
 
-      <h3>Check-ins by Month</h3>
-      <div class="chart-container">
-        @if (monthChartData.labels && monthChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="monthChartData"
-            [options]="chartOptions"
-            [type]="'bar'"
-          >
-          </canvas>
-        }
-      </div>
+      <mat-card class="chart-card">
+        <h3>Check-ins by Month</h3>
+        <div class="chart-container">
+          @if (monthChartData.labels && monthChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="monthChartData"
+              [options]="chartOptions"
+              [type]="'bar'"
+            >
+            </canvas>
+          }
+        </div>
+      </mat-card>
 
-      <h3>Average Ratings Over Time</h3>
-      <div class="chart-container">
-        @if (ratingChartData.labels && ratingChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="ratingChartData"
-            [options]="chartOptions"
-            [type]="'line'"
-          >
-          </canvas>
-        }
-      </div>
+      <mat-card class="chart-card">
+        <h3>Average Ratings Over Time</h3>
+        <div class="chart-container">
+          @if (ratingChartData.labels && ratingChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="ratingChartData"
+              [options]="chartOptions"
+              [type]="'line'"
+            >
+            </canvas>
+          }
+        </div>
+      </mat-card>
 
       @if (
         recentActivityChartData.labels &&
         recentActivityChartData.labels.length > 0
       ) {
-        <h3>Recent Activity</h3>
-        <div class="chart-container">
-          <canvas
-            baseChart
-            [data]="recentActivityChartData"
-            [options]="chartOptions"
-            [type]="'line'"
-          >
-          </canvas>
-        </div>
+        <mat-card class="chart-card">
+          <h3>Recent Activity</h3>
+          <div class="chart-container">
+            <canvas
+              baseChart
+              [data]="recentActivityChartData"
+              [options]="chartOptions"
+              [type]="'line'"
+            >
+            </canvas>
+          </div>
+        </mat-card>
       }
     </div>
   }
 </div>
+
+<app-powered-by></app-powered-by>

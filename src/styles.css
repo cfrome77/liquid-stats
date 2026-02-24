@@ -259,8 +259,7 @@ strong {
   text-align: center;
 }
 
-/* About Dialog Panel Styling */
+/* About Dialog Panel Styling - Use container variables for internal theming */
 .about-dialog-panel .mat-mdc-dialog-surface {
-  background-color: #1a1a1a !important;
-  border-radius: 20px !important;
+  border-radius: 12px !important;
 }

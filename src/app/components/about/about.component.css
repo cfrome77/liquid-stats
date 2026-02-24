@@ -1,217 +1,38 @@
-/* ============================= */
-/* Dialog Layout */
-/* ============================= */
-
-/* Force a dark, high-contrast theme for the About dialog regardless of global theme */
-:host {
-  display: flex;
-  flex-direction: column;
-  background-color: #1a1a1a;
-  color: #eeeeee;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-/* ============================= */
-/* Title */
-/* ============================= */
-
-.about-title {
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
-  color: #ffffff !important;
-  margin: 0;
-}
-
-/* ============================= */
-/* Scrollable Content */
-/* ============================= */
-
-.about-content {
-  animation: fadeSlideIn 300ms ease-out;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+/* Use theme variables for the about dialog to ensure proper contrast in both modes */
+.about-container {
   padding: 24px;
-  font-size: 15px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 8px;
+}
+
+.about-container h2 {
+  color: var(--accent-indigo);
+  margin-top: 0;
+  border-bottom: 2px solid var(--accent-indigo);
+  padding-bottom: 8px;
+}
+
+.about-container h3 {
+  color: var(--accent-blue);
+  margin-top: 20px;
+}
+
+.about-container p {
   line-height: 1.6;
-  color: #dddddd !important;
-}
-
-/* ============================= */
-/* Footer Actions */
-/* ============================= */
-
-.about-actions {
-  padding: 16px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
-  background-color: #1a1a1a;
-}
-
-/* ============================= */
-/* Animation */
-/* ============================= */
-
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================= */
-/* Hero Section */
-/* ============================= */
-
-.hero-section {
-  padding: 24px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #ffb74d, #ff8a65);
-  color: white;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.hero-section h2 {
-  color: #ffffff !important;
   margin-bottom: 12px;
-  font-weight: 700;
-  font-size: 22px;
 }
 
-.hero-section p {
-  margin: 0;
-  line-height: 1.5;
+.about-container ul {
+  padding-left: 20px;
 }
 
-.hero-content img {
+.about-container li {
+  margin-bottom: 8px;
+}
+
+.close-button {
+  margin-top: 24px;
+  display: block;
   width: 100%;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-@media (min-width: 768px) {
-  .hero-content {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .hero-content img {
-    max-width: 240px;
-    flex-shrink: 0;
-  }
-}
-
-/* ============================= */
-/* Feature Cards */
-/* ============================= */
-
-.about-card {
-  padding: 20px;
-  border-radius: 14px;
-  background-color: #262626;
-  color: #cccccc;
-  border-left: 5px solid #ffb74d;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.about-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-.about-card h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 10px 0;
-  font-size: 17px;
-  font-weight: 700;
-  color: #ffffff !important;
-}
-
-.about-card p {
-  margin: 0;
-}
-
-.about-card mat-icon {
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
-  color: #ffb74d;
-}
-
-/* ============================= */
-/* Contact */
-/* ============================= */
-
-.contact-card {
-  text-align: center;
-}
-
-.contact-link {
-  display: inline-block;
-  margin-top: 8px;
-  color: #90caf9;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.contact-link:hover {
-  text-decoration: underline;
-  color: #bbdefb;
-}
-
-/* ============================= */
-/* Scrollbar */
-/* ============================= */
-
-.about-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.about-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 183, 77, 0.5);
-  border-radius: 10px;
-}
-
-.about-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 183, 77, 0.8);
-}
-
-.about-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* ============================= */
-/* Mobile Fullscreen Handle */
-/* ============================= */
-
-@media (max-width: 600px) {
-  /* Note: Dialog surface itself needs to be handled via panelClass in global styles or ::ng-deep */
-  :host {
-    height: 100%;
-    border-radius: 0;
-  }
 }

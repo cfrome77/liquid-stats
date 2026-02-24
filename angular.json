@@ -27,7 +27,8 @@
               "src/assets",
               "src/_redirects",
               "src/manifest.webmanifest",
-              "src/robots.txt"
+              "src/robots.txt",
+              "src/service-worker.js"
             ],
             "styles": [
               "./node_modules/leaflet/dist/leaflet.css",

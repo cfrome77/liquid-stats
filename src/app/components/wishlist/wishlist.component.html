@@ -1,6 +1,5 @@
-<h1>Wishlist</h1>
-
 <div class="main-content-container">
+  <h1>Wishlist</h1>
   @if (wishlist.length > 0) {
     <div class="flex-column" style="align-items: stretch; gap: 10px">
       @for (item of paginatedWishlist; track item.title) {

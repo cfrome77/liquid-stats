@@ -123,12 +123,12 @@ export class MarkerService {
               const untappdUrl = `https://untappd.com/c/${checkIn.checkInId}`;
 
               return `
-            <li style="color: black; list-style-type: none; margin-bottom: 5px; padding-bottom: 5px;">
-              <a href="${untappdUrl}" target="_blank" class="checkin-entry" style="text-decoration: none; color: black;">
-                <div style="display: flex; align-items: center; padding: 5px;">
-                  <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
-                  <div style="color: black;">
-                    <strong style="color: black;">${displayedBeerName}${beerCheckInCount > 1 ? ` (${beerCheckInCount})` : ""}</strong><br>
+            <li style="list-style-type: none; margin-bottom: 5px; padding-bottom: 5px;">
+              <a href="${untappdUrl}" target="_blank" class="checkin-entry" style="text-decoration: none; display: block;">
+                <div style="display: flex; align-items: center; padding: 5px; border-radius: 4px;">
+                  <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px; border-radius: 4px;"/>
+                  <div>
+                    <strong>${displayedBeerName}${beerCheckInCount > 1 ? ` (${beerCheckInCount})` : ""}</strong><br>
                     <small>Style: ${checkIn.beerStyle}</small><br>
                     <small>ABV: ${checkIn.beerABV}%</small><br>
                     <small>Rating: ${checkIn.rating}/5</small><br>
@@ -142,21 +142,22 @@ export class MarkerService {
             .join("");
 
           const popupContent = `
-  <div style="text-align: left; color: black; padding: 10px 12px 10px 12px;">
-    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+  <div class="modern-popup" style="text-align: left; padding: 12px;">
+    <div style="display: flex; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--divider-color); padding-bottom: 8px;">
       <img src="${logo}" alt="${name}" 
-           style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"/>
+           style="width: 52px; height: 52px; object-fit: cover; margin-right: 12px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"/>
       <div>
-        <h3 style="margin: 0 0 4px 0; color: black; font-size: 16px; line-height: 1.2;">
+        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; line-height: 1.2;">
           ${name}
         </h3>
-        <p style="margin: 0; color: black;">${city}, ${state}</p>
+        <p style="margin: 0; opacity: 0.8; font-size: 13px;">${city}, ${state}</p>
       </div>
     </div>
-    <div style="color: black; margin-bottom: 8px;">
-      Check-ins: ${totalCheckIns}
+    <div style="font-weight: 500; font-size: 13px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+      <span>Total Check-ins:</span>
+      <span style="color: var(--accent-blue); font-weight: 700;">${totalCheckIns}</span>
     </div>
-    <ul style="max-height: 200px; overflow-y: auto; padding-left: 0; margin: 0; color: black;">
+    <ul style="max-height: 220px; overflow-y: auto; padding-left: 0; margin: 0;">
       ${checkInsList}
     </ul>
   </div>
