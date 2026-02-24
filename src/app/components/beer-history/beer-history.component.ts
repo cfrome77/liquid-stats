@@ -345,6 +345,7 @@ export class BeerHistoryComponent implements OnInit {
 
       const beerName = beer.beer?.beer_name || beer.title || "";
       const beerDesc = beer.beer?.beer_description || beer.description || "";
+      const beerSlug = beer.beer?.beer_slug || "";
 
       const matchSearch =
         this.searchTerm === "" ||
@@ -353,7 +354,8 @@ export class BeerHistoryComponent implements OnInit {
         brewery.toLowerCase().includes(searchTermLower) ||
         country.toLowerCase().includes(searchTermLower) ||
         region.toLowerCase().includes(searchTermLower) ||
-        beerDesc.toLowerCase().includes(searchTermLower);
+        beerDesc.toLowerCase().includes(searchTermLower) ||
+        beerSlug.toLowerCase().includes(searchTermLower);
 
       return (
         matchBrewery &&
@@ -385,6 +387,7 @@ export class BeerHistoryComponent implements OnInit {
         const region =
           beer.brewery?.location?.brewery_state || beer.state || "";
         const beerDesc = beer.beer?.beer_description || beer.description || "";
+        const beerSlug = beer.beer?.beer_slug || "";
 
         const matchSearch =
           this.searchTerm === "" ||
@@ -393,7 +396,8 @@ export class BeerHistoryComponent implements OnInit {
           brewery.toLowerCase().includes(searchTermLower) ||
           country.toLowerCase().includes(searchTermLower) ||
           region.toLowerCase().includes(searchTermLower) ||
-          beerDesc.toLowerCase().includes(searchTermLower);
+          beerDesc.toLowerCase().includes(searchTermLower) ||
+          beerSlug.toLowerCase().includes(searchTermLower);
 
         if (!matchSearch) return;
 
