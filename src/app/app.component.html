@@ -2,11 +2,15 @@
   <mat-toolbar
     class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
-    <button mat-button (click)="drawer.toggle()">
+    <button
+      mat-button
+      (click)="drawer.toggle()"
+      aria-label="Toggle navigation menu"
+    >
       <mat-icon>menu</mat-icon>
     </button>
 
-    <button mat-button routerLink="/">
+    <button mat-button routerLink="/" aria-label="Home">
       <mat-icon>home</mat-icon>
     </button>
 
@@ -153,7 +157,12 @@
     </div>
   </mat-drawer-container>
   <div class="fab-container">
-    <button mat-fab class="fab-toggler" (click)="openDialog()">
+    <button
+      mat-fab
+      class="fab-toggler"
+      (click)="openDialog()"
+      aria-label="App Information"
+    >
       <mat-icon>info</mat-icon>
     </button>
   </div>

@@ -2,7 +2,7 @@ import { Injectable, isDevMode } from "@angular/core";
 
 // Declare the global gtag function
 // This is necessary for TypeScript to recognize 'gtag' which is loaded via a script tag in index.html
-declare var gtag: (
+declare let gtag: (
   command: string,
   eventName: string,
   params: { [key: string]: any },

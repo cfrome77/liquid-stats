@@ -5,6 +5,7 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  OnInit,
 } from "@angular/core";
 import { MatDatepickerInputEvent } from "@angular/material/datepicker";
 import { DateUtils } from "../../../core/utils/date-utils";
@@ -24,7 +25,7 @@ export interface FilterField {
   styleUrls: ["./filter.component.css"],
   standalone: false,
 })
-export class FilterComponent implements OnChanges {
+export class FilterComponent implements OnChanges, OnInit {
   @Input() filterFields: FilterField[] = [];
   @Output() filterChanged = new EventEmitter<any>();
 

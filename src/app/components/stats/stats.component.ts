@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
@@ -19,7 +19,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./stats.component.css"],
   standalone: false,
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent implements OnInit, OnDestroy {
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
 
