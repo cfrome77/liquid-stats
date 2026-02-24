@@ -70,6 +70,10 @@
           "configurations": {
             "production": {
               "buildTarget": "liquid-stats:build:production"
+            },
+            "development": {
+              "buildTarget": "liquid-stats:build:development",
+              "hmr": true
             }
           }
         },
