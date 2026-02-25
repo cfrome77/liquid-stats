@@ -13,6 +13,7 @@
   --success-green: #28a745;
   --btn-primary: #007bff;
   --btn-danger: #c2185b;
+  --accent-blue-rgb: 25, 118, 210;
 }
 
 .light-theme {
@@ -145,6 +146,29 @@ strong {
 }
 .gap-4 {
   gap: 4px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.empty-state mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Mobile Touch Targets */

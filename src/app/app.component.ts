@@ -1,26 +1,42 @@
 import { Component, OnInit, Renderer2, Inject, OnDestroy, effect } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { CommonModule } from "@angular/common";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { Overlay } from "@angular/cdk/overlay";
-import { Router, NavigationEnd } from "@angular/router";
+import { Router, NavigationEnd, RouterModule } from "@angular/router";
 import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 import { slideInAnimation } from "./animations";
 import { AboutComponent } from "./components/about/about.component";
-import { routes } from "./app-routing.module";
 import { Ga4TrackingService } from "./core/services/ga4-tracking.service";
 import { ThemeService } from "./core/services/theme.service";
 import { DOCUMENT } from "@angular/common";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatDividerModule } from "@angular/material/divider";
+import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-to-top.component";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatDialogModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatDividerModule,
+    ScrollToTopComponent,
+  ],
   animations: [slideInAnimation],
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = "liquid-stats";
-  routes = routes;
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
   private destroy$ = new Subject<void>();
 

@@ -8,7 +8,7 @@ describe("PoweredByComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PoweredByComponent],
+
     }).compileComponents();
 
     fixture = TestBed.createComponent(PoweredByComponent);

@@ -5,7 +5,7 @@ import { MarkerService } from "./marker.service";
 describe("MarkerService", () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule]
     }),
   );
 

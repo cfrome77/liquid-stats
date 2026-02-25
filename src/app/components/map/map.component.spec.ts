@@ -3,7 +3,7 @@ import {
   TestBed,
   fakeAsync,
   tick,
-  flush,
+  flush
 } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -11,42 +11,32 @@ import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { MapComponent } from "./map.component";
 import { MarkerService } from "../../core/services/marker.service";
-import { MapService } from "../../core/services/map.service";
+import { DataService } from "../../core/services/data.service";
 
 describe("MapComponent", () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
   let mockMarkerService: any;
-  let mockMapService: any;
+  let mockDataService: any;
 
   beforeEach(async () => {
-    mockMarkerService = {
-      makeBreweryMarkers: jasmine.createSpy("makeBreweryMarkers"),
-      getMarkerByBreweryId: jasmine.createSpy("getMarkerByBreweryId"),
-      markers: {
-        zoomToShowLayer: jasmine.createSpy("zoomToShowLayer"),
-      },
-    };
-
-    mockMapService = {
-      addMap: jasmine.createSpy("addMap"),
-      removeMap: jasmine.createSpy("removeMap"),
-    };
+    mockMarkerService = jasmine.createSpyObj("MarkerService", ["makeBreweryMarkers"]);
+    mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
+    mockDataService.getBeers.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
-      declarations: [MapComponent],
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [MapComponent, HttpClientTestingModule, RouterTestingModule],
       providers: [
         { provide: MarkerService, useValue: mockMarkerService },
-        { provide: MapService, useValue: mockMapService },
+        { provide: DataService, useValue: mockDataService },
         {
           provide: ActivatedRoute,
           useValue: {
             data: of({ mapId: "myMap" }),
-            queryParams: of({}),
-          },
-        },
-      ],
+            queryParams: of({})
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapComponent);
@@ -64,8 +54,7 @@ describe("MapComponent", () => {
     document.body.appendChild(mapDiv);
 
     fixture.detectChanges();
-    component.ngAfterViewInit();
-    tick(); // for setTimeout in ngAfterViewInit
+    tick();
     flush();
 
     expect(mockMarkerService.makeBreweryMarkers).toHaveBeenCalled();

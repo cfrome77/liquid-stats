@@ -18,8 +18,12 @@ test("responsive navigation", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await expect(navItems).not.toBeVisible();
 
+  // Menu button is hidden on mobile in favor of bottom nav
   const menuButton = page.locator('button:has(mat-icon:text("menu"))');
-  await expect(menuButton).toBeVisible();
+  await expect(menuButton).not.toBeVisible();
+
+  const bottomNav = page.locator(".mobile-bottom-nav");
+  await expect(bottomNav).toBeVisible();
 });
 
 test("beer history layout", async ({ page }) => {

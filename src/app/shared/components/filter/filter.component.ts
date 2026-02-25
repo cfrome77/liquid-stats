@@ -6,7 +6,14 @@ import {
   OnChanges,
   SimpleChanges,
 } from "@angular/core";
-import { MatDatepickerInputEvent } from "@angular/material/datepicker";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDatepickerModule, MatDatepickerInputEvent } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { FormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
 import { DateUtils } from "../../../core/utils/date-utils";
 
 export interface FilterField {
@@ -22,7 +29,17 @@ export interface FilterField {
   selector: "app-filter",
   templateUrl: "./filter.component.html",
   styleUrls: ["./filter.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatIconModule,
+  ],
 })
 export class FilterComponent implements OnChanges {
   @Input() filterFields: FilterField[] = [];

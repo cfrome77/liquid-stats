@@ -1,51 +1,69 @@
-button {
-  background-color: #f0fff0;
-  font-size: 25px;
-  height: auto;
-  width: auto;
-}
-
-button:hover {
-  background-color: #dcdcdc;
-}
-
-button a {
-  color: black;
-  text-decoration: none;
-}
-
-.wrapper {
-  text-align: center;
-}
-
-#button {
-  margin-top: 18%;
-}
-
-.bg-img {
-  /* Set rules to fill background */
-  min-height: 100%;
-  min-width: 1024px;
-  background: url("/assets/images/background.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-
-  /* Set up proportionate scaling */
-  width: 100%;
-  height: auto;
-
-  /* Set up positioning */
+.home-container {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("/assets/images/background.webp") no-repeat center center fixed;
+  background-size: cover;
+  z-index: 1;
 }
 
-@media screen and (max-width: 1024px) {
-  /* Specific to this particular image */
-  .bg-img {
-    left: 50%;
-    margin-left: -512px; /* 50% */
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+}
+
+.welcome-text {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.subtitle-text {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.main-cta {
+  padding: 12px 32px !important;
+  font-size: 1.1rem !important;
+  letter-spacing: 2px;
+  height: auto !important;
+  border-radius: 30px !important;
+  transition: transform 0.2s ease-in-out !important;
+}
+
+.main-cta:hover {
+  transform: scale(1.05);
+}
+
+@media screen and (max-width: 768px) {
+  .welcome-text {
+    font-size: 2.5rem;
+  }
+  .subtitle-text {
+    font-size: 1rem;
   }
 }

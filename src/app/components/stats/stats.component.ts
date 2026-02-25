@@ -1,5 +1,16 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, effect } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { Component, OnInit, ChangeDetectorRef, effect } from "@angular/core";
+import { CommonModule, DecimalPipe } from "@angular/common";
+import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatIconModule } from "@angular/material/icon";
+import { MatDialog } from "@angular/material/dialog";
+import { BaseChartDirective } from "ng2-charts";
+import { ChartData, ChartOptions } from "chart.js";
+
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { ProcessedStats } from "src/app/core/models/stats.model";
@@ -7,8 +18,6 @@ import {
   BeerStyleDialogComponent,
   GenericBeersDialogData,
 } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
-import { MatDialog } from "@angular/material/dialog";
-import { ChartData, ChartOptions } from "chart.js";
 import { DateUtils } from "../../core/utils/date-utils";
 import { ThemeService } from "src/app/core/services/theme.service";
 
@@ -16,7 +25,20 @@ import { ThemeService } from "src/app/core/services/theme.service";
   selector: "app-stats",
   templateUrl: "./stats.component.html",
   styleUrls: ["./stats.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatIconModule,
+    BaseChartDirective,
+  ],
+  providers: [DecimalPipe],
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
@@ -152,8 +174,6 @@ export class StatsComponent implements OnInit {
     this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
     this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
   }
-
-  ngOnDestroy(): void {}
 
   private updateChartOptions(theme: "light-theme" | "dark-theme"): void {
     const isDark = theme === "dark-theme";

@@ -5,6 +5,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("AppComponent", () => {
   beforeEach(async () => {
@@ -14,9 +15,10 @@ describe("AppComponent", () => {
         MatDialogModule,
         OverlayModule,
         HttpClientTestingModule,
+        BrowserAnimationsModule,
+        AppComponent
       ],
-      declarations: [AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   });
 

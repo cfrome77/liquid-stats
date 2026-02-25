@@ -1,29 +1,36 @@
 <div class="main-content-container">
   <h2>Your Beer Statistics</h2>
 
-  <div class="filters">
-    <label for="date-range">Date Range:</label>
-    <select [formControl]="dateRange">
-      <option value="week">Last Week</option>
-      <option value="month">Last Month</option>
-      <option value="year">Last Year</option>
-      <option value="all">All Time</option>
-      <option value="custom">Custom</option>
-    </select>
+  <div class="stats-filters">
+    <mat-form-field appearance="outline" class="date-range-select">
+      <mat-label>Date Range</mat-label>
+      <mat-select [formControl]="dateRange">
+        <mat-option value="week">Last Week</mat-option>
+        <mat-option value="month">Last Month</mat-option>
+        <mat-option value="year">Last Year</mat-option>
+        <mat-option value="all">All Time</mat-option>
+        <mat-option value="custom">Custom Range</mat-option>
+      </mat-select>
+    </mat-form-field>
 
     @if (dateRange.value === "custom") {
-      <div class="custom-date-range">
-        <input
-          type="date"
-          [formControl]="customStartDate"
-          placeholder="Start Date"
-        />
-        <input
-          type="date"
-          [formControl]="customEndDate"
-          placeholder="End Date"
-        />
-      </div>
+      <mat-form-field appearance="outline" class="custom-date-picker">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            matStartDate
+            [formControl]="customStartDate"
+            placeholder="Start date"
+          />
+          <input
+            matEndDate
+            [formControl]="customEndDate"
+            placeholder="End date"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
     }
   </div>
 

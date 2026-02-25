@@ -33,6 +33,12 @@
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (beerCard of paginatedBeers; track beerCard.title) {
       <app-card [cardData]="beerCard"></app-card>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon>search_off</mat-icon>
+        <p>No beers match your search criteria.</p>
+        <button mat-stroked-button (click)="resetFilters()">Clear Filters</button>
+      </div>
     }
   </div>
 

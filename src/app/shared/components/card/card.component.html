@@ -1,39 +1,43 @@
 <div class="card-container">
   <mat-card class="shared-card">
     <mat-card-content class="beer">
-      <div class="header-section">
-        @if (cardData.mainImage) {
-          <img
-            class="beer-label"
-            [src]="cardData.mainImage"
-            [alt]="cardData.title"
-            [title]="cardData.title"
-          />
-        }
+      <div class="card-header">
+        <div class="label-container left">
+          @if (cardData.mainImage) {
+            <img
+              class="beer-label"
+              [src]="cardData.mainImage"
+              [alt]="cardData.title"
+              [title]="cardData.title"
+            />
+          }
+        </div>
 
         <div class="beer-info">
-          <h3>
+          <h3 class="title">
             @if (cardData.rank) {
-              <span class="rank">#{{ cardData.rank }}</span>
+              <span class="rank-badge">#{{ cardData.rank }}</span>
             }
             {{ cardData.title }}
           </h3>
           @if (cardData.subtitle) {
-            <p>{{ cardData.subtitle }}</p>
+            <div class="subtitle">{{ cardData.subtitle }}</div>
           }
           @if (cardData.breweryName) {
-            <p>{{ cardData.breweryName }}</p>
+            <div class="brewery-name">{{ cardData.breweryName }}</div>
           }
         </div>
 
-        @if (cardData.secondaryImage) {
-          <img
-            class="brewery-label"
-            [src]="cardData.secondaryImage"
-            [alt]="cardData.breweryName"
-            [title]="cardData.breweryName"
-          />
-        }
+        <div class="label-container right">
+          @if (cardData.secondaryImage) {
+            <img
+              class="brewery-label"
+              [src]="cardData.secondaryImage"
+              [alt]="cardData.breweryName"
+              [title]="cardData.breweryName"
+            />
+          }
+        </div>
       </div>
 
       @if (cardData.description) {
