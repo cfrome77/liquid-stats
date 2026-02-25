@@ -16,7 +16,13 @@ describe("BeerHistoryComponent", () => {
 
   beforeEach(async () => {
     mockDataService = {
-      getBeers: () => of([])
+      getBeers: () => of({
+        response: {
+          checkins: {
+            items: []
+          }
+        }
+      })
     };
 
     await TestBed.configureTestingModule({

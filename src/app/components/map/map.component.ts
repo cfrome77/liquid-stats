@@ -39,7 +39,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.initMap();
       this.dataService.getBeers().subscribe({
         next: (data) => {
-          this.markerService.makeBreweryMarkers(this.map, data);
+          const beers = data?.response?.checkins?.items || [];
+          this.markerService.makeBreweryMarkers(this.map, beers);
           this.cdr.detectChanges();
         },
         error: (err) => {

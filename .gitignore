@@ -95,3 +95,6 @@ liquid-stats-lambda.zip
 .env.*.local
 src/environments/environment.ts
 !src/environments/environment.template.ts
+/playwright-report/
+/test-results/
+/e2e-screenshots/

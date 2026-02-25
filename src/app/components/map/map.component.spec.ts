@@ -22,7 +22,13 @@ describe("MapComponent", () => {
   beforeEach(async () => {
     mockMarkerService = jasmine.createSpyObj("MarkerService", ["makeBreweryMarkers"]);
     mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
-    mockDataService.getBeers.and.returnValue(of([]));
+    mockDataService.getBeers.and.returnValue(of({
+      response: {
+        checkins: {
+          items: []
+        }
+      }
+    }));
 
     await TestBed.configureTestingModule({
       imports: [MapComponent, HttpClientTestingModule, RouterTestingModule],

@@ -74,8 +74,8 @@ export class TopBeersComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.getBeers().subscribe({
-      next: (data: BeerCheckin[]) => {
-        this.beers = data;
+      next: (data) => {
+        this.beers = data?.response?.checkins?.items || [];
         this.onFilterChange();
       },
       error: (err) => console.error("Error fetching beers:", err),

@@ -39,7 +39,8 @@ export class WishlistComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getWishlist().subscribe({
       next: (data: any) => {
-        this.wishlist = data.response.wishlist.items.map((item: any) =>
+        const items = data?.response?.beers?.items || data?.response?.wishlist?.items || [];
+        this.wishlist = items.map((item: any) =>
           this.transformWishlistData(item),
         );
         this.totalItems = this.wishlist.length;

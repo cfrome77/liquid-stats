@@ -26,24 +26,28 @@
   position: relative;
   z-index: 3;
   text-align: center;
-  color: white;
-  padding: 0 20px;
+  color: var(--text-color);
+  padding: 40px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  max-width: 90%;
 }
 
 .welcome-text {
   font-size: 4rem;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 4px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  color: var(--header-text);
 }
 
 .subtitle-text {
   font-size: 1.25rem;
   margin-bottom: 2rem;
   opacity: 0.9;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  color: var(--text-color);
 }
 
 .main-cta {

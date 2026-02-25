@@ -28,7 +28,13 @@ describe("TopBeersComponent", () => {
       rating_score: 4.5,
       recent_created_at: '2026-02-07'
     };
-    mockDataService.getBeers.and.returnValue(of([mockBeer]));
+    mockDataService.getBeers.and.returnValue(of({
+      response: {
+        checkins: {
+          items: [mockBeer]
+        }
+      }
+    }));
 
     await TestBed.configureTestingModule({
       imports: [
