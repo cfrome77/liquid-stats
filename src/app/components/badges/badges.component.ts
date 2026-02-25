@@ -1,20 +1,20 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
 import { DataService } from "src/app/core/services/data.service";
 import { Badge } from "src/app/core/models/badge.model";
 import { LoggingService } from "src/app/core/services/logger.service";
-import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { DateUtils } from "../../core/utils/date-utils";
 
 @Component({
   selector: "app-badges",
   templateUrl: "./badges.component.html",
   styleUrls: ["./badges.component.css"],
   standalone: true,
-  imports: [CommonModule, MatDialogModule, PoweredByComponent, PaginationComponent, CardComponent],
+  imports: [CommonModule, MatDialogModule, PaginationComponent, CardComponent],
 })
 export class BadgesComponent implements OnInit {
   public badges: Badge[] = [];
@@ -69,7 +69,7 @@ export class BadgesComponent implements OnInit {
       footerInfo: {
         text: `Earned: ${badge.earned_at}`,
         link: undefined,
-        timestamp: badge.earned_at
+        timestamp: DateUtils.formatTimestamp(badge.earned_at),
       }
     };
   }

@@ -5,12 +5,14 @@
     <div class="flex-column" style="align-items: stretch; gap: 10px">
       @for (item of paginatedWishlist; track item.title) {
         <app-card [cardData]="item"></app-card>
-    } @empty {
-      <div class="empty-state">
-        <mat-icon>bookmark_border</mat-icon>
-        <p>Your wishlist is currently empty.</p>
-        <button mat-flat-button color="primary" routerLink="/checkins">Explore Beers</button>
-      </div>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>bookmark_border</mat-icon>
+          <p>Your wishlist is currently empty.</p>
+          <button mat-flat-button color="primary" routerLink="/checkins">
+            Explore Beers
+          </button>
+        </div>
       }
     </div>
 
@@ -29,5 +31,3 @@
     </div>
   }
 </div>
-
-<app-powered-by></app-powered-by>

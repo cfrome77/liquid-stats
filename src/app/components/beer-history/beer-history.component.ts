@@ -16,7 +16,6 @@ import {
 import { CardComponent } from "../../shared/components/card/card.component";
 import { FilterComponent } from "../../shared/components/filter/filter.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
-import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 
 export interface FilterField {
   field: string;
@@ -42,7 +41,6 @@ export interface FilterField {
     CardComponent,
     FilterComponent,
     PaginationComponent,
-    PoweredByComponent,
   ],
 })
 export class BeerHistoryComponent implements OnInit {
@@ -59,8 +57,20 @@ export class BeerHistoryComponent implements OnInit {
     { field: "beer_style", label: "Beer Style", options: [], selected: [] },
     { field: "country", label: "Country", options: [], selected: [] },
     { field: "state", label: "State/Region", options: [], selected: [] },
-    { field: "rating", label: "Ratings", options: [], selected: [], type: "number" },
-    { field: "date", label: "Date Range", options: [], selected: [], type: "date" },
+    {
+      field: "rating",
+      label: "Ratings",
+      options: [],
+      selected: [],
+      type: "number",
+    },
+    {
+      field: "date",
+      label: "Date Range",
+      options: [],
+      selected: [],
+      type: "date",
+    },
   ];
 
   constructor(
@@ -70,8 +80,15 @@ export class BeerHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.getBeers().subscribe({
-      next: (data) => {
-        this.beers = data?.response?.checkins?.items || [];
+      next: (data: any) => {
+        // Directly use data.beers
+        this.beers = data?.beers || [];
+
+        if (this.beers.length === 0) {
+          console.warn("No beers found in response", data);
+          return;
+        }
+
         this.initializeFilters();
         this.applyFilters();
         this.cdr.detectChanges();
@@ -155,7 +172,9 @@ export class BeerHistoryComponent implements OnInit {
 
   applyFilters() {
     const breweryFilter = this.filterFields.find((f) => f.field === "brewery")!;
-    const styleFilter = this.filterFields.find((f) => f.field === "beer_style")!;
+    const styleFilter = this.filterFields.find(
+      (f) => f.field === "beer_style",
+    )!;
     const countryFilter = this.filterFields.find((f) => f.field === "country")!;
     const stateFilter = this.filterFields.find((f) => f.field === "state")!;
     const ratingFilter = this.filterFields.find((f) => f.field === "rating")!;
@@ -170,7 +189,7 @@ export class BeerHistoryComponent implements OnInit {
       const rating = beer.rating_score;
       const formattedRating =
         (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2);
-      const beerDate = DateUtils.parseDate(beer.recent_created_at);
+      const beerDate = DateUtils.parseDate(beer.recent_created_at || beer.first_created_at);
 
       const matchesSearch =
         !search ||
@@ -205,22 +224,63 @@ export class BeerHistoryComponent implements OnInit {
         (!endDate || beerDate <= endDate);
 
       // Cross-filtering counts logic
-      if (matchesSearch && matchesStyle && matchesCountry && matchesState && matchesRating && matchesDate) {
-        breweryFilter.countMap![beer.brewery.brewery_name] = (breweryFilter.countMap![beer.brewery.brewery_name] || 0) + 1;
+      if (
+        matchesSearch &&
+        matchesStyle &&
+        matchesCountry &&
+        matchesState &&
+        matchesRating &&
+        matchesDate
+      ) {
+        breweryFilter.countMap![beer.brewery.brewery_name] =
+          (breweryFilter.countMap![beer.brewery.brewery_name] || 0) + 1;
       }
-      if (matchesSearch && matchesBrewery && matchesCountry && matchesState && matchesRating && matchesDate) {
-        styleFilter.countMap![beer.beer.beer_style] = (styleFilter.countMap![beer.beer.beer_style] || 0) + 1;
+      if (
+        matchesSearch &&
+        matchesBrewery &&
+        matchesCountry &&
+        matchesState &&
+        matchesRating &&
+        matchesDate
+      ) {
+        styleFilter.countMap![beer.beer.beer_style] =
+          (styleFilter.countMap![beer.beer.beer_style] || 0) + 1;
       }
-      if (matchesSearch && matchesBrewery && matchesStyle && matchesState && matchesRating && matchesDate) {
-        countryFilter.countMap![beer.brewery.country_name] = (countryFilter.countMap![beer.brewery.country_name] || 0) + 1;
+      if (
+        matchesSearch &&
+        matchesBrewery &&
+        matchesStyle &&
+        matchesState &&
+        matchesRating &&
+        matchesDate
+      ) {
+        countryFilter.countMap![beer.brewery.country_name] =
+          (countryFilter.countMap![beer.brewery.country_name] || 0) + 1;
       }
-      if (matchesSearch && matchesBrewery && matchesStyle && matchesCountry && matchesRating && matchesDate) {
+      if (
+        matchesSearch &&
+        matchesBrewery &&
+        matchesStyle &&
+        matchesCountry &&
+        matchesRating &&
+        matchesDate
+      ) {
         if (beer.brewery.location.brewery_state) {
-          stateFilter.countMap![beer.brewery.location.brewery_state] = (stateFilter.countMap![beer.brewery.location.brewery_state] || 0) + 1;
+          stateFilter.countMap![beer.brewery.location.brewery_state] =
+            (stateFilter.countMap![beer.brewery.location.brewery_state] || 0) +
+            1;
         }
       }
-      if (matchesSearch && matchesBrewery && matchesStyle && matchesCountry && matchesState && matchesDate) {
-        ratingFilter.countMap![formattedRating] = (ratingFilter.countMap![formattedRating] || 0) + 1;
+      if (
+        matchesSearch &&
+        matchesBrewery &&
+        matchesStyle &&
+        matchesCountry &&
+        matchesState &&
+        matchesDate
+      ) {
+        ratingFilter.countMap![formattedRating] =
+          (ratingFilter.countMap![formattedRating] || 0) + 1;
       }
 
       return (

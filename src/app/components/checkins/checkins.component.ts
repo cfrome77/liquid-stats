@@ -14,14 +14,13 @@ import { environment } from "../../../environments/environment";
 import { Checkin } from "src/app/core/models/checkin.model";
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
-import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 
 @Component({
   selector: "app-checkins",
   templateUrl: "./checkins.component.html",
   styleUrls: ["./checkins.component.css"],
   standalone: true,
-  imports: [MatIconModule, CommonModule, CardComponent, PoweredByComponent, MatDialogModule],
+  imports: [MatIconModule, CommonModule, CardComponent, MatDialogModule],
 })
 export class CheckinsComponent implements OnInit {
   public checkins: Checkin[] = [];
@@ -52,10 +51,6 @@ export class CheckinsComponent implements OnInit {
         console.log("Checkins fetch completed");
       },
     });
-  }
-
-  public published(createdAt: string | Date): string {
-    return DateUtils.formatTimestamp(createdAt);
   }
 
   openBadgeDialog(badge: any): void {
@@ -96,7 +91,7 @@ export class CheckinsComponent implements OnInit {
         link: checkin.venue
           ? `https://untappd.com/venue/${checkin.venue.venue_id}`
           : `https://untappd.com/b/${checkin.beer.beer_slug}/${checkin.beer.bid}`,
-        timestamp: this.published(checkin.created_at),
+        timestamp: DateUtils.formatTimestamp(checkin.created_at),
         rightLinkText: "Checkin Details",
       },
       extraData,
