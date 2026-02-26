@@ -280,6 +280,39 @@ strong {
   opacity: 0.7;
 }
 
+/* 🔥 Dropdown Overlay Theming */
+.mat-mdc-select-panel {
+  background-color: var(--card-bg) !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-option:hover:not(.mdc-list-item--disabled),
+.mat-mdc-option.mat-mdc-option-active {
+  background-color: rgba(var(--accent-blue-rgb), 0.1) !important;
+}
+
+/* Modern Input Styles */
+.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border-width: 1px !important;
+  border-color: var(--divider-color) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-width: 2px !important;
+  border-color: var(--accent-blue) !important;
+}
+
+.mat-mdc-form-field-focus-overlay {
+  background-color: var(--card-bg) !important;
+}
+
 /* Filter Card */
 .filter-card {
   background-color: var(--card-bg);

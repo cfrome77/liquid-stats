@@ -41,7 +41,7 @@
       <!-- Body -->
       <div class="modal-body">
         @if (activeFilter.type === "date") {
-          <div class="date-range-filter light-theme">
+          <div class="date-range-filter">
             <mat-form-field appearance="outline" class="date-picker-field">
               <mat-label>From</mat-label>
               <input
@@ -51,6 +51,8 @@
                 [max]="toDate(activeFilter.options[1])"
                 [value]="toDate(activeFilter.selected[0])"
                 (dateChange)="onDateFromChange($event)"
+                (click)="pickerFrom.open()"
+                readonly
               />
               <mat-datepicker-toggle
                 matSuffix
@@ -68,6 +70,8 @@
                 [max]="toDate(activeFilter.options[1])"
                 [value]="toDate(activeFilter.selected[1])"
                 (dateChange)="onDateToChange($event)"
+                (click)="pickerTo.open()"
+                readonly
               />
               <mat-datepicker-toggle
                 matSuffix
