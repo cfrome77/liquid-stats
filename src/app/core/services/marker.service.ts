@@ -1,4 +1,6 @@
 import { Injectable } from "@angular/core";
+import { DataService } from "src/app/core/services/data.service";
+
 import * as L from "leaflet";
 import "leaflet.markercluster";
 
@@ -8,127 +10,169 @@ import "leaflet.markercluster";
 export class MarkerService {
   public markers!: L.MarkerClusterGroup;
 
-  // Default marker icon (local assets)
-  private markerIcon = L.icon({
-    iconRetinaUrl: "assets/images/marker-icon-2x.png",
-    iconUrl: "assets/images/marker-icon.png",
-    shadowUrl: "assets/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    tooltipAnchor: [16, -28],
-    shadowSize: [41, 41],
-  });
-
-  constructor() {
-    // Apply default icon globally (optional)
-    L.Marker.prototype.options.icon = this.markerIcon;
-  }
+  constructor(private dataService: DataService) {}
 
   /**
-   * Add brewery markers to the map
-   * @param map Leaflet map instance
-   * @param beers Array of beer check-ins
+   * Create brewery markers on the map.
    */
-  public makeBreweryMarkers(map: L.Map, beers: any[]): void {
-    if (!map) return;
-
-    // Clear previous markers
-    if (this.markers) this.markers.clearLayers();
+  public makeBreweryMarkers(
+    map: L.Map,
+    beers: any[],
+  ): void {
+    if (this.markers) {
+      this.markers.clearLayers();
+    }
     this.markers = L.markerClusterGroup();
 
-    // Group beers by brewery
-    const breweries: Record<string, any> = {};
-    beers.forEach((beer) => {
-      const breweryId = beer.brewery?.brewery_id;
-      if (!breweryId) return;
+    const breweryCounts: Record<
+      string,
+      {
+        lat: number;
+        lon: number;
+        id: string;
+        name: string;
+        city: string;
+        state: string;
+        logo: string;
+        checkIns: {
+          beerName: string;
+          beerLabel: string;
+          beerABV: number;
+          beerStyle: string;
+          beerDescription: string;
+          rating: number;
+          checkInDate: string;
+          count: number;
+          checkInId: number;
+        }[];
+      }
+    > = {};
 
-      if (!breweries[breweryId]) {
-        breweries[breweryId] = {
-          lat: beer.brewery.location.lat,
-          lon: beer.brewery.location.lng,
-          name: beer.brewery.brewery_name,
-          city: beer.brewery.location.brewery_city,
-          state: beer.brewery.location.brewery_state,
-          logo: beer.brewery.brewery_label,
+    const beersList = beers || [];
+
+    for (const beer of beersList) {
+      const lat = beer.brewery.location.lat;
+      const lon = beer.brewery.location.lng;
+      const breweryId = beer.brewery.brewery_id;
+      const breweryName = beer.brewery.brewery_name;
+      const breweryCity = beer.brewery.location.brewery_city;
+      const breweryState = beer.brewery.location.brewery_state;
+      const breweryLogo = beer.brewery.brewery_label;
+
+      const beerName = beer.beer.beer_name;
+      const beerLabel =
+        beer.beer.beer_label ||
+        "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png";
+      const beerABV = beer.beer.beer_abv;
+      const beerStyle = beer.beer.beer_style;
+      const beerDescription = beer.beer.beer_description;
+      const rating = beer.rating_score;
+      const checkInDate = beer.recent_created_at
+        ? new Date(beer.recent_created_at).toLocaleString()
+        : "Unknown Date";
+      const count = beer.count || 1;
+      const checkInId = beer.recent_checkin_id;
+
+      // Use the actual brewery_id as the key
+      const uniqueKey = `${breweryId}`;
+
+      if (!breweryCounts[uniqueKey]) {
+        breweryCounts[uniqueKey] = {
+          lat,
+          lon,
+          id: breweryId,
+          name: breweryName,
+          city: breweryCity,
+          state: breweryState,
+          logo: breweryLogo,
           checkIns: [],
         };
       }
 
-      breweries[breweryId].checkIns.push({
-        beerName: beer.beer?.beer_name || "Unknown Beer",
-        beerLabel:
-          beer.beer?.beer_label ||
-          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
-        beerStyle: beer.beer?.beer_style || "N/A",
-        beerABV: beer.beer?.beer_abv || 0,
-        rating: beer.rating_score || 0,
-        count: beer.count || 1,
-        checkInDate: beer.recent_created_at
-          ? new Date(beer.recent_created_at).toLocaleString()
-          : "Unknown Date",
-        checkInId: beer.recent_checkin_id,
+      breweryCounts[uniqueKey].checkIns.push({
+        beerName,
+        beerLabel,
+        beerABV,
+        beerStyle,
+        beerDescription,
+        rating,
+        checkInDate,
+        count,
+        checkInId,
       });
-    });
+    }
 
     // Create markers
-    Object.values(breweries).forEach((brewery: any) => {
-      const totalCheckIns = brewery.checkIns.length;
+    for (const key in breweryCounts) {
+      const { lat, lon, name, city, state, logo, checkIns, id } =
+        breweryCounts[key];
 
-      // Build list of beers in popup
-      const checkInsList = brewery.checkIns
-        .map((c: any) => {
+      const totalCheckIns = checkIns.length;
+
+      const checkInsList = checkIns
+        .map((checkIn) => {
+          const beerCheckInCount = checkIn.count;
+          // Updated to handle missing beer name data
+          const displayedBeerName =
+            checkIn.beerName || "Name not available";
+
+          const untappdUrl = `https://untappd.com/c/${checkIn.checkInId}`;
+
           return `
-          <li style="list-style: none; margin-bottom: 5px;">
-            <a href="https://untappd.com/c/${c.checkInId}" target="_blank" style="text-decoration: none; color: black;">
-              <div style="display: flex; align-items: center;">
-                <img src="${c.beerLabel}" alt="${c.beerName}" style="width:50px;height:50px;margin-right:10px"/>
-                <div>
-                  <strong>${c.beerName}${c.count > 1 ? ` (${c.count})` : ""}</strong><br/>
-                  <small>Style: ${c.beerStyle}</small><br/>
-                  <small>ABV: ${c.beerABV}%</small><br/>
-                  <small>Rating: ${c.rating}/5</small><br/>
-                  <small>Date: ${c.checkInDate}</small>
-                </div>
+        <li style="color: black; list-style-type: none; margin-bottom: 5px; padding-bottom: 5px;">
+          <a href="${untappdUrl}" target="_blank" class="checkin-entry" style="text-decoration: none; color: black;">
+            <div style="display: flex; align-items: center; padding: 5px;">
+              <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
+              <div style="color: black;">
+                <strong style="color: black;">${displayedBeerName}${beerCheckInCount > 1 ? ` (${beerCheckInCount})` : ""}</strong><br>
+                <small>Style: ${checkIn.beerStyle}</small><br>
+                <small>ABV: ${checkIn.beerABV}%</small><br>
+                <small>Rating: ${checkIn.rating}/5</small><br>
+                <small>Date: ${checkIn.checkInDate}</small><br>
               </div>
-            </a>
-          </li>`;
+            </div>
+          </a>
+        </li>
+        `;
         })
         .join("");
 
       const popupContent = `
-        <div style="padding:10px; color:black;">
-          <div style="display:flex; align-items:center; margin-bottom:10px;">
-            <img src="${brewery.logo}" alt="${brewery.name}" style="width:50px;height:50px;object-fit:cover;margin-right:10px"/>
-            <div>
-              <h3 style="margin:0 0 4px 0;font-size:16px;">${brewery.name}</h3>
-              <p style="margin:0;">${brewery.city}, ${brewery.state}</p>
-            </div>
-          </div>
-          <div style="margin-bottom:8px;">Check-ins: ${totalCheckIns}</div>
-          <ul style="max-height:200px; overflow-y:auto; padding-left:0; margin:0;">
-            ${checkInsList}
-          </ul>
-        </div>`;
+<div style="text-align: left; color: black; padding: 10px 12px 10px 12px;">
+<div style="display: flex; align-items: center; margin-bottom: 10px;">
+  <img src="${logo}" alt="${name}"
+       style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"/>
+  <div>
+    <h3 style="margin: 0 0 4px 0; color: black; font-size: 16px; line-height: 1.2;">
+      ${name}
+    </h3>
+    <p style="margin: 0; color: black;">${city}, ${state}</p>
+  </div>
+</div>
+<div style="color: black; margin-bottom: 8px;">
+  Check-ins: ${totalCheckIns}
+</div>
+<ul style="max-height: 200px; overflow-y: auto; padding-left: 0; margin: 0; color: black;">
+  ${checkInsList}
+</ul>
+</div>
+`;
 
-      const marker = L.marker([brewery.lat, brewery.lon], {
-        icon: this.markerIcon,
-      }) as any;
+      const popup = L.popup().setContent(popupContent);
 
-      marker.breweryId = brewery.id;
-      marker.bindPopup(popupContent);
+      const marker = L.marker([lat, lon]) as any;
+      marker.breweryId = id;
+      marker.bindPopup(popup);
       this.markers.addLayer(marker);
-    });
+    }
 
     this.markers.addTo(map);
-    map.invalidateSize(); // refresh map
   }
 
   /**
-   * Get a marker by breweryId
+   * Find a marker by its breweryId
    */
   public getMarkerByBreweryId(breweryId: string): L.Marker | undefined {
-    if (!this.markers) return undefined;
     return this.markers
       .getLayers()
       .find((m: any) => m.breweryId === breweryId) as L.Marker;

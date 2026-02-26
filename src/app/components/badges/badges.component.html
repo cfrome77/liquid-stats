@@ -9,7 +9,6 @@
 </div>
 
 <app-pagination
-  *ngIf="paginatedBadges.length > 0"
   [currentPage]="currentPage"
   [itemsPerPage]="itemsPerPage"
   [totalItems]="totalItems"
@@ -17,3 +16,5 @@
   (itemsPerPageChange)="onItemsPerPageChange($event)"
 >
 </app-pagination>
+
+<app-powered-by></app-powered-by>

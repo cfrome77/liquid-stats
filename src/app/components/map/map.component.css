@@ -1,16 +1,20 @@
-:host {
-  display: block;
+/* Ensure html and body take full height */
+html,
+body {
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
+/* Map Wrapper Container */
 .map-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* Target the map div without relying on ID */
-.map-wrapper > div {
+/* Map Styling */
+#map {
   width: 100%;
   height: 100%;
 }

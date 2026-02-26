@@ -26,28 +26,28 @@
   position: relative;
   z-index: 3;
   text-align: center;
-  color: var(--text-color);
+  color: #ffffff; /* Use white for better contrast against image */
   padding: 40px;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   max-width: 90%;
 }
 
 .welcome-text {
-  font-size: 4rem;
-  font-weight: 800;
+  font-size: 4.5rem;
+  font-weight: 900;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 4px;
-  color: var(--header-text);
+  letter-spacing: 6px;
+  color: #ffffff;
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.8);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .subtitle-text {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-  color: var(--text-color);
+  font-size: 1.5rem;
+  margin-bottom: 2.5rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .main-cta {
