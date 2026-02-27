@@ -1,14 +1,13 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Injectable, signal, computed } from "@angular/core";
 
 @Injectable({
   providedIn: "root",
 })
 export class ThemeService {
-  private themeSubject = new BehaviorSubject<"light-theme" | "dark-theme">(
-    this.getInitialTheme(),
-  );
-  theme$ = this.themeSubject.asObservable();
+  private themeSignal = signal<"light-theme" | "dark-theme">(this.getInitialTheme());
+
+  // Expose as a read-only signal
+  readonly currentTheme = this.themeSignal.asReadonly();
 
   constructor() {}
 
@@ -24,19 +23,17 @@ export class ThemeService {
   }
 
   toggleTheme(): void {
-    const currentTheme = this.themeSubject.value;
-    const newTheme =
-      currentTheme === "light-theme" ? "dark-theme" : "light-theme";
-    this.themeSubject.next(newTheme);
+    const newTheme = this.themeSignal() === "light-theme" ? "dark-theme" : "light-theme";
+    this.themeSignal.set(newTheme);
     localStorage.setItem("theme", newTheme);
   }
 
   setTheme(theme: "light-theme" | "dark-theme"): void {
-    this.themeSubject.next(theme);
+    this.themeSignal.set(theme);
     localStorage.setItem("theme", theme);
   }
 
   getCurrentTheme(): "light-theme" | "dark-theme" {
-    return this.themeSubject.value;
+    return this.themeSignal();
   }
 }

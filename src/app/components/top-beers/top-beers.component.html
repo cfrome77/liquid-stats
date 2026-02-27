@@ -3,28 +3,19 @@
 <div class="main-content-container">
   <!-- Filters Section -->
   <div class="filter-card">
-    <div class="filter-radio-group">
-      <mat-radio-group [(ngModel)]="useCustomDate" (change)="onFilterChange()">
-        <mat-radio-button [value]="false"> Predefined Range </mat-radio-button>
-        <mat-radio-button [value]="true"> Custom Start Date </mat-radio-button>
-      </mat-radio-group>
-    </div>
-
     <div class="filter-controls">
-      <!-- Predefined Range -->
-      @if (!useCustomDate) {
-        <mat-form-field appearance="outline">
-          <mat-label>Time Range</mat-label>
-          <mat-select
-            [(ngModel)]="selectedRange"
-            (selectionChange)="onFilterChange()"
-          >
-            @for (option of dateRangeOptions; track option.label) {
-              <mat-option [value]="option">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
+      <!-- Time Range Dropdown -->
+      <mat-form-field appearance="outline">
+        <mat-label>Time Range</mat-label>
+        <mat-select
+          [(ngModel)]="selectedRange"
+          (selectionChange)="onFilterChange()"
+        >
+          @for (option of dateRangeOptions; track option.label) {
+            <mat-option [value]="option">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
       <!-- Custom Date Picker -->
       @if (useCustomDate) {
@@ -35,6 +26,8 @@
             [matDatepicker]="picker"
             [(ngModel)]="customStartDate"
             (dateChange)="onFilterChange()"
+            (click)="picker.open()"
+            readonly
           />
           <mat-datepicker-toggle
             matSuffix

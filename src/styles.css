@@ -13,6 +13,7 @@
   --success-green: #28a745;
   --btn-primary: #007bff;
   --btn-danger: #c2185b;
+  --accent-blue-rgb: 25, 118, 210;
 }
 
 .light-theme {
@@ -113,6 +114,11 @@ h4 {
 h1 {
   margin: 15px 0 30px;
   text-align: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 2.2rem;
 }
 
 strong {
@@ -145,6 +151,29 @@ strong {
 }
 .gap-4 {
   gap: 4px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.empty-state mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Mobile Touch Targets */
@@ -234,6 +263,54 @@ strong {
 .mat-mdc-form-field .mdc-notched-outline__notch,
 .mat-mdc-form-field .mdc-notched-outline__trailing {
   border-color: var(--input-outline) !important;
+}
+
+.mat-mdc-select-value,
+.mat-mdc-select-arrow,
+.mat-mdc-form-field-label {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-select-placeholder {
+  color: var(--text-color) !important;
+  opacity: 0.7;
+}
+
+/* 🔥 Dropdown Overlay Theming */
+.mat-mdc-select-panel {
+  background-color: var(--card-bg) !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-option:hover:not(.mdc-list-item--disabled),
+.mat-mdc-option.mat-mdc-option-active {
+  background-color: rgba(var(--accent-blue-rgb), 0.1) !important;
+}
+
+/* Modern Input Styles */
+.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border-width: 1px !important;
+  border-color: var(--divider-color) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-width: 2px !important;
+  border-color: var(--accent-blue) !important;
+}
+
+.mat-mdc-form-field-focus-overlay {
+  background-color: var(--card-bg) !important;
 }
 
 /* Filter Card */

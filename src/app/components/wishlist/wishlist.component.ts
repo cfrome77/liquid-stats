@@ -1,22 +1,35 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { Observable } from "rxjs";
-import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { RouterModule } from "@angular/router";
 import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "../../core/utils/date-utils";
+import { CardComponent } from "../../shared/components/card/card.component";
+import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 
 @Component({
   selector: "app-wishlist",
   templateUrl: "./wishlist.component.html",
   styleUrls: ["./wishlist.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterModule,
+    CardComponent,
+    PaginationComponent,
+    PoweredByComponent,
+  ],
 })
 export class WishlistComponent implements OnInit {
   public wishlist: any[] = [];
-  public paginatedWishlist: BaseCardData[] = [];
+  public paginatedWishlist: any[] = [];
+  public totalItems = 0;
   public currentPage = 1;
   public itemsPerPage = 10;
-  public totalItems = 0;
-  public isLoading = true;
 
   constructor(
     private dataService: DataService,
@@ -24,71 +37,53 @@ export class WishlistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchWishlistData();
-  }
-
-  private fetchWishlistData(): void {
-    this.isLoading = true;
     this.dataService.getWishlist().subscribe({
-      next: (data) => {
-        this.wishlist = data.response.beers.items;
+      next: (data: any) => {
+        const items = data.response.beers.items || [];
+        this.wishlist = items.map((item: any) =>
+          this.transformWishlistData(item),
+        );
         this.totalItems = this.wishlist.length;
-        this.updatePaginatedWishlist();
-        this.isLoading = false;
+        this.updatePagination();
         this.cdr.detectChanges();
       },
-      error: (error) => {
-        console.error("Error fetching wishlist:", error);
-        this.isLoading = false;
-      },
-      complete: () => {
-        console.log("Badges fetch completed");
+      error: (err) => {
+        console.error("Error fetching wishlist:", err);
       },
     });
   }
 
-  public transformWishlistData(item: any): BaseCardData {
+  transformWishlistData(item: any): any {
     return {
       title: item.beer.beer_name,
       subtitle: item.beer.beer_style,
       breweryName: item.brewery.brewery_name,
       description: item.beer.beer_description,
-      rating: item.beer.rating_score,
-      globalRating: undefined,
       mainImage: item.beer.beer_label,
       secondaryImage: item.brewery.brewery_label,
       footerInfo: {
-        text: "Brewery Info",
-        link: `https://untappd.com${item.brewery.brewery_page_url}`,
-        timestamp: this.published(item.created_at),
-        rightLinkText: "Beer Details",
-      },
-      extraData: {
-        socialLinks: item.brewery.contact,
-        mapData: {
-          lat: item.brewery?.location?.lat,
-          lng: item.brewery?.location?.lng,
-          breweryId: item.brewery?.brewery_id,
-        },
+        text: "Wishlist Item",
+        link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
+        timestamp: `Added ${DateUtils.formatTimestamp(item.created_at)}`,
       },
     };
   }
 
-  goToPage(page: number): void {
-    this.currentPage = page;
-    this.updatePaginatedWishlist();
-  }
-
-  updatePaginatedWishlist(): void {
+  updatePagination() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    const itemsToPaginate = this.wishlist.slice(startIndex, endIndex);
-    this.paginatedWishlist = itemsToPaginate.map((item) =>
-      this.transformWishlistData(item),
-    );
+    this.paginatedWishlist = this.wishlist.slice(startIndex, endIndex);
   }
 
-  public published(createdAt: string | Date): string {
-    return DateUtils.formatTimestamp(createdAt);
+  goToPage(page: number) {
+    this.currentPage = page;
+    this.updatePagination();
+    window.scrollTo(0, 0);
+  }
+
+  changeItemsPerPage(items: number) {
+    this.itemsPerPage = items;
+    this.currentPage = 1;
+    this.updatePagination();
   }
 }

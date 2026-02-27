@@ -20,6 +20,24 @@
   overflow: hidden;
 }
 
+.untappd-logo-container {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  z-index: 100;
+}
+
+.untappd-logo {
+  max-height: 40px;
+  width: auto;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.untappd-logo:hover {
+  opacity: 1;
+}
+
 .fab-container {
   position: fixed;
   bottom: 15px;
@@ -117,4 +135,76 @@ mat-toolbar {
 
 .drawer-nav-button {
   justify-content: flex-start !important;
+}
+
+/* Mobile Bottom Nav Styling */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: var(--navbar-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  border-top: 1px solid var(--divider-color);
+}
+
+.mobile-bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--navbar-text);
+  opacity: 0.6;
+  font-size: 10px;
+  transition: opacity 0.2s, color 0.2s;
+  flex: 1;
+}
+
+.mobile-bottom-nav a mat-icon {
+  margin-bottom: 2px;
+}
+
+.mobile-bottom-nav a.active {
+  opacity: 1;
+  color: var(--accent-indigo);
+}
+
+/* Responsive visibility */
+@media (min-width: 601px) {
+  .mobile-bottom-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .desktop-nav, mat-drawer {
+    display: none !important;
+  }
+
+  /* Hide the menu button on mobile since we have bottom nav */
+  .navbar-header button:first-child {
+    display: none;
+  }
+
+  /* Add padding to the main container to account for bottom nav */
+  .main-container {
+    padding-bottom: 60px;
+  }
+
+  .fab-container {
+    bottom: 75px; /* Adjust FAB to be above bottom nav */
+  }
+
+  .untappd-logo-container {
+    bottom: 75px;
+  }
+
+  .untappd-logo {
+    max-height: 30px;
+  }
 }
