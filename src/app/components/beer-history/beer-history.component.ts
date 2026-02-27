@@ -71,7 +71,7 @@ export class BeerHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getBeers().subscribe({
       next: (data) => {
-        this.beers = data?.response?.checkins?.items || [];
+        this.beers = data?.beers || [];
         this.initializeFilters();
         this.applyFilters();
         this.cdr.detectChanges();

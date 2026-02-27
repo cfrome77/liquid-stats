@@ -39,7 +39,7 @@ export class WishlistComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getWishlist().subscribe({
       next: (data: any) => {
-        const items = data?.response?.beers?.items || data?.response?.wishlist?.items || [];
+        const items = data.response.beers.items || [];
         this.wishlist = items.map((item: any) =>
           this.transformWishlistData(item),
         );

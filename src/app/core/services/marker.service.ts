@@ -1,29 +1,42 @@
 import { Injectable } from "@angular/core";
-import { DataService } from "src/app/core/services/data.service";
-
 import * as L from "leaflet";
 import "leaflet.markercluster";
+import { BeerCheckin } from "../models/beer.model";
+
+export interface BreweryMarker extends L.Marker {
+  breweryId?: string;
+  checkInsData?: {
+    name: string;
+    city: string;
+    state: string;
+    logo: string;
+    checkIns: any[];
+  };
+}
 
 @Injectable({
   providedIn: "root",
 })
 export class MarkerService {
-  public markers!: L.MarkerClusterGroup;
+  public markers: L.MarkerClusterGroup = L.markerClusterGroup();
+  private breweryMarkers: BreweryMarker[] = [];
 
-  constructor(private dataService: DataService) {}
+  constructor() {}
 
   /**
-   * Create brewery markers on the map.
+   * Create/update brewery markers
+   * @param map Leaflet map
+   * @param beers BeerCheckin[] filtered beers
+   * @param onClick Optional callback when a marker is clicked
    */
   public makeBreweryMarkers(
     map: L.Map,
-    beers: any[],
+    beers: BeerCheckin[],
+    onClick?: (breweryData: any) => void,
   ): void {
-    if (this.markers) {
-      this.markers.clearLayers();
-    }
-    this.markers = L.markerClusterGroup();
+    if (!map) return;
 
+    // Aggregate beers by brewery
     const breweryCounts: Record<
       string,
       {
@@ -34,147 +47,79 @@ export class MarkerService {
         city: string;
         state: string;
         logo: string;
-        checkIns: {
-          beerName: string;
-          beerLabel: string;
-          beerABV: number;
-          beerStyle: string;
-          beerDescription: string;
-          rating: number;
-          checkInDate: string;
-          count: number;
-          checkInId: number;
-        }[];
+        checkIns: any[];
       }
     > = {};
 
-    const beersList = beers || [];
+    for (const beer of beers) {
+      const lat = beer.brewery.location.lat ?? 0;
+      const lon = beer.brewery.location.lng ?? 0;
+      const breweryId = beer.brewery.brewery_id?.toString() ?? "unknown";
 
-    for (const beer of beersList) {
-      const lat = beer.brewery.location.lat;
-      const lon = beer.brewery.location.lng;
-      const breweryId = beer.brewery.brewery_id;
-      const breweryName = beer.brewery.brewery_name;
-      const breweryCity = beer.brewery.location.brewery_city;
-      const breweryState = beer.brewery.location.brewery_state;
-      const breweryLogo = beer.brewery.brewery_label;
-
-      const beerName = beer.beer.beer_name;
-      const beerLabel =
-        beer.beer.beer_label ||
-        "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png";
-      const beerABV = beer.beer.beer_abv;
-      const beerStyle = beer.beer.beer_style;
-      const beerDescription = beer.beer.beer_description;
-      const rating = beer.rating_score;
-      const checkInDate = beer.recent_created_at
-        ? new Date(beer.recent_created_at).toLocaleString()
-        : "Unknown Date";
-      const count = beer.count || 1;
-      const checkInId = beer.recent_checkin_id;
-
-      // Use the actual brewery_id as the key
-      const uniqueKey = `${breweryId}`;
-
-      if (!breweryCounts[uniqueKey]) {
-        breweryCounts[uniqueKey] = {
+      if (!breweryCounts[breweryId]) {
+        breweryCounts[breweryId] = {
           lat,
           lon,
           id: breweryId,
-          name: breweryName,
-          city: breweryCity,
-          state: breweryState,
-          logo: breweryLogo,
+          name: beer.brewery.brewery_name,
+          city: beer.brewery.location.brewery_city ?? "",
+          state: beer.brewery.location.brewery_state ?? "",
+          logo:
+            beer.brewery.brewery_label ??
+            "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
           checkIns: [],
         };
       }
 
-      breweryCounts[uniqueKey].checkIns.push({
-        beerName,
-        beerLabel,
-        beerABV,
-        beerStyle,
-        beerDescription,
-        rating,
-        checkInDate,
-        count,
-        checkInId,
+      breweryCounts[breweryId].checkIns.push({
+        beerName: beer.beer.beer_name ?? "Unknown",
+        beerLabel:
+          beer.beer.beer_label ??
+          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+        beerABV: beer.beer.beer_abv ?? 0,
+        beerStyle: beer.beer.beer_style ?? "Unknown",
+        rating: beer.rating_score ?? 0,
+        checkInId: beer.recent_checkin_id ?? 0,
       });
     }
 
-    // Create markers
+    // Clear previous markers and rebuild
+    this.markers.clearLayers();
+    this.breweryMarkers = [];
+
     for (const key in breweryCounts) {
       const { lat, lon, name, city, state, logo, checkIns, id } =
         breweryCounts[key];
 
-      const totalCheckIns = checkIns.length;
-
-      const checkInsList = checkIns
-        .map((checkIn) => {
-          const beerCheckInCount = checkIn.count;
-          // Updated to handle missing beer name data
-          const displayedBeerName =
-            checkIn.beerName || "Name not available";
-
-          const untappdUrl = `https://untappd.com/c/${checkIn.checkInId}`;
-
-          return `
-        <li style="color: black; list-style-type: none; margin-bottom: 5px; padding-bottom: 5px;">
-          <a href="${untappdUrl}" target="_blank" class="checkin-entry" style="text-decoration: none; color: black;">
-            <div style="display: flex; align-items: center; padding: 5px;">
-              <img src="${checkIn.beerLabel}" alt="${displayedBeerName}" style="width: 50px; height: 50px; margin-right: 10px;"/>
-              <div style="color: black;">
-                <strong style="color: black;">${displayedBeerName}${beerCheckInCount > 1 ? ` (${beerCheckInCount})` : ""}</strong><br>
-                <small>Style: ${checkIn.beerStyle}</small><br>
-                <small>ABV: ${checkIn.beerABV}%</small><br>
-                <small>Rating: ${checkIn.rating}/5</small><br>
-                <small>Date: ${checkIn.checkInDate}</small><br>
-              </div>
-            </div>
-          </a>
-        </li>
-        `;
-        })
-        .join("");
-
-      const popupContent = `
-<div style="text-align: left; color: black; padding: 10px 12px 10px 12px;">
-<div style="display: flex; align-items: center; margin-bottom: 10px;">
-  <img src="${logo}" alt="${name}"
-       style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"/>
-  <div>
-    <h3 style="margin: 0 0 4px 0; color: black; font-size: 16px; line-height: 1.2;">
-      ${name}
-    </h3>
-    <p style="margin: 0; color: black;">${city}, ${state}</p>
-  </div>
-</div>
-<div style="color: black; margin-bottom: 8px;">
-  Check-ins: ${totalCheckIns}
-</div>
-<ul style="max-height: 200px; overflow-y: auto; padding-left: 0; margin: 0; color: black;">
-  ${checkInsList}
-</ul>
-</div>
-`;
-
-      const popup = L.popup().setContent(popupContent);
-
-      const marker = L.marker([lat, lon]) as any;
+      const marker = L.marker([lat, lon]) as BreweryMarker;
       marker.breweryId = id;
-      marker.bindPopup(popup);
+      marker.checkInsData = { name, city, state, logo, checkIns };
+
+      if (onClick) {
+        marker.on("click", () =>
+          onClick({
+            breweryId: id,
+            name,
+            city,
+            state,
+            logo,
+            checkIns,
+          }),
+        );
+      }
+
       this.markers.addLayer(marker);
+      this.breweryMarkers.push(marker);
     }
 
-    this.markers.addTo(map);
+    // Add cluster layer to map if not already
+    if (!map.hasLayer(this.markers)) {
+      map.addLayer(this.markers);
+    }
   }
 
-  /**
-   * Find a marker by its breweryId
-   */
-  public getMarkerByBreweryId(breweryId: string): L.Marker | undefined {
-    return this.markers
-      .getLayers()
-      .find((m: any) => m.breweryId === breweryId) as L.Marker;
+  /** Get a marker by brewery ID */
+  public getMarkerByBreweryId(breweryId: string): BreweryMarker | undefined {
+    return this.breweryMarkers.find((m) => m.breweryId === breweryId);
   }
 }
