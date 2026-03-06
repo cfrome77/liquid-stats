@@ -259,10 +259,48 @@ strong {
   color: var(--text-color) !important;
 }
 
+/* -------------------------
+   Floating Label Colors
+------------------------- */
+.mat-mdc-form-field .mat-mdc-floating-label {
+  color: var(--input-outline) !important; /* default color */
+  transition: color 0.3s ease;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: var(--accent-blue) !important; /* color when input is focused */
+}
+
+/* Placeholder text */
+.mat-mdc-form-field .mat-mdc-input-placeholder {
+  color: var(--input-text) !important;
+  opacity: 0.6;
+  transition:
+    color 0.3s ease,
+    opacity 0.3s ease;
+}
+
+/* MDC Label when floated above */
+.mat-mdc-form-field .mdc-floating-label--float-above {
+  color: var(--text-color) !important;
+}
+
+/* Mat-Label inside form-field (Angular wrapper) */
+.mat-mdc-form-field mat-label {
+  color: var(--text-color) !important;
+  transition: color 0.3s ease;
+}
+
 .mat-mdc-form-field .mdc-notched-outline__leading,
 .mat-mdc-form-field .mdc-notched-outline__notch,
 .mat-mdc-form-field .mdc-notched-outline__trailing {
   border-color: var(--input-outline) !important;
+  transition: border-color 0.3s ease;
+}
+
+.mat-mdc-input-element,
+.mat-mdc-select-value {
+  color: var(--text-color) !important;
 }
 
 .mat-mdc-select-value,
@@ -277,12 +315,13 @@ strong {
 
 .mat-mdc-select-placeholder {
   color: var(--text-color) !important;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 /* 🔥 Dropdown Overlay Theming */
 .mat-mdc-select-panel {
-  background-color: var(--card-bg) !important;
+  background-color: var(--card-bg) !important; /* light or dark panel */
+  color: var(--text-color) !important;
 }
 
 .mat-mdc-option .mdc-list-item__primary-text {
@@ -295,9 +334,12 @@ strong {
 }
 
 /* Modern Input Styles */
-.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__leading,
-.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__notch,
-.mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__trailing {
+.mat-mdc-form-field.mat-form-field-appearance-outline
+  .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-form-field-appearance-outline
+  .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-form-field-appearance-outline
+  .mdc-notched-outline__trailing {
   border-width: 1px !important;
   border-color: var(--divider-color) !important;
 }
@@ -305,7 +347,6 @@ strong {
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
-  border-width: 2px !important;
   border-color: var(--accent-blue) !important;
 }
 

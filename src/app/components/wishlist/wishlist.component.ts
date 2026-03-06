@@ -7,7 +7,6 @@ import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
-import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 
 @Component({
   selector: "app-wishlist",
@@ -21,7 +20,6 @@ import { PoweredByComponent } from "../../shared/components/powered-by/powered-b
     RouterModule,
     CardComponent,
     PaginationComponent,
-    PoweredByComponent,
   ],
 })
 export class WishlistComponent implements OnInit {

@@ -16,24 +16,23 @@
     @if (dateRange.value === "custom") {
       <mat-form-field appearance="outline" class="custom-date-picker">
         <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+
+        <mat-date-range-input [rangePicker]="picker">
           <input
             matStartDate
             [formControl]="customStartDate"
             placeholder="Start date"
-            readonly
           />
           <input
             matEndDate
             [formControl]="customEndDate"
             placeholder="End date"
-            readonly
           />
         </mat-date-range-input>
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
+
+        <mat-datepicker-toggle matIconSuffix [for]="picker">
+        </mat-datepicker-toggle>
+
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
     }

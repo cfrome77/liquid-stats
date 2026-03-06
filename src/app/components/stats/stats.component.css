@@ -7,7 +7,21 @@
 }
 
 .date-range-select {
-  width: 200px;
+  margin-bottom: 0 !important; /* remove outer margin */
+}
+
+.date-range-select .mat-mdc-form-field-subscript-wrapper {
+  height: 0 !important; /* remove space reserved for hints/errors */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.date-range-select .mat-mdc-form-field-infix {
+  margin-bottom: 0 !important;
+}
+
+.date-range-select .mdc-text-field-wrapper {
+  margin-bottom: 0 !important;
 }
 
 .custom-date-picker {

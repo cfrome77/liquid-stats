@@ -18,7 +18,6 @@ import {
 } from "../../shared/components/card/card-data.interface";
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
-import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 
 type DateRangeOption = { label: string; daysBack?: number };
@@ -40,7 +39,6 @@ type DateRangeOption = { label: string; daysBack?: number };
     MatRadioModule,
     MatDialogModule,
     CardComponent,
-    PoweredByComponent,
   ],
 })
 export class TopBeersComponent implements OnInit {

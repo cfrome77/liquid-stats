@@ -45,10 +45,9 @@ export class StatsComponent implements OnInit {
   processedStats: ProcessedStats | null = null;
 
   dateRange = new FormControl("year");
-  customStartDate = new FormControl(
-    DateUtils.toISODate(DateUtils.subtractDays(365)),
-  );
-  customEndDate = new FormControl(DateUtils.toISODate(new Date()));
+
+  customStartDate = new FormControl(DateUtils.subtractDays(365));
+  customEndDate = new FormControl(new Date());
 
   hourChartLabels: string[] = Array.from({ length: 24 }, (_, i) =>
     i.toString(),

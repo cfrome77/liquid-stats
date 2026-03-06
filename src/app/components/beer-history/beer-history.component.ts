@@ -16,7 +16,6 @@ import {
 import { CardComponent } from "../../shared/components/card/card.component";
 import { FilterComponent } from "../../shared/components/filter/filter.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
-import { PoweredByComponent } from "../../shared/components/powered-by/powered-by.component";
 
 export interface FilterField {
   field: string;
@@ -42,7 +41,6 @@ export interface FilterField {
     CardComponent,
     FilterComponent,
     PaginationComponent,
-    PoweredByComponent,
   ],
 })
 export class BeerHistoryComponent implements OnInit {
@@ -265,7 +263,7 @@ export class BeerHistoryComponent implements OnInit {
       mainImage: beer.beer.beer_label,
       secondaryImage: beer.brewery.brewery_label,
       footerInfo: {
-        text: beer.brewery.country_name,
+        text: "Brewery Info",
         link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
         timestamp: DateUtils.formatTimestamp(beer.recent_created_at),
       },
