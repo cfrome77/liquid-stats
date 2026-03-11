@@ -22,6 +22,7 @@ export interface BeerCheckin {
       lat?: number;
       lng?: number;
       brewery_state?: string;
+      brewery_city?: string;
     };
     brewery_name: string;
     country_name: string;

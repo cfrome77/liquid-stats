@@ -1,51 +1,225 @@
-button {
-  background-color: #f0fff0;
-  font-size: 25px;
-  height: auto;
-  width: auto;
+/* -------------------- Theme-Aware Variables -------------------- */
+:host-context(.light-theme) {
+  --hero-glow: linear-gradient(
+    180deg,
+    #fff6e8 0%,
+    rgba(255, 246, 232, 0.6) 20%,
+    transparent 60%
+  );
+  --accent-glow: #e65100;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-button:hover {
-  background-color: #dcdcdc;
+:host-context(.dark-theme) {
+  --hero-glow: linear-gradient(
+    180deg,
+    #3b2a16 0%,
+    rgba(59, 42, 22, 0.6) 25%,
+    transparent 65%
+  );
+  --accent-glow: #ffca28;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-button a {
-  color: black;
-  text-decoration: none;
+:host-context(.dark-theme) {
+  --logo-filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff)
+    drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff)
+    drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff);
+
+  --hero-glow: linear-gradient(...);
+  /* ... your other variables ... */
 }
 
-.wrapper {
+/* -------------------- Container -------------------- */
+.home-container {
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 20px;
+  background: var(--hero-glow);
+  color: var(--text-color);
+  transition: background 0.3s ease;
+}
+
+/* -------------------- Hero Section -------------------- */
+.hero {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
 }
 
-#button {
-  margin-top: 18%;
+.logo-hero {
+  max-width: 420px;
+  width: 90%;
+  filter: var(--logo-filter); /* This switches automatically */
+  transition: filter 0.3s ease; /* Optional: smooth fade when switching themes */
 }
 
-.bg-img {
-  /* Set rules to fill background */
-  min-height: 100%;
-  min-width: 1024px;
-  background: url("/assets/images/background.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+.hero-content-wrapper {
+  margin-top: -45px; /* Pulls content into logo's empty padding */
+  z-index: 2;
+}
 
-  /* Set up proportionate scaling */
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 24px;
+  color: var(--accent-glow);
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.hero-buttons .mat-flat-button {
+  background-color: var(--btn-danger) !important;
+  color: white !important;
+}
+
+.hero-buttons .mat-stroked-button {
+  border-color: var(--divider-color) !important;
+  color: var(--text-color) !important;
+}
+
+/* -------------------- Section Divider -------------------- */
+.section-divider {
+  border: 0;
+  border-top: 1px solid var(--divider-color);
+  margin: 40px auto;
+  width: 60%;
+}
+
+/* -------------------- Quick Stats -------------------- */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  background-color: var(--card-bg) !important;
+  box-shadow: var(--card-shadow);
+}
+
+.stat-card mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px; /* Sharpness fix */
+  margin-bottom: 12px;
+  color: var(--accent-glow);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--header-text);
+}
+
+.stat-label {
+  opacity: 0.7;
+}
+
+/* -------------------- Recent Checkins -------------------- */
+.recent-beer-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 20px 0; /* Extra room for the cards to "lift" */
+}
+
+.beer-card {
+  width: 220px !important;
+  background-color: var(--card-bg) !important;
+  box-shadow: var(--card-shadow);
+  padding: 0 0 16px 0 !important;
+  overflow: hidden;
+  text-align: center;
+
+  /* MOVEMENT: Smooth transition for the lift and shadow */
+  transition:
+    transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* THE HOVER EFFECT: Lifts the card and deepens the shadow */
+.beer-card:hover {
+  transform: translateY(-10px); /* Moves up */
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.25),
+    0 10px 10px rgba(0, 0, 0, 0.22) !important;
+}
+
+.beer-card img {
   width: 100%;
-  height: auto;
+  height: 200px;
+  object-fit: cover;
+  image-rendering: -webkit-optimize-contrast;
+  border-bottom: 1px solid var(--divider-color);
 
-  /* Set up positioning */
-  position: fixed;
-  top: 0;
-  left: 0;
+  /* MOVEMENT: Smooth transition for the image zoom */
+  transition: transform 0.5s ease;
 }
 
-@media screen and (max-width: 1024px) {
-  /* Specific to this particular image */
-  .bg-img {
-    left: 50%;
-    margin-left: -512px; /* 50% */
+/* IMAGE ZOOM: Zooms the beer label slightly when card is hovered */
+.beer-card:hover img {
+  transform: scale(1.08);
+}
+
+.beer-card h4 {
+  margin: 16px 12px 4px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--header-text);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* WebKit/Blink browsers */
+  line-clamp: 2; /* Standard property */
+  overflow: hidden;
+}
+
+.clickable-card {
+  cursor: pointer !important; /* Forces the mouse to change to a hand */
+  user-select: none; /* Prevents accidental text highlighting on click */
+}
+
+.brewery-name {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.6;
+}
+
+.rating-text {
+  font-weight: 600;
+  color: var(--accent-glow);
+}
+
+/* -------------------- Responsive -------------------- */
+@media (max-width: 768px) {
+  .hero-content-wrapper {
+    margin-top: -30px;
+  }
+  .beer-card {
+    width: 160px !important;
+  }
+  .beer-card img {
+    height: 160px;
+  }
+  .stat-card mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
   }
 }

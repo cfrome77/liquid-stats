@@ -1,20 +1,293 @@
-/* Ensure html and body take full height */
+/* =========================
+   Reset & Base Layout
+========================= */
 html,
-body {
+body,
+app-root,
+mat-sidenav-container {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden; /* hide all scrollbars */
 }
 
-/* Map Wrapper Container */
-.map-wrapper {
+.map-sidenav-container {
+  height: 100vh;
+  width: 100%;
   position: relative;
-  width: 100%;
-  height: 100%;
+  background-color: var(--map-bg);
+  color: var(--text-color);
+  overflow: hidden; /* prevents container scroll */
 }
 
-/* Map Styling */
-#map {
+/* =========================
+   Sidenav Drawer (Filter Panel)
+========================= */
+.filter-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%; /* full container height */
+  width: 300px;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  transition: transform 0.3s ease;
+  z-index: 1150;
+  transform: translateX(-100%);
+  overflow-y: auto; /* scroll inside drawer only */
+}
+
+.filter-drawer.open {
+  transform: translateX(0);
+}
+
+.filter-drawer .filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-drawer .filter-header h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: var(--header-text);
+}
+
+.filter-drawer .filter-body input,
+.filter-drawer .filter-body select {
   width: 100%;
+  padding: 6px 30px 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--input-outline);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+.filter-drawer .filter-body input::placeholder {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.filter-drawer .reset-btn {
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  padding: 8px 0;
+  border-radius: 4px;
+  background-color: var(--btn-primary);
+  color: var(--on-primary);
+  cursor: pointer;
+}
+
+/* =========================
+   Main Content & Map
+========================= */
+mat-sidenav-content {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* prevent inner scroll */
+}
+
+.drawer-toggle {
+  position: absolute;
+  top: 20px;
+  left: 80px;
+  z-index: 1250;
+  background-color: var(--accent-blue);
+  color: var(--on-primary, #fff);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.map-wrapper {
+  flex: 1 1 auto;
+  min-height: 0; /* critical for flex containers to avoid overflow */
+  width: 100%;
+  position: relative;
+}
+
+.leaflet-map {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* =========================
+   Brewery Info Overlay
+========================= */
+.map-info-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1200;
+}
+
+.map-info-panel .brewery-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.map-info-panel .brewery-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 8px;
+  padding: 6px;
+  background-color: var(--card-bg);
+}
+
+.map-info-panel .brewery-details h2 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--header-text);
+}
+
+.map-info-panel .brewery-details p {
+  margin: 2px 0;
+  font-size: 13px;
+  color: var(--text-color);
+}
+
+.map-info-panel .checkin-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto; /* scroll inside overlay only */
+}
+
+.map-info-panel .checkin-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.map-info-panel .checkin-list li:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.map-info-panel .checkin-list li:active {
+  transform: scale(0.98);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.map-info-panel .checkin-list li + li {
+  border-top: 1px solid var(--divider-color);
+}
+
+.map-info-panel .beer-label {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.map-info-panel .beer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.map-info-panel .beer-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--strong-text);
+}
+
+.map-info-panel .beer-meta {
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+.map-info-panel .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* =========================
+   Mobile Optimization
+========================= */
+@media (max-width: 768px) {
+  .filter-drawer {
+    width: 85vw;
+  }
+  .drawer-toggle {
+    left: 70px;
+    top: 15px;
+  }
+  .map-info-panel {
+    top: auto;
+    right: 5%;
+    bottom: 20px;
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-info-panel .brewery-header {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* =========================
+   Leaflet Marker Animations
+========================= */
+::ng-deep .marker-pulse {
+  animation: pulse-animation 0.8s ease-in-out 4;
+  filter: drop-shadow(0 0 12px var(--accent-glow, #ffca28)) !important;
+  z-index: 1000 !important;
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

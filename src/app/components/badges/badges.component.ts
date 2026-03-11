@@ -1,105 +1,91 @@
-import {
-  Component,
-  ErrorHandler,
-  OnInit,
-  ChangeDetectorRef,
-} from "@angular/core";
-import { environment } from "src/environments/environment";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { DataService } from "src/app/core/services/data.service";
-import { DateUtils } from "src/app/core/utils/date-utils";
-import { Badge, TransformedBadge } from "src/app/core/models/badge.model";
+import { Badge } from "src/app/core/models/badge.model";
 import { LoggingService } from "src/app/core/services/logger.service";
+import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { CardComponent } from "../../shared/components/card/card.component";
+import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-badges",
   templateUrl: "./badges.component.html",
   styleUrls: ["./badges.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, PaginationComponent, CardComponent],
 })
 export class BadgesComponent implements OnInit {
   public badges: Badge[] = [];
   public paginatedBadges: Badge[] = [];
+
   public currentPage = 1;
   public itemsPerPage = 10;
-  public totalItems!: number;
-  public username: string;
+  public totalItems = 0;
 
   constructor(
     private dataService: DataService,
-    private errorHandler: ErrorHandler,
     private logger: LoggingService,
     private cdr: ChangeDetectorRef,
-  ) {
-    this.username = environment.UNTAPPD_USERNAME;
-  }
+    private sanitizer: DomSanitizer, // Inject the Sanitizer
+  ) {}
 
   ngOnInit(): void {
     this.dataService.getBadges().subscribe({
-      next: (data: Badge[]) => {
+      next: (data: any) => {
         this.badges = data;
-        this.totalItems = data.length;
+        this.totalItems = this.badges.length;
         this.updatePagination();
-        this.logger.info("Badges successfully fetched", data);
-        this.cdr.detectChanges();
       },
-      error: (err: unknown) => {
-        // handled error → log it
-        this.logger.error("Error fetching badges", err);
-
-        // optionally also pass to global handler if you want it tracked
-        this.errorHandler.handleError(err);
-      },
-      complete: () => {
-        this.logger.log("Badges fetch completed");
+      error: (err: any) => {
+        this.logger.error(err);
       },
     });
   }
 
-  // Transform badge data into what your shared-card expects
-  public transformBadgeData(badge: Badge): TransformedBadge {
-    return {
-      title: badge.badge_name,
-      description: badge.badge_description,
-      hint: badge.badge_hint,
-      mainImage: badge.media.badge_image_sm,
-      footerInfo: {
-        timestamp: this.published(badge.earned_at),
-        link: undefined,
-        text: undefined,
-        rightLinkText: "Badge Details",
-      },
-      extraData: {},
-    };
+  updatePagination() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedBadges = this.badges.slice(startIndex, endIndex);
+    this.cdr.detectChanges();
   }
 
-  public published(createdAt: string): string {
-    return DateUtils.formatDate(createdAt, {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  }
-
-  public updatePagination(): void {
-    const maxPage = Math.ceil(this.totalItems / this.itemsPerPage);
-    if (this.currentPage > maxPage) {
-      this.currentPage = maxPage;
-    }
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    this.paginatedBadges = this.badges.slice(start, end);
-  }
-
-  public onPageChange(page: number): void {
+  onPageChange(page: number) {
     this.currentPage = page;
     this.updatePagination();
   }
 
-  public onItemsPerPageChange(value: number): void {
-    this.itemsPerPage = value;
+  onItemsPerPageChange(size: number) {
+    this.itemsPerPage = size;
+    this.currentPage = 1;
     this.updatePagination();
+  }
+
+  transformBadgeData(badge: Badge): BaseCardData {
+    const dateObj = new Date(badge.earned_at);
+    const formattedDate = dateObj.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return {
+      title: badge.badge_name,
+      // We wrap the description in the sanitizer.
+      // This allows <a> and <strong> tags to work.
+      subtitle: this.sanitizer.bypassSecurityTrustHtml(
+        badge.badge_description,
+      ) as any,
+      mainImage: badge.media.badge_image_sm,
+      footerInfo: {
+        text: `Earned: ${formattedDate}`,
+        link: undefined,
+        timestamp: formattedDate,
+      },
+    };
   }
 }

@@ -14,6 +14,7 @@ export interface Checkin {
     brewery_id: number;
     brewery_name: string;
     brewery_label: string;
+    country_name: string;
     location?: {
       lat: number;
       lng: number;
@@ -32,6 +33,17 @@ export interface Checkin {
     items: Array<{
       badge_name: string;
       badge_image: string;
+    }>;
+  };
+  media?: {
+    count: number;
+    items: Array<{
+      photo: {
+        photo_img_sm: string;
+        photo_img_md: string;
+        photo_img_lg: string;
+        photo_img_og: string;
+      };
     }>;
   };
 }

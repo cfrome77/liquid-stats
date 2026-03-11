@@ -1,5 +1,8 @@
+import { MatIconModule } from "@angular/material/icon";
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { CommonModule } from "@angular/common";
+import { ActivatedRoute } from "@angular/router"; // Added
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
 import {
   BaseCardData,
@@ -11,12 +14,14 @@ import { environment } from "../../../environments/environment";
 
 import { Checkin } from "src/app/core/models/checkin.model";
 import { DateUtils } from "../../core/utils/date-utils";
+import { CardComponent } from "../../shared/components/card/card.component";
 
 @Component({
   selector: "app-checkins",
   templateUrl: "./checkins.component.html",
   styleUrls: ["./checkins.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [MatIconModule, CommonModule, CardComponent, MatDialogModule],
 })
 export class CheckinsComponent implements OnInit {
   public checkins: Checkin[] = [];
@@ -27,6 +32,7 @@ export class CheckinsComponent implements OnInit {
     private dataService: DataService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute, // Added
   ) {
     this.username = environment.UNTAPPD_USERNAME;
   }
@@ -38,15 +44,33 @@ export class CheckinsComponent implements OnInit {
         this.transformedCheckins = this.checkins.map((checkin) =>
           this.transformCheckinData(checkin),
         );
+
         this.cdr.detectChanges();
+
+        // Check for ID in URL and scroll if present
+        const targetId = this.route.snapshot.paramMap.get("id");
+        if (targetId) {
+          this.scrollToCheckin(targetId);
+        }
       },
       error: (err) => {
         console.error("Error fetching checkins:", err);
       },
-      complete: () => {
-        console.log("Checkins fetch completed");
-      },
     });
+  }
+
+  private scrollToCheckin(id: string): void {
+    // Small timeout to ensure DOM is rendered
+    setTimeout(() => {
+      const element = document.getElementById(`checkin-${id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.classList.add("highlight-card");
+
+        // Remove highlight class after animation finishes
+        setTimeout(() => element.classList.remove("highlight-card"), 2500);
+      }
+    }, 200);
   }
 
   public published(createdAt: string | Date): string {

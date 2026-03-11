@@ -1,175 +1,189 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
-import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatInputModule } from "@angular/material/input";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+
+import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
-import { environment } from "../../../environments/environment";
-
-import { BeerCheckin } from "src/app/core/models/beer.model"; // ✅ use BeerCheckin
+import {
+  BaseCardData,
+  CardExtraData,
+  MapData,
+} from "../../shared/components/card/card-data.interface";
 import { DateUtils } from "../../core/utils/date-utils";
+import { CardComponent } from "../../shared/components/card/card.component";
+import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 
-type DateRangeOption = { label: string; daysBack?: number; year?: number };
+type DateRangeOption = { label: string; daysBack?: number };
 
 @Component({
   selector: "app-top-beers",
   templateUrl: "./top-beers.component.html",
   styleUrls: ["./top-beers.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRadioModule,
+    MatDialogModule,
+    CardComponent,
+  ],
 })
 export class TopBeersComponent implements OnInit {
-  public beers: BeerCheckin[] = []; // ✅ use BeerCheckin[]
-  public filteredBeers: BeerCheckin[] = [];
+  public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
 
+  // Filter state
+  public useCustomDate = false;
+  public selectedRange: DateRangeOption;
+  public customStartDate: Date | null = null;
+  public topX = 5;
+  public minCheckins = 1;
+
   public dateRangeOptions: DateRangeOption[] = [
-    { label: "Last 30 days", daysBack: 30 },
-    { label: "Last 60 days", daysBack: 60 },
-    { label: "Last 90 days", daysBack: 90 },
-    { label: "Last 6 months", daysBack: 180 },
-    { label: "Last year", daysBack: 365 },
+    { label: "Overall", daysBack: 3650 },
+    { label: "Last Year", daysBack: 365 },
+    { label: "Last 6 Months", daysBack: 180 },
+    { label: "Last Month", daysBack: 30 },
+    { label: "Custom Start Date...", daysBack: -1 },
   ];
 
-  public topXOptions = [5, 10, 15, 20];
-  public minCheckinOptions = [1, 3, 5, 10];
-
-  public selectedRange: DateRangeOption = this.dateRangeOptions[0];
-  public topX = 10;
-  public minCheckins = 3;
-
-  public useCustomDate = false;
-  public customStartDate: Date = new Date();
-
-  username: string;
+  public topXOptions = [3, 5, 10, 15];
+  public minCheckinOptions = [1, 2, 3, 5, 10];
 
   constructor(
     private dataService: DataService,
-    private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {
-    this.username = environment.UNTAPPD_USERNAME;
+    this.selectedRange = this.dateRangeOptions[0];
   }
 
   ngOnInit(): void {
-    this.addYearOptions(2018);
-
-    // ✅ fetch BeerCheckin[] instead of Beer[]
     this.dataService.getBeers().subscribe({
       next: (data) => {
-        this.beers = data.beers as BeerCheckin[];
-        this.applyFilters();
-        this.cdr.detectChanges();
+        this.beers = data.beers || data?.response?.checkins?.items || [];
+        this.onFilterChange();
       },
-      error: (err) => {
-        console.error("Error fetching beers:", err);
-      },
-      complete: () => {
-        console.log("Beers fetch completed");
-      },
+      error: (err) => console.error("Error fetching beers:", err),
     });
   }
 
-  private addYearOptions(startYear: number): void {
-    const currentYear = new Date().getFullYear();
-    const years: DateRangeOption[] = [];
-
-    for (let year = currentYear; year >= startYear; year--) {
-      years.push({ label: `${year}`, year });
+  onFilterChange() {
+    if (this.selectedRange.daysBack === -1) {
+      this.useCustomDate = true;
+    } else {
+      this.useCustomDate = false;
     }
-
-    this.dateRangeOptions.push(...years);
+    this.filterAndRankBeers();
   }
 
-  public published(createdAt: string | Date): string {
-    return DateUtils.formatTimestamp(createdAt);
-  }
-
-  public applyFilters(): void {
+  filterAndRankBeers() {
     let cutoffDate: Date;
 
     if (this.useCustomDate && this.customStartDate) {
       cutoffDate = this.customStartDate;
-    } else if (this.selectedRange?.year !== undefined) {
-      cutoffDate = new Date(this.selectedRange.year, 0, 1);
-    } else if (this.selectedRange?.daysBack !== undefined) {
-      cutoffDate = DateUtils.subtractDays(this.selectedRange.daysBack);
     } else {
-      cutoffDate = DateUtils.subtractDays(30);
+      // FIX: Default to a massive number if daysBack is undefined to show "Overall"
+      const days = this.selectedRange?.daysBack ?? 3650;
+      cutoffDate = DateUtils.subtractDays(days);
     }
 
-    const filtered = this.beers
-      .filter((b: BeerCheckin) => {
-        const checkinDate = DateUtils.parseDate(b.recent_created_at);
-        return (
-          b.rating_score > 0 &&
-          checkinDate >= cutoffDate &&
-          (b.count ?? 1) >= this.minCheckins
-        );
-      })
-      .sort((a: BeerCheckin, b: BeerCheckin) => {
-        if (b.rating_score === a.rating_score) {
-          return (
-            DateUtils.toTimestamp(DateUtils.parseDate(b.recent_created_at)) -
-            DateUtils.toTimestamp(DateUtils.parseDate(a.recent_created_at))
-          );
+    const beerGroups = new Map<number, BeerCheckin[]>();
+
+    this.beers.forEach((b) => {
+      // FIX: Ensure b.recent_created_at exists before parsing
+      const dateStr = b.recent_created_at || (b as any).created_at;
+      const beerDate = DateUtils.parseDate(dateStr);
+
+      if (beerDate >= cutoffDate) {
+        const bid = b.beer.bid;
+        if (!beerGroups.has(bid)) {
+          beerGroups.set(bid, []);
         }
-        return b.rating_score - a.rating_score;
+        beerGroups.get(bid)!.push(b);
+      }
+    });
+
+    const sortedBeers = Array.from(beerGroups.values())
+      .filter((group) => group.length >= this.minCheckins)
+      .map((group) => {
+        // Calculate average rating
+        const ratings = group.filter((b) => b.rating_score > 0);
+        const avgRating =
+          ratings.length > 0
+            ? ratings.reduce((acc, b) => acc + b.rating_score, 0) /
+              ratings.length
+            : 0;
+
+        return {
+          ...group[0],
+          totalCheckins: group.length,
+          avgRating: avgRating,
+        };
       })
+      .sort(
+        (a, b) =>
+          b.avgRating - a.avgRating || b.totalCheckins - a.totalCheckins,
+      )
       .slice(0, this.topX);
 
-    this.filteredBeers = filtered;
-
-    this.transformedTopBeers = filtered.map(
-      (beer: BeerCheckin, index: number) =>
-        this.transformTopBeersData(beer, index + 1),
+    this.transformedTopBeers = sortedBeers.map((b, index) =>
+      this.transformToCardData(b, index + 1),
     );
+
     this.cdr.detectChanges();
   }
 
-  public onFilterChange(): void {
-    this.applyFilters();
-  }
+  transformToCardData(beer: any, rank: number): BaseCardData {
+    const mapData: MapData | undefined = beer.brewery?.location
+      ? {
+          lat: beer.brewery.location.lat,
+          lng: beer.brewery.location.lng,
+          breweryId: beer.brewery.brewery_id,
+        }
+      : undefined;
 
-  openBadgeDialog(badge: any): void {
-    this.dialog.open(BadgeDialogComponent, {
-      width: "400px",
-      data: badge,
-    });
-  }
+    const extraData: CardExtraData = {
+      badges: [],
+      socialLinks: beer.brewery.contact,
+      mapData,
+    };
 
-  transformTopBeersData(beer: BeerCheckin, rank?: number): BaseCardData {
-    const beerSlug =
-      beer.beer.beer_slug ||
-      beer.beer.beer_name.toLowerCase().replace(/ /g, "-");
     return {
       title: beer.beer.beer_name,
       subtitle: beer.beer.beer_style,
       breweryName: beer.brewery.brewery_name,
-      description: undefined,
-      rating: beer.rating_score,
-      globalRating: beer.rating_score > 0 ? beer.rating_score : undefined,
+      rating: beer.avgRating,
       mainImage: beer.beer.beer_label,
-      secondaryImage: undefined,
+      secondaryImage: beer.brewery.brewery_label,
+      rank: rank,
       footerInfo: {
-        text: "Brewery Info",
-        link:
-          `https://untappd.com${beer.brewery.brewery_page_url}` ||
-          `https://untappd.com/b/${beerSlug}/${beer.beer.bid}`,
-        timestamp: this.published(beer.recent_created_at),
-        rightLinkText: "Beer Details",
+        text: `Check-ins: ${beer.totalCheckins}`,
+        link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
+        timestamp: `Last: ${DateUtils.getTimeAgo(DateUtils.parseDate(beer.recent_created_at))}`,
       },
-      extraData: {
-        badges: [],
-        socialLinks: undefined, // not in BeerCheckin
-        mapData: {
-          lat: undefined,
-          lng: undefined,
-          breweryId: undefined,
-        },
-        venueId: undefined,
-        checkinId: beer.recent_checkin_id,
-        userName: this.username,
-      },
-      rank,
+      extraData,
     };
+  }
+
+  openStyleDialog(style: string) {
+    const beersInStyle = this.beers.filter((b) => b.beer.beer_style === style);
+    this.dialog.open(BeerStyleDialogComponent, {
+      data: { style, beers: beersInStyle },
+      width: "600px",
+    });
   }
 }

@@ -1,7 +1,72 @@
-<div class="bg-img">
-  <div class="wrapper">
-    <button class="mat-raised-button" id="button">
-      <a routerLink="/checkins">Latest Checkins</a>
-    </button>
+<div class="home-container">
+  <div class="hero">
+    <img
+      src="assets/images/LiquidStatsLogo.png"
+      alt="Liquid Stats Logo"
+      class="logo-hero"
+    />
+
+    <div class="hero-content-wrapper">
+      <p class="hero-subtitle">Track every pour you enjoy.</p>
+      <div class="hero-buttons">
+        <button mat-flat-button color="primary" routerLink="/checkins">
+          Latest Checkins
+        </button>
+        <button mat-flat-button routerLink="/stats">View Stats</button>
+      </div>
+    </div>
   </div>
+
+  <hr class="section-divider" />
+
+  <section class="quick-stats">
+    <mat-card class="stat-card">
+      <mat-icon>local_drink</mat-icon>
+      <div class="stat-number">{{ totalCheckins }}</div>
+      <div class="stat-label">Checkins</div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>star</mat-icon>
+      <div class="stat-number">{{ averageRating | number: "1.1-1" }}</div>
+      <div class="stat-label">Avg Rating</div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>public</mat-icon>
+      <div class="stat-number">{{ countriesTried }}</div>
+      <div class="stat-label">Countries</div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>business</mat-icon>
+      <div class="stat-number">{{ breweriesVisited }}</div>
+      <div class="stat-label">Breweries</div>
+    </mat-card>
+  </section>
+
+  <hr class="section-divider" />
+
+  <section class="recent-checkins">
+    <h3>Recent Checkins</h3>
+    <div class="recent-beer-cards">
+      <mat-card
+        class="beer-card clickable-card"
+        *ngFor="let beer of recentBeers"
+        [routerLink]="['/checkins', beer.checkin_id]"
+      >
+        <img
+          mat-card-image
+          [src]="beer.image"
+          [alt]="beer.name"
+          (error)="handleImageError($event)"
+        />
+        <mat-card-content>
+          <h4>{{ beer.name }}</h4>
+          <p class="brewery-name">{{ beer.brewery }}</p>
+          <p class="rating-text">⭐ {{ beer.rating | number: "1.1-1" }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
 </div>

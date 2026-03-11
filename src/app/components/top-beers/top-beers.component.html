@@ -3,38 +3,33 @@
 <div class="main-content-container">
   <!-- Filters Section -->
   <div class="filter-card">
-    <div class="filter-radio-group">
-      <mat-radio-group [(ngModel)]="useCustomDate" (change)="onFilterChange()">
-        <mat-radio-button [value]="false"> Predefined Range </mat-radio-button>
-        <mat-radio-button [value]="true"> Custom Start Date </mat-radio-button>
-      </mat-radio-group>
-    </div>
-
     <div class="filter-controls">
-      <!-- Predefined Range -->
-      @if (!useCustomDate) {
-        <mat-form-field appearance="outline">
-          <mat-label>Time Range</mat-label>
-          <mat-select
-            [(ngModel)]="selectedRange"
-            (selectionChange)="onFilterChange()"
-          >
-            @for (option of dateRangeOptions; track option.label) {
-              <mat-option [value]="option">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
+      <!-- Time Range Dropdown -->
+      <mat-form-field appearance="outline">
+        <mat-label>Time Range</mat-label>
+        <mat-select
+          [(ngModel)]="selectedRange"
+          (selectionChange)="onFilterChange()"
+        >
+          @for (option of dateRangeOptions; track option.label) {
+            <mat-option [value]="option">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
       <!-- Custom Date Picker -->
       @if (useCustomDate) {
-        <mat-form-field appearance="outline">
-          <mat-label>Custom Start Date</mat-label>
+        <mat-form-field
+          appearance="outline"
+          subscriptSizing="dynamic"
+          class="date-picker-field"
+        >
+          <mat-label>Start Date</mat-label>
           <input
             matInput
             [matDatepicker]="picker"
             [(ngModel)]="customStartDate"
-            (dateChange)="onFilterChange()"
+            readonly
           />
           <mat-datepicker-toggle
             matSuffix
@@ -78,10 +73,7 @@
   <!-- Main container for cards -->
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (beer of transformedTopBeers; track beer.title; let i = $index) {
-      <app-card [cardData]="beer" (badgeClick)="openBadgeDialog($event)">
-      </app-card>
+      <app-card [cardData]="beer"> </app-card>
     }
   </div>
 </div>
-
-<app-powered-by></app-powered-by>

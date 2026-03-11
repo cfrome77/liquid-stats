@@ -1,3 +1,96 @@
-<div class="map-wrapper">
-  <div [id]="mapId"></div>
-</div>
+<mat-sidenav-container class="map-sidenav-container">
+  <!-- Filter Drawer -->
+  <mat-sidenav
+    #drawer
+    [mode]="isMobile ? 'over' : 'side'"
+    [(opened)]="filterOpen"
+    [autoFocus]="false"
+    class="filter-drawer"
+  >
+    <div class="filter-header">
+      <h3>Filters</h3>
+      <button mat-icon-button *ngIf="isMobile" (click)="drawer.close()">
+        ✕
+      </button>
+    </div>
+
+    <div class="filter-body">
+      <input
+        type="text"
+        placeholder="Search by name..."
+        [(ngModel)]="filterName"
+        (input)="applyFilters()"
+      />
+
+      <select [(ngModel)]="filterStyle" (change)="applyFilters()">
+        <option value="">All Styles</option>
+        <option *ngFor="let style of beerStyles" [value]="style">
+          {{ style }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="filterCountry" (change)="applyFilters()">
+        <option value="">All Countries</option>
+        <option *ngFor="let country of countries" [value]="country">
+          {{ country }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="filterRating" (change)="applyFilters()">
+        <option value="">Any Rating</option>
+        <option *ngFor="let r of [5, 4, 3, 2, 1]" [value]="r">{{ r }}+</option>
+      </select>
+
+      <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Top Controls -->
+    <div class="top-controls">
+      <button class="drawer-toggle" (click)="drawer.toggle()">
+        {{ filterOpen ? "Close Filters" : "☰ Filters" }}
+      </button>
+    </div>
+
+    <!-- Map Wrapper -->
+    <div class="map-wrapper">
+      <div [id]="mapId" class="leaflet-map"></div>
+    </div>
+
+    <!-- Brewery Overlay -->
+    <div class="map-info-panel mat-elevation-z4" *ngIf="selectedBrewery">
+      <button class="close-btn" (click)="closeBreweryOverlay()">&times;</button>
+      <div class="brewery-header">
+        <img
+          [src]="selectedBrewery.logo"
+          class="brewery-logo"
+          [alt]="selectedBrewery.name"
+        />
+        <div class="brewery-details">
+          <h2>{{ selectedBrewery.name }}</h2>
+          <p>{{ selectedBrewery.city }}, {{ selectedBrewery.state }}</p>
+          <p class="checkin-count">
+            Total Check-ins: {{ selectedBrewery.checkIns.length }}
+          </p>
+        </div>
+      </div>
+
+      <ul class="checkin-list">
+        <li
+          *ngFor="let checkIn of selectedBrewery.checkIns"
+          (click)="openCheckin('https://untappd.com/c/' + checkIn.checkInId)"
+        >
+          <img [src]="checkIn.beerLabel" class="beer-label" alt="Beer Label" />
+          <div class="beer-info">
+            <strong class="beer-name">{{ checkIn.beerName }}</strong>
+            <span class="beer-meta">{{ checkIn.beerStyle }}</span>
+            <span class="beer-meta">{{ checkIn.beerABV }}% ABV</span>
+            <span class="beer-meta rating">Rating: {{ checkIn.rating }}/5</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

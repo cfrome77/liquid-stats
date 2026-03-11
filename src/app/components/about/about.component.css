@@ -10,8 +10,8 @@
   overflow: hidden;
 
   /* Fix text contrast properly */
-  background-color: var(--mat-surface, #1e1e1e);
-  color: var(--mat-on-surface, #f5f5f5);
+  background-color: var(--card-bg);
+  color: var(--text-color);
 }
 
 /* Prevent Material from adding its own scroll */
@@ -28,7 +28,7 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   padding: 16px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--divider-color);
   flex-shrink: 0;
 }
 
@@ -59,7 +59,7 @@
 
 .about-actions {
   padding: 16px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--divider-color);
   flex-shrink: 0;
 }
 
@@ -123,7 +123,7 @@
   border-radius: 14px;
 
   /* FIXED contrast */
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: var(--chip-bg);
   color: inherit;
 
   border-left: 4px solid #ffb74d;

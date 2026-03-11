@@ -1,3 +1,4 @@
+/* --- Basic Typography & Resets --- */
 p {
   color: var(--text-color);
   margin: 0 !important;
@@ -7,23 +8,12 @@ h1 {
   color: var(--header-text);
 }
 
-/* Existing style */
 .overallRating {
   float: left;
   clear: left;
 }
 
-/* New styles for Top Beers page */
-.filter-radio-group {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.filter-radio-group mat-radio-button {
-  margin-right: 20px;
-}
-
+/* --- Filter Container & Layout --- */
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
@@ -33,10 +23,57 @@ h1 {
 }
 
 .filter-controls mat-form-field {
-  flex: 1;
-  min-width: 150px;
+  flex: 1 1 0px !important; /* Force equal widths by ignoring content length */
+  min-width: 180px;
+  width: 0;
+  margin-bottom: 0 !important;
 }
 
+/* --- Vertical Height & Overlap Fixes --- */
+:host ::ng-deep {
+  /* 1. Force the exact same height and background on all field boxes */
+  .filter-controls .mat-mdc-text-field-wrapper {
+    height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* 2. Remove internal padding that makes the Date Picker taller */
+  .filter-controls .mat-mdc-form-field-infix {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* 3. Date Picker Overlap: Create a 'dead zone' for text so it stops before the icon */
+  .date-picker-field input.mat-mdc-input-element {
+    padding-right: 35px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+
+  /* 4. Center the calendar icon vertically */
+  .date-picker-field .mat-mdc-form-field-icon-suffix {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* 5. Remove the bottom 'subscript' area that adds ghost height */
+  .filter-controls .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+  }
+
+  /* 6. Adjust label position to be centered in the 52px height */
+  .filter-controls .mdc-notched-outline__label {
+    top: 14px !important;
+  }
+}
+
+/* --- Filter Results Text --- */
 .filter-results {
   text-align: center;
   color: var(--text-color);
@@ -45,27 +82,25 @@ h1 {
   margin-top: 10px !important;
 }
 
-/* Ensure labels are visible on card */
-:host ::ng-deep .filter-card mat-label {
-  color: var(--text-color) !important;
-  opacity: 0.8;
-}
+/* --- Material Component Theming (Colors) --- */
+:host ::ng-deep {
+  .filter-card mat-label {
+    color: var(--text-color) !important;
+    opacity: 0.8;
+  }
 
-:host ::ng-deep .filter-card .mat-mdc-select-value,
-:host ::ng-deep .filter-card .mat-mdc-select-arrow,
-:host ::ng-deep .filter-card .mat-mdc-radio-button label {
-  color: var(--text-color) !important;
-}
+  .filter-card .mat-mdc-select-value,
+  .filter-card .mat-mdc-select-arrow {
+    color: var(--text-color) !important;
+  }
 
-/* Material Radio Button internal colors */
-:host ::ng-deep .filter-card .mat-mdc-radio-button .mdc-radio__outer-circle {
-  border-color: var(--input-outline) !important;
-}
+  .filter-card .mat-mdc-radio-button .mdc-radio__outer-circle {
+    border-color: var(--input-outline) !important;
+  }
 
-:host
-  ::ng-deep
   .filter-card
-  .mat-mdc-radio-button.mat-mdc-radio-checked
-  .mdc-radio__outer-circle {
-  border-color: var(--accent-blue) !important;
+    .mat-mdc-radio-button.mat-mdc-radio-checked
+    .mdc-radio__outer-circle {
+    border-color: var(--accent-blue) !important;
+  }
 }
