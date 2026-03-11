@@ -21,7 +21,7 @@
             {{ cardData.title }}
           </h3>
           @if (cardData.subtitle) {
-            <div class="subtitle">{{ cardData.subtitle }}</div>
+            <div class="subtitle" [innerHTML]="cardData.subtitle"></div>
           }
           @if (cardData.breweryName) {
             <div class="brewery-name">{{ cardData.breweryName }}</div>

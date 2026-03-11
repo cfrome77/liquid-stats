@@ -1,26 +1,25 @@
 import {
   Component,
   AfterViewInit,
-  Inject,
-  PLATFORM_ID,
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
   ViewChild,
   ElementRef,
   HostListener,
+  Inject,
+  PLATFORM_ID,
 } from "@angular/core";
 import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { MatDividerModule } from "@angular/material/divider";
-import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatSidenav, MatSidenavModule } from "@angular/material/sidenav";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { BreakpointObserver } from "@angular/cdk/layout";
-import {
-  MarkerService,
-  BreweryMarker,
-} from "src/app/core/services/marker.service";
+import { Subscription } from "rxjs";
+import { MarkerService } from "src/app/core/services/marker.service";
 import { DataService } from "src/app/core/services/data.service";
 import * as L from "leaflet";
 import "leaflet.markercluster";
@@ -44,6 +43,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   public mapId = "myMap";
   public selectedBrewery: any = null;
   private map: L.Map | undefined;
+  private routeSub: Subscription | undefined;
 
   public filterOpen = false;
   public filterName = "";
@@ -53,12 +53,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public beerStyles: string[] = [];
   public countries: string[] = [];
-
   private allBeers: BeerCheckin[] = [];
   public isMobile = false;
 
+  @ViewChild("drawer") drawer!: MatSidenav;
   @ViewChild("overlayPanel") overlayPanel?: ElementRef;
-  @ViewChild("drawerPanel") drawerPanel?: ElementRef;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -66,6 +65,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
     private breakpointObserver: BreakpointObserver,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -81,9 +81,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.initMap();
 
-    // Close overlay on map click
+    // Initial invalidateSize after DOM rendered
+    setTimeout(() => this.map?.invalidateSize(), 0);
+
+    // Close overlay when clicking on map
     this.map!.on("click", () => this.closeBreweryOverlay());
 
+    // Listen to drawer open/close to recalc map size
+    this.drawer.openedStart.subscribe(() =>
+      setTimeout(() => this.map?.invalidateSize(), 0),
+    );
+    this.drawer.closedStart.subscribe(() =>
+      setTimeout(() => this.map?.invalidateSize(), 0),
+    );
+
+    // Load beer data
     this.dataService.getBeers().subscribe({
       next: (data) => {
         this.allBeers = data?.beers || [];
@@ -98,8 +110,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
           ),
         );
 
-        // Create markers and attach click callback
         this.updateMarkers(this.allBeers);
+
+        // Ensure map resizes after markers added
+        setTimeout(() => this.map?.invalidateSize(), 0);
+
+        // Listen for deep links (URL params)
+        this.routeSub = this.route.queryParams.subscribe((params) => {
+          if (params["lat"] && params["lng"] && params["breweryId"]) {
+            this.handleDeepLink(
+              parseFloat(params["lat"]),
+              parseFloat(params["lng"]),
+              params["breweryId"],
+            );
+          }
+        });
 
         this.cdr.detectChanges();
       },
@@ -107,18 +132,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  /** Recalculate map if window resizes */
+  @HostListener("window:resize")
+  onResize() {
+    setTimeout(() => this.map?.invalidateSize(), 0);
+  }
+
   ngAfterViewChecked() {
-    // Disable map click propagation on overlay/drawer
     if (this.overlayPanel)
       L.DomEvent.disableClickPropagation(this.overlayPanel.nativeElement);
-    if (this.drawerPanel)
-      L.DomEvent.disableClickPropagation(this.drawerPanel.nativeElement);
   }
 
   ngOnDestroy(): void {
     if (this.map) this.map.remove();
+    this.routeSub?.unsubscribe();
   }
 
+  /** Initialize Leaflet map */
   private initMap(): void {
     if (this.map) return;
 
@@ -146,58 +176,72 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }).addTo(this.map);
   }
 
+  /** Open brewery overlay */
+  openBreweryOverlay(breweryId: string) {
+    const marker = this.markerService.getMarkerByBreweryId(breweryId);
+    if (!marker) return;
+
+    this.selectedBrewery = {
+      breweryId: marker.breweryId,
+      name: marker.checkInsData?.name,
+      city: marker.checkInsData?.city,
+      state: marker.checkInsData?.state,
+      logo: marker.checkInsData?.logo,
+      checkIns: this.getFilteredCheckIns(marker.breweryId!),
+    };
+    this.cdr.detectChanges();
+  }
+
   /** Opens a single check-in in a new tab */
   openCheckin(url: string) {
     window.open(url, "_blank");
   }
 
-  /** Closes the brewery overlay panel */
+  /** Close overlay */
   closeBreweryOverlay() {
     this.selectedBrewery = null;
   }
 
-  /** Handles escape key to close overlay */
+  /** Escape key closes overlay */
   @HostListener("document:keydown.escape")
   handleEscape() {
     this.closeBreweryOverlay();
   }
 
-  /** Apply filters and update markers */
-  applyFilters() {
-    if (!this.map || !this.allBeers) return;
+  /** Update markers */
+  private updateMarkers(beers: BeerCheckin[]) {
+    if (!this.map) return;
 
-    let filtered = this.allBeers;
+    this.markerService.makeBreweryMarkers(this.map, beers, (markerData) => {
+      this.selectedBrewery = {
+        breweryId: markerData.breweryId,
+        name: markerData.name,
+        city: markerData.city,
+        state: markerData.state,
+        logo: markerData.logo,
+        checkIns: markerData.checkIns,
+      };
+      this.cdr.detectChanges();
+    });
 
-    if (this.filterName) {
-      const nameLower = this.filterName.toLowerCase();
-      filtered = filtered.filter((b) =>
-        b.brewery.brewery_name.toLowerCase().includes(nameLower),
+    // Update overlay if a brewery is already selected
+    if (this.selectedBrewery) {
+      const marker = this.markerService.getMarkerByBreweryId(
+        this.selectedBrewery.breweryId!,
       );
-    }
-    if (this.filterStyle)
-      filtered = filtered.filter((b) => b.beer.beer_style === this.filterStyle);
-    if (this.filterCountry)
-      filtered = filtered.filter(
-        (b) => b.brewery.country_name === this.filterCountry,
-      );
-    if (this.filterRating) {
-      const ratingNum = Number(this.filterRating);
-      filtered = filtered.filter((b) => (b.rating_score ?? 0) >= ratingNum);
+      if (marker) {
+        this.selectedBrewery.checkIns = marker.checkInsData?.checkIns || [];
+        this.cdr.detectChanges();
+      } else {
+        this.selectedBrewery = null;
+      }
     }
 
-    this.updateMarkers(filtered);
+    // After markers added, recalc map size
+    setTimeout(() => this.map?.invalidateSize(), 0);
   }
 
-  /** Reset all filters */
-  resetFilters() {
-    this.filterName = "";
-    this.filterStyle = "";
-    this.filterCountry = "";
-    this.filterRating = "";
-    this.applyFilters();
-  }
-
-  /** Get filtered check-ins for a specific brewery */
+  /** Filter check-ins */
   private getFilteredCheckIns(breweryId: string) {
     return this.allBeers
       .filter((b) => b.brewery.brewery_id?.toString() === breweryId)
@@ -228,50 +272,53 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       }));
   }
 
-  /** Update markers and overlay after filtering */
-  private updateMarkers(beers: BeerCheckin[]) {
+  /** Handle deep link from URL */
+  private handleDeepLink(lat: number, lng: number, breweryId: string) {
     if (!this.map) return;
 
-    // Pass callback so marker click opens overlay with correct check-ins
-    this.markerService.makeBreweryMarkers(this.map, beers, (markerData) => {
-      this.selectedBrewery = {
-        breweryId: markerData.breweryId,
-        name: markerData.name,
-        city: markerData.city,
-        state: markerData.state,
-        logo: markerData.logo,
-        checkIns: markerData.checkIns, // <-- use the checkIns passed from MarkerService
-      };
-      this.cdr.detectChanges();
-    });
+    this.map.setView([lat, lng], 16, { animate: true, duration: 1.5 });
+    this.openBreweryOverlay(breweryId);
 
-    // If overlay is already open, refresh it with filtered markerData
-    if (this.selectedBrewery) {
-      const marker = this.markerService.getMarkerByBreweryId(
-        this.selectedBrewery.breweryId!,
-      );
-      if (marker) {
-        this.selectedBrewery.checkIns = marker.checkInsData?.checkIns || [];
-        this.cdr.detectChanges();
-      } else {
-        this.selectedBrewery = null;
-      }
+    const marker = this.markerService.getMarkerByBreweryId(breweryId);
+    if (marker && marker.getElement()) {
+      const el = marker.getElement();
+      el?.classList.add("marker-pulse");
+      setTimeout(() => el?.classList.remove("marker-pulse"), 3000);
     }
   }
 
-  /** Open brewery overlay with filtered check-ins */
-  openBreweryOverlay(breweryId: string) {
-    const marker = this.markerService.getMarkerByBreweryId(breweryId);
-    if (!marker) return;
+  /** Apply filters */
+  applyFilters() {
+    if (!this.map || !this.allBeers) return;
 
-    this.selectedBrewery = {
-      breweryId: marker.breweryId,
-      name: marker.checkInsData?.name,
-      city: marker.checkInsData?.city,
-      state: marker.checkInsData?.state,
-      logo: marker.checkInsData?.logo,
-      checkIns: this.getFilteredCheckIns(marker.breweryId!),
-    };
-    this.cdr.detectChanges();
+    let filtered = this.allBeers;
+
+    if (this.filterName) {
+      const nameLower = this.filterName.toLowerCase();
+      filtered = filtered.filter((b) =>
+        b.brewery.brewery_name.toLowerCase().includes(nameLower),
+      );
+    }
+    if (this.filterStyle)
+      filtered = filtered.filter((b) => b.beer.beer_style === this.filterStyle);
+    if (this.filterCountry)
+      filtered = filtered.filter(
+        (b) => b.brewery.country_name === this.filterCountry,
+      );
+    if (this.filterRating) {
+      const ratingNum = Number(this.filterRating);
+      filtered = filtered.filter((b) => (b.rating_score ?? 0) >= ratingNum);
+    }
+
+    this.updateMarkers(filtered);
+  }
+
+  /** Reset filters */
+  resetFilters() {
+    this.filterName = "";
+    this.filterStyle = "";
+    this.filterCountry = "";
+    this.filterRating = "";
+    this.applyFilters();
   }
 }

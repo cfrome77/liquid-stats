@@ -49,7 +49,7 @@ export class TopBeersComponent implements OnInit {
   public useCustomDate = false;
   public selectedRange: DateRangeOption;
   public customStartDate: Date | null = null;
-  public topX = 25;
+  public topX = 5;
   public minCheckins = 1;
 
   public dateRangeOptions: DateRangeOption[] = [
@@ -60,13 +60,13 @@ export class TopBeersComponent implements OnInit {
     { label: "Custom Start Date...", daysBack: -1 },
   ];
 
-  public topXOptions = [10, 25, 50, 100];
+  public topXOptions = [3, 5, 10, 15];
   public minCheckinOptions = [1, 2, 3, 5, 10];
 
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.selectedRange = this.dateRangeOptions[0];
   }
@@ -74,7 +74,7 @@ export class TopBeersComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getBeers().subscribe({
       next: (data) => {
-        this.beers = data?.response?.checkins?.items || [];
+        this.beers = data.beers || data?.response?.checkins?.items || [];
         this.onFilterChange();
       },
       error: (err) => console.error("Error fetching beers:", err),
@@ -92,21 +92,22 @@ export class TopBeersComponent implements OnInit {
 
   filterAndRankBeers() {
     let cutoffDate: Date;
-    if (this.useCustomDate) {
-      if (!this.customStartDate) {
-        // Don't filter until a date is picked
-        this.transformedTopBeers = [];
-        return;
-      }
+
+    if (this.useCustomDate && this.customStartDate) {
       cutoffDate = this.customStartDate;
     } else {
-      cutoffDate = DateUtils.subtractDays(this.selectedRange.daysBack || 0);
+      // FIX: Default to a massive number if daysBack is undefined to show "Overall"
+      const days = this.selectedRange?.daysBack ?? 3650;
+      cutoffDate = DateUtils.subtractDays(days);
     }
 
-    // Grouping by Beer ID (bid) to be more accurate than name
     const beerGroups = new Map<number, BeerCheckin[]>();
+
     this.beers.forEach((b) => {
-      const beerDate = DateUtils.parseDate(b.recent_created_at);
+      // FIX: Ensure b.recent_created_at exists before parsing
+      const dateStr = b.recent_created_at || (b as any).created_at;
+      const beerDate = DateUtils.parseDate(dateStr);
+
       if (beerDate >= cutoffDate) {
         const bid = b.beer.bid;
         if (!beerGroups.has(bid)) {
@@ -116,24 +117,27 @@ export class TopBeersComponent implements OnInit {
       }
     });
 
-    // Calculate ranking and filter by min check-ins
     const sortedBeers = Array.from(beerGroups.values())
-      .filter(group => group.length >= this.minCheckins)
+      .filter((group) => group.length >= this.minCheckins)
       .map((group) => {
+        // Calculate average rating
+        const ratings = group.filter((b) => b.rating_score > 0);
         const avgRating =
-          group.reduce((acc, b) => acc + b.rating_score, 0) / group.length;
+          ratings.length > 0
+            ? ratings.reduce((acc, b) => acc + b.rating_score, 0) /
+              ratings.length
+            : 0;
+
         return {
           ...group[0],
           totalCheckins: group.length,
           avgRating: avgRating,
         };
       })
-      .sort((a, b) => {
-        if (b.avgRating !== a.avgRating) {
-          return b.avgRating - a.avgRating;
-        }
-        return b.totalCheckins - a.totalCheckins;
-      })
+      .sort(
+        (a, b) =>
+          b.avgRating - a.avgRating || b.totalCheckins - a.totalCheckins,
+      )
       .slice(0, this.topX);
 
     this.transformedTopBeers = sortedBeers.map((b, index) =>
@@ -175,16 +179,11 @@ export class TopBeersComponent implements OnInit {
     };
   }
 
-  openBadgeDialog(event: { event: MouseEvent; badge: any }) {
-    // This is a placeholder since we don't have badges here yet,
-    // but the template might call it if we added badges to extraData
-  }
-
   openStyleDialog(style: string) {
-    const beersInStyle = this.beers.filter(b => b.beer.beer_style === style);
+    const beersInStyle = this.beers.filter((b) => b.beer.beer_style === style);
     this.dialog.open(BeerStyleDialogComponent, {
       data: { style, beers: beersInStyle },
-      width: '600px'
+      width: "600px",
     });
   }
 }

@@ -19,14 +19,16 @@
 
       <!-- Custom Date Picker -->
       @if (useCustomDate) {
-        <mat-form-field appearance="outline">
-          <mat-label>Custom Start Date</mat-label>
+        <mat-form-field
+          appearance="outline"
+          subscriptSizing="dynamic"
+          class="date-picker-field"
+        >
+          <mat-label>Start Date</mat-label>
           <input
             matInput
             [matDatepicker]="picker"
             [(ngModel)]="customStartDate"
-            (dateChange)="onFilterChange()"
-            (click)="picker.open()"
             readonly
           />
           <mat-datepicker-toggle
@@ -71,8 +73,7 @@
   <!-- Main container for cards -->
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (beer of transformedTopBeers; track beer.title; let i = $index) {
-      <app-card [cardData]="beer" (badgeClick)="openBadgeDialog($event)">
-      </app-card>
+      <app-card [cardData]="beer"> </app-card>
     }
   </div>
 </div>

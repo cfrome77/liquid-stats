@@ -12,10 +12,14 @@
     "build:prod": "npm run generate-env && ng build --project liquid-stats --configuration production",
     "watch": "npm run generate-env && ng build --project liquid-stats --watch --configuration development",
     "test": "npm run generate-env && ng test --project liquid-stats",
+    "test:ci": "npm run generate-env && ng test --project liquid-stats --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint --project liquid-stats",
     "analyze": "webpack-bundle-analyzer dist/liquid-stats/stats.json",
     "format:check": "prettier --check .",
-    "format:write": "prettier --write ."
+    "format:write": "prettier --write .",
+    "prepare": "husky install",
+    "reset-env": "node scripts/reset-environment.js",
+    "restore-env": "node scripts/restore-environment.js"
   },
   "dependencies": {
     "@angular/animations": "21.1.4",
@@ -62,6 +66,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "globby": "^11.1.0",
+    "husky": "^8.0.0",
     "jasmine": "^6.0.0",
     "jasmine-core": "~4.3.0",
     "jasmine-spec-reporter": "~7.0.0",

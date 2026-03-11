@@ -68,11 +68,32 @@
   margin-right: 4px;
 }
 
+/* Base style for the container */
 .subtitle {
   font-size: 0.9rem;
   color: var(--text-color);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+/* Reach inside the injected HTML to style the links */
+.subtitle ::ng-deep a {
+  color: var(--accent-glow, #ffca28) !important;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+  word-break: break-word;
+}
+
+.subtitle ::ng-deep a:hover {
   opacity: 0.8;
-  font-weight: 500;
+  text-decoration: underline;
+}
+
+/* Ensure bold text from the API matches your theme */
+.subtitle ::ng-deep strong {
+  font-weight: 700;
+  color: var(--header-text);
 }
 
 .brewery-name {
@@ -127,9 +148,39 @@
   margin-left: auto;
 }
 
+/* Ensure the chip set has room for the chips to "grow" without clipping */
+.chip {
+  padding: 4px 0;
+}
+
 .clickable-chip {
-  cursor: pointer;
-  transition: background-color 0.2s;
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  user-select: none;
+}
+
+/* The Hover Animation */
+.clickable-chip:hover {
+  /* Lift and slightly grow */
+  transform: translateY(-3px) scale(1.05);
+
+  /* Add a subtle glow matching your amber/yellow theme */
+  box-shadow: 0 4px 8px rgba(255, 202, 40, 0.3) !important;
+
+  /* Lighten the background slightly on hover */
+  filter: brightness(1.1);
+}
+
+/* The "Click" Animation (Active state) */
+.clickable-chip:active {
+  transform: translateY(0) scale(0.95);
+  box-shadow: none !important;
+}
+
+/* Make the avatar (badge image) rotate slightly on hover for extra flair */
+.clickable-chip:hover img {
+  transform: rotate(5deg);
+  transition: transform 0.2s ease;
 }
 
 footer {
@@ -176,7 +227,8 @@ footer {
     padding: 8px 12px;
   }
 
-  .beer-label, .brewery-label {
+  .beer-label,
+  .brewery-label {
     height: 40px;
     width: 40px;
   }

@@ -7,6 +7,7 @@ import { LoggingService } from "src/app/core/services/logger.service";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-badges",
@@ -27,6 +28,7 @@ export class BadgesComponent implements OnInit {
     private dataService: DataService,
     private logger: LoggingService,
     private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer, // Inject the Sanitizer
   ) {}
 
   ngOnInit(): void {
@@ -61,15 +63,29 @@ export class BadgesComponent implements OnInit {
   }
 
   transformBadgeData(badge: Badge): BaseCardData {
+    const dateObj = new Date(badge.earned_at);
+    const formattedDate = dateObj.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
     return {
       title: badge.badge_name,
-      subtitle: badge.badge_description,
+      // We wrap the description in the sanitizer.
+      // This allows <a> and <strong> tags to work.
+      subtitle: this.sanitizer.bypassSecurityTrustHtml(
+        badge.badge_description,
+      ) as any,
       mainImage: badge.media.badge_image_sm,
       footerInfo: {
-        text: `Earned: ${badge.earned_at}`,
+        text: `Earned: ${formattedDate}`,
         link: undefined,
-        timestamp: badge.earned_at
-      }
+        timestamp: formattedDate,
+      },
     };
   }
 }

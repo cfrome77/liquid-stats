@@ -1,26 +1,95 @@
 .badge-dialog-container {
-  color: white;
+  text-align: center;
+  padding: 16px;
 }
 
-.badge-header {
-  text-align: center;
+.badge-title {
+  color: var(--accent-glow, #ffca28);
+  font-weight: 700;
+  margin-bottom: 8px !important;
+}
+
+/* Adds a soft spotlight behind the badge */
+.badge-icon-wrapper {
+  background: radial-gradient(
+    circle,
+    rgba(255, 202, 40, 0.15) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  padding: 20px;
+  display: inline-block;
+  border-radius: 50%;
 }
 
 .badge-image {
-  width: 150px;
+  width: 160px;
   height: auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.description-container {
   margin: 20px 0;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  line-height: 1.6;
+  font-size: 1rem;
+  color: #e0e0e0;
 }
 
-.description,
+/* This targets the yellow links inside the description */
+.description-container ::ng-deep a {
+  color: var(--accent-glow, #ffca28) !important;
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px dashed rgba(255, 202, 40, 0.4);
+}
+
+.description-container ::ng-deep a:hover {
+  border-bottom: 1px solid var(--accent-glow);
+}
+
 .date {
-  text-align: left;
-  margin: 10px 0;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  font-style: italic;
+  margin-top: 10px;
 }
 
-mat-dialog-actions {
-  justify-content: center;
+.close-btn {
+  background-color: var(--accent-glow, #ffca28) !important;
+  color: #121212 !important;
+  font-weight: 800;
+  padding: 0 40px;
+  border-radius: 20px;
+}
+
+/* Mobile Adjustments (Phones) */
+@media (max-width: 480px) {
+  .badge-dialog-container {
+    padding: 8px;
+  }
+
+  .badge-title {
+    font-size: 1.25rem;
+  }
+
+  .badge-image {
+    width: 120px; /* Slightly smaller icon on small screens */
+  }
+
+  .description-container {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding: 0 10px;
+  }
+
+  .cheers-btn {
+    width: 100%; /* Full width button on mobile for easier tapping */
+    padding: 12px 0;
+  }
+}
+
+/* Tablet Adjustments */
+@media (min-width: 481px) and (max-width: 768px) {
+  .badge-image {
+    width: 140px;
+  }
 }

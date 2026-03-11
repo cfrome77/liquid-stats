@@ -37,7 +37,8 @@ export class WishlistComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getWishlist().subscribe({
       next: (data: any) => {
-        const items = data.response.beers.items || [];
+        const items = data?.response?.beers?.items || [];
+
         this.wishlist = items.map((item: any) =>
           this.transformWishlistData(item),
         );
@@ -70,7 +71,11 @@ export class WishlistComponent implements OnInit {
   updatePagination() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedWishlist = this.wishlist.slice(startIndex, endIndex);
+
+    // Transform only the slice of data for the current page
+    this.paginatedWishlist = this.wishlist
+      .slice(startIndex, endIndex)
+      .map((item) => this.transformWishlistData(item));
   }
 
   goToPage(page: number) {

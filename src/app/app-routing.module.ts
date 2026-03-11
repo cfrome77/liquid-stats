@@ -13,6 +13,11 @@ export const routes: Routes = [
     data: { animation: "CheckinsPage" }
   },
   {
+    path: "checkins/:id",
+    loadComponent: () => import("./components/checkins/checkins.component").then(m => m.CheckinsComponent),
+    data: { animation: "CheckinsPage" }
+  },
+  {
     path: "top-beers",
     loadComponent: () => import("./components/top-beers/top-beers.component").then(m => m.TopBeersComponent),
     data: { animation: "TopBeersPage" }

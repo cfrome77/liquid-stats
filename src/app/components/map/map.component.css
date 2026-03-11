@@ -1,34 +1,42 @@
 /* =========================
-   Layout Container
+   Reset & Base Layout
 ========================= */
+html,
+body,
+app-root,
+mat-sidenav-container {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* hide all scrollbars */
+}
+
 .map-sidenav-container {
   height: 100vh;
   width: 100%;
   position: relative;
   background-color: var(--map-bg);
   color: var(--text-color);
+  overflow: hidden; /* prevents container scroll */
 }
 
 /* =========================
-   Drawer (Filter Panel)
+   Sidenav Drawer (Filter Panel)
 ========================= */
 .filter-drawer {
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
+  height: 100%; /* full container height */
   width: 300px;
   padding: 16px;
   box-sizing: border-box;
   background-color: var(--card-bg);
   color: var(--text-color);
-  transition:
-    transform 0.3s ease,
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: transform 0.3s ease;
   z-index: 1150;
   transform: translateX(-100%);
-  overflow-y: auto;
+  overflow-y: auto; /* scroll inside drawer only */
 }
 
 .filter-drawer.open {
@@ -42,22 +50,21 @@
 }
 
 .filter-drawer .filter-header h3 {
-  color: var(--header-text);
   margin: 0 0 10px 0;
   font-size: 16px;
+  color: var(--header-text);
 }
 
 .filter-drawer .filter-body input,
 .filter-drawer .filter-body select {
-  background-color: var(--input-bg);
-  color: var(--input-text);
-  border: 1px solid var(--input-outline);
+  width: 100%;
   padding: 6px 30px 6px 8px;
   border-radius: 4px;
   margin-bottom: 12px;
-  width: 100%;
   box-sizing: border-box;
-  position: relative;
+  border: 1px solid var(--input-outline);
+  background-color: var(--input-bg);
+  color: var(--input-text);
 }
 
 .filter-drawer .filter-body input::placeholder {
@@ -66,13 +73,13 @@
 }
 
 .filter-drawer .reset-btn {
-  background-color: var(--btn-primary);
-  color: var(--on-primary);
   width: 100%;
   margin-top: 10px;
   border: none;
   padding: 8px 0;
   border-radius: 4px;
+  background-color: var(--btn-primary);
+  color: var(--on-primary);
   cursor: pointer;
 }
 
@@ -81,21 +88,9 @@
 ========================= */
 mat-sidenav-content {
   height: 100%;
-  position: relative;
   display: flex;
   flex-direction: column;
-}
-
-.map-wrapper {
-  flex: 1 1 auto;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.leaflet-map {
-  width: 100%;
-  height: 100%;
+  overflow: hidden; /* prevent inner scroll */
 }
 
 .drawer-toggle {
@@ -111,6 +106,21 @@ mat-sidenav-content {
   cursor: pointer;
 }
 
+.map-wrapper {
+  flex: 1 1 auto;
+  min-height: 0; /* critical for flex containers to avoid overflow */
+  width: 100%;
+  position: relative;
+}
+
+.leaflet-map {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 /* =========================
    Brewery Info Overlay
 ========================= */
@@ -124,9 +134,6 @@ mat-sidenav-content {
   border-radius: 8px;
   max-width: 400px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
   z-index: 1200;
 }
 
@@ -143,25 +150,22 @@ mat-sidenav-content {
   object-fit: contain;
   flex-shrink: 0;
   border-radius: 8px;
-  background-color: var(--card-bg);
   padding: 6px;
+  background-color: var(--card-bg);
 }
 
 .map-info-panel .brewery-details h2 {
   margin: 0;
-  color: var(--header-text);
   font-size: 16px;
+  color: var(--header-text);
 }
 
 .map-info-panel .brewery-details p {
   margin: 2px 0;
-  color: var(--text-color);
   font-size: 13px;
+  color: var(--text-color);
 }
 
-/* =========================
-   Centered Check-in List
-========================= */
 .map-info-panel .checkin-list {
   list-style: none;
   padding: 0;
@@ -170,35 +174,32 @@ mat-sidenav-content {
   flex-direction: column;
   width: 100%;
   max-height: 300px;
-  overflow-y: auto;
+  overflow-y: auto; /* scroll inside overlay only */
 }
 
 .map-info-panel .checkin-list li {
-  width: 100%;
   display: flex;
-  flex-direction: column; /* Stack image over text */
-  align-items: center; /* Center horizontally */
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 16px 8px;
-  cursor: pointer;
-  box-sizing: border-box;
   text-align: center;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
-/* Hover State: Provides the visual cue that it's clickable */
 .map-info-panel .checkin-list li:hover {
-  background-color: rgba(255, 255, 255, 0.05); /* Subtle highlight */
-  transform: translateY(-2px); /* Slight lift effect */
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
 }
 
-/* Active State: Shrinks slightly when clicked */
 .map-info-panel .checkin-list li:active {
   transform: scale(0.98);
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Separator Logic */
 .map-info-panel .checkin-list li + li {
   border-top: 1px solid var(--divider-color);
 }
@@ -207,9 +208,9 @@ mat-sidenav-content {
   width: 60px;
   height: 60px;
   object-fit: contain;
-  flex-shrink: 0;
   margin-bottom: 8px;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .map-info-panel .beer-info {
@@ -220,17 +221,16 @@ mat-sidenav-content {
 }
 
 .map-info-panel .beer-name {
-  color: var(--strong-text);
   font-size: 14px;
   font-weight: bold;
+  color: var(--strong-text);
 }
 
 .map-info-panel .beer-meta {
-  color: var(--text-color);
   font-size: 12px;
+  color: var(--text-color);
 }
 
-/* Close button */
 .map-info-panel .close-btn {
   position: absolute;
   top: 8px;
@@ -265,5 +265,29 @@ mat-sidenav-content {
   .map-info-panel .brewery-header {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* =========================
+   Leaflet Marker Animations
+========================= */
+::ng-deep .marker-pulse {
+  animation: pulse-animation 0.8s ease-in-out 4;
+  filter: drop-shadow(0 0 12px var(--accent-glow, #ffca28)) !important;
+  z-index: 1000 !important;
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

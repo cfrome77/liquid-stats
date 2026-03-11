@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
   selector: "app-badge-dialog",
@@ -11,7 +12,16 @@ import { MatButtonModule } from "@angular/material/button";
   imports: [CommonModule, MatDialogModule, MatButtonModule],
 })
 export class BadgeDialogComponent implements OnInit {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  public safeDescription: SafeHtml = '';
 
-  ngOnInit(): void {}
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private sanitizer: DomSanitizer
+  ) {}
+
+  ngOnInit(): void {
+    if (this.data.badge_description) {
+      this.safeDescription = this.sanitizer.bypassSecurityTrustHtml(this.data.badge_description);
+    }
+  }
 }
