@@ -2,11 +2,11 @@
   <mat-toolbar
     class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
-    <button mat-button (click)="drawer.toggle()">
+    <button mat-button (click)="drawer.toggle()" aria-label="Toggle navigation menu">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <button mat-button routerLink="/">
+    <button mat-button routerLink="/" aria-label="Go to home">
       <mat-icon>home</mat-icon>
     </button>
 
@@ -179,7 +179,7 @@
     <img src="assets/images/poweredbyuntappd.png" alt="Powered by Untappd" class="untappd-logo">
   </div>
   <div class="fab-container">
-    <button mat-fab class="fab-toggler" (click)="openDialog()">
+    <button mat-fab class="fab-toggler" (click)="openDialog()" aria-label="Open about dialog">
       <mat-icon>info</mat-icon>
     </button>
   </div>

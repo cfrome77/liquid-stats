@@ -171,7 +171,13 @@ mat-toolbar {
 
 .mobile-bottom-nav a.active {
   opacity: 1;
-  color: var(--accent-indigo);
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+
+.mobile-bottom-nav a.active mat-icon {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
 }
 
 /* Responsive visibility */

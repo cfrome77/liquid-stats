@@ -145,6 +145,35 @@ export class FilterComponent implements OnChanges {
     return (parsed * 10) % 1 === 0 ? parsed.toFixed(1) : parsed.toFixed(2);
   }
 
+  getFilterIcon(field: string): string {
+    switch (field) {
+      case "brewery":
+        return "business";
+      case "beer_style":
+        return "sports_bar";
+      case "country":
+        return "public";
+      case "state":
+        return "location_on";
+      case "rating":
+        return "star";
+      case "date":
+        return "calendar_today";
+      default:
+        return "filter_alt";
+    }
+  }
+
+  isFilterModified(filter: FilterField): boolean {
+    if (filter.type === "date") {
+      return (
+        filter.selected[0] !== filter.options[0] ||
+        filter.selected[1] !== filter.options[1]
+      );
+    }
+    return filter.selected.length !== filter.options.length;
+  }
+
   shouldShowOption(option: string): boolean {
     if (!this.activeFilter) return false;
 
