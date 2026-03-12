@@ -1,16 +1,10 @@
-<h1>Wishlist</h1>
-
 <div class="main-content-container">
+  <h1>Wishlist</h1>
+
   @if (wishlist.length > 0) {
     <div class="flex-column" style="align-items: stretch; gap: 10px">
       @for (item of paginatedWishlist; track item.title) {
         <app-card [cardData]="item"></app-card>
-    } @empty {
-      <div class="empty-state">
-        <mat-icon>bookmark_border</mat-icon>
-        <p>Your wishlist is currently empty.</p>
-        <button mat-flat-button color="primary" routerLink="/checkins">Explore Beers</button>
-      </div>
       }
     </div>
 
@@ -24,8 +18,11 @@
       </app-pagination>
     }
   } @else {
-    <div class="empty-state">
-      <p>Sorry, no items have been added to this wishlist.</p>
-    </div>
+    <app-empty-state
+      icon="bookmark_border"
+      message="Your wishlist is currently empty."
+      buttonText="Explore Beers"
+      (action)="navigateToCheckins()"
+    ></app-empty-state>
   }
 </div>

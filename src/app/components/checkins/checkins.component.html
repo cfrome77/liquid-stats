@@ -1,6 +1,5 @@
-<h1>Recent Checkin List</h1>
-
 <div class="main-content-container">
+  <h1>Recent Checkin List</h1>
   <div class="flex-column" style="align-items: stretch; gap: 15px">
     @for (checkin of transformedCheckins; track checkin.extraData?.checkinId) {
       <div
@@ -11,10 +10,10 @@
         </app-card>
       </div>
     } @empty {
-      <div class="empty-state">
-        <mat-icon>history</mat-icon>
-        <p>No recent checkins found.</p>
-      </div>
+      <app-empty-state
+        icon="history"
+        message="No recent checkins found."
+      ></app-empty-state>
     }
   </div>
 </div>

@@ -2,11 +2,12 @@ import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: "app-wishlist",
@@ -20,6 +21,7 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
     RouterModule,
     CardComponent,
     PaginationComponent,
+    EmptyStateComponent,
   ],
 })
 export class WishlistComponent implements OnInit {
@@ -32,6 +34,7 @@ export class WishlistComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -88,5 +91,9 @@ export class WishlistComponent implements OnInit {
     this.itemsPerPage = items;
     this.currentPage = 1;
     this.updatePagination();
+  }
+
+  navigateToCheckins() {
+    this.router.navigate(["/checkins"]);
   }
 }
