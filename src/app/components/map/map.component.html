@@ -8,40 +8,64 @@
     class="filter-drawer"
   >
     <div class="filter-header">
-      <h3>Filters</h3>
-      <button mat-icon-button *ngIf="isMobile" (click)="drawer.close()">
-        ✕
-      </button>
+      <h3>Map Filters</h3>
+      @if (isMobile) {
+        <button mat-icon-button (click)="drawer.close()" aria-label="Close filters">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
     </div>
 
     <div class="filter-body">
-      <input
-        type="text"
-        placeholder="Search by name..."
-        [(ngModel)]="filterName"
-        (input)="applyFilters()"
-      />
+      <mat-form-field appearance="outline">
+        <mat-label>Search Brewery</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Brewery name..."
+          [(ngModel)]="filterName"
+          (input)="applyFilters()"
+        />
+        @if (filterName) {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="filterName=''; applyFilters()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
 
-      <select [(ngModel)]="filterStyle" (change)="applyFilters()">
-        <option value="">All Styles</option>
-        <option *ngFor="let style of beerStyles" [value]="style">
-          {{ style }}
-        </option>
-      </select>
+      <mat-form-field appearance="outline">
+        <mat-label>Beer Style</mat-label>
+        <mat-select [(ngModel)]="filterStyle" (selectionChange)="applyFilters()">
+          <mat-option value="">All Styles</mat-option>
+          @for (style of beerStyles; track style) {
+            <mat-option [value]="style">{{ style }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-      <select [(ngModel)]="filterCountry" (change)="applyFilters()">
-        <option value="">All Countries</option>
-        <option *ngFor="let country of countries" [value]="country">
-          {{ country }}
-        </option>
-      </select>
+      <mat-form-field appearance="outline">
+        <mat-label>Country</mat-label>
+        <mat-select [(ngModel)]="filterCountry" (selectionChange)="applyFilters()">
+          <mat-option value="">All Countries</mat-option>
+          @for (country of countries; track country) {
+            <mat-option [value]="country">{{ country }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-      <select [(ngModel)]="filterRating" (change)="applyFilters()">
-        <option value="">Any Rating</option>
-        <option *ngFor="let r of [5, 4, 3, 2, 1]" [value]="r">{{ r }}+</option>
-      </select>
+      <mat-form-field appearance="outline">
+        <mat-label>Min Rating</mat-label>
+        <mat-select [(ngModel)]="filterRating" (selectionChange)="applyFilters()">
+          <mat-option value="">Any Rating</mat-option>
+          @for (r of [5, 4, 3, 2, 1]; track r) {
+            <mat-option [value]="r">{{ r }}+ Stars</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-      <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+      <button mat-flat-button color="primary" class="reset-btn" (click)="resetFilters()">
+        <mat-icon>restart_alt</mat-icon> Reset Filters
+      </button>
     </div>
   </mat-sidenav>
 
@@ -49,8 +73,9 @@
   <mat-sidenav-content>
     <!-- Top Controls -->
     <div class="top-controls">
-      <button class="drawer-toggle" (click)="drawer.toggle()">
-        {{ filterOpen ? "Close Filters" : "☰ Filters" }}
+      <button mat-flat-button color="primary" class="drawer-toggle" (click)="drawer.toggle()">
+        <mat-icon>{{ filterOpen ? 'close' : 'menu_open' }}</mat-icon>
+        {{ filterOpen ? "Close Filters" : "Open Filters" }}
       </button>
     </div>
 
@@ -60,37 +85,38 @@
     </div>
 
     <!-- Brewery Overlay -->
-    <div class="map-info-panel mat-elevation-z4" *ngIf="selectedBrewery">
-      <button class="close-btn" (click)="closeBreweryOverlay()">&times;</button>
-      <div class="brewery-header">
-        <img
-          [src]="selectedBrewery.logo"
-          class="brewery-logo"
-          [alt]="selectedBrewery.name"
-        />
-        <div class="brewery-details">
-          <h2>{{ selectedBrewery.name }}</h2>
-          <p>{{ selectedBrewery.city }}, {{ selectedBrewery.state }}</p>
-          <p class="checkin-count">
-            Total Check-ins: {{ selectedBrewery.checkIns.length }}
-          </p>
-        </div>
-      </div>
-
-      <ul class="checkin-list">
-        <li
-          *ngFor="let checkIn of selectedBrewery.checkIns"
-          (click)="openCheckin('https://untappd.com/c/' + checkIn.checkInId)"
-        >
-          <img [src]="checkIn.beerLabel" class="beer-label" alt="Beer Label" />
-          <div class="beer-info">
-            <strong class="beer-name">{{ checkIn.beerName }}</strong>
-            <span class="beer-meta">{{ checkIn.beerStyle }}</span>
-            <span class="beer-meta">{{ checkIn.beerABV }}% ABV</span>
-            <span class="beer-meta rating">Rating: {{ checkIn.rating }}/5</span>
+    @if (selectedBrewery) {
+      <div class="map-info-panel mat-elevation-z4">
+        <button class="close-btn" (click)="closeBreweryOverlay()" aria-label="Close overlay">&times;</button>
+        <div class="brewery-header">
+          <img
+            [src]="selectedBrewery.logo"
+            class="brewery-logo"
+            [alt]="selectedBrewery.name"
+          />
+          <div class="brewery-details">
+            <h2>{{ selectedBrewery.name }}</h2>
+            <p>{{ selectedBrewery.city }}, {{ selectedBrewery.state }}</p>
+            <p class="checkin-count">
+              Total Check-ins: {{ selectedBrewery.checkIns.length }}
+            </p>
           </div>
-        </li>
-      </ul>
-    </div>
+        </div>
+
+        <ul class="checkin-list">
+          @for (checkIn of selectedBrewery.checkIns; track checkIn.checkInId) {
+            <li (click)="openCheckin('https://untappd.com/c/' + checkIn.checkInId)">
+              <img [src]="checkIn.beerLabel" class="beer-label" alt="Beer Label" />
+              <div class="beer-info">
+                <strong class="beer-name">{{ checkIn.beerName }}</strong>
+                <span class="beer-meta">{{ checkIn.beerStyle }}</span>
+                <span class="beer-meta">{{ checkIn.beerABV }}% ABV</span>
+                <span class="beer-meta rating">Rating: {{ checkIn.rating }}/5</span>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    }
   </mat-sidenav-content>
 </mat-sidenav-container>

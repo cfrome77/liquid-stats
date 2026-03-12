@@ -1,6 +1,5 @@
-<h1>Beer History</h1>
-
 <div class="main-content-container">
+  <h1>Beer History</h1>
   <div class="filter-card">
     <div class="filter-card-content">
       <div class="filter-buttons-container">
@@ -34,11 +33,12 @@
     @for (beerCard of paginatedBeers; track beerCard.title) {
       <app-card [cardData]="beerCard"></app-card>
     } @empty {
-      <div class="empty-state">
-        <mat-icon>search_off</mat-icon>
-        <p>No beers match your search criteria.</p>
-        <button mat-stroked-button (click)="resetFilters()">Clear Filters</button>
-      </div>
+      <app-empty-state
+        icon="search_off"
+        message="No beers match your search criteria."
+        buttonText="Clear Filters"
+        (action)="resetFilters()"
+      ></app-empty-state>
     }
   </div>
 

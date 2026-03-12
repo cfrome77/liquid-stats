@@ -1,26 +1,32 @@
 <!-- Filter Buttons -->
 <div class="filter-container-wrapper">
   @for (filter of filterFields; track filter.field) {
-    <label>
-      <button
-        type="button"
-        class="btn btn-primary stats-filter-button"
-        (click)="openFilterModal(filter)"
-      >
-        {{ filter.label }}
-      </button>
-    </label>
+    <button
+      type="button"
+      class="stats-filter-button"
+      [class.active-filter]="isFilterModified(filter)"
+      (click)="openFilterModal(filter)"
+      [attr.aria-label]="'Filter by ' + filter.label"
+    >
+      <mat-icon>{{ getFilterIcon(filter.field) }}</mat-icon>
+      <span>{{ filter.label }}</span>
+    </button>
   }
 </div>
 
 <!-- Modal -->
 @if (activeFilter) {
-  <div class="modal-overlay">
-    <div class="modal-content">
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
       <!-- Header -->
       <div class="modal-header">
-        <button type="button" class="back-button" (click)="closeModal()">
-          <mat-icon>arrow_back</mat-icon>
+        <button
+          type="button"
+          class="back-button"
+          (click)="closeModal()"
+          aria-label="Close modal"
+        >
+          <mat-icon>close</mat-icon>
         </button>
         <div class="modal-button-container">
           @if (activeFilter.type !== "date") {
@@ -85,21 +91,23 @@
         @if (activeFilter.type !== "date") {
           @for (option of activeFilter.options; track option) {
             @if (shouldShowOption(option)) {
-              <div>
-                <label class="filter-option-label">
-                  <input
-                    type="checkbox"
-                    [checked]="activeFilter.selected.includes(option)"
-                    (change)="onCheckboxChange(option, $event)"
-                  />
+              <label class="filter-option-label">
+                <input
+                  type="checkbox"
+                  [checked]="activeFilter.selected.includes(option)"
+                  (change)="onCheckboxChange(option, $event)"
+                />
+                <span class="option-label-text">
                   {{
                     activeFilter.field === "rating"
                       ? formatRating(option)
                       : option
-                  }}&nbsp;
-                  <span>({{ activeFilter.countMap?.[option] ?? 0 }})</span>
-                </label>
-              </div>
+                  }}
+                </span>
+                <span class="option-count">{{
+                  activeFilter.countMap?.[option] ?? 0
+                }}</span>
+              </label>
             }
           }
         }

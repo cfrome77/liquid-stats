@@ -33,7 +33,7 @@ h1 {
 :host ::ng-deep {
   /* 1. Force the exact same height and background on all field boxes */
   .filter-controls .mat-mdc-text-field-wrapper {
-    height: 52px !important;
+    min-height: 56px !important;
     display: flex !important;
     align-items: center !important;
     background-color: rgba(255, 255, 255, 0.05) !important;
@@ -43,7 +43,7 @@ h1 {
   .filter-controls .mat-mdc-form-field-infix {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    min-height: 52px !important;
+    min-height: 56px !important;
     display: flex !important;
     align-items: center !important;
   }

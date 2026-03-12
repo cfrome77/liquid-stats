@@ -12,12 +12,18 @@ mat-sidenav-container {
 }
 
 .map-sidenav-container {
-  height: 100vh;
+  height: calc(100vh - 64px); /* Subtracting toolbar height */
   width: 100%;
   position: relative;
   background-color: var(--map-bg);
   color: var(--text-color);
   overflow: hidden; /* prevents container scroll */
+}
+
+@media (max-width: 600px) {
+  .map-sidenav-container {
+    height: calc(100vh - 56px - 72px); /* Subtract toolbar and bottom nav height */
+  }
 }
 
 /* =========================
@@ -50,37 +56,29 @@ mat-sidenav-container {
 }
 
 .filter-drawer .filter-header h3 {
-  margin: 0 0 10px 0;
-  font-size: 16px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--header-text);
+  font-family: "Montserrat", sans-serif;
 }
 
-.filter-drawer .filter-body input,
-.filter-drawer .filter-body select {
+.filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.filter-body mat-form-field {
   width: 100%;
-  padding: 6px 30px 6px 8px;
-  border-radius: 4px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-  border: 1px solid var(--input-outline);
-  background-color: var(--input-bg);
-  color: var(--input-text);
-}
-
-.filter-drawer .filter-body input::placeholder {
-  color: var(--text-color);
-  opacity: 0.6;
 }
 
 .filter-drawer .reset-btn {
   width: 100%;
-  margin-top: 10px;
-  border: none;
-  padding: 8px 0;
-  border-radius: 4px;
-  background-color: var(--btn-primary);
-  color: var(--on-primary);
-  cursor: pointer;
+  margin-top: 8px;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
 /* =========================
@@ -98,12 +96,9 @@ mat-sidenav-content {
   top: 20px;
   left: 80px;
   z-index: 1250;
-  background-color: var(--accent-blue);
-  color: var(--on-primary, #fff);
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
 }
 
 .map-wrapper {
@@ -130,11 +125,12 @@ mat-sidenav-content {
   right: 20px;
   background-color: var(--card-bg);
   color: var(--text-color);
-  padding: 16px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 16px;
   max-width: 400px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   z-index: 1200;
+  border: 1px solid var(--divider-color);
 }
 
 .map-info-panel .brewery-header {
@@ -149,14 +145,16 @@ mat-sidenav-content {
   height: 80px;
   object-fit: contain;
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 6px;
   background-color: var(--card-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .map-info-panel .brewery-details h2 {
-  margin: 0;
-  font-size: 16px;
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  font-weight: 800;
   color: var(--header-text);
 }
 
@@ -182,16 +180,16 @@ mat-sidenav-content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px 8px;
+  padding: 16px 12px;
   text-align: center;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
+  transition: all 0.2s ease;
+  border-radius: 12px;
+  margin-bottom: 4px;
 }
 
 .map-info-panel .checkin-list li:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
   transform: translateY(-2px);
 }
 

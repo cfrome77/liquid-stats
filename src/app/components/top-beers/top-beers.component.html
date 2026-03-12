@@ -1,6 +1,5 @@
-<h1>Top {{ topX }} Beers</h1>
-
 <div class="main-content-container">
+  <h1>Top {{ topX }} Beers</h1>
   <!-- Filters Section -->
   <div class="filter-card">
     <div class="filter-controls">
@@ -29,7 +28,6 @@
             matInput
             [matDatepicker]="picker"
             [(ngModel)]="customStartDate"
-            readonly
           />
           <mat-datepicker-toggle
             matSuffix

@@ -16,6 +16,7 @@ import {
 import { CardComponent } from "../../shared/components/card/card.component";
 import { FilterComponent } from "../../shared/components/filter/filter.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 export interface FilterField {
   field: string;
@@ -41,6 +42,7 @@ export interface FilterField {
     CardComponent,
     FilterComponent,
     PaginationComponent,
+    EmptyStateComponent,
   ],
 })
 export class BeerHistoryComponent implements OnInit {

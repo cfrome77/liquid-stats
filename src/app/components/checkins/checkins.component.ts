@@ -15,13 +15,20 @@ import { environment } from "../../../environments/environment";
 import { Checkin } from "src/app/core/models/checkin.model";
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: "app-checkins",
   templateUrl: "./checkins.component.html",
   styleUrls: ["./checkins.component.css"],
   standalone: true,
-  imports: [MatIconModule, CommonModule, CardComponent, MatDialogModule],
+  imports: [
+    MatIconModule,
+    CommonModule,
+    CardComponent,
+    MatDialogModule,
+    EmptyStateComponent,
+  ],
 })
 export class CheckinsComponent implements OnInit {
   public checkins: Checkin[] = [];

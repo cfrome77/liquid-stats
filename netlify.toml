@@ -1,3 +1,7 @@
+[build]
+  command = "npm run build:prod"
+  publish = "dist/liquid-stats/browser"
+
 [build.environment]
   NODE_VERSION = "22"
 
