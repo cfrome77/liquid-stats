@@ -84,7 +84,7 @@
 
 /* Special styling for larger cards */
 .beer-styles-breakdown, .top-beers, .card-list {
-  grid-column: span 2;
+  grid-column: span 1;
   align-items: stretch;
   text-align: left;
   display: block;

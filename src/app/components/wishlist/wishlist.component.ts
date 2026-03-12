@@ -75,10 +75,7 @@ export class WishlistComponent implements OnInit {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
 
-    // Transform only the slice of data for the current page
-    this.paginatedWishlist = this.wishlist
-      .slice(startIndex, endIndex)
-      .map((item) => this.transformWishlistData(item));
+    this.paginatedWishlist = this.wishlist.slice(startIndex, endIndex);
   }
 
   goToPage(page: number) {

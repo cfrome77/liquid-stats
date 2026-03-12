@@ -11,17 +11,19 @@
   padding: 5px 10px;
 }
 
-/* Unselected page numbers color - Darker gray for better contrast */
+/* Unselected page numbers color - Using theme text color */
 .pagination-controls button.page-number {
-  color: #444;
+  color: var(--text-color);
   font-size: 16px;
+  opacity: 0.8;
 }
 
-/* Active page number with bold text, blue background, and white text */
+/* Active page number with bold text, accent blue background, and white text */
 .pagination-controls button.page-number.active {
   font-weight: bold;
-  background-color: #007bff;
+  background-color: var(--accent-blue);
   color: white !important;
+  border-radius: 4px;
 }
 
 /* Active page number span */
@@ -32,28 +34,31 @@
 /* Ellipsis styling to prevent hover effect and ensure no click */
 .pagination-controls button.page-number.ellipsis {
   pointer-events: none;
-  color: gray !important;
+  color: var(--text-color) !important;
+  opacity: 0.5;
   cursor: not-allowed;
   background: transparent;
   border: none;
 }
 
 /* Hover effect for page numbers */
-.pagination-controls button.page-number:hover {
-  background-color: transparent;
-  /* No background on hover */
+.pagination-controls button.page-number:hover:not(.active):not(.ellipsis) {
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
+  border-radius: 4px;
 }
 
 /* Disabled button styling */
 .pagination-controls button[disabled] {
-  color: gray;
+  color: var(--text-color);
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 /* For general span (if any other text is used within buttons) */
 .pagination-controls span {
   margin: 0 5px;
-  color: #666;
+  color: var(--text-color);
+  opacity: 0.8;
   font-size: 16px;
 }
 

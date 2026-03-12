@@ -12,12 +12,18 @@ mat-sidenav-container {
 }
 
 .map-sidenav-container {
-  height: 100vh;
+  height: calc(100vh - 64px); /* Subtracting toolbar height */
   width: 100%;
   position: relative;
   background-color: var(--map-bg);
   color: var(--text-color);
   overflow: hidden; /* prevents container scroll */
+}
+
+@media (max-width: 600px) {
+  .map-sidenav-container {
+    height: calc(100vh - 56px - 72px); /* Subtract toolbar and bottom nav height */
+  }
 }
 
 /* =========================
