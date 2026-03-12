@@ -1,13 +1,6 @@
+[build]
+  command = "npm run build:prod"
+  publish = "dist/liquid-stats/browser"
+
 [build.environment]
   NODE_VERSION = "22"
-
-[[redirects]]
-from = "/api-data/*"
-to = "https://liquid-stats-46ea8b54.s3.amazonaws.com/:splat"
-status = 200
-force = true
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
