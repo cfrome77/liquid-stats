@@ -15,7 +15,8 @@
 
 /* Styling for the numeric rating text */
 .rating-number {
-  font-size: 1.25em;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--text-color);
   display: inline-block;
   white-space: nowrap;
@@ -24,15 +25,18 @@
 }
 
 .rating-number strong {
-  color: inherit !important;
+  color: var(--accent-glow, #ffca28) !important;
+  font-weight: 800;
+  margin-left: 4px;
 }
 
 /* Styling for the SVG stars */
 .star {
-  width: 2.2em;
-  height: 2.2em;
-  margin-right: 0.1em;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.1rem;
   flex-shrink: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
 }
 
 .svg-stars {
@@ -42,38 +46,35 @@
   flex-shrink: 0;
 }
 
+/* Star colors using theme-aware variables */
+.star polygon[fill="lightgray"] {
+  fill: var(--divider-color) !important;
+}
+
+.star polygon[fill="gold"] {
+  fill: var(--accent-glow, #ffca28) !important;
+}
+
 /* Extra small devices (phones <480px) */
 @media (max-width: 480px) {
   .star {
-    width: 1.8em;
-    height: 1.8em;
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
   .rating-number {
-    font-size: 1em;
+    font-size: 0.95rem;
   }
 }
 
 /* Small to medium devices (phones/phablets <768px) */
 @media (max-width: 768px) {
   .star {
-    width: 2em;
-    height: 2em;
+    width: 1.8rem;
+    height: 1.8rem;
   }
 
   .rating-number {
-    font-size: 1.1em;
-  }
-}
-
-/* Medium devices (tablets/laptops <1024px) */
-@media (max-width: 1024px) {
-  .star {
-    width: 2.1em;
-    height: 2.1em;
-  }
-
-  .rating-number {
-    font-size: 1.2em;
+    font-size: 1rem;
   }
 }

@@ -26,9 +26,6 @@
     drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
     drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff)
     drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff);
-
-  --hero-glow: linear-gradient(...);
-  /* ... your other variables ... */
 }
 
 /* -------------------- Container -------------------- */
@@ -53,12 +50,12 @@
 .logo-hero {
   max-width: 420px;
   width: 90%;
-  filter: var(--logo-filter); /* This switches automatically */
-  transition: filter 0.3s ease; /* Optional: smooth fade when switching themes */
+  filter: var(--logo-filter);
+  transition: filter 0.3s ease;
 }
 
 .hero-content-wrapper {
-  margin-top: -45px; /* Pulls content into logo's empty padding */
+  margin-top: -45px;
   z-index: 2;
 }
 
@@ -66,12 +63,19 @@
   font-size: 1.25rem;
   margin-bottom: 24px;
   color: var(--accent-glow);
+  font-weight: 600;
 }
 
 .hero-buttons {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
+}
+
+.hero-buttons button {
+  border-radius: 24px;
+  font-weight: 700;
+  padding: 0 24px;
 }
 
 .hero-buttons .mat-flat-button {
@@ -79,25 +83,23 @@
   color: white !important;
 }
 
-.hero-buttons .mat-stroked-button {
-  border-color: var(--divider-color) !important;
-  color: var(--text-color) !important;
-}
-
 /* -------------------- Section Divider -------------------- */
 .section-divider {
   border: 0;
   border-top: 1px solid var(--divider-color);
-  margin: 40px auto;
+  margin: 60px auto;
   width: 60%;
 }
 
 /* -------------------- Quick Stats -------------------- */
 .quick-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
   margin-bottom: 40px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .stat-card {
@@ -105,105 +107,134 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 16px;
+  padding: 30px 20px;
   background-color: var(--card-bg) !important;
   box-shadow: var(--card-shadow);
+  border-radius: 16px !important;
+  border: 1px solid var(--divider-color);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-blue);
 }
 
 .stat-card mat-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-  line-height: 40px; /* Sharpness fix */
-  margin-bottom: 12px;
-  color: var(--accent-glow);
+  font-size: 44px;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  margin-bottom: 16px;
+  color: var(--accent-blue);
+  opacity: 0.8;
 }
 
 .stat-number {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.2rem;
+  font-weight: 800;
   color: var(--header-text);
+  margin-bottom: 4px;
 }
 
 .stat-label {
   opacity: 0.7;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* -------------------- Recent Checkins -------------------- */
+.recent-checkins h3 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
 .recent-beer-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
   justify-content: center;
-  padding: 20px 0; /* Extra room for the cards to "lift" */
+  padding: 20px 0;
 }
 
 .beer-card {
-  width: 220px !important;
+  width: 240px !important;
   background-color: var(--card-bg) !important;
   box-shadow: var(--card-shadow);
-  padding: 0 0 16px 0 !important;
+  padding: 0 !important;
   overflow: hidden;
   text-align: center;
-
-  /* MOVEMENT: Smooth transition for the lift and shadow */
-  transition:
-    transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--divider-color);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-/* THE HOVER EFFECT: Lifts the card and deepens the shadow */
 .beer-card:hover {
-  transform: translateY(-10px); /* Moves up */
-  box-shadow:
-    0 14px 28px rgba(0, 0, 0, 0.25),
-    0 10px 10px rgba(0, 0, 0, 0.22) !important;
+  transform: translateY(-10px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.1) !important;
+  border-color: var(--accent-blue);
 }
 
 .beer-card img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
   image-rendering: -webkit-optimize-contrast;
   border-bottom: 1px solid var(--divider-color);
-
-  /* MOVEMENT: Smooth transition for the image zoom */
   transition: transform 0.5s ease;
 }
 
-/* IMAGE ZOOM: Zooms the beer label slightly when card is hovered */
 .beer-card:hover img {
-  transform: scale(1.08);
+  transform: scale(1.1);
+}
+
+.beer-card mat-card-content {
+  padding: 20px 15px !important;
 }
 
 .beer-card h4 {
-  margin: 16px 12px 4px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  margin: 0 0 8px 0;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--header-text);
+  line-height: 1.3;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* WebKit/Blink browsers */
-  line-clamp: 2; /* Standard property */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
 }
 
 .clickable-card {
-  cursor: pointer !important; /* Forces the mouse to change to a hand */
-  user-select: none; /* Prevents accidental text highlighting on click */
+  cursor: pointer !important;
+  user-select: none;
 }
 
 .brewery-name {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  opacity: 0.6;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  opacity: 0.9;
 }
 
 .rating-text {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--accent-glow);
+  font-size: 1rem;
+  background: rgba(var(--accent-blue-rgb), 0.05);
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
 /* -------------------- Responsive -------------------- */
@@ -212,14 +243,17 @@
     margin-top: -30px;
   }
   .beer-card {
-    width: 160px !important;
+    width: 180px !important;
   }
   .beer-card img {
-    height: 160px;
+    height: 180px;
   }
   .stat-card mat-icon {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+  }
+  .stat-number {
+    font-size: 1.8rem;
   }
 }
