@@ -32,7 +32,7 @@
 .home-container {
   min-height: 100vh;
   margin: 0;
-  padding: 40px 20px;
+  padding: 40px 10px;
   background: var(--hero-glow);
   color: var(--text-color);
   transition: background 0.3s ease;
@@ -149,26 +149,118 @@
 /* -------------------- Recent Checkins -------------------- */
 .recent-checkins h3 {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
 
-.recent-beer-cards {
+/* --------------------- Interactive Icons and Card Hover -------------------- */
+.icon-wrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
-  padding: 20px 0;
+  align-items: center;
 }
 
-.beer-card {
-  width: 240px !important;
+.icon-wrapper mat-icon {
+  position: absolute;
+  font-size: 44px;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.icon-hover {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.5); 
+  color: var(--accent-glow) !important;
+}
+
+.icon-default {
+  opacity: 0.8;
+  visibility: visible;
+  color: var(--accent-blue);
+}
+
+.clickable-card:hover .icon-default {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.5);
+}
+
+.clickable-card:hover .icon-hover {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+/* -------------------- Carousel -------------------- */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  padding: 20px 0;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--divider-color);
+  color: var(--text-color);
+  min-width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--card-shadow);
+  z-index: 5;
+}
+
+.nav-btn:hover {
+  background: var(--accent-blue);
+  color: white;
+  border-color: var(--accent-blue);
+  transform: scale(1.1);
+}
+
+/* -------------------- Beer Card Styling -------------------- */
+.carousel-track .beer-card {
+  flex: 0 0 calc((100% - 80px) / 5); /* 5 cards visible */
+  scroll-snap-align: start;
+  min-width: 200px;
   background-color: var(--card-bg) !important;
   box-shadow: var(--card-shadow);
-  padding: 0 !important;
   overflow: hidden;
   text-align: center;
   border-radius: 16px !important;
@@ -176,84 +268,91 @@
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-.beer-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.1) !important;
+.carousel-track .beer-card:hover {
+  transform: translateY(-8px);
   border-color: var(--accent-blue);
 }
 
-.beer-card img {
+.carousel-track .beer-card img {
   width: 100%;
-  height: 220px;
+  height: 200px;
   object-fit: cover;
-  image-rendering: -webkit-optimize-contrast;
   border-bottom: 1px solid var(--divider-color);
-  transition: transform 0.5s ease;
 }
 
-.beer-card:hover img {
-  transform: scale(1.1);
-}
-
-.beer-card mat-card-content {
-  padding: 20px 15px !important;
-}
-
-.beer-card h4 {
-  margin: 0 0 8px 0;
-  font-size: 1.15rem;
+.carousel-track .beer-card h4 {
+  margin: 12px 10px 4px;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--header-text);
   line-height: 1.3;
+  
+  /* Standard and Webkit properties */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-}
-
-.clickable-card {
-  cursor: pointer !important;
-  user-select: none;
+  text-overflow: ellipsis;
+  min-height: 2.6em;
 }
 
 .brewery-name {
-  margin-bottom: 12px;
-  font-size: 0.85rem;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
   font-weight: 700;
   color: var(--accent-blue);
-  opacity: 0.9;
+  opacity: 0.8;
+  white-space: nowrap; /* Desktop: 1 line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
 }
 
-.rating-text {
+.rating-badge {
   font-weight: 700;
   color: var(--accent-glow);
-  font-size: 1rem;
-  background: rgba(var(--accent-blue-rgb), 0.05);
-  display: inline-block;
-  padding: 4px 12px;
+  font-size: 0.85rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 3px 10px;
   border-radius: 20px;
+  margin-bottom: 15px;
+  display: inline-block;
 }
 
 /* -------------------- Responsive -------------------- */
+@media (max-width: 1200px) {
+  .carousel-track .beer-card {
+    flex: 0 0 calc((100% - 60px) / 4);
+  }
+}
+
+@media (max-width: 992px) {
+  .carousel-track .beer-card {
+    flex: 0 0 calc((100% - 40px) / 3);
+  }
+}
+
 @media (max-width: 768px) {
-  .hero-content-wrapper {
-    margin-top: -30px;
+  .nav-btn {
+    display: none;
   }
-  .beer-card {
-    width: 180px !important;
+  .carousel-track .beer-card {
+    flex: 0 0 85%; /* Peek at the next card on mobile */
   }
-  .beer-card img {
-    height: 180px;
-  }
-  .stat-card mat-icon {
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-  }
-  .stat-number {
-    font-size: 1.8rem;
+
+  /* Allow brewery name to wrap on mobile for better visibility without hover */
+  .brewery-name {
+    white-space: normal;
+    /* Standard and Webkit properties */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.4em;
+    padding: 0 10px;
   }
 }
