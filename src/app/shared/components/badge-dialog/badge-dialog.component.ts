@@ -12,16 +12,18 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
   imports: [CommonModule, MatDialogModule, MatButtonModule],
 })
 export class BadgeDialogComponent implements OnInit {
-  public safeDescription: SafeHtml = '';
+  public safeDescription: SafeHtml = "";
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
     if (this.data.badge_description) {
-      this.safeDescription = this.sanitizer.bypassSecurityTrustHtml(this.data.badge_description);
+      this.safeDescription = this.sanitizer.bypassSecurityTrustHtml(
+        this.data.badge_description,
+      );
     }
   }
 }

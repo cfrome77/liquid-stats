@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Run prettier, lint, tests
+# ❌ Prevent committing local or generated environment files
+if git diff --cached --name-only | grep -E "src/environments/environment\.(local|prod)\.ts"; then
+  echo "❌ Do not commit local or prod environment files!"
+  exit 1
+fi
+
+# ✅ Run formatting, linting, and tests
 npm run format:check
 npm run lint
 npm run test:ci

@@ -11,9 +11,7 @@ describe("HomeComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HomeComponent, RouterTestingModule],
-      providers: [
-        { provide: ActivatedRoute, useValue: { params: of({}) } }
-      ]
+      providers: [{ provide: ActivatedRoute, useValue: { params: of({}) } }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);

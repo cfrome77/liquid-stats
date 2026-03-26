@@ -13,10 +13,10 @@ describe("BadgeDialogComponent", () => {
       providers: [
         {
           provide: MAT_DIALOG_DATA,
-          useValue: { badge_image: { lg: "test.jpg" } }
-    }
+          useValue: { badge_image: { lg: "test.jpg" } },
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BadgeDialogComponent);

@@ -9,7 +9,7 @@ describe("BeerStyleDialogComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BeerStyleDialogComponent, MatDialogModule],
-      providers: [{ provide: MAT_DIALOG_DATA, useValue: { beers: [] } }]
+      providers: [{ provide: MAT_DIALOG_DATA, useValue: { beers: [] } }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BeerStyleDialogComponent);

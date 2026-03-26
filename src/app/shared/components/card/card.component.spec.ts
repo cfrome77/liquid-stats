@@ -10,7 +10,7 @@ describe("CardComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CardComponent, MatCardModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CardComponent);
@@ -24,8 +24,8 @@ describe("CardComponent", () => {
       footerInfo: {
         text: "Test Footer",
         link: "http://test.com",
-        timestamp: "2023-01-01"
-    }
+        timestamp: "2023-01-01",
+      },
     };
     fixture.detectChanges();
   });

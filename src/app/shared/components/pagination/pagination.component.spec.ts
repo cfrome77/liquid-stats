@@ -9,7 +9,7 @@ describe("PaginationComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaginationComponent, SharedTestingModule]
+      imports: [PaginationComponent, SharedTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaginationComponent);

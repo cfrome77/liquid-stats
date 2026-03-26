@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
+    "generate-env": "node scripts/generate-env.js",
     "start": "ng serve --project liquid-stats",
     "start:dev": "ng serve --project liquid-stats --configuration development --hmr",
     "start:local": "ng serve --project liquid-stats --configuration development",

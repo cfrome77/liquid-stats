@@ -11,7 +11,7 @@ describe("AboutComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AboutComponent, MatDialogModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
 

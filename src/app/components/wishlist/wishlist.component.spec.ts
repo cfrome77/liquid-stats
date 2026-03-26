@@ -12,19 +12,23 @@ describe("WishlistComponent", () => {
 
   beforeEach(async () => {
     mockDataService = jasmine.createSpyObj("DataService", ["getWishlist"]);
-    mockDataService.getWishlist.and.returnValue(of({
-      response: {
-        wishlist: {
-          items: []
-        }
-      }
-    }));
+    mockDataService.getWishlist.and.returnValue(
+      of({
+        response: {
+          wishlist: {
+            items: [],
+          },
+        },
+      }),
+    );
 
     await TestBed.configureTestingModule({
-      imports: [WishlistComponent, HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        { provide: DataService, useValue: mockDataService }
-      ]
+      imports: [
+        WishlistComponent,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
+      providers: [{ provide: DataService, useValue: mockDataService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WishlistComponent);

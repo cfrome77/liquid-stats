@@ -57,12 +57,16 @@
       </div>
       <div class="card">
         <mat-icon class="stat-icon">pie_chart</mat-icon>
-        <div class="stat-value">{{ (processedStats.newBeerRatio * 100).toFixed(0) }}%</div>
+        <div class="stat-value">
+          {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
+        </div>
         <div class="stat-title">New Beer Ratio</div>
       </div>
       <div class="card">
         <mat-icon class="stat-icon">stars</mat-icon>
-        <div class="stat-value">{{ processedStats.averageRating.toFixed(2) }}</div>
+        <div class="stat-value">
+          {{ processedStats.averageRating.toFixed(2) }}
+        </div>
         <div class="stat-title">Average Rating</div>
       </div>
       <div class="card">
@@ -100,7 +104,9 @@
                 <span class="beer-name">{{ beer.name }}</span>
                 <div class="flex-row align-center">
                   <span class="style-count">{{ beer.count }}</span>
-                  <span class="avg-rating-pill">⭐ {{ beer.avgRating.toFixed(2) }}</span>
+                  <span class="avg-rating-pill"
+                    >⭐ {{ beer.avgRating.toFixed(2) }}</span
+                  >
                 </div>
               </li>
             }
@@ -118,7 +124,9 @@
             ) {
               <li class="clickable" (click)="openBeersByCountry(country)">
                 <span class="country-name">{{ country }}</span>
-                <span class="style-count">{{ processedStats.topCountries[country] }}</span>
+                <span class="style-count">{{
+                  processedStats.topCountries[country]
+                }}</span>
               </li>
             }
           </ul>
@@ -132,7 +140,9 @@
             @for (state of objectKeys(processedStats.topStates); track state) {
               <li class="clickable" (click)="openBeersByState(state)">
                 <span class="state-name">{{ state }}</span>
-                <span class="style-count">{{ processedStats.topStates[state] }}</span>
+                <span class="style-count">{{
+                  processedStats.topStates[state]
+                }}</span>
               </li>
             }
           </ul>

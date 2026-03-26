@@ -29,12 +29,22 @@ export const slideInAnimation = trigger("routeAnimations", [
     group([
       query(
         ":leave",
-        [animate("200ms ease-out", style({ opacity: 0, transform: "translateY(-10px)" }))],
+        [
+          animate(
+            "200ms ease-out",
+            style({ opacity: 0, transform: "translateY(-10px)" }),
+          ),
+        ],
         { optional: true },
       ),
       query(
         ":enter",
-        [animate("300ms 100ms ease-out", style({ opacity: 1, transform: "translateY(0)" }))],
+        [
+          animate(
+            "300ms 100ms ease-out",
+            style({ opacity: 1, transform: "translateY(0)" }),
+          ),
+        ],
         { optional: true },
       ),
     ]),

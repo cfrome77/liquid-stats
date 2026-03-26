@@ -14,13 +14,13 @@ describe("BadgesComponent", () => {
 
   beforeEach(async () => {
     mockDataService = {
-      getBadges: () => of([])
+      getBadges: () => of([]),
     };
 
     await TestBed.configureTestingModule({
       imports: [BadgesComponent, HttpClientTestingModule, MatDialogModule],
       providers: [{ provide: DataService, useValue: mockDataService }],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
 

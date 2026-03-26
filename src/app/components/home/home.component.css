@@ -179,7 +179,7 @@
 .icon-hover {
   opacity: 0;
   visibility: hidden;
-  transform: scale(0.5); 
+  transform: scale(0.5);
   color: var(--accent-glow) !important;
 }
 
@@ -286,7 +286,7 @@
   font-weight: 800;
   color: var(--header-text);
   line-height: 1.3;
-  
+
   /* Standard and Webkit properties */
   display: -webkit-box;
   -webkit-box-orient: vertical;
