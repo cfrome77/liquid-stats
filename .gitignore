@@ -45,10 +45,11 @@ pubspec.lock
 .env.*.local
 
 # Angular environment files
-src/environments/environment.local.ts    # local secrets, gitignored
-src/environments/environment.prod.ts     # generated for production, gitignored
-!src/environments/environment.ts         # tracked placeholders
-# !src/environments/environment.template.ts # optional if template still exists
+# Angular environment files
+src/environments/environment.local.ts
+src/environments/environment.prod.ts
+# Keep the base file tracked
+!src/environments/environment.ts
 
 # Fetched assets
 /src/assets/badges.json
