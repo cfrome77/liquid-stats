@@ -2,7 +2,11 @@
   <mat-toolbar
     class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
-    <button mat-button (click)="drawer.toggle()" aria-label="Toggle navigation menu">
+    <button
+      mat-button
+      (click)="drawer.toggle()"
+      aria-label="Toggle navigation menu"
+    >
       <mat-icon>menu</mat-icon>
     </button>
 
@@ -80,7 +84,11 @@
   </mat-toolbar>
 
   <nav class="mobile-bottom-nav">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       <mat-icon>home</mat-icon>
       <span>Home</span>
     </a>
@@ -180,10 +188,19 @@
     </div>
   </mat-drawer-container>
   <div class="untappd-logo-container">
-    <img src="assets/images/poweredbyuntappd.png" alt="Powered by Untappd" class="untappd-logo">
+    <img
+      src="assets/images/poweredbyuntappd.png"
+      alt="Powered by Untappd"
+      class="untappd-logo"
+    />
   </div>
   <div class="fab-container">
-    <button mat-fab class="fab-toggler" (click)="openDialog()" aria-label="Open about dialog">
+    <button
+      mat-fab
+      class="fab-toggler"
+      (click)="openDialog()"
+      aria-label="Open about dialog"
+    >
       <mat-icon>info</mat-icon>
     </button>
   </div>

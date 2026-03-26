@@ -16,25 +16,27 @@ describe("BeerHistoryComponent", () => {
 
   beforeEach(async () => {
     mockDataService = {
-      getBeers: () => of({
-        response: {
-          checkins: {
-            items: []
-          }
-        }
-      })
+      getBeers: () =>
+        of({
+          response: {
+            checkins: {
+              items: [],
+            },
+          },
+        }),
     };
 
     await TestBed.configureTestingModule({
-      imports: [BeerHistoryComponent,
+      imports: [
+        BeerHistoryComponent,
         HttpClientTestingModule,
         RouterTestingModule,
         MatDialogModule,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
       ],
       providers: [{ provide: DataService, useValue: mockDataService }],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
 

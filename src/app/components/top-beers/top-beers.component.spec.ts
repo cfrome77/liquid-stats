@@ -23,18 +23,31 @@ describe("TopBeersComponent", () => {
   beforeEach(async () => {
     mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
     const mockBeer = {
-      beer: { beer_name: 'Test Beer', beer_style: 'IPA', beer_slug: 'test-ipa', bid: 123, beer_label: '' },
-      brewery: { brewery_name: 'Test Brewery', brewery_label: '', brewery_id: 456, contact: { twitter: 'test' } },
+      beer: {
+        beer_name: "Test Beer",
+        beer_style: "IPA",
+        beer_slug: "test-ipa",
+        bid: 123,
+        beer_label: "",
+      },
+      brewery: {
+        brewery_name: "Test Brewery",
+        brewery_label: "",
+        brewery_id: 456,
+        contact: { twitter: "test" },
+      },
       rating_score: 4.5,
-      recent_created_at: '2026-02-07'
+      recent_created_at: "2026-02-07",
     };
-    mockDataService.getBeers.and.returnValue(of({
-      response: {
-        checkins: {
-          items: [mockBeer]
-        }
-      }
-    }));
+    mockDataService.getBeers.and.returnValue(
+      of({
+        response: {
+          checkins: {
+            items: [mockBeer],
+          },
+        },
+      }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [
@@ -50,12 +63,12 @@ describe("TopBeersComponent", () => {
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
-        RouterTestingModule
+        RouterTestingModule,
       ],
       providers: [
         { provide: DataService, useValue: mockDataService },
-        { provide: ActivatedRoute, useValue: { params: of({}) } }
-      ]
+        { provide: ActivatedRoute, useValue: { params: of({}) } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopBeersComponent);
@@ -71,6 +84,6 @@ describe("TopBeersComponent", () => {
   it("should filter beers", () => {
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBeGreaterThan(0);
-    expect(component.transformedTopBeers[0].title).toBe('Test Beer');
+    expect(component.transformedTopBeers[0].title).toBe("Test Beer");
   });
 });

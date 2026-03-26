@@ -16,9 +16,11 @@ export class StatsService {
   constructor(private dataService: DataService) {}
 
   loadBeerData(): Observable<BeerCheckin[]> {
-    return this.dataService.getBeers().pipe(
-      map((data) => data?.response?.checkins?.items || data?.beers || data),
-    );
+    return this.dataService
+      .getBeers()
+      .pipe(
+        map((data) => data?.response?.checkins?.items || data?.beers || data),
+      );
   }
 
   computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {

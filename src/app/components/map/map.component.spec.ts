@@ -3,7 +3,7 @@ import {
   TestBed,
   fakeAsync,
   tick,
-  flush
+  flush,
 } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -20,15 +20,19 @@ describe("MapComponent", () => {
   let mockDataService: any;
 
   beforeEach(async () => {
-    mockMarkerService = jasmine.createSpyObj("MarkerService", ["makeBreweryMarkers"]);
+    mockMarkerService = jasmine.createSpyObj("MarkerService", [
+      "makeBreweryMarkers",
+    ]);
     mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
-    mockDataService.getBeers.and.returnValue(of({
-      response: {
-        checkins: {
-          items: []
-        }
-      }
-    }));
+    mockDataService.getBeers.and.returnValue(
+      of({
+        response: {
+          checkins: {
+            items: [],
+          },
+        },
+      }),
+    );
 
     await TestBed.configureTestingModule({
       imports: [MapComponent, HttpClientTestingModule, RouterTestingModule],
@@ -39,10 +43,10 @@ describe("MapComponent", () => {
           provide: ActivatedRoute,
           useValue: {
             data: of({ mapId: "myMap" }),
-            queryParams: of({})
-          }
-        }
-      ]
+            queryParams: of({}),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapComponent);

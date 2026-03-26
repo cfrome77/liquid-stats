@@ -7,9 +7,7 @@ describe("RatingComponent", () => {
   let fixture: ComponentFixture<RatingComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-
-    }).compileComponents();
+    await TestBed.configureTestingModule({}).compileComponents();
 
     fixture = TestBed.createComponent(RatingComponent);
     component = fixture.componentInstance;

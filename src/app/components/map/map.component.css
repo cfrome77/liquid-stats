@@ -22,7 +22,9 @@ mat-sidenav-container {
 
 @media (max-width: 600px) {
   .map-sidenav-container {
-    height: calc(100vh - 56px - 72px); /* Subtract toolbar and bottom nav height */
+    height: calc(
+      100vh - 56px - 72px
+    ); /* Subtract toolbar and bottom nav height */
   }
 }
 

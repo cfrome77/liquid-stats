@@ -1,4 +1,11 @@
-import { Component, OnInit, Renderer2, Inject, OnDestroy, effect } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Renderer2,
+  Inject,
+  OnDestroy,
+  effect,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { Overlay } from "@angular/cdk/overlay";
@@ -94,7 +101,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   prepareRoute(outlet: any) {
-    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+    return (
+      outlet &&
+      outlet.activatedRouteData &&
+      outlet.activatedRouteData["animation"]
+    );
   }
 
   openDialog(): void {

@@ -161,7 +161,9 @@ mat-toolbar {
   color: var(--navbar-text);
   opacity: 0.6;
   font-size: 10px;
-  transition: opacity 0.2s, color 0.2s;
+  transition:
+    opacity 0.2s,
+    color 0.2s;
   flex: 1;
 }
 
@@ -188,7 +190,8 @@ mat-toolbar {
 }
 
 @media (max-width: 600px) {
-  .desktop-nav, mat-drawer {
+  .desktop-nav,
+  mat-drawer {
     display: none !important;
   }
 

@@ -4,7 +4,9 @@ import { Injectable, signal, computed } from "@angular/core";
   providedIn: "root",
 })
 export class ThemeService {
-  private themeSignal = signal<"light-theme" | "dark-theme">(this.getInitialTheme());
+  private themeSignal = signal<"light-theme" | "dark-theme">(
+    this.getInitialTheme(),
+  );
 
   // Expose as a read-only signal
   readonly currentTheme = this.themeSignal.asReadonly();
@@ -23,7 +25,8 @@ export class ThemeService {
   }
 
   toggleTheme(): void {
-    const newTheme = this.themeSignal() === "light-theme" ? "dark-theme" : "light-theme";
+    const newTheme =
+      this.themeSignal() === "light-theme" ? "dark-theme" : "light-theme";
     this.themeSignal.set(newTheme);
     localStorage.setItem("theme", newTheme);
   }

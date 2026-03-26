@@ -1,16 +1,19 @@
-.DS_STORE
+# macOS
+.DS_Store
 
-/dist/
-/bazel-out
-/integration/bazel/bazel-*
-*.log
+# Node
 node_modules
+npm-debug.log
+yarn-error.log
 
-# Angular build and cache artifacts
+# Angular / build artifacts
+/dist/
+/.bazel-out
 .angular/
+/build-analytics
+.modules/rollup-test/dist/
 
-# Include when developing application packages.
-pubspec.lock
+# IDE / editor
 .c9
 .idea/
 .devcontainer/*
@@ -21,57 +24,57 @@ pubspec.lock
 .vscode/launch.json
 .vscode/settings.json
 .vscode/tasks.json
-*.swo
-*.swp
-modules/.settings
-modules/.vscode
+.modules/.settings
+.modules/.vscode
 .vimrc
 .nvimrc
+.history
 
-# Don't check in secret files
+# Logs / swap
+*.log
+*.swo
+*.swp
+
+# Pub / Dart (if used)
+pubspec.lock
+
+# Secret / environment files
 *secret.js
 .env
 .env.local
 .env.*.local
+
+# Angular environment files
+# Angular environment files
+src/environments/environment.local.ts
+src/environments/environment.prod.ts
+# Keep the base file tracked
+!src/environments/environment.ts
+
+# Fetched assets
+/src/assets/badges.json
+/src/assets/*.json
 /src/assets/env.js
 
-# Don't include fetched json files
-/src/assets/badges.json
-/src/assets/*.json
+# Build / test reports
+/playwright-report/
+/test-results/
+/e2e/screenshots/
 
-# Don't include fetched json files
-/src/assets/badges.json
-/src/assets/*.json
-
-# Ignore npm/yarn debug log
-npm-debug.log
-yarn-error.log
-
-# build-analytics
-.build-analytics
-
-# rollup-test output
-/modules/rollup-test/dist/
-
-# User specific bazel settings
+# Bazel
 .bazelrc.user
 
-# User specific ng-dev settings
+# ng-dev
 .ng-dev.user*
 
+# Misc
 .notes.md
 baseline.json
-
-# Ignore .history for the xyz.local-history VSCode extension
-.history
 
 # CLDR data
 tools/gulp-tasks/cldr/cldr-data/
 
-# Husky
-.husky/_
-
-# Python virtual environment
+# Python virtual environments
 venv/
 .venv_packages_hash
 
@@ -89,12 +92,5 @@ lambda/fetch_api_data.py
 liquid-stats-lambda.json
 liquid-stats-lambda.zip
 
-# Environment variable files
-.env
-.env.local
-.env.*.local
-src/environments/environment.ts
-!src/environments/environment.template.ts
-/playwright-report/
-/test-results/
-/e2e/screenshots/
+# Husky
+.husky/_

@@ -32,8 +32,8 @@ describe("StatsComponent", () => {
         checkinsByDay: [],
         checkinsByDayOfWeek: [],
         checkinsByMonth: [],
-        averageRatingsOverTime: []
-    })
+        averageRatingsOverTime: [],
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -42,9 +42,9 @@ describe("StatsComponent", () => {
         ReactiveFormsModule,
         HttpClientTestingModule,
         MatDialogModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
       ],
-      providers: [{ provide: StatsService, useValue: mockStatsService }]
+      providers: [{ provide: StatsService, useValue: mockStatsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StatsComponent);

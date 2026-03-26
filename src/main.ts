@@ -23,7 +23,7 @@ bootstrapApplication(AppComponent, {
     provideCharts(withDefaultRegisterables()),
     importProvidersFrom(MatNativeDateModule),
     provideServiceWorker("ngsw-worker.js", {
-    enabled: !isDevMode() || String(environment.production) === 'true',
+      enabled: !isDevMode() || String(environment.production) === "true",
       registrationStrategy: "registerWhenStable:30000",
     }),
   ],

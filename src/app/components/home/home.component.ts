@@ -1,12 +1,17 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { RouterLink, RouterModule } from "@angular/router";
-import { CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
+import { RouterModule } from "@angular/router";
 
 import { DataService } from "../../core/services/data.service";
-import { Checkin } from "../../core/models/checkin.model";
 
 @Component({
   selector: "app-home",
@@ -14,30 +19,23 @@ import { Checkin } from "../../core/models/checkin.model";
   styleUrls: ["./home.component.css"],
   standalone: true,
   imports: [
+    CommonModule,
     MatButtonModule,
     MatCardModule,
     MatIconModule,
     RouterModule,
-    RouterLink,
-    CommonModule,
   ],
 })
 export class HomeComponent implements OnInit {
-  recentBeers: {
-    checkin_id: number;
-    name: string;
-    brewery: string;
-    rating: number;
-    image: string;
-  }[] = [];
+  @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
-  totalCheckins: number = 0;
-  averageRating: number = 0;
-  countriesTried: number = 0;
-  breweriesVisited: number = 0;
+  allCheckins: any[] = [];
+  totalCheckins = 0;
+  averageRating = 0;
+  countriesTried = 0;
+  breweriesVisited = 0;
 
-  // High-res placeholder for missing images
-  private readonly DEFAULT_IMAGE =
+  readonly DEFAULT_IMAGE =
     "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
 
   constructor(
@@ -60,59 +58,36 @@ export class HomeComponent implements OnInit {
             0,
           ) / (beerItems.length || 1);
         this.countriesTried = new Set(
-          beerItems.map((b: any) => b.brewery?.country_name || "Unknown"),
+          beerItems.map((b: any) => b.brewery?.country_name),
         ).size;
         this.breweriesVisited = new Set(
-          beerItems.map((b: any) => b.brewery?.brewery_name || "Unknown"),
+          beerItems.map((b: any) => b.brewery?.brewery_name),
         ).size;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error("Error fetching beers:", err),
     });
 
-    // 2. Fetch Recent Checkins
+    // 2. Fetch Checkins (Full list for the scrollable track)
     this.dataService.getCheckins().subscribe({
       next: (res: any) => {
-        const checkins: Checkin[] = Array.isArray(
-          res?.response?.checkins?.items,
-        )
-          ? res.response.checkins.items
-          : [];
-
-        this.recentBeers = checkins
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime(),
-          )
-          .slice(0, 5)
-          .map((c) => {
-            // Priority: User Photo (Original) > User Photo (Large) > Beer Label > Placeholder
-            let img = this.DEFAULT_IMAGE;
-            if (c.media?.items?.length) {
-              const photo = c.media.items[0].photo;
-              img =
-                photo.photo_img_og || photo.photo_img_lg || photo.photo_img_md;
-            } else if (c.beer?.beer_label) {
-              img = c.beer.beer_label;
-            }
-
-            return {
-              checkin_id: c.checkin_id,
-              name: c.beer?.beer_name || "Unknown",
-              brewery: c.brewery?.brewery_name || "Unknown",
-              rating: c.rating_score || 0,
-              image: img,
-            };
-          });
-
+        this.allCheckins = res?.response?.checkins?.items || [];
         this.cdr.detectChanges();
       },
-      error: (err) => console.error("Error fetching checkins:", err),
     });
   }
 
-  // Helper to handle broken image links dynamically
+  // --- Native Scroll Controls ---
+  scrollNext() {
+    const track = this.carouselTrack.nativeElement;
+    // Scrolls by the visible width of the container
+    track.scrollBy({ left: track.clientWidth * 0.8, behavior: "smooth" });
+  }
+
+  scrollPrev() {
+    const track = this.carouselTrack.nativeElement;
+    track.scrollBy({ left: -track.clientWidth * 0.8, behavior: "smooth" });
+  }
+
   handleImageError(event: any) {
     event.target.src = this.DEFAULT_IMAGE;
   }
