@@ -4,22 +4,19 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "generate-env": "node scripts/generate-env.js",
-    "start": "npm run generate-env && ng serve --project liquid-stats",
-    "start:dev": "npm run generate-env && ng serve --project liquid-stats --configuration development --hmr",
-    "start:local": "npm run generate-env && ng serve --project liquid-stats --configuration development",
-    "build": "npm run generate-env && ng build --project liquid-stats --configuration development",
+    "start": "ng serve --project liquid-stats",
+    "start:dev": "ng serve --project liquid-stats --configuration development --hmr",
+    "start:local": "ng serve --project liquid-stats --configuration development",
+    "build": "ng build --project liquid-stats --configuration development",
     "build:prod": "npm run generate-env && ng build --project liquid-stats --configuration production",
-    "watch": "npm run generate-env && ng build --project liquid-stats --watch --configuration development",
-    "test": "npm run generate-env && ng test --project liquid-stats",
-    "test:ci": "npm run generate-env && ng test --project liquid-stats --watch=false --browsers=ChromeHeadless",
+    "watch": "ng build --project liquid-stats --watch --configuration development",
+    "test": "ng test --project liquid-stats",
+    "test:ci": "ng test --project liquid-stats --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint --project liquid-stats",
     "analyze": "webpack-bundle-analyzer dist/liquid-stats/stats.json",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "prepare": "husky install",
-    "reset-env": "node scripts/reset-environment.js",
-    "restore-env": "node scripts/restore-environment.js"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@angular/animations": "21.1.4",
@@ -42,7 +39,7 @@
     "zone.js": "~0.16.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~21.1.4",
+    "@angular-devkit/build-angular": "~21.2.1",
     "@angular-eslint/builder": "21.2.0",
     "@angular-eslint/eslint-plugin": "21.2.0",
     "@angular-eslint/eslint-plugin-template": "21.2.0",

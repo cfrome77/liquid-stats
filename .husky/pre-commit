@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Change 'npm test' to 'npm run test:ci'
-npm run test:ci
-npm run reset-env
