@@ -49,7 +49,7 @@
     "@angular/cli": "^21.2.5",
     "@angular/compiler-cli": "^21.2.6",
     "@playwright/test": "^1.58.2",
-    "@types/crossfilter": "^0.0.34",
+    "@types/crossfilter": "^0.0.38",
     "@types/d3": "^7.4.0",
     "@types/dc": "^0.0.29",
     "@types/jasmine": "~4.3.0",
