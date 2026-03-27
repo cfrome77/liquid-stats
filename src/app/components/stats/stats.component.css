@@ -86,23 +86,25 @@
 .beer-styles-breakdown,
 .top-beers,
 .card-list {
-  grid-column: span 1;
+  grid-column: 1 / -1;
   align-items: stretch;
   text-align: left;
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {
   .beer-styles-breakdown,
   .top-beers,
   .card-list {
-    grid-column: span 1;
+    grid-column: 1 / -1;
   }
 }
 
 .card h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
+  padding: 0 14px;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--header-text);
