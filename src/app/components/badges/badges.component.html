@@ -1,6 +1,5 @@
-<h1>Badges Earned</h1>
-
 <div class="main-content-container">
+  <h1>Badges Earned</h1>
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (badge of paginatedBadges; track badge.badge_name) {
       <app-card [cardData]="transformBadgeData(badge)"> </app-card>
@@ -16,5 +15,3 @@
   (itemsPerPageChange)="onItemsPerPageChange($event)"
 >
 </app-pagination>
-
-<app-powered-by></app-powered-by>

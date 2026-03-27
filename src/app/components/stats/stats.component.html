@@ -1,55 +1,82 @@
 <div class="main-content-container">
   <h2>Your Beer Statistics</h2>
 
-  <div class="filters">
-    <label for="date-range">Date Range:</label>
-    <select [formControl]="dateRange">
-      <option value="week">Last Week</option>
-      <option value="month">Last Month</option>
-      <option value="year">Last Year</option>
-      <option value="all">All Time</option>
-      <option value="custom">Custom</option>
-    </select>
+  <div class="stats-filters">
+    <mat-form-field appearance="outline" class="date-range-select">
+      <mat-label>Date Range</mat-label>
+      <mat-select [formControl]="dateRange">
+        <mat-option value="week">Last Week</mat-option>
+        <mat-option value="month">Last Month</mat-option>
+        <mat-option value="year">Last Year</mat-option>
+        <mat-option value="all">All Time</mat-option>
+        <mat-option value="custom">Custom Range</mat-option>
+      </mat-select>
+    </mat-form-field>
 
     @if (dateRange.value === "custom") {
-      <div class="custom-date-range">
-        <input
-          type="date"
-          [formControl]="customStartDate"
-          placeholder="Start Date"
-        />
-        <input
-          type="date"
-          [formControl]="customEndDate"
-          placeholder="End Date"
-        />
-      </div>
+      <mat-form-field appearance="outline" class="custom-date-picker">
+        <mat-label>Enter a date range</mat-label>
+
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            matStartDate
+            [formControl]="customStartDate"
+            placeholder="Start date"
+          />
+          <input
+            matEndDate
+            [formControl]="customEndDate"
+            placeholder="End date"
+          />
+        </mat-date-range-input>
+
+        <mat-datepicker-toggle matIconSuffix [for]="picker">
+        </mat-datepicker-toggle>
+
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
     }
   </div>
 
   @if (processedStats) {
     <div class="stats-cards">
       <div class="card">
-        Total Unique Beers: {{ processedStats.totalUniqueBeers }}
+        <mat-icon class="stat-icon">verified</mat-icon>
+        <div class="stat-value">{{ processedStats.totalUniqueBeers }}</div>
+        <div class="stat-title">Unique Beers</div>
       </div>
       <div class="card">
-        Total Check-ins: {{ processedStats.totalCheckins }}
+        <mat-icon class="stat-icon">history</mat-icon>
+        <div class="stat-value">{{ processedStats.totalCheckins }}</div>
+        <div class="stat-title">Total Check-ins</div>
       </div>
       <div class="card">
-        New Beers Count: {{ processedStats.newBeersCount }}
+        <mat-icon class="stat-icon">fiber_new</mat-icon>
+        <div class="stat-value">{{ processedStats.newBeersCount }}</div>
+        <div class="stat-title">New Beers</div>
       </div>
       <div class="card">
-        New Beer Ratio: {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
+        <mat-icon class="stat-icon">pie_chart</mat-icon>
+        <div class="stat-value">
+          {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
+        </div>
+        <div class="stat-title">New Beer Ratio</div>
       </div>
       <div class="card">
-        Average Rating: {{ processedStats.averageRating.toFixed(2) }}
+        <mat-icon class="stat-icon">stars</mat-icon>
+        <div class="stat-value">
+          {{ processedStats.averageRating.toFixed(2) }}
+        </div>
+        <div class="stat-title">Average Rating</div>
       </div>
-      <div class="card short-card">
-        Total Unique Breweries: {{ processedStats.totalUniqueBreweries }}
+      <div class="card">
+        <mat-icon class="stat-icon">business</mat-icon>
+        <div class="stat-value">{{ processedStats.totalUniqueBreweries }}</div>
+        <div class="stat-title">Unique Breweries</div>
       </div>
 
       <div class="card beer-styles-breakdown">
-        <h3>Beer Styles Breakdown</h3>
+        <h3><mat-icon>sports_bar</mat-icon> Beer Styles Breakdown</h3>
         <ul>
           @for (style of beerStylesList(); track style) {
             @if (processedStats.beerStylesCount[style] > 0) {
@@ -70,12 +97,17 @@
 
       @if (processedStats.topBeers.length) {
         <div class="card top-beers">
-          <h3>Top Beers</h3>
+          <h3><mat-icon>emoji_events</mat-icon> Top Beers</h3>
           <ul>
             @for (beer of processedStats.topBeers; track beer.name) {
               <li class="clickable" (click)="openBeersByTopBeer(beer.name)">
-                {{ beer.name }} - {{ beer.count }} check-ins (Avg:
-                {{ beer.avgRating.toFixed(2) }})
+                <span class="beer-name">{{ beer.name }}</span>
+                <div class="flex-row align-center">
+                  <span class="style-count">{{ beer.count }}</span>
+                  <span class="avg-rating-pill"
+                    >⭐ {{ beer.avgRating.toFixed(2) }}</span
+                  >
+                </div>
               </li>
             }
           </ul>
@@ -83,16 +115,18 @@
       }
 
       @if (objectKeys(processedStats.topCountries).length > 0) {
-        <div class="card">
-          <h3>Top Countries</h3>
+        <div class="card card-list">
+          <h3><mat-icon>public</mat-icon> Top Countries</h3>
           <ul>
             @for (
               country of objectKeys(processedStats.topCountries);
               track country
             ) {
               <li class="clickable" (click)="openBeersByCountry(country)">
-                {{ country }} -
-                {{ processedStats.topCountries[country] }} check-ins
+                <span class="country-name">{{ country }}</span>
+                <span class="style-count">{{
+                  processedStats.topCountries[country]
+                }}</span>
               </li>
             }
           </ul>
@@ -100,12 +134,15 @@
       }
 
       @if (objectKeys(processedStats.topStates).length > 0) {
-        <div class="card">
-          <h3>Top States</h3>
+        <div class="card card-list">
+          <h3><mat-icon>location_on</mat-icon> Top States</h3>
           <ul>
             @for (state of objectKeys(processedStats.topStates); track state) {
               <li class="clickable" (click)="openBeersByState(state)">
-                {{ state }} - {{ processedStats.topStates[state] }} check-ins
+                <span class="state-name">{{ state }}</span>
+                <span class="style-count">{{
+                  processedStats.topStates[state]
+                }}</span>
               </li>
             }
           </ul>

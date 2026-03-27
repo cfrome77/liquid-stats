@@ -1,9 +1,8 @@
+/* Existing styles */
 p {
-  color: black;
+  color: var(--text-color); /* Updated to use your theme variable */
   margin: 0 !important;
 }
-
-/* Removed conflicting h1 rule */
 
 .location {
   float: left;
@@ -21,4 +20,43 @@ p {
   white-space: nowrap;
   overflow: hidden;
   text-decoration: none;
+}
+
+/* --- New Scrolling & Highlight Styles --- */
+
+.card-wrapper {
+  transition: all 0.3s ease;
+  scroll-margin-top: 100px; /* Prevents card from hiding under navbar */
+}
+
+.highlight-card {
+  z-index: 10;
+  position: relative;
+  border-radius: 8px;
+  animation: pulse-highlight 2.5s ease-out;
+}
+
+@keyframes pulse-highlight {
+  0% {
+    box-shadow: 0 0 0 0px rgba(255, 202, 40, 0.7);
+    transform: scale(1);
+  }
+  15% {
+    box-shadow: 0 0 20px 10px rgba(255, 202, 40, 0.4);
+    transform: scale(1.02); /* Slight pop to catch attention */
+  }
+  100% {
+    box-shadow: 0 0 0 0px rgba(255, 202, 40, 0);
+    transform: scale(1);
+  }
+}
+
+/* Empty state styling */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  opacity: 0.6;
 }

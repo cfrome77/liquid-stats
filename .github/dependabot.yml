@@ -1,0 +1,16 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"                # package.json is in the root
+    schedule:
+      interval: "weekly"          # weekly for all deps
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+    ignore:
+      - dependency-name: "*"      # ignore major version bumps
+        versions:
+          - ">=2.0.0"
+    allow:
+      - dependency-type: "all"    # includes both runtime and dev deps

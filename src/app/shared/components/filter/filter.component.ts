@@ -6,7 +6,17 @@ import {
   OnChanges,
   SimpleChanges,
 } from "@angular/core";
-import { MatDatepickerInputEvent } from "@angular/material/datepicker";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import {
+  MatDatepickerModule,
+  MatDatepickerInputEvent,
+} from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { FormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
 import { DateUtils } from "../../../core/utils/date-utils";
 
 export interface FilterField {
@@ -22,7 +32,17 @@ export interface FilterField {
   selector: "app-filter",
   templateUrl: "./filter.component.html",
   styleUrls: ["./filter.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatIconModule,
+  ],
 })
 export class FilterComponent implements OnChanges {
   @Input() filterFields: FilterField[] = [];
@@ -126,6 +146,35 @@ export class FilterComponent implements OnChanges {
     const parsed = parseFloat(value);
     if (isNaN(parsed)) return value;
     return (parsed * 10) % 1 === 0 ? parsed.toFixed(1) : parsed.toFixed(2);
+  }
+
+  getFilterIcon(field: string): string {
+    switch (field) {
+      case "brewery":
+        return "business";
+      case "beer_style":
+        return "sports_bar";
+      case "country":
+        return "public";
+      case "state":
+        return "location_on";
+      case "rating":
+        return "star";
+      case "date":
+        return "calendar_today";
+      default:
+        return "filter_alt";
+    }
+  }
+
+  isFilterModified(filter: FilterField): boolean {
+    if (filter.type === "date") {
+      return (
+        filter.selected[0] !== filter.options[0] ||
+        filter.selected[1] !== filter.options[1]
+      );
+    }
+    return filter.selected.length !== filter.options.length;
   }
 
   shouldShowOption(option: string): boolean {

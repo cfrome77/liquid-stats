@@ -9,8 +9,7 @@ describe("CardComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CardComponent],
-      imports: [MatCardModule],
+      imports: [CardComponent, MatCardModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 

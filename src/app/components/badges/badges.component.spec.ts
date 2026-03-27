@@ -18,8 +18,7 @@ describe("BadgesComponent", () => {
     };
 
     await TestBed.configureTestingModule({
-      declarations: [BadgesComponent],
-      imports: [HttpClientTestingModule, MatDialogModule],
+      imports: [BadgesComponent, HttpClientTestingModule, MatDialogModule],
       providers: [{ provide: DataService, useValue: mockDataService }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();

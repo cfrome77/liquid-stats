@@ -1,4 +1,3 @@
-/* Card container for spacing between cards */
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -6,247 +5,282 @@
   box-sizing: border-box;
 }
 
-/* Shared Card */
 .shared-card {
   background-color: var(--card-bg);
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   margin: 0;
-  padding-bottom: 8px; /* breathing room at bottom */
   box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid var(--divider-color);
 }
 
-/* Remove default mat-card content padding */
-.shared-card .mat-mdc-card-content,
-.shared-card .beer {
-  padding: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box;
+.shared-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-blue);
 }
 
-/* Header Section */
-.header-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.card-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
   align-items: center;
-  padding: 4px 12px 2px 12px;
-  margin: 0;
-  gap: 6px;
-  box-sizing: border-box;
+  padding: 16px;
+  background: rgba(var(--accent-blue-rgb), 0.03);
+  border-bottom: 1px solid var(--divider-color);
 }
 
-/* Logos */
+.label-container {
+  display: flex;
+  justify-content: center;
+}
+
 .beer-label,
 .brewery-label {
-  height: 50px;
-  width: 50px;
-  margin: 0 6px;
-  padding: 0;
+  height: 54px;
+  width: 54px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--card-bg);
 }
 
-/* Beer Info */
 .beer-info {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   text-align: center;
-  margin: 0;
-  padding: 2px 0;
+  padding: 0 12px;
+  min-width: 0; /* Allow title to truncate if needed */
 }
 
-.beer-info h3 {
-  margin: 2px 0 2px 0;
-  font-size: 1.15rem;
-  font-weight: bold;
+.title {
+  margin: 0 0 4px 0;
+  font-size: 1.25rem;
+  font-weight: 800;
   color: var(--header-text);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.beer-info p {
-  margin: 0;
-  font-size: 0.875rem;
+.rank-badge {
+  display: inline-block;
+  background: var(--accent-blue);
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  vertical-align: middle;
+  margin-right: 6px;
+  font-weight: 700;
+}
+
+/* Base style for the container */
+.subtitle {
+  font-size: 0.9rem;
   color: var(--text-color);
+  line-height: 1.4;
+  margin-bottom: 4px;
   opacity: 0.8;
 }
 
-/* Comment / Description */
+/* Reach inside the injected HTML to style the links */
+.subtitle ::ng-deep a {
+  color: var(--accent-glow, #ffca28) !important;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+  word-break: break-word;
+}
+
+.subtitle ::ng-deep a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Ensure bold text from the API matches your theme */
+.subtitle ::ng-deep strong {
+  font-weight: 700;
+  color: var(--header-text);
+}
+
+.brewery-name {
+  font-size: 0.8rem;
+  color: var(--accent-blue);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .comment {
   display: block;
-  margin: 8px 12px;
-  line-height: 1.5em;
+  margin: 16px;
+  line-height: 1.6;
   color: var(--text-color);
-  border-left: 3px solid var(--accent-blue);
-  padding-left: 10px;
-  border-radius: 4px;
-  text-align: left;
+  background: rgba(var(--accent-blue-rgb), 0.03);
+  border-left: 4px solid var(--accent-blue);
+  padding: 12px 16px;
+  border-radius: 0 12px 12px 0;
   font-style: italic;
-  box-sizing: border-box;
-  word-wrap: break-word;
   font-size: 0.95rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Rating Bar */
+.comment ::ng-deep a {
+  color: var(--accent-glow, #ffca28) !important;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.comment ::ng-deep strong {
+  color: var(--header-text);
+  font-weight: 700;
+}
+
 .rating-bar {
+  padding: 8px 16px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
   align-items: center;
-  margin: 4px 12px;
-  padding: 0;
-  box-sizing: border-box;
 }
 
-.global-rating {
-  color: var(--text-color);
-}
-
-/* Badges and Social Links */
 .badges-and-social-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  margin: 4px 12px;
-  padding: 0;
-  box-sizing: border-box;
-  min-height: 40px;
+  gap: 16px;
+  padding: 12px 16px;
+  min-height: 48px;
+}
+
+.global-rating {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-color);
+  background: rgba(var(--accent-blue-rgb), 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.global-rating-label {
+  opacity: 0.8;
+  margin-right: 4px;
 }
 
 .social-links-wrapper {
   margin-left: auto;
 }
 
-/* Chips */
+/* Ensure the chip set has room for the chips to "grow" without clipping */
 .chip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  padding: 4px 0;
 }
 
-/* Footer */
+.clickable-chip {
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  user-select: none;
+  border-radius: 20px !important;
+}
+
+/* The Hover Animation */
+.clickable-chip:hover {
+  /* Lift and slightly grow */
+  transform: translateY(-3px) scale(1.05);
+
+  /* Add a subtle glow matching your amber/yellow theme */
+  box-shadow: 0 4px 8px rgba(255, 202, 40, 0.3) !important;
+
+  /* Lighten the background slightly on hover */
+  filter: brightness(1.1);
+}
+
 footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--divider-color);
-  padding: 8px 12px 8px 12px;
-  margin: 4px 0 0 0;
-  box-sizing: border-box;
-  clear: both;
+  padding: 12px 16px;
+  background: rgba(var(--accent-blue-rgb), 0.02);
 }
 
-/* Footer left link */
 .location-link {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  color: var(--text-color);
-  opacity: 0.7;
+  gap: 6px;
+  color: var(--accent-blue);
   text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
 }
 
-.location-link mat-icon {
-  font-size: 18px !important;
-  width: 18px;
-  height: 18px;
-  color: inherit;
+.location-link:hover {
+  opacity: 0.8;
 }
 
-.footer-text {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-}
-
-.footer-text {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-}
-
-/* Footer right: timestamp / view details */
 .footer-time {
   display: flex;
   align-items: center;
-  gap: 8px; /* increased gap */
-  font-size: 14px;
+  gap: 12px;
+  font-size: 0.8rem;
   color: var(--text-color);
   opacity: 0.7;
 }
 
-.footer-time time {
+.view-details {
   color: var(--text-color);
-  opacity: 0.6;
-  font-size: 14px;
-  display: inline-block;
-}
-
-.footer-time time {
-  color: var(--text-color);
-  opacity: 0.6;
-  font-size: 14px;
-  display: inline-block;
-}
-
-footer a.view-details {
-  color: var(--text-color);
-  opacity: 0.7;
-  text-decoration: none;
-  font-weight: normal;
-  font-size: 14px;
   display: flex;
-  align-items: center;
+  transition: all 0.2s;
+  padding: 4px;
+  border-radius: 50%;
 }
 
-footer a.view-details mat-icon {
-  font-size: 18px !important;
-  width: 18px;
-  height: 18px;
-  color: inherit;
+.view-details:hover {
+  color: var(--accent-blue);
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
 }
 
-.hide-text {
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
+@media (max-width: 600px) {
+  .badges-and-social-links {
+    gap: 8px;
+  }
+
+  .social-links-wrapper {
+    /* Ensure it doesn't take full width on mobile unless it wraps */
+    width: auto;
+  }
 }
 
-footer a.view-details:hover {
-  text-decoration: underline;
-}
-
-/* Responsive adjustments */
 @media (max-width: 480px) {
+  .card-header {
+    grid-template-columns: 50px 1fr 50px;
+    padding: 12px;
+  }
+
   .beer-label,
   .brewery-label {
-    height: 40px;
-    width: 40px;
+    height: 44px;
+    width: 44px;
   }
 
-  .global-rating {
-    font-size: 0.95rem;
-    color: var(--text-color);
+  .title {
+    font-size: 1.15rem;
   }
 
-  .beer-info h3 {
-    font-size: 1.05rem;
+  .subtitle,
+  .brewery-name {
+    font-size: 0.8rem;
   }
 
-  .beer-info p,
-  .comment {
-    font-size: 0.85rem;
+  .subtitle {
+    white-space: normal;
   }
 }

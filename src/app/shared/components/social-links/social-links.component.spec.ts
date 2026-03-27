@@ -7,9 +7,7 @@ describe("SocialLinksComponent", () => {
   let fixture: ComponentFixture<SocialLinksComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [SocialLinksComponent],
-    }).compileComponents();
+    await TestBed.configureTestingModule({}).compileComponents();
 
     fixture = TestBed.createComponent(SocialLinksComponent);
     component = fixture.componentInstance;

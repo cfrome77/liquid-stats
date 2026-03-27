@@ -8,8 +8,7 @@ describe("BeerStyleDialogComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BeerStyleDialogComponent],
-      imports: [MatDialogModule],
+      imports: [BeerStyleDialogComponent, MatDialogModule],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: { beers: [] } }],
     }).compileComponents();
 

@@ -7,9 +7,7 @@ describe("PoweredByComponent", () => {
   let fixture: ComponentFixture<PoweredByComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [PoweredByComponent],
-    }).compileComponents();
+    await TestBed.configureTestingModule({}).compileComponents();
 
     fixture = TestBed.createComponent(PoweredByComponent);
     component = fixture.componentInstance;

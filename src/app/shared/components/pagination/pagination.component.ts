@@ -7,11 +7,15 @@ import {
   OnChanges,
 } from "@angular/core";
 
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+
 @Component({
   selector: "app-pagination",
   templateUrl: "./pagination.component.html",
   styleUrls: ["./pagination.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule],
 })
 export class PaginationComponent implements OnChanges {
   @Input() currentPage = 1; // The current page

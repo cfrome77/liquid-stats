@@ -1,93 +1,103 @@
 <div class="card-container">
   <mat-card class="shared-card">
     <mat-card-content class="beer">
-      <div class="header-section">
-        @if (cardData.mainImage) {
-          <img
-            class="beer-label"
-            [src]="cardData.mainImage"
-            [alt]="cardData.title"
-            [title]="cardData.title"
-          />
-        }
+      <div class="card-header">
+        <div class="label-container left">
+          @if (cardData.mainImage) {
+            <img
+              class="beer-label"
+              [src]="cardData.mainImage"
+              [alt]="cardData.title"
+              [title]="cardData.title"
+            />
+          }
+        </div>
 
         <div class="beer-info">
-          <h3>
+          <h3 class="title">
             @if (cardData.rank) {
-              <span class="rank">#{{ cardData.rank }}</span>
+              <span class="rank-badge">#{{ cardData.rank }}</span>
             }
             {{ cardData.title }}
           </h3>
           @if (cardData.subtitle) {
-            <p>{{ cardData.subtitle }}</p>
+            <div class="subtitle" [innerHTML]="cardData.subtitle"></div>
           }
           @if (cardData.breweryName) {
-            <p>{{ cardData.breweryName }}</p>
+            <div class="brewery-name">{{ cardData.breweryName }}</div>
           }
         </div>
 
-        @if (cardData.secondaryImage) {
-          <img
-            class="brewery-label"
-            [src]="cardData.secondaryImage"
-            [alt]="cardData.breweryName"
-            [title]="cardData.breweryName"
-          />
-        }
+        <div class="label-container right">
+          @if (cardData.secondaryImage) {
+            <img
+              class="brewery-label"
+              [src]="cardData.secondaryImage"
+              [alt]="cardData.breweryName"
+              [title]="cardData.breweryName"
+            />
+          }
+        </div>
       </div>
 
       @if (cardData.description) {
-        <span class="comment">{{ cardData.description }}</span>
+        <span class="comment" [innerHTML]="cardData.description"></span>
       }
       @if (cardData.hint) {
         <span class="comment">{{ cardData.hint }}</span>
       }
 
-      <div class="rating-bar">
-        @if (cardData.rating != null) {
+      @if (cardData.rating != null) {
+        <div class="rating-bar">
           <app-rating
             [ratingScore]="cardData.rating"
             class="flex-1"
           ></app-rating>
-        }
-      </div>
+        </div>
+      }
 
-      <div class="badges-and-social-links">
-        @if (cardData.globalRating != null) {
-          <div class="global-rating flex-row align-center gap-4">
-            <span class="global-rating-label">Overall Rating:</span>
-            <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
+      @if (
+        cardData.globalRating != null ||
+        cardData.extraData?.badges?.length ||
+        cardData.extraData?.socialLinks
+      ) {
+        <div class="badges-and-social-links">
+          @if (cardData.globalRating != null) {
+            <div class="global-rating flex-row align-center gap-4">
+              <span class="global-rating-label">Overall Rating:</span>
+              <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
+            </div>
+          }
+
+          <div class="flex-row align-center min-w-0">
+            @if (cardData.extraData?.badges && cardData.globalRating == null) {
+              <mat-chip-set class="chip">
+                @for (
+                  badge of cardData.extraData.badges;
+                  track badge.badge_name
+                ) {
+                  <mat-chip class="clickable-chip" (click)="onBadgeClick(badge)">
+                    <img matChipAvatar [src]="badge.badge_image.sm" alt="badge" />
+                    {{ badge.badge_name }}
+                  </mat-chip>
+                }
+              </mat-chip-set>
+            }
           </div>
-        }
 
-        <div class="flex-row align-center min-w-0">
-          @if (cardData.extraData?.badges && cardData.globalRating == null) {
-            <mat-chip-set class="chip">
-              @for (
-                badge of cardData.extraData.badges;
-                track badge.badge_name
-              ) {
-                <mat-chip class="clickable-chip" (click)="onBadgeClick(badge)">
-                  <img matChipAvatar [src]="badge.badge_image.sm" alt="badge" />
-                  {{ badge.badge_name }}
-                </mat-chip>
-              }
-            </mat-chip-set>
-          }
+          <div
+            class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
+          >
+            @if (cardData.extraData?.socialLinks) {
+              <app-social-links
+                [contact]="cardData.extraData.socialLinks"
+                [mapData]="cardData.extraData.mapData"
+              >
+              </app-social-links>
+            }
+          </div>
         </div>
-
-        <div
-          class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
-        >
-          @if (cardData.extraData?.socialLinks) {
-            <app-social-links
-              [contact]="cardData.extraData.socialLinks"
-              [mapData]="cardData.extraData.mapData"
-            >
-            </app-social-links>
-          }
-        </div>
-      </div>
+      }
 
       <footer>
         <div class="footer-left">

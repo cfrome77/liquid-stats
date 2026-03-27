@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { MatDialogModule } from "@angular/material/dialog";
-import { of } from "rxjs";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-
 import { WishlistComponent } from "./wishlist.component";
-import { DataService } from "src/app/core/services/data.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { DataService } from "../../core/services/data.service";
+import { of } from "rxjs";
 
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
@@ -13,19 +11,26 @@ describe("WishlistComponent", () => {
   let mockDataService: any;
 
   beforeEach(async () => {
-    mockDataService = {
-      getWishlist: () => of({ response: { beers: { items: [] } } }),
-    };
+    mockDataService = jasmine.createSpyObj("DataService", ["getWishlist"]);
+    mockDataService.getWishlist.and.returnValue(
+      of({
+        response: {
+          wishlist: {
+            items: [],
+          },
+        },
+      }),
+    );
 
     await TestBed.configureTestingModule({
-      declarations: [WishlistComponent],
-      imports: [HttpClientTestingModule, MatDialogModule],
+      imports: [
+        WishlistComponent,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
       providers: [{ provide: DataService, useValue: mockDataService }],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(WishlistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

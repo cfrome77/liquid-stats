@@ -1,6 +1,5 @@
-<h1>Beer History</h1>
-
 <div class="main-content-container">
+  <h1>Beer History</h1>
   <div class="filter-card">
     <div class="filter-card-content">
       <div class="filter-buttons-container">
@@ -33,6 +32,13 @@
   <div class="flex-column" style="align-items: stretch; gap: 10px">
     @for (beerCard of paginatedBeers; track beerCard.title) {
       <app-card [cardData]="beerCard"></app-card>
+    } @empty {
+      <app-empty-state
+        icon="search_off"
+        message="No beers match your search criteria."
+        buttonText="Clear Filters"
+        (action)="resetFilters()"
+      ></app-empty-state>
     }
   </div>
 
@@ -45,5 +51,3 @@
   >
   </app-pagination>
 </div>
-
-<app-powered-by></app-powered-by>

@@ -4,7 +4,7 @@ import { Component, OnInit } from "@angular/core";
   selector: "app-powered-by",
   templateUrl: "./powered-by.component.html",
   styleUrls: ["./powered-by.component.css"],
-  standalone: false,
+  standalone: true,
 })
 export class PoweredByComponent implements OnInit {
   constructor() {}

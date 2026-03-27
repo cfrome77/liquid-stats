@@ -1,7 +1,117 @@
-<div class="bg-img">
-  <div class="wrapper">
-    <button class="mat-raised-button" id="button">
-      <a routerLink="/checkins">Latest Checkins</a>
-    </button>
+<div class="home-container">
+  <div class="hero">
+    <img src="assets/images/LiquidStatsLogo.png" alt="Logo" class="logo-hero" />
+    <div class="hero-content-wrapper">
+      <p class="hero-subtitle">Track every pour you enjoy.</p>
+      <div class="hero-buttons">
+        <button mat-flat-button color="primary" routerLink="/checkins">
+          Latest Checkins
+        </button>
+        <button mat-flat-button routerLink="/stats">View Stats</button>
+      </div>
+    </div>
   </div>
+
+  <hr class="section-divider" />
+
+  <section class="quick-stats">
+    <mat-card
+      class="stat-card clickable-card"
+      routerLink="/beer-history"
+      matRipple
+    >
+      <div class="icon-wrapper">
+        <mat-icon class="icon-default">local_drink</mat-icon>
+        <mat-icon class="icon-hover">history</mat-icon>
+      </div>
+      <div class="stat-number">{{ totalCheckins }}</div>
+      <div class="stat-label">Checkins</div>
+    </mat-card>
+
+    <mat-card
+      class="stat-card clickable-card"
+      routerLink="/top-beers"
+      matRipple
+    >
+      <div class="icon-wrapper">
+        <mat-icon class="icon-default">star</mat-icon>
+        <mat-icon class="icon-hover">trending_up</mat-icon>
+      </div>
+      <div class="stat-number">{{ averageRating | number: "1.1-1" }}</div>
+      <div class="stat-label">Avg Rating</div>
+    </mat-card>
+
+    <mat-card class="stat-card clickable-card" routerLink="/map" matRipple>
+      <div class="icon-wrapper">
+        <mat-icon class="icon-default">public</mat-icon>
+        <mat-icon class="icon-hover">map</mat-icon>
+      </div>
+      <div class="stat-number">{{ countriesTried }}</div>
+      <div class="stat-label">Countries</div>
+    </mat-card>
+
+    <mat-card class="stat-card clickable-card" routerLink="/stats" matRipple>
+      <div class="icon-wrapper">
+        <mat-icon class="icon-default">storefront</mat-icon>
+        <mat-icon class="icon-hover">leaderboard</mat-icon>
+      </div>
+      <div class="stat-number">{{ breweriesVisited }}</div>
+      <div class="stat-label">Breweries</div>
+    </mat-card>
+  </section>
+
+  <hr class="section-divider" />
+
+  <section class="recent-checkins">
+    <div class="section-header">
+      <h3>Recent Checkins</h3>
+    </div>
+    <div class="carousel-wrapper">
+      <button
+        class="nav-btn left"
+        (click)="scrollPrev()"
+        aria-label="Scroll Left"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <div class="carousel-track" #carouselTrack>
+        <mat-card
+          class="beer-card clickable-card"
+          *ngFor="let c of allCheckins"
+          [routerLink]="['/checkins', c.checkin_id]"
+        >
+          <img
+            mat-card-image
+            [src]="
+              c.media?.items?.[0]?.photo?.photo_img_md ||
+              c.beer?.beer_label ||
+              DEFAULT_IMAGE
+            "
+            [alt]="c.beer?.beer_name"
+            (error)="handleImageError($event)"
+          />
+          <mat-card-content>
+            <h4>{{ c.beer?.beer_name }}</h4>
+            <p class="brewery-name" [title]="c.brewery?.brewery_name">
+              {{ c.brewery?.brewery_name }}
+            </p>
+            <div class="card-footer">
+              <span class="rating-badge">
+                ⭐ {{ c.rating_score | number: "1.1-1" }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <button
+        class="nav-btn right"
+        (click)="scrollNext()"
+        aria-label="Scroll Right"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </section>
 </div>

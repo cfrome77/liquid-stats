@@ -10,8 +10,7 @@ describe("AboutComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AboutComponent],
-      imports: [MatDialogModule],
+      imports: [AboutComponent, MatDialogModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });

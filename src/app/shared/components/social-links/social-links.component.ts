@@ -1,12 +1,15 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { DomSanitizer } from "@angular/platform-browser";
-import { MatIconRegistry } from "@angular/material/icon";
+import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-social-links",
   templateUrl: "./social-links.component.html",
   styleUrls: ["./social-links.component.css"],
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, MatIconModule, RouterModule],
 })
 export class SocialLinksComponent implements OnInit {
   constructor(

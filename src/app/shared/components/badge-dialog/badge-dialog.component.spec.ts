@@ -9,12 +9,11 @@ describe("BadgeDialogComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BadgeDialogComponent],
-      imports: [MatDialogModule],
+      imports: [BadgeDialogComponent, MatDialogModule],
       providers: [
         {
           provide: MAT_DIALOG_DATA,
-          useValue: { badge_image: { md: "test.jpg" } },
+          useValue: { badge_image: { lg: "test.jpg" } },
         },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

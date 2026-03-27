@@ -1,12 +1,19 @@
-<h1>Recent Checkin List</h1>
-
 <div class="main-content-container">
-  <div class="flex-column" style="align-items: stretch; gap: 10px">
-    @for (checkin of transformedCheckins; track checkin.title) {
-      <app-card [cardData]="checkin" (badgeClick)="openBadgeDialog($event)">
-      </app-card>
+  <h1>Recent Checkin List</h1>
+  <div class="flex-column" style="align-items: stretch; gap: 15px">
+    @for (checkin of transformedCheckins; track checkin.extraData?.checkinId) {
+      <div
+        [id]="'checkin-' + checkin.extraData?.checkinId"
+        class="card-wrapper"
+      >
+        <app-card [cardData]="checkin" (badgeClick)="openBadgeDialog($event)">
+        </app-card>
+      </div>
+    } @empty {
+      <app-empty-state
+        icon="history"
+        message="No recent checkins found."
+      ></app-empty-state>
     }
   </div>
 </div>
-
-<app-powered-by></app-powered-by>

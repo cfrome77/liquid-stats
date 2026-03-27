@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MatDialogModule } from "@angular/material/dialog";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { of } from "rxjs";
 
 import { StatsComponent } from "./stats.component";
@@ -15,22 +16,34 @@ describe("StatsComponent", () => {
   beforeEach(async () => {
     mockStatsService = {
       loadBeerData: () => of([]),
-      getDateRange: () => ({ start: new Date(), end: new Date() }),
       computeStats: () => ({
-        total: 0,
-        uniqueBeers: 0,
-        averageRating: 0,
+        totalUniqueBeers: 0,
+        totalCheckins: 0,
+        newBeersCount: 0,
         newBeerRatio: 0,
-        beersPerDay: 0,
-        totalVenues: 0,
-        uniqueVenues: 0,
-        newVenueRatio: 0,
+        averageRating: 0,
+        totalUniqueBreweries: 0,
+        beerStylesCount: {},
+        topBeers: [],
+        topCountries: {},
+        topStates: {},
+        recentActivityByDate: [],
+        checkinsByHour: [],
+        checkinsByDay: [],
+        checkinsByDayOfWeek: [],
+        checkinsByMonth: [],
+        averageRatingsOverTime: [],
       }),
     };
 
     await TestBed.configureTestingModule({
-      declarations: [StatsComponent],
-      imports: [ReactiveFormsModule, HttpClientTestingModule, MatDialogModule],
+      imports: [
+        StatsComponent,
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        MatDialogModule,
+        BrowserAnimationsModule,
+      ],
       providers: [{ provide: StatsService, useValue: mockStatsService }],
     }).compileComponents();
 

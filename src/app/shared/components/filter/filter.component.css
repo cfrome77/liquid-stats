@@ -5,7 +5,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,8 +17,8 @@
   background-color: var(--card-bg);
   color: var(--text-color);
   padding: 0;
-  border-radius: 8px;
-  width: 300px;
+  border-radius: 16px;
+  width: 400px;
   max-width: 90%;
   max-height: 80vh;
   display: flex;
@@ -25,7 +26,9 @@
   z-index: 10000;
   box-sizing: border-box;
   overflow: hidden;
-  word-wrap: break-word;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
@@ -33,33 +36,33 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 10px;
+  padding: 16px 20px;
   background-color: var(--card-bg);
+  border-bottom: 1px solid var(--divider-color);
   gap: 15px;
 }
 
 .modal-button-container {
   display: flex;
-  gap: 15px;
-  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
 }
 
 @media (max-width: 768px) {
   .modal-header {
-    padding: 10px 15px;
-  }
-
-  .modal-button-container {
-    gap: 25px;
+    padding: 12px 16px;
   }
 }
 
 .apply-button {
-  background-color: #28a745;
+  background-color: var(--success-green);
   color: white;
-  padding: 8px 15px;
-  border-radius: 5px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
 .apply-button:hover {
@@ -69,32 +72,44 @@
 .back-button {
   background: none;
   border: none;
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-color);
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
 }
 
 .back-button:hover {
   opacity: 1;
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
 }
 
 .reset-button {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 5px;
+  background-color: transparent;
+  color: var(--accent-blue);
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--accent-blue);
   cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  transition: background-color 0.2s;
 }
 
 .reset-button:hover {
-  background-color: #0056b3;
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
 }
 
 .modal-body {
   font-size: 14px;
   color: var(--text-color);
-  padding-top: 10px;
+  padding: 16px 20px;
   flex-grow: 1;
   overflow-y: auto;
   display: flex;
@@ -102,80 +117,101 @@
 }
 
 .modal-body::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--divider-color);
   border-radius: 10px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #888;
 }
 
-/* New style to dynamically adjust width for desktop */
-@media (min-width: 768px) {
-  .modal-content {
-    width: auto;
-    max-width: 80%;
-  }
+.filter-container-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
-  .filter-option-label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    padding-left: 10px;
-    width: auto;
-  }
+.stats-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--divider-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.stats-filter-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.stats-filter-button:hover {
+  background-color: rgba(var(--accent-blue-rgb), 0.05);
+  border-color: var(--accent-blue);
+}
+
+.stats-filter-button.active-filter {
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.stats-filter-button.active-filter mat-icon {
+  opacity: 1;
 }
 
 .filter-option-label {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
-  padding-left: 10px;
-  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.filter-option-label:hover {
+  background-color: rgba(var(--accent-blue-rgb), 0.05);
 }
 
 .filter-option-label input[type="checkbox"] {
-  margin-right: 8px;
-  margin-left: 0;
-}
-
-.stats-filter-button {
-  background-color: #007bff;
-  color: white;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 5px;
-  border: none;
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-width: 100px;
-  margin-bottom: 10px;
-  margin-right: 15px;
 }
 
-.stats-filter-button:hover {
-  background-color: #0056b3;
-}
-
-.stats-filter-button:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.stats-filter-button:active {
-  background-color: #004085;
+.option-count {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.6;
+  background-color: var(--divider-color);
+  padding: 2px 8px;
+  border-radius: 10px;
 }
 
 /* Material Date Picker Styling in Modal */
 .date-range-filter {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 10px;
+  gap: 16px;
+  padding-top: 8px;
 }
 
 :host ::ng-deep .modal-body .mat-mdc-form-field {
@@ -186,20 +222,4 @@
 :host ::ng-deep .modal-body .mdc-notched-outline__notch,
 :host ::ng-deep .modal-body .mdc-notched-outline__trailing {
   border-color: var(--input-outline) !important;
-}
-
-:host ::ng-deep .modal-body .mat-mdc-form-field-label,
-:host ::ng-deep .modal-body .mat-mdc-floating-label,
-:host ::ng-deep .modal-body .mat-mdc-floating-label mat-label {
-  color: var(--text-color) !important;
-  opacity: 0.7;
-}
-
-:host ::ng-deep .modal-body .mat-datepicker-toggle {
-  color: var(--text-color) !important;
-  opacity: 0.7;
-}
-
-:host ::ng-deep .modal-body .mat-mdc-input-element {
-  color: var(--input-text) !important;
 }

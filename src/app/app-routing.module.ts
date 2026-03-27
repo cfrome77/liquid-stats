@@ -1,31 +1,81 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-
-import { HomeComponent } from "./components/home/home.component";
-import { CheckinsComponent } from "./components/checkins/checkins.component";
-import { TopBeersComponent } from "./components/top-beers/top-beers.component";
-import { BadgesComponent } from "./components/badges/badges.component";
-import { MapComponent } from "./components/map/map.component";
-import { BeerHistoryComponent } from "./components/beer-history/beer-history.component";
-import { StatsComponent } from "./components/stats/stats.component";
-import { WishlistComponent } from "./components/wishlist/wishlist.component";
-import { AboutComponent } from "./components/about/about.component";
+import { Routes } from "@angular/router";
 
 export const routes: Routes = [
   { path: "", redirectTo: "/home", pathMatch: "full" },
-  { path: "home", component: HomeComponent },
-  { path: "checkins", component: CheckinsComponent },
-  { path: "top-beers", component: TopBeersComponent },
-  { path: "badges", component: BadgesComponent },
-  { path: "map", component: MapComponent, data: { mapId: "myMap" } },
-  { path: "beer-history", component: BeerHistoryComponent },
-  { path: "stats", component: StatsComponent },
-  { path: "wishlist", component: WishlistComponent },
-  { path: "about", component: AboutComponent },
+  {
+    path: "home",
+    loadComponent: () =>
+      import("./components/home/home.component").then((m) => m.HomeComponent),
+    data: { animation: "HomePage" },
+  },
+  {
+    path: "checkins",
+    loadComponent: () =>
+      import("./components/checkins/checkins.component").then(
+        (m) => m.CheckinsComponent,
+      ),
+    data: { animation: "CheckinsPage" },
+  },
+  {
+    path: "checkins/:id",
+    loadComponent: () =>
+      import("./components/checkins/checkins.component").then(
+        (m) => m.CheckinsComponent,
+      ),
+    data: { animation: "CheckinsPage" },
+  },
+  {
+    path: "top-beers",
+    loadComponent: () =>
+      import("./components/top-beers/top-beers.component").then(
+        (m) => m.TopBeersComponent,
+      ),
+    data: { animation: "TopBeersPage" },
+  },
+  {
+    path: "badges",
+    loadComponent: () =>
+      import("./components/badges/badges.component").then(
+        (m) => m.BadgesComponent,
+      ),
+    data: { animation: "BadgesPage" },
+  },
+  {
+    path: "map",
+    loadComponent: () =>
+      import("./components/map/map.component").then((m) => m.MapComponent),
+    data: { mapId: "myMap", animation: "MapPage" },
+  },
+  {
+    path: "beer-history",
+    loadComponent: () =>
+      import("./components/beer-history/beer-history.component").then(
+        (m) => m.BeerHistoryComponent,
+      ),
+    data: { animation: "HistoryPage" },
+  },
+  {
+    path: "stats",
+    loadComponent: () =>
+      import("./components/stats/stats.component").then(
+        (m) => m.StatsComponent,
+      ),
+    data: { animation: "StatsPage" },
+  },
+  {
+    path: "wishlist",
+    loadComponent: () =>
+      import("./components/wishlist/wishlist.component").then(
+        (m) => m.WishlistComponent,
+      ),
+    data: { animation: "WishlistPage" },
+  },
+  {
+    path: "about",
+    loadComponent: () =>
+      import("./components/about/about.component").then(
+        (m) => m.AboutComponent,
+      ),
+    data: { animation: "AboutPage" },
+  },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

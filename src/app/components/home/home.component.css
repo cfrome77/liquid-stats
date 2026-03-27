@@ -1,51 +1,358 @@
-button {
-  background-color: #f0fff0;
-  font-size: 25px;
-  height: auto;
-  width: auto;
+/* -------------------- Theme-Aware Variables -------------------- */
+:host-context(.light-theme) {
+  --hero-glow: linear-gradient(
+    180deg,
+    #fff6e8 0%,
+    rgba(255, 246, 232, 0.6) 20%,
+    transparent 60%
+  );
+  --accent-glow: #e65100;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-button:hover {
-  background-color: #dcdcdc;
+:host-context(.dark-theme) {
+  --hero-glow: linear-gradient(
+    180deg,
+    #3b2a16 0%,
+    rgba(59, 42, 22, 0.6) 25%,
+    transparent 65%
+  );
+  --accent-glow: #ffca28;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-button a {
-  color: black;
-  text-decoration: none;
+:host-context(.dark-theme) {
+  --logo-filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff)
+    drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff)
+    drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff);
 }
 
-.wrapper {
+/* -------------------- Container -------------------- */
+.home-container {
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 10px;
+  background: var(--hero-glow);
+  color: var(--text-color);
+  transition: background 0.3s ease;
+}
+
+/* -------------------- Hero Section -------------------- */
+.hero {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
 }
 
-#button {
-  margin-top: 18%;
+.logo-hero {
+  max-width: 420px;
+  width: 90%;
+  filter: var(--logo-filter);
+  transition: filter 0.3s ease;
 }
 
-.bg-img {
-  /* Set rules to fill background */
-  min-height: 100%;
-  min-width: 1024px;
-  background: url("/assets/images/background.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+.hero-content-wrapper {
+  margin-top: -45px;
+  z-index: 2;
+}
 
-  /* Set up proportionate scaling */
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 24px;
+  color: var(--accent-glow);
+  font-weight: 600;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.hero-buttons button {
+  border-radius: 24px;
+  font-weight: 700;
+  padding: 0 24px;
+}
+
+.hero-buttons .mat-flat-button {
+  background-color: var(--btn-danger) !important;
+  color: white !important;
+}
+
+/* -------------------- Section Divider -------------------- */
+.section-divider {
+  border: 0;
+  border-top: 1px solid var(--divider-color);
+  margin: 60px auto;
+  width: 60%;
+}
+
+/* -------------------- Quick Stats -------------------- */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stat-card {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  background-color: var(--card-bg) !important;
+  box-shadow: var(--card-shadow);
+  border-radius: 16px !important;
+  border: 1px solid var(--divider-color);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-blue);
+}
+
+.stat-card mat-icon {
+  font-size: 44px;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  margin-bottom: 16px;
+  color: var(--accent-blue);
+  opacity: 0.8;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--header-text);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  opacity: 0.7;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* -------------------- Recent Checkins -------------------- */
+.recent-checkins h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* --------------------- Interactive Icons and Card Hover -------------------- */
+.icon-wrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-wrapper mat-icon {
+  position: absolute;
+  font-size: 44px;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.icon-hover {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.5);
+  color: var(--accent-glow) !important;
+}
+
+.icon-default {
+  opacity: 0.8;
+  visibility: visible;
+  color: var(--accent-blue);
+}
+
+.clickable-card:hover .icon-default {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.5);
+}
+
+.clickable-card:hover .icon-hover {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+/* -------------------- Carousel -------------------- */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  padding: 20px 0;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--divider-color);
+  color: var(--text-color);
+  min-width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--card-shadow);
+  z-index: 5;
+}
+
+.nav-btn:hover {
+  background: var(--accent-blue);
+  color: white;
+  border-color: var(--accent-blue);
+  transform: scale(1.1);
+}
+
+/* -------------------- Beer Card Styling -------------------- */
+.carousel-track .beer-card {
+  flex: 0 0 calc((100% - 80px) / 5); /* 5 cards visible */
+  scroll-snap-align: start;
+  min-width: 200px;
+  background-color: var(--card-bg) !important;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  text-align: center;
+  border-radius: 16px !important;
+  border: 1px solid var(--divider-color);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.carousel-track .beer-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--accent-blue);
+}
+
+.carousel-track .beer-card img {
   width: 100%;
-  height: auto;
-
-  /* Set up positioning */
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--divider-color);
 }
 
-@media screen and (max-width: 1024px) {
-  /* Specific to this particular image */
-  .bg-img {
-    left: 50%;
-    margin-left: -512px; /* 50% */
+.carousel-track .beer-card h4 {
+  margin: 12px 10px 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--header-text);
+  line-height: 1.3;
+
+  /* Standard and Webkit properties */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.6em;
+}
+
+.brewery-name {
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent-blue);
+  opacity: 0.8;
+  white-space: nowrap; /* Desktop: 1 line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
+}
+
+.rating-badge {
+  font-weight: 700;
+  color: var(--accent-glow);
+  font-size: 0.85rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+/* -------------------- Responsive -------------------- */
+@media (max-width: 1200px) {
+  .carousel-track .beer-card {
+    flex: 0 0 calc((100% - 60px) / 4);
+  }
+}
+
+@media (max-width: 992px) {
+  .carousel-track .beer-card {
+    flex: 0 0 calc((100% - 40px) / 3);
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-btn {
+    display: none;
+  }
+  .carousel-track .beer-card {
+    flex: 0 0 85%; /* Peek at the next card on mobile */
+  }
+
+  /* Allow brewery name to wrap on mobile for better visibility without hover */
+  .brewery-name {
+    white-space: normal;
+    /* Standard and Webkit properties */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.4em;
+    padding: 0 10px;
   }
 }

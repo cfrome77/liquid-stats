@@ -1,17 +1,24 @@
 <div class="badge-dialog-container">
   <div class="badge-header">
-    <h2 mat-dialog-title>{{ data.badge_name }}</h2>
-    <img
-      [src]="data.badge_image.md"
-      [alt]="data.badge_name"
-      class="badge-image"
-    />
+    <h2 mat-dialog-title class="badge-title">{{ data.badge_name }}</h2>
+    <div class="badge-icon-wrapper">
+      <img
+        [src]="data.badge_image?.lg || data.badge_image?.md"
+        [alt]="data.badge_name"
+        class="badge-image"
+      />
+    </div>
   </div>
-  <mat-dialog-content>
-    <p class="description">{{ data.badge_description }}</p>
-    <p class="date">Awarded: {{ data.created_at | date: "medium" }}</p>
+
+  <mat-dialog-content class="badge-content">
+    <div class="description-container" [innerHTML]="safeDescription"></div>
+
+    <div class="footer-metadata">
+      <p class="date">Awarded: {{ data.created_at | date: "medium" }}</p>
+    </div>
   </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Close</button>
+
+  <mat-dialog-actions align="center">
+    <button mat-flat-button mat-dialog-close class="close-btn">Close</button>
   </mat-dialog-actions>
 </div>
