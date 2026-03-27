@@ -85,9 +85,6 @@
   line-height: 1.4;
   margin-bottom: 4px;
   opacity: 0.8;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* Reach inside the injected HTML to style the links */
@@ -270,5 +267,9 @@ footer {
   .subtitle,
   .brewery-name {
     font-size: 0.8rem;
+  }
+
+  .subtitle {
+    white-space: normal;
   }
 }
