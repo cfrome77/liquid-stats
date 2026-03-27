@@ -13,7 +13,7 @@ Previous releases are not supported.
 
 If you discover a security vulnerability in this Angular app, please report it responsibly:
 
-- **Email (preferred):** `security@chrisfrome.com`  
+- **Email (preferred):** `security@chrisfrome.com`
 - **Include in your report:**
   - Steps to reproduce the issue
   - Node.js version (`>=22.0.0`) and npm version (`>=9.0.0`)

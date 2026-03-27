@@ -81,9 +81,9 @@ describe("MapComponent", () => {
     document.body.appendChild(mapDiv);
 
     const mockMarker: any = {
-      getElement: jasmine.createSpy("getElement").and.returnValue(
-        document.createElement("div"),
-      ),
+      getElement: jasmine
+        .createSpy("getElement")
+        .and.returnValue(document.createElement("div")),
       breweryId: "brewery-1",
       checkInsData: {
         name: "Test Brewery",
