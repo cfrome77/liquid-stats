@@ -41,7 +41,7 @@
       </div>
 
       @if (cardData.description) {
-        <span class="comment">{{ cardData.description }}</span>
+        <span class="comment" [innerHTML]="cardData.description"></span>
       }
       @if (cardData.hint) {
         <span class="comment">{{ cardData.hint }}</span>

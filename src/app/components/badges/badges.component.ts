@@ -75,9 +75,9 @@ export class BadgesComponent implements OnInit {
 
     return {
       title: badge.badge_name,
-      // We wrap the description in the sanitizer.
-      // This allows <a> and <strong> tags to work.
-      subtitle: this.sanitizer.bypassSecurityTrustHtml(
+      // We wrap the description in the sanitizer and move it to the description field
+      // This allows <a> and <strong> tags to work and better utilizes card space
+      description: this.sanitizer.bypassSecurityTrustHtml(
         badge.badge_description,
       ) as any,
       mainImage: badge.media.badge_image_sm,

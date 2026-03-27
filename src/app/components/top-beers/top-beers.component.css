@@ -65,11 +65,14 @@ h1 {
     align-items: center !important;
     height: 100% !important;
     padding: 0 !important;
+  }
+
+  .date-picker-field .mat-datepicker-toggle button {
     color: var(--text-color) !important;
   }
 
-  .date-picker-field mat-datepicker-toggle {
-    color: var(--text-color) !important;
+  .date-picker-field .mat-datepicker-toggle .mat-mdc-button-touch-target {
+    display: none !important;
   }
 
   /* 5. Remove the bottom 'subscript' area that adds ghost height */

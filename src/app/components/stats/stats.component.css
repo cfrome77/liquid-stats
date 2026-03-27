@@ -154,7 +154,7 @@
   text-overflow: ellipsis;
 }
 
-.top-beers .flex-row {
+.top-beers li .flex-row {
   flex-shrink: 0;
   display: flex;
   align-items: center;

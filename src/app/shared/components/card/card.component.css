@@ -133,6 +133,17 @@
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+.comment ::ng-deep a {
+  color: var(--accent-glow, #ffca28) !important;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.comment ::ng-deep strong {
+  color: var(--header-text);
+  font-weight: 700;
+}
+
 .rating-bar {
   padding: 8px 16px;
   display: flex;
