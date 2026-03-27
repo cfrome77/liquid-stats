@@ -4,7 +4,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"                # package.json is in the root
     schedule:
-      interval: "weekly"          # weekly for normal and dev deps
+      interval: "weekly"          # weekly for all deps
     open-pull-requests-limit: 10
     commit-message:
       prefix: "deps"
@@ -12,9 +12,5 @@ updates:
       - dependency-name: "*"      # ignore major version bumps
         versions:
           - ">=2.0.0"
-    automerge: true
-    # Separate rules for dev dependencies
     allow:
-      - dependency-type: "all"    # include both runtime and dev deps
-    # Security updates handled automatically
-    security-updates: true
+      - dependency-type: "all"    # includes both runtime and dev deps
