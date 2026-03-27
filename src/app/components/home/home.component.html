@@ -1,6 +1,13 @@
 <div class="home-container">
   <div class="hero">
-    <img src="assets/images/LiquidStatsLogo.png" alt="Logo" class="logo-hero" />
+    <img
+      src="assets/images/LiquidStatsLogo.png"
+      alt="Logo"
+      class="logo-hero"
+      width="420"
+      height="234"
+      fetchpriority="high"
+    />
     <div class="hero-content-wrapper">
       <p class="hero-subtitle">Track every pour you enjoy.</p>
       <div class="hero-buttons">
@@ -90,6 +97,7 @@
             "
             [alt]="c.beer?.beer_name"
             (error)="handleImageError($event)"
+            loading="lazy"
           />
           <mat-card-content>
             <h4>{{ c.beer?.beer_name }}</h4>
