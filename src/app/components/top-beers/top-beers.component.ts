@@ -93,7 +93,8 @@ export class TopBeersComponent implements OnInit {
   filterAndRankBeers() {
     let cutoffDate: Date;
 
-    const isOverall = !this.useCustomDate && this.selectedRange?.label === "Overall";
+    const isOverall =
+      !this.useCustomDate && this.selectedRange?.label === "Overall";
 
     if (this.useCustomDate && this.customStartDate) {
       cutoffDate = this.customStartDate;

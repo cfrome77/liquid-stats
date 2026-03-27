@@ -76,8 +76,15 @@
                   badge of cardData.extraData.badges;
                   track badge.badge_name
                 ) {
-                  <mat-chip class="clickable-chip" (click)="onBadgeClick(badge)">
-                    <img matChipAvatar [src]="badge.badge_image.sm" alt="badge" />
+                  <mat-chip
+                    class="clickable-chip"
+                    (click)="onBadgeClick(badge)"
+                  >
+                    <img
+                      matChipAvatar
+                      [src]="badge.badge_image.sm"
+                      alt="badge"
+                    />
                     {{ badge.badge_name }}
                   </mat-chip>
                 }
