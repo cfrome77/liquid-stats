@@ -6,7 +6,9 @@
   NODE_VERSION = "22"
 
 [functions]
-  node_version = "22"
+  [functions.node_bundler]
+  external_node_modules = []
+  runtime = "nodejs22.x"
 
 [[redirects]]
 from = "/api-data/*"
