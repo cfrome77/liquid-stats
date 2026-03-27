@@ -33,16 +33,19 @@ h1 {
 :host ::ng-deep {
   /* 1. Force the exact same height and background on all field boxes */
   .filter-controls .mat-mdc-text-field-wrapper {
+    height: 56px !important;
     min-height: 56px !important;
     display: flex !important;
     align-items: center !important;
     background-color: rgba(255, 255, 255, 0.05) !important;
+    box-sizing: border-box !important;
   }
 
   /* 2. Remove internal padding that makes the Date Picker taller */
   .filter-controls .mat-mdc-form-field-infix {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    height: 56px !important;
     min-height: 56px !important;
     display: flex !important;
     align-items: center !important;
@@ -60,6 +63,8 @@ h1 {
   .date-picker-field .mat-mdc-form-field-icon-suffix {
     display: flex !important;
     align-items: center !important;
+    height: 100% !important;
+    padding: 0 !important;
   }
 
   /* 5. Remove the bottom 'subscript' area that adds ghost height */
@@ -67,7 +72,7 @@ h1 {
     display: none !important;
   }
 
-  /* 6. Adjust label position to be centered in the 52px height */
+  /* 6. Adjust label position to be centered in the 56px height */
   .filter-controls .mdc-notched-outline__label {
     top: 14px !important;
   }

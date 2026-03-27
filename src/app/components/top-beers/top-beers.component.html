@@ -4,7 +4,7 @@
   <div class="filter-card">
     <div class="filter-controls">
       <!-- Time Range Dropdown -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Time Range</mat-label>
         <mat-select
           [(ngModel)]="selectedRange"
@@ -38,7 +38,7 @@
       }
 
       <!-- Top X -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Top X Beers</mat-label>
         <mat-select [(ngModel)]="topX" (selectionChange)="onFilterChange()">
           @for (option of topXOptions; track option) {
@@ -48,7 +48,7 @@
       </mat-form-field>
 
       <!-- Min Check-ins -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Minimum Check-ins</mat-label>
         <mat-select
           [(ngModel)]="minCheckins"
