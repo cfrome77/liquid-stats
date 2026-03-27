@@ -1,21 +1,24 @@
+# netlify.toml - Node 22 + esbuild + redirects
+
 [build]
-  command = "npm run build:prod"
-  publish = "dist/liquid-stats/browser"
+command = "npm run build:prod"
+publish = "dist/liquid-stats/browser"
 
 [build.environment]
-  NODE_VERSION = "22"
+NODE_VERSION = "22"
 
+# Functions config (minimal, warning-free)
 [functions]
-  [functions.node_bundler]
-  external_node_modules = []
-  runtime = "nodejs22.x"
+node_bundler = "esbuild"
 
+# Redirect API data to S3
 [[redirects]]
 from = "/api-data/*"
 to = "https://liquid-stats-46ea8b54.s3.amazonaws.com/:splat"
 status = 200
 force = true
 
+# SPA fallback for Angular routing
 [[redirects]]
 from = "/*"
 to = "/index.html"
