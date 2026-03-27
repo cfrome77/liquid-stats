@@ -91,6 +91,7 @@ mat-sidenav-content {
   display: flex;
   flex-direction: column;
   overflow: hidden; /* prevent inner scroll */
+  width: 100%;
 }
 
 .drawer-toggle {

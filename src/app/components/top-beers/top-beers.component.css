@@ -59,12 +59,17 @@ h1 {
     white-space: nowrap !important;
   }
 
-  /* 4. Center the calendar icon vertically */
+  /* 4. Center and color the calendar icon vertically */
   .date-picker-field .mat-mdc-form-field-icon-suffix {
     display: flex !important;
     align-items: center !important;
     height: 100% !important;
     padding: 0 !important;
+    color: var(--text-color) !important;
+  }
+
+  .date-picker-field mat-datepicker-toggle {
+    color: var(--text-color) !important;
   }
 
   /* 5. Remove the bottom 'subscript' area that adds ghost height */
