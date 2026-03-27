@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[functions]
+  node_version = "22"
+
 [[redirects]]
 from = "/api-data/*"
 to = "https://liquid-stats-46ea8b54.s3.amazonaws.com/:splat"
