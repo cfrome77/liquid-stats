@@ -84,6 +84,9 @@ describe("MapComponent", () => {
       getElement: jasmine
         .createSpy("getElement")
         .and.returnValue(document.createElement("div")),
+      getLatLng: jasmine
+        .createSpy("getLatLng")
+        .and.returnValue({ lat: 10, lng: 20 }),
       breweryId: "brewery-1",
       checkInsData: {
         name: "Test Brewery",
