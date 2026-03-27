@@ -9,6 +9,7 @@
   background-color: transparent;
   border: none;
   padding: 5px 10px;
+  color: var(--text-color);
 }
 
 /* Unselected page numbers color - Using theme text color */
