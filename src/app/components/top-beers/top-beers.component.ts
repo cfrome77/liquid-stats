@@ -93,10 +93,11 @@ export class TopBeersComponent implements OnInit {
   filterAndRankBeers() {
     let cutoffDate: Date;
 
+    const isOverall = !this.useCustomDate && this.selectedRange?.label === "Overall";
+
     if (this.useCustomDate && this.customStartDate) {
       cutoffDate = this.customStartDate;
     } else {
-      // FIX: Default to a massive number if daysBack is undefined to show "Overall"
       const days = this.selectedRange?.daysBack ?? 3650;
       cutoffDate = DateUtils.subtractDays(days);
     }
@@ -104,11 +105,10 @@ export class TopBeersComponent implements OnInit {
     const beerGroups = new Map<number, BeerCheckin[]>();
 
     this.beers.forEach((b) => {
-      // FIX: Ensure b.recent_created_at exists before parsing
       const dateStr = b.recent_created_at || (b as any).created_at;
       const beerDate = DateUtils.parseDate(dateStr);
 
-      if (beerDate >= cutoffDate) {
+      if (isOverall || beerDate >= cutoffDate) {
         const bid = b.beer.bid;
         if (!beerGroups.has(bid)) {
           beerGroups.set(bid, []);
@@ -118,22 +118,28 @@ export class TopBeersComponent implements OnInit {
     });
 
     const sortedBeers = Array.from(beerGroups.values())
-      .filter((group) => group.length >= this.minCheckins)
       .map((group) => {
-        // Calculate average rating
-        const ratings = group.filter((b) => b.rating_score > 0);
+        const totalCheckins = group.reduce((sum, b) => sum + (b.count || 1), 0);
+        // Calculate weighted average rating
+        const ratingsWithCount = group.filter((b) => b.rating_score > 0);
+        const totalWeightedRating = ratingsWithCount.reduce(
+          (acc, b) => acc + b.rating_score * (b.count || 1),
+          0,
+        );
+        const totalRatedCheckins = ratingsWithCount.reduce(
+          (acc, b) => acc + (b.count || 1),
+          0,
+        );
         const avgRating =
-          ratings.length > 0
-            ? ratings.reduce((acc, b) => acc + b.rating_score, 0) /
-              ratings.length
-            : 0;
+          totalRatedCheckins > 0 ? totalWeightedRating / totalRatedCheckins : 0;
 
         return {
           ...group[0],
-          totalCheckins: group.length,
+          totalCheckins: totalCheckins,
           avgRating: avgRating,
         };
       })
+      .filter((beer) => beer.totalCheckins >= this.minCheckins)
       .sort(
         (a, b) =>
           b.avgRating - a.avgRating || b.totalCheckins - a.totalCheckins,
