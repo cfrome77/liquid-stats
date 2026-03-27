@@ -86,4 +86,34 @@ describe("TopBeersComponent", () => {
     expect(component.transformedTopBeers.length).toBeGreaterThan(0);
     expect(component.transformedTopBeers[0].title).toBe("Test Beer");
   });
+
+  it("should correctly handle beers with count > 1 for minCheckins filter", () => {
+    const multiCheckinBeer = {
+      beer: {
+        beer_name: "Multi Beer",
+        beer_style: "Stout",
+        bid: 789,
+      },
+      brewery: { brewery_name: "Multi Brewery", location: {} },
+      rating_score: 4.0,
+      count: 3,
+      recent_created_at: "2026-02-07",
+    };
+    mockDataService.getBeers.and.returnValue(
+      of({ response: { checkins: { items: [multiCheckinBeer] } } }),
+    );
+
+    component.ngOnInit();
+    component.minCheckins = 3;
+    component.onFilterChange();
+    fixture.detectChanges();
+
+    expect(component.transformedTopBeers.length).toBe(1);
+    expect(component.transformedTopBeers[0].title).toBe("Multi Beer");
+
+    component.minCheckins = 5;
+    component.onFilterChange();
+    fixture.detectChanges();
+    expect(component.transformedTopBeers.length).toBe(0);
+  });
 });
