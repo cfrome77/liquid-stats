@@ -1,42 +1,20 @@
 # .github/dependabot.yml
 version: 2
 updates:
-  # Regular dependency updates (runtime dependencies)
   - package-ecosystem: "npm"
     directory: "/"                # package.json is in the root
     schedule:
-      interval: "weekly"
+      interval: "weekly"          # weekly for normal and dev deps
     open-pull-requests-limit: 10
     commit-message:
       prefix: "deps"
     ignore:
-      - dependency-name: "*"      # Ignore major version bumps by default
-        versions:
-          - ">=2.0.0"            # Change if you ever upgrade major versions
-    automerge: true               # Auto-merge minor/patch updates
-
-  # Dev dependencies updates (tools like eslint, prettier, Playwright)
-  - package-ecosystem: "npm"
-    directory: "/" 
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: "dev-deps"
-    ignore:
-      - dependency-name: "*"      # Ignore major version bumps for devDeps
+      - dependency-name: "*"      # ignore major version bumps
         versions:
           - ">=2.0.0"
     automerge: true
-
-  # Security-only updates (optional, catches vulnerabilities quickly)
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
+    # Separate rules for dev dependencies
     allow:
-      - dependency-type: "direct"
-    # Only security updates will trigger PRs
-    commit-message:
-      prefix: "security"
-    open-pull-requests-limit: 5
+      - dependency-type: "all"    # include both runtime and dev deps
+    # Security updates handled automatically
+    security-updates: true
