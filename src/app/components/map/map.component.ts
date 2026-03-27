@@ -285,6 +285,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     const marker = this.markerService.getMarkerByBreweryId(breweryId);
     if (marker) {
       this.markerService.markers.zoomToShowLayer(marker, () => {
+        // Always force zoom level 18 when arriving from history link to pinpoint the brewery
+        if (this.map) {
+          this.map.setView(marker.getLatLng(), 18, { animate: true });
+        }
         this.openBreweryOverlay(breweryId);
         const el = marker.getElement();
         if (el) {
