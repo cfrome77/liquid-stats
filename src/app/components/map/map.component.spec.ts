@@ -22,6 +22,7 @@ describe("MapComponent", () => {
   beforeEach(async () => {
     mockMarkerService = jasmine.createSpyObj("MarkerService", [
       "makeBreweryMarkers",
+      "getMarkerByBreweryId",
     ]);
     mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
     mockDataService.getBeers.and.returnValue(
@@ -68,6 +69,49 @@ describe("MapComponent", () => {
     flush();
 
     expect(mockMarkerService.makeBreweryMarkers).toHaveBeenCalled();
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
+
+  it("should use zoomToShowLayer for deep links when marker exists", fakeAsync(() => {
+    // We need a div with the mapId in the DOM for Leaflet to initialize
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    document.body.appendChild(mapDiv);
+
+    const mockMarker: any = {
+      getElement: jasmine.createSpy("getElement").and.returnValue(
+        document.createElement("div"),
+      ),
+      breweryId: "brewery-1",
+      checkInsData: {
+        name: "Test Brewery",
+        city: "Test City",
+        state: "TS",
+        logo: "logo.png",
+        checkIns: [],
+      },
+    };
+
+    mockMarkerService.getMarkerByBreweryId.and.returnValue(mockMarker);
+    mockMarkerService.markers = {
+      zoomToShowLayer: jasmine
+        .createSpy("zoomToShowLayer")
+        .and.callFake((m: any, cb: any) => cb()),
+    };
+
+    // Trigger AfterViewInit
+    fixture.detectChanges();
+    tick();
+
+    // Directly call the private handleDeepLink via any to test the logic
+    (component as any).handleDeepLink(10, 20, "brewery-1");
+
+    expect(mockMarkerService.markers.zoomToShowLayer).toHaveBeenCalledWith(
+      mockMarker,
+      jasmine.any(Function),
+    );
 
     fixture.destroy();
     document.body.removeChild(mapDiv);

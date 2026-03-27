@@ -282,14 +282,24 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private handleDeepLink(lat: number, lng: number, breweryId: string) {
     if (!this.map) return;
 
-    this.map.setView([lat, lng], 16, { animate: true, duration: 1.5 });
-    this.openBreweryOverlay(breweryId);
-
     const marker = this.markerService.getMarkerByBreweryId(breweryId);
-    if (marker && marker.getElement()) {
-      const el = marker.getElement();
-      el?.classList.add("marker-pulse");
-      setTimeout(() => el?.classList.remove("marker-pulse"), 3000);
+    if (marker) {
+      this.markerService.markers.zoomToShowLayer(marker, () => {
+        // Always force zoom level 18 when arriving from history link to pinpoint the brewery
+        if (this.map) {
+          this.map.setView(marker.getLatLng(), 18, { animate: true });
+        }
+        this.openBreweryOverlay(breweryId);
+        const el = marker.getElement();
+        if (el) {
+          el.classList.add("marker-pulse");
+          setTimeout(() => el.classList.remove("marker-pulse"), 3000);
+        }
+      });
+    } else {
+      // Fallback if marker not found
+      this.map.setView([lat, lng], 16, { animate: true, duration: 1.5 });
+      this.openBreweryOverlay(breweryId);
     }
   }
 

@@ -86,23 +86,25 @@
 .beer-styles-breakdown,
 .top-beers,
 .card-list {
-  grid-column: span 1;
+  grid-column: 1 / -1;
   align-items: stretch;
   text-align: left;
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {
   .beer-styles-breakdown,
   .top-beers,
   .card-list {
-    grid-column: span 1;
+    grid-column: 1 / -1;
   }
 }
 
 .card h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
+  padding: 0 14px;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--header-text);
@@ -133,6 +135,7 @@
   align-items: center;
   font-size: 0.95rem;
   transition: background-color 0.2s;
+  gap: 12px;
 }
 
 .clickable {
@@ -141,6 +144,22 @@
 
 .clickable:hover {
   background-color: rgba(var(--accent-blue-rgb), 0.1);
+}
+
+.top-beers .beer-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-beers li .flex-row {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 110px;
 }
 
 .style-count {
@@ -159,6 +178,7 @@
   background-color: var(--divider-color);
   padding: 2px 8px;
   border-radius: 10px;
+  white-space: nowrap;
 }
 
 /* Charts section */

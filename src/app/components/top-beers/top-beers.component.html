@@ -28,6 +28,7 @@
             matInput
             [matDatepicker]="picker"
             [(ngModel)]="customStartDate"
+            (dateChange)="onFilterChange()"
           />
           <mat-datepicker-toggle
             matSuffix
