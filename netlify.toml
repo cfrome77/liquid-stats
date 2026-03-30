@@ -23,3 +23,12 @@ force = true
 from = "/*"
 to = "/index.html"
 status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*.untappd.com https://images.untp.beer https://*.tile.openstreetmap.org; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://liquid-stats-46ea8b54.s3.amazonaws.com; frame-ancestors 'none'; base-uri 'self'; upgrade-insecure-requests;"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=()"
