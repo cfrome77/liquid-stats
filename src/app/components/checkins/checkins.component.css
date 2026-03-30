@@ -25,7 +25,9 @@ p {
 /* --- New Scrolling & Highlight Styles --- */
 
 .card-wrapper {
-  transition: all 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
   scroll-margin-top: 100px; /* Prevents card from hiding under navbar */
 }
 
