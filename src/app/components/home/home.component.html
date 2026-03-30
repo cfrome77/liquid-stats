@@ -1,12 +1,12 @@
 <div class="home-container">
   <div class="hero">
     <img
-      src="assets/images/LiquidStatsLogo.webp"
+      ngSrc="assets/images/LiquidStatsLogo.webp"
       alt="Logo"
       class="logo-hero"
       width="420"
       height="234"
-      fetchpriority="high"
+      priority
     />
     <div class="hero-content-wrapper">
       <p class="hero-subtitle">Track every pour you enjoy.</p>
@@ -90,14 +90,14 @@
         >
           <img
             mat-card-image
-            [src]="
+            [ngSrc]="
               c.media?.items?.[0]?.photo?.photo_img_md ||
               c.beer?.beer_label ||
               DEFAULT_IMAGE
             "
             [alt]="c.beer?.beer_name"
-            (error)="handleImageError($event)"
-            loading="lazy"
+            width="200"
+            height="200"
           />
           <mat-card-content>
             <h4>{{ c.beer?.beer_name }}</h4>

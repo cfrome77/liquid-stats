@@ -52,7 +52,7 @@ export class CheckinsComponent implements OnInit {
           this.transformCheckinData(checkin),
         );
 
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
 
         // Check for ID in URL and scroll if present
         const targetId = this.route.snapshot.paramMap.get("id");
