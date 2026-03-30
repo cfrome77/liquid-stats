@@ -4,6 +4,7 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  NgZone,
   ViewChild,
   ElementRef,
   HostListener,
@@ -72,6 +73,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private breakpointObserver: BreakpointObserver,
     private route: ActivatedRoute,
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit() {
@@ -88,17 +90,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initMap();
 
     // Initial invalidateSize after DOM rendered
-    setTimeout(() => this.map?.invalidateSize(), 0);
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => this.map?.invalidateSize(), 0);
+    });
 
     // Close overlay when clicking on map
     this.map!.on("click", () => this.closeBreweryOverlay());
 
     // Listen to drawer open/close to recalc map size
     this.drawer.openedStart.subscribe(() =>
-      setTimeout(() => this.map?.invalidateSize(), 0),
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => this.map?.invalidateSize(), 0);
+      }),
     );
     this.drawer.closedStart.subscribe(() =>
-      setTimeout(() => this.map?.invalidateSize(), 0),
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => this.map?.invalidateSize(), 0);
+      }),
     );
 
     // Load beer data
@@ -119,7 +127,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateMarkers(this.allBeers);
 
         // Ensure map resizes after markers added
-        setTimeout(() => this.map?.invalidateSize(), 0);
+        this.ngZone.runOutsideAngular(() => {
+          setTimeout(() => this.map?.invalidateSize(), 0);
+        });
 
         // Listen for deep links (URL params)
         this.routeSub = this.route.queryParams.subscribe((params) => {
@@ -141,7 +151,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Recalculate map if window resizes */
   @HostListener("window:resize")
   onResize() {
-    setTimeout(() => this.map?.invalidateSize(), 0);
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => this.map?.invalidateSize(), 0);
+    });
   }
 
   ngAfterViewChecked() {
@@ -244,7 +256,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // After markers added, recalc map size
-    setTimeout(() => this.map?.invalidateSize(), 0);
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => this.map?.invalidateSize(), 0);
+    });
   }
 
   /** Filter check-ins */
@@ -293,7 +307,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const el = marker.getElement();
         if (el) {
           el.classList.add("marker-pulse");
-          setTimeout(() => el.classList.remove("marker-pulse"), 3000);
+          this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => el.classList.remove("marker-pulse"), 3000);
+          });
         }
       });
     } else {
