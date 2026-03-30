@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  importProvidersFrom,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -40,6 +45,7 @@ type DateRangeOption = { label: string; daysBack?: number };
     MatDialogModule,
     CardComponent,
   ],
+  providers: [importProvidersFrom(MatNativeDateModule)],
 })
 export class TopBeersComponent implements OnInit {
   public beers: BeerCheckin[] = [];
