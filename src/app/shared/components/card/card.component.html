@@ -6,9 +6,11 @@
           @if (cardData.mainImage) {
             <img
               class="beer-label"
-              [src]="cardData.mainImage"
+              [ngSrc]="cardData.mainImage"
               [alt]="cardData.title"
               [title]="cardData.title"
+              width="54"
+              height="54"
             />
           }
         </div>
@@ -32,9 +34,11 @@
           @if (cardData.secondaryImage) {
             <img
               class="brewery-label"
-              [src]="cardData.secondaryImage"
+              [ngSrc]="cardData.secondaryImage"
               [alt]="cardData.breweryName"
               [title]="cardData.breweryName"
+              width="54"
+              height="54"
             />
           }
         </div>
@@ -82,8 +86,10 @@
                   >
                     <img
                       matChipAvatar
-                      [src]="badge.badge_image.sm"
+                      [ngSrc]="badge.badge_image.sm"
                       alt="badge"
+                      width="32"
+                      height="32"
                     />
                     {{ badge.badge_name }}
                   </mat-chip>

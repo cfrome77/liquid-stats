@@ -160,7 +160,7 @@ export class TopBeersComponent implements OnInit {
       this.transformToCardData(b, index + 1),
     );
 
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   transformToCardData(beer: any, rank: number): BaseCardData {

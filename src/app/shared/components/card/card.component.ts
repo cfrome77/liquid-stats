@@ -6,7 +6,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
@@ -20,6 +20,7 @@ import { SocialLinksComponent } from "../social-links/social-links.component";
   standalone: true,
   imports: [
     CommonModule,
+    NgOptimizedImage,
     MatCardModule,
     MatIconModule,
     MatChipsModule,
