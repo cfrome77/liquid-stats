@@ -65,10 +65,17 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Load and initialize GA4 after a delay to improve initial page load performance
-    setTimeout(() => {
-      this.ga4Service.loadAndInitialize();
-    }, 2000);
+    // Load and initialize GA4 when the browser is idle to improve initial page load performance
+    if ("requestIdleCallback" in window) {
+      (window as any).requestIdleCallback(() => {
+        this.ga4Service.loadAndInitialize();
+      });
+    } else {
+      // Fallback for browsers that don't support requestIdleCallback
+      setTimeout(() => {
+        this.ga4Service.loadAndInitialize();
+      }, 2000);
+    }
 
     // Subscribe to only NavigationEnd events for GA tracking
     this.router.events
