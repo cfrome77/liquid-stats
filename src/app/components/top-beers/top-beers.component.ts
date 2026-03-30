@@ -10,7 +10,10 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
 import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material/core";
+import {
+  MatNativeDateModule,
+  provideNativeDateAdapter,
+} from "@angular/material/core";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 
@@ -45,7 +48,7 @@ type DateRangeOption = { label: string; daysBack?: number };
     MatDialogModule,
     CardComponent,
   ],
-  providers: [importProvidersFrom(MatNativeDateModule)],
+  providers: [provideNativeDateAdapter()],
 })
 export class TopBeersComponent implements OnInit {
   public beers: BeerCheckin[] = [];
