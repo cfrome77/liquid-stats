@@ -14,9 +14,7 @@ export interface BreweryMarker extends L.Marker {
   };
 }
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class MarkerService {
   public markers: L.MarkerClusterGroup = L.markerClusterGroup();
   private breweryMarkers: BreweryMarker[] = [];

@@ -4,11 +4,18 @@ import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material/core";
+import {
+  MatNativeDateModule,
+  provideNativeDateAdapter,
+} from "@angular/material/core";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDialog } from "@angular/material/dialog";
-import { BaseChartDirective } from "ng2-charts";
+import {
+  BaseChartDirective,
+  provideCharts,
+  withDefaultRegisterables,
+} from "ng2-charts";
 import { ChartData, ChartOptions } from "chart.js";
 
 import { StatsService } from "./stats.service";
@@ -38,7 +45,11 @@ import { ThemeService } from "src/app/core/services/theme.service";
     MatIconModule,
     BaseChartDirective,
   ],
-  providers: [DecimalPipe],
+  providers: [
+    DecimalPipe,
+    provideCharts(withDefaultRegisterables()),
+    provideNativeDateAdapter(),
+  ],
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
