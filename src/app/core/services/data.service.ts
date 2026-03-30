@@ -20,13 +20,10 @@ export class DataService {
       (window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1");
 
-    // If we're not on localhost and the DATA_URL is set to S3, use the local proxy to avoid CORS issues.
-    // This works for both Netlify subdomains and custom domains because of the netlify.toml redirect.
-    if (!isLocalhost && url.includes("s3.amazonaws.com")) {
-      console.log(
-        "[DataService] Remote environment, using /api-data/ proxy for S3",
-      );
-      return "/api-data/";
+    // Use the local Express API if DATA_URL is not set or we're in production
+    // For local development, it might still point to S3 or local JSONs.
+    if (!isLocalhost || url === "/api/") {
+      return "/api/";
     }
 
     if (!url) return "";
@@ -37,12 +34,26 @@ export class DataService {
     return this.http.get<Badge[]>(`${this.baseUrl}badges.json`);
   }
 
-  public getBeers(): Observable<any> {
-    return this.http.get<CheckinResponse>(`${this.baseUrl}beers.json`);
+  public getBeers(limit?: number, offset?: number): Observable<any> {
+    let url = this.baseUrl.includes("/api/")
+      ? `${this.baseUrl}beers`
+      : `${this.baseUrl}beers.json`;
+    const params: any = {};
+    if (limit !== undefined) params.limit = limit.toString();
+    if (offset !== undefined) params.offset = offset.toString();
+
+    return this.http.get<CheckinResponse>(url, { params });
   }
 
-  public getCheckins(): Observable<CheckinResponse> {
-    return this.http.get<CheckinResponse>(`${this.baseUrl}checkins.json`);
+  public getCheckins(limit?: number, offset?: number): Observable<CheckinResponse> {
+    let url = this.baseUrl.includes("/api/")
+      ? `${this.baseUrl}checkins`
+      : `${this.baseUrl}checkins.json`;
+    const params: any = {};
+    if (limit !== undefined) params.limit = limit.toString();
+    if (offset !== undefined) params.offset = offset.toString();
+
+    return this.http.get<CheckinResponse>(url, { params });
   }
 
   public getWishlist(): Observable<any> {
