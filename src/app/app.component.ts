@@ -5,6 +5,7 @@ import {
   Inject,
   OnDestroy,
   effect,
+  NgZone,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -55,6 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private themeService: ThemeService,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document,
+    private ngZone: NgZone,
   ) {
     // Consume the theme signal using an effect
     effect(() => {
@@ -66,31 +68,35 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Load and initialize GA4 when the browser is idle to improve initial page load performance
-    if ("requestIdleCallback" in window) {
-      (window as any).requestIdleCallback(() => {
-        this.ga4Service.loadAndInitialize();
-      });
-    } else {
-      // Fallback for browsers that don't support requestIdleCallback
-      setTimeout(() => {
-        this.ga4Service.loadAndInitialize();
-      }, 2000);
-    }
+    this.ngZone.runOutsideAngular(() => {
+      if ("requestIdleCallback" in window) {
+        (window as any).requestIdleCallback(() => {
+          this.ga4Service.loadAndInitialize();
+        });
+      } else {
+        // Fallback for browsers that don't support requestIdleCallback
+        setTimeout(() => {
+          this.ga4Service.loadAndInitialize();
+        }, 2000);
+      }
+    });
 
     // Subscribe to only NavigationEnd events for GA tracking
-    this.router.events
-      .pipe(
-        filter(
-          (event): event is NavigationEnd => event instanceof NavigationEnd,
-        ),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((event) => {
-        const newPath = event.urlAfterRedirects;
-        const newTitle = document.title;
+    this.ngZone.runOutsideAngular(() => {
+      this.router.events
+        .pipe(
+          filter(
+            (event): event is NavigationEnd => event instanceof NavigationEnd,
+          ),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((event) => {
+          const newPath = event.urlAfterRedirects;
+          const newTitle = document.title;
 
-        this.ga4Service.trackPageView(newPath, newTitle);
-      });
+          this.ga4Service.trackPageView(newPath, newTitle);
+        });
+    });
   }
 
   toggleTheme(): void {
