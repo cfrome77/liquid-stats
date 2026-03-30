@@ -9,7 +9,7 @@ p {
 }
 
 .location a {
-  background: url("../../../assets/images/ico_location.png") no-repeat left
+  background: url("../../../assets/images/ico_location.webp") no-repeat left
     center rgba(0, 0, 0, 0);
   color: #a9a9a9;
   display: flex;
