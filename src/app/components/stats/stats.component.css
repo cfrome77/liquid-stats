@@ -72,6 +72,8 @@
   font-weight: 800;
   color: var(--header-text);
   margin-bottom: 4px;
+  min-height: 2.4rem;
+  line-height: 1.2;
 }
 
 .stat-title {

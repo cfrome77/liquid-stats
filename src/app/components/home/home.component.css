@@ -35,7 +35,6 @@
   padding: 40px 10px;
   background: var(--hero-glow);
   color: var(--text-color);
-  transition: background 0.3s ease;
 }
 
 /* -------------------- Hero Section -------------------- */
@@ -51,7 +50,6 @@
   max-width: 420px;
   width: 90%;
   filter: var(--logo-filter);
-  transition: filter 0.3s ease;
 }
 
 .hero-content-wrapper {
@@ -136,6 +134,8 @@
   font-weight: 800;
   color: var(--header-text);
   margin-bottom: 4px;
+  min-height: 2.64rem;
+  line-height: 1.2;
 }
 
 .stat-label {
