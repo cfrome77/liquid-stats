@@ -126,7 +126,6 @@
   line-height: 44px;
   margin-bottom: 16px;
   color: var(--accent-blue);
-  opacity: 0.8;
 }
 
 .stat-number {
@@ -184,7 +183,6 @@
 }
 
 .icon-default {
-  opacity: 0.8;
   visibility: visible;
   color: var(--accent-blue);
 }
@@ -303,7 +301,6 @@
   text-transform: uppercase;
   font-weight: 700;
   color: var(--accent-blue);
-  opacity: 0.8;
   white-space: nowrap; /* Desktop: 1 line */
   overflow: hidden;
   text-overflow: ellipsis;
