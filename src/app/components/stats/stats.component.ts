@@ -63,6 +63,7 @@ import { ThemeService } from "src/app/core/services/theme.service";
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
+  sortedBeerStyles: string[] = [];
 
   dateRange = new FormControl("year");
 
@@ -232,6 +233,7 @@ export class StatsComponent implements OnInit {
         },
       },
     };
+    this.cdr.markForCheck();
   }
 
   loadBeerData(): void {
@@ -239,7 +241,7 @@ export class StatsComponent implements OnInit {
       next: (data: BeerCheckin[]) => {
         this.beers = data;
         this.onDateChange();
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Error fetching beers:", err);
@@ -311,6 +313,14 @@ export class StatsComponent implements OnInit {
       checkinsByMonth: stats.checkinsByMonth ?? [],
       averageRatingsOverTime: stats.averageRatingsOverTime ?? [],
     };
+
+    this.sortedBeerStyles = Object.keys(
+      this.processedStats.beerStylesCount || {},
+    ).sort(
+      (a, b) =>
+        this.processedStats!.beerStylesCount[b] -
+        this.processedStats!.beerStylesCount[a],
+    );
 
     // Update charts
     this.updateCharts();
@@ -478,6 +488,7 @@ export class StatsComponent implements OnInit {
         },
       ],
     };
+    this.cdr.markForCheck();
   }
 
 

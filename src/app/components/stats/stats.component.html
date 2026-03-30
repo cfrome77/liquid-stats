@@ -78,10 +78,7 @@
       <div class="card beer-styles-breakdown">
         <h3><mat-icon>sports_bar</mat-icon> Beer Styles Breakdown</h3>
         <ul>
-          @for (
-            style of processedStats.beerStylesCount | sortBeerStyles;
-            track style
-          ) {
+          @for (style of sortedBeerStyles; track style) {
             @if (processedStats.beerStylesCount[style] > 0) {
               <li
                 class="clickable"

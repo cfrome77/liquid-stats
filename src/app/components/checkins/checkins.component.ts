@@ -1,5 +1,10 @@
 import { MatIconModule } from "@angular/material/icon";
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute } from "@angular/router"; // Added
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -29,6 +34,7 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
     MatDialogModule,
     EmptyStateComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckinsComponent implements OnInit {
   public checkins: Checkin[] = [];
