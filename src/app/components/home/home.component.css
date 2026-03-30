@@ -49,6 +49,7 @@
 .logo-hero {
   max-width: 420px;
   width: 90%;
+  height: auto;
   filter: var(--logo-filter);
 }
 
