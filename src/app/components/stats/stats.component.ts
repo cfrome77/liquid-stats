@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, effect } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  effect,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -19,6 +25,7 @@ import {
 import { ChartData, ChartOptions } from "chart.js";
 
 import { StatsService } from "./stats.service";
+import { SortBeerStylesPipe } from "../../core/pipes/sort-beer-styles.pipe";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { ProcessedStats } from "src/app/core/models/stats.model";
 import {
@@ -44,16 +51,19 @@ import { ThemeService } from "src/app/core/services/theme.service";
     MatInputModule,
     MatIconModule,
     BaseChartDirective,
+    SortBeerStylesPipe,
   ],
   providers: [
     DecimalPipe,
     provideCharts(withDefaultRegisterables()),
     provideNativeDateAdapter(),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
+  sortedBeerStyles: string[] = [];
 
   dateRange = new FormControl("year");
 
@@ -223,6 +233,7 @@ export class StatsComponent implements OnInit {
         },
       },
     };
+    this.cdr.markForCheck();
   }
 
   loadBeerData(): void {
@@ -230,7 +241,7 @@ export class StatsComponent implements OnInit {
       next: (data: BeerCheckin[]) => {
         this.beers = data;
         this.onDateChange();
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Error fetching beers:", err);
@@ -245,6 +256,7 @@ export class StatsComponent implements OnInit {
     if (!this.beers || this.beers.length === 0) {
       this.processedStats = null;
       this.clearChartData();
+      this.cdr.markForCheck();
       return;
     }
 
@@ -302,8 +314,17 @@ export class StatsComponent implements OnInit {
       averageRatingsOverTime: stats.averageRatingsOverTime ?? [],
     };
 
+    this.sortedBeerStyles = Object.keys(
+      this.processedStats.beerStylesCount || {},
+    ).sort(
+      (a, b) =>
+        this.processedStats!.beerStylesCount[b] -
+        this.processedStats!.beerStylesCount[a],
+    );
+
     // Update charts
     this.updateCharts();
+    this.cdr.markForCheck();
   }
 
   generateLastNDaysLabels(days: number): string[] {
@@ -467,16 +488,9 @@ export class StatsComponent implements OnInit {
         },
       ],
     };
+    this.cdr.markForCheck();
   }
 
-  // Beer styles list
-  beerStylesList(): string[] {
-    return Object.keys(this.processedStats?.beerStylesCount || {}).sort(
-      (a, b) =>
-        this.processedStats!.beerStylesCount[b] -
-        this.processedStats!.beerStylesCount[a],
-    );
-  }
 
   private openGenericBeersDialog(
     title: string,

@@ -1,1 +1,0 @@
-{"beers": [{"beer": {"bid": 101, "beer_name": "Beer 1"}, "brewery": {"brewery_id": 201, "brewery_name": "Brewery 1"}}, {"beer": {"bid": 102, "beer_name": "Beer 2"}, "brewery": {"brewery_id": 202, "brewery_name": "Brewery 2"}}]}

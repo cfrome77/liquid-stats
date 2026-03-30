@@ -13,6 +13,13 @@ import { DateUtils } from "../../core/utils/date-utils";
 
 @Injectable({ providedIn: "root" })
 export class StatsService {
+  private memoizedStats: {
+    beers: BeerCheckin[];
+    start: number;
+    end: number;
+    result: ProcessedStats;
+  } | null = null;
+
   constructor(private dataService: DataService) {}
 
   loadBeerData(): Observable<BeerCheckin[]> {
@@ -24,6 +31,18 @@ export class StatsService {
   }
 
   computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {
+    const startTime = start.getTime();
+    const endTime = end.getTime();
+
+    if (
+      this.memoizedStats &&
+      this.memoizedStats.beers === beers &&
+      this.memoizedStats.start === startTime &&
+      this.memoizedStats.end === endTime
+    ) {
+      return this.memoizedStats.result;
+    }
+
     const beersInRange = beers.filter((b) => {
       const date = DateUtils.parseDate(b.recent_created_at);
       return date >= start && date <= end;
@@ -205,7 +224,7 @@ export class StatsService {
         rating: dailyRatingsMap[date].sum / dailyRatingsMap[date].count,
       }));
 
-    return {
+    const result: ProcessedStats = {
       totalUniqueBeers,
       totalCheckins,
       newBeersCount,
@@ -223,5 +242,14 @@ export class StatsService {
       checkinsByMonth,
       averageRatingsOverTime,
     };
+
+    this.memoizedStats = {
+      beers,
+      start: startTime,
+      end: endTime,
+      result,
+    };
+
+    return result;
   }
 }
