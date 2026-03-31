@@ -25,7 +25,6 @@ import {
 import { ChartData, ChartOptions } from "chart.js";
 
 import { StatsService } from "./stats.service";
-import { SortBeerStylesPipe } from "../../core/pipes/sort-beer-styles.pipe";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { ProcessedStats } from "src/app/core/models/stats.model";
 import {
@@ -51,7 +50,6 @@ import { ThemeService } from "src/app/core/services/theme.service";
     MatInputModule,
     MatIconModule,
     BaseChartDirective,
-    SortBeerStylesPipe,
   ],
   providers: [
     DecimalPipe,
