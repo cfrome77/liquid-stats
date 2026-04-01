@@ -25,7 +25,7 @@
 
   <section class="quick-stats">
     <mat-card
-      class="stat-card clickable-card"
+      class="stat-card modern-card clickable-card"
       routerLink="/beer-history"
       matRipple
     >
@@ -38,7 +38,7 @@
     </mat-card>
 
     <mat-card
-      class="stat-card clickable-card"
+      class="stat-card modern-card clickable-card"
       routerLink="/top-beers"
       matRipple
     >
@@ -50,7 +50,11 @@
       <div class="stat-label">Avg Rating</div>
     </mat-card>
 
-    <mat-card class="stat-card clickable-card" routerLink="/map" matRipple>
+    <mat-card
+      class="stat-card modern-card clickable-card"
+      routerLink="/map"
+      matRipple
+    >
       <div class="icon-wrapper">
         <mat-icon class="icon-default">public</mat-icon>
         <mat-icon class="icon-hover">map</mat-icon>
@@ -59,7 +63,11 @@
       <div class="stat-label">Countries</div>
     </mat-card>
 
-    <mat-card class="stat-card clickable-card" routerLink="/stats" matRipple>
+    <mat-card
+      class="stat-card modern-card clickable-card"
+      routerLink="/stats"
+      matRipple
+    >
       <div class="icon-wrapper">
         <mat-icon class="icon-default">storefront</mat-icon>
         <mat-icon class="icon-hover">leaderboard</mat-icon>
@@ -86,7 +94,7 @@
 
       <div class="carousel-track" #carouselTrack>
         <mat-card
-          class="beer-card clickable-card"
+          class="beer-card modern-card clickable-card"
           *ngFor="let c of allCheckins"
           [routerLink]="['/checkins', c.checkin_id]"
         >
@@ -103,8 +111,11 @@
             height="200"
           />
           <mat-card-content>
-            <h4>{{ c.beer?.beer_name }}</h4>
-            <p class="brewery-name" [title]="c.brewery?.brewery_name">
+            <h4 class="line-clamp-2">{{ c.beer?.beer_name }}</h4>
+            <p
+              class="brewery-name line-clamp-2"
+              [title]="c.brewery?.brewery_name"
+            >
               {{ c.brewery?.brewery_name }}
             </p>
             <div class="card-footer">
