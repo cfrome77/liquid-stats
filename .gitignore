@@ -88,7 +88,7 @@ venv/
 
 # Lambda / Python build artifacts
 lambda/package/
-lambda/fetch_api_data.py
+!lambda/fetch_api_data.py
 liquid-stats-lambda.json
 liquid-stats-lambda.zip
 
