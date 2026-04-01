@@ -24,21 +24,21 @@ describe("MapComponent", () => {
       "makeBreweryMarkers",
       "getMarkerByBreweryId",
     ]);
+    mockMarkerService.markers = {
+      clearLayers: jasmine.createSpy("clearLayers"),
+      addLayer: jasmine.createSpy("addLayer"),
+      zoomToShowLayer: jasmine.createSpy("zoomToShowLayer"),
+    };
     mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
     mockDataService.getBeers.and.returnValue(
       of({
-        response: {
-          checkins: {
-            items: [],
-          },
-        },
+        beers: [],
       }),
     );
 
     await TestBed.configureTestingModule({
       imports: [MapComponent, HttpClientTestingModule, RouterTestingModule],
       providers: [
-        { provide: MarkerService, useValue: mockMarkerService },
         { provide: DataService, useValue: mockDataService },
         {
           provide: ActivatedRoute,
@@ -48,7 +48,13 @@ describe("MapComponent", () => {
           },
         },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(MapComponent, {
+        set: {
+          providers: [{ provide: MarkerService, useValue: mockMarkerService }],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
@@ -98,11 +104,9 @@ describe("MapComponent", () => {
     };
 
     mockMarkerService.getMarkerByBreweryId.and.returnValue(mockMarker);
-    mockMarkerService.markers = {
-      zoomToShowLayer: jasmine
-        .createSpy("zoomToShowLayer")
-        .and.callFake((m: any, cb: any) => cb()),
-    };
+    mockMarkerService.markers.zoomToShowLayer.and.callFake(
+      (m: any, cb: any) => cb(),
+    );
 
     // Trigger AfterViewInit
     fixture.detectChanges();

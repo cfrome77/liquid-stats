@@ -8,13 +8,10 @@ import {
   NgZone,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { Overlay } from "@angular/cdk/overlay";
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
 import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 import { slideInAnimation } from "./animations";
-import { AboutComponent } from "./components/about/about.component";
 import { Ga4TrackingService } from "./core/services/ga4-tracking.service";
 import { ThemeService } from "./core/services/theme.service";
 import { DOCUMENT } from "@angular/common";
@@ -24,6 +21,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatDividerModule } from "@angular/material/divider";
 import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-to-top.component";
+import { InfoFabComponent } from "./shared/components/info-fab/info-fab.component";
 
 @Component({
   selector: "app-root",
@@ -33,13 +31,13 @@ import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-t
   imports: [
     CommonModule,
     RouterModule,
-    MatDialogModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
     MatDividerModule,
     ScrollToTopComponent,
+    InfoFabComponent,
   ],
   animations: [slideInAnimation],
 })
@@ -49,8 +47,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private dialog: MatDialog,
-    private overlay: Overlay,
     private router: Router,
     private ga4Service: Ga4TrackingService,
     private themeService: ThemeService,
@@ -121,22 +117,5 @@ export class AppComponent implements OnInit, OnDestroy {
       outlet.activatedRouteData &&
       outlet.activatedRouteData["animation"]
     );
-  }
-
-  openDialog(): void {
-    const scrollStrategy = this.overlay.scrollStrategies.reposition();
-
-    this.dialog.open(AboutComponent, {
-      panelClass: "about-dialog-panel",
-      autoFocus: false,
-      scrollStrategy,
-
-      width: "95vw",
-      maxWidth: "750px",
-      maxHeight: "85vh",
-
-      enterAnimationDuration: "250ms",
-      exitAnimationDuration: "200ms",
-    });
   }
 }
