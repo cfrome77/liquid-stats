@@ -6,6 +6,10 @@
   --card-gap: 10px;
   --touch-target-min: 48px;
 
+  /* Transitions */
+  --transition-timing: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-standard: 0.3s var(--transition-timing);
+
   /* Accent Colors */
   --accent-blue: #1976d2;
   --accent-indigo: #3f51b5;
@@ -28,6 +32,14 @@
   --input-text: #333333;
   --input-outline: rgba(0, 0, 0, 0.38);
   --chip-bg: #e0e0e0;
+  --hero-glow: linear-gradient(
+    180deg,
+    #fff6e8 0%,
+    rgba(255, 246, 232, 0.6) 20%,
+    transparent 60%
+  );
+  --accent-glow: #e65100;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .dark-theme {
@@ -45,6 +57,14 @@
   --input-text: #ffffff;
   --input-outline: rgba(255, 255, 255, 0.38);
   --chip-bg: #424242;
+  --hero-glow: linear-gradient(
+    180deg,
+    #3b2a16 0%,
+    rgba(59, 42, 22, 0.6) 25%,
+    transparent 65%
+  );
+  --accent-glow: #ffca28;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Reset Styles */
@@ -379,4 +399,44 @@ strong {
   color: var(--header-text) !important;
   margin: 0 0 10px 0;
   text-align: center;
+}
+
+/* Section Divider */
+.section-divider {
+  border: 0;
+  border-top: 1px solid var(--divider-color);
+  margin: 60px auto;
+  width: 60%;
+}
+
+/* Clickable Card */
+.clickable-card {
+  cursor: pointer;
+}
+
+/* Modern Card Utility */
+.modern-card {
+  background-color: var(--card-bg) !important;
+  box-shadow: var(--card-shadow);
+  border-radius: 16px !important;
+  border: 1px solid var(--divider-color);
+  transition:
+    transform var(--transition-standard),
+    box-shadow var(--transition-standard),
+    border-color var(--transition-standard);
+}
+
+.modern-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--accent-blue);
+}
+
+/* Line Clamp Utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
