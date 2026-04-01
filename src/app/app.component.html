@@ -196,15 +196,12 @@
       height="75"
     />
   </div>
-  <div class="fab-container">
-    <button
-      mat-fab
-      class="fab-toggler"
-      (click)="openDialog()"
-      aria-label="Open about dialog"
-    >
-      <mat-icon>info</mat-icon>
-    </button>
-  </div>
-  <app-scroll-to-top></app-scroll-to-top>
+
+  @defer (on idle) {
+    <app-info-fab></app-info-fab>
+  }
+
+  @defer (on idle) {
+    <app-scroll-to-top></app-scroll-to-top>
+  }
 </div>
