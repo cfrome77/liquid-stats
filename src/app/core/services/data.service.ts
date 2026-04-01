@@ -37,8 +37,17 @@ export class DataService {
     return this.http.get<Badge[]>(`${this.baseUrl}badges.json`);
   }
 
-  public getBeers(): Observable<any> {
-    return this.http.get<CheckinResponse>(`${this.baseUrl}beers.json`);
+  public getStats(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}stats.json`);
+  }
+
+  public getBeers(page?: number): Observable<any> {
+    const filename = page ? `beers_page_${page}.json` : "beers.json";
+    return this.http.get<any>(`${this.baseUrl}${filename}`);
+  }
+
+  public getBeersAll(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}beers_all.json`);
   }
 
   public getCheckins(): Observable<CheckinResponse> {

@@ -81,7 +81,7 @@ export class TopBeersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataService.getBeers().subscribe({
+    this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.beers = data.beers || data?.response?.checkins?.items || [];
         this.onFilterChange();

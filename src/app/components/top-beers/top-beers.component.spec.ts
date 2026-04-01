@@ -21,7 +21,10 @@ describe("TopBeersComponent", () => {
   let mockDataService: any;
 
   beforeEach(async () => {
-    mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
+    mockDataService = jasmine.createSpyObj("DataService", [
+      "getBeers",
+      "getBeersAll",
+    ]);
     const mockBeer = {
       beer: {
         beer_name: "Test Beer",
@@ -39,7 +42,7 @@ describe("TopBeersComponent", () => {
       rating_score: 4.5,
       recent_created_at: "2026-02-07",
     };
-    mockDataService.getBeers.and.returnValue(
+    mockDataService.getBeersAll.and.returnValue(
       of({
         response: {
           checkins: {
@@ -99,7 +102,7 @@ describe("TopBeersComponent", () => {
       count: 3,
       recent_created_at: "2026-02-07",
     };
-    mockDataService.getBeers.and.returnValue(
+    mockDataService.getBeersAll.and.returnValue(
       of({ response: { checkins: { items: [multiCheckinBeer] } } }),
     );
 

@@ -24,8 +24,11 @@ describe("MapComponent", () => {
       "makeBreweryMarkers",
       "getMarkerByBreweryId",
     ]);
-    mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
-    mockDataService.getBeers.and.returnValue(
+    mockDataService = jasmine.createSpyObj("DataService", [
+      "getBeers",
+      "getBeersAll",
+    ]);
+    mockDataService.getBeersAll.and.returnValue(
       of({
         response: {
           checkins: {

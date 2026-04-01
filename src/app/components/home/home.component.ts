@@ -46,24 +46,12 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     // 1. Fetch Stats
-    this.dataService.getBeers().subscribe({
+    this.dataService.getStats().subscribe({
       next: (res: any) => {
-        const beerItems = Array.isArray(res?.beers) ? res.beers : [];
-        this.totalCheckins = beerItems.reduce(
-          (sum: number, b: any) => sum + (b.count || 1),
-          0,
-        );
-        this.averageRating =
-          beerItems.reduce(
-            (sum: number, b: any) => sum + (b.rating_score || 0),
-            0,
-          ) / (beerItems.length || 1);
-        this.countriesTried = new Set(
-          beerItems.map((b: any) => b.brewery?.country_name),
-        ).size;
-        this.breweriesVisited = new Set(
-          beerItems.map((b: any) => b.brewery?.brewery_name),
-        ).size;
+        this.totalCheckins = res?.totalCheckins || 0;
+        this.averageRating = res?.averageRating || 0;
+        this.countriesTried = res?.countriesTried || 0;
+        this.breweriesVisited = res?.breweriesVisited || 0;
         this.cdr.detectChanges();
       },
     });

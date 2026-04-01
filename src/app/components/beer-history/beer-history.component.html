@@ -42,6 +42,24 @@
     }
   </div>
 
+  <div
+    *ngIf="dataPage < totalPages && !isLoadingMore && searchTerm === ''"
+    class="flex-row"
+    style="justify-content: center; margin: 20px 0"
+  >
+    <button mat-stroked-button color="primary" (click)="loadMore()">
+      Load More
+    </button>
+  </div>
+
+  <div
+    *ngIf="isLoadingMore"
+    class="flex-row"
+    style="justify-content: center; margin: 20px 0"
+  >
+    <span>Loading...</span>
+  </div>
+
   <app-pagination
     [currentPage]="currentPage"
     [itemsPerPage]="itemsPerPage"
