@@ -46,7 +46,8 @@ export interface FilterField {
   ],
 })
 export class BeerHistoryComponent implements OnInit {
-  public beers: (BeerCheckin | BaseCardData)[] = [];
+  public beersInitial: BeerCheckin[] = [];
+  public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];
   public totalItems = 0;
@@ -56,7 +57,8 @@ export class BeerHistoryComponent implements OnInit {
   public dataPage = 1;
   public totalPages = 1;
   public isLoadingMore = false;
-  private hasLoadedAll = false;
+  public hasLoadedAll = false;
+  public isLoadingAll = false;
 
   public filterFields: FilterField[] = [
     { field: "brewery", label: "Brewery", options: [], selected: [] },
@@ -91,11 +93,14 @@ export class BeerHistoryComponent implements OnInit {
   loadInitialData(): void {
     this.dataService.getBeers(1).subscribe({
       next: (data) => {
-        this.beers = data?.beers || [];
+        this.beersInitial = data?.beers || [];
         this.totalPages = data?.total_pages || 1;
         this.initializeFilters();
         this.applyFilters();
         this.cdr.detectChanges();
+
+        // Start loading full dataset in background
+        this.loadAllDataInBackground();
       },
       error: (err) => {
         console.error("Error fetching initial beers:", err);
@@ -116,7 +121,7 @@ export class BeerHistoryComponent implements OnInit {
     this.dataService.getBeers(this.dataPage).subscribe({
       next: (data) => {
         const newBeers = data?.beers || [];
-        this.beers = [...this.beers, ...newBeers];
+        this.beersInitial = [...this.beersInitial, ...newBeers];
         // Note: we don't re-initialize filters here to avoid resetting user selections
         // but we might need to update options if new ones appear.
         // For simplicity in pagination + filtering, once a user filters, we load all.
@@ -131,22 +136,23 @@ export class BeerHistoryComponent implements OnInit {
     });
   }
 
-  loadAllDataAndFilter(): void {
-    if (this.hasLoadedAll) return;
+  loadAllDataInBackground(): void {
+    if (this.hasLoadedAll || this.isLoadingAll) return;
 
-    this.isLoadingMore = true; // reuse loader
+    this.isLoadingAll = true;
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
-        this.beers = data?.beers || [];
+        this.beersAll = data?.beers || [];
         this.hasLoadedAll = true;
-        this.isLoadingMore = false;
+        this.isLoadingAll = false;
+        this.isLoadingMore = false; // Add this to stop spinner if triggered by changeItemsPerPage
         this.initializeFilters();
         this.applyFilters();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error("Error fetching all beers:", err);
-        this.isLoadingMore = false;
+        console.error("Error fetching all beers in background:", err);
+        this.isLoadingAll = false;
       },
     });
   }
@@ -158,7 +164,9 @@ export class BeerHistoryComponent implements OnInit {
     const states = new Set<string>();
     const ratings = new Set<string>();
 
-    this.beers.forEach((beer: any) => {
+    const dataset = this.hasLoadedAll ? this.beersAll : this.beersInitial;
+
+    dataset.forEach((beer: any) => {
       breweries.add(beer.brewery.brewery_name);
       styles.add(beer.beer.beer_style);
       countries.add(beer.brewery.country_name);
@@ -187,7 +195,7 @@ export class BeerHistoryComponent implements OnInit {
       }
     });
 
-    const dates = this.beers
+    const dates = dataset
       .map((b: any) => DateUtils.parseDate(b.recent_created_at))
       .filter((d) => !isNaN(d.getTime()));
     if (dates.length > 0) {
@@ -214,23 +222,17 @@ export class BeerHistoryComponent implements OnInit {
 
   onFilterChange() {
     this.currentPage = 1;
-    if (!this.hasLoadedAll) {
-      this.loadAllDataAndFilter();
-    } else {
-      this.applyFilters();
-    }
+    this.applyFilters();
   }
 
   onSearchChange() {
     this.currentPage = 1;
-    if (!this.hasLoadedAll) {
-      this.loadAllDataAndFilter();
-    } else {
-      this.applyFilters();
-    }
+    this.applyFilters();
   }
 
   applyFilters() {
+    const dataset = this.hasLoadedAll ? this.beersAll : this.beersInitial;
+
     const breweryFilter = this.filterFields.find((f) => f.field === "brewery")!;
     const styleFilter = this.filterFields.find(
       (f) => f.field === "beer_style",
@@ -245,7 +247,7 @@ export class BeerHistoryComponent implements OnInit {
     // Reset counts
     this.filterFields.forEach((f) => (f.countMap = {}));
 
-    const filtered = this.beers.filter((beer: any) => {
+    const filtered = dataset.filter((beer: any) => {
       const rating = beer.rating_score;
       const formattedRating =
         (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2);
@@ -408,7 +410,20 @@ export class BeerHistoryComponent implements OnInit {
   changeItemsPerPage(items: number) {
     this.itemsPerPage = items;
     this.currentPage = 1;
-    this.updatePagination();
+    if (!this.hasLoadedAll && items !== 25) {
+      // If user wants a different page size, we should probably load all to support it properly
+      // although beersInitial only has 25.
+      if (this.isLoadingAll) {
+        // Wait for background load to complete
+        this.isLoadingMore = true;
+        // In this case, we don't start a new request, we just wait.
+        // Actually, let's keep it simple and just trigger the load if not already loading.
+      } else {
+        this.loadAllDataInBackground();
+      }
+    } else {
+      this.updatePagination();
+    }
   }
 
   resetFilters() {

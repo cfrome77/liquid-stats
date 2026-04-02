@@ -22,6 +22,7 @@ import { Checkin } from "src/app/core/models/checkin.model";
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 
 @Component({
   selector: "app-checkins",
@@ -34,12 +35,20 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
     CardComponent,
     MatDialogModule,
     EmptyStateComponent,
+    PaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckinsComponent implements OnInit {
-  public checkins: Checkin[] = [];
+  public checkinsInitial: Checkin[] = [];
+  public checkinsAll: Checkin[] = [];
   public transformedCheckins: BaseCardData[] = [];
+  public paginatedCheckins: BaseCardData[] = [];
+  public totalItems = 0;
+  public currentPage = 1;
+  public itemsPerPage = 10;
+  public hasLoadedAll = false;
+  public isLoadingAll = false;
   username: string;
 
   constructor(
@@ -53,14 +62,24 @@ export class CheckinsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadInitialData();
+  }
+
+  loadInitialData(): void {
     this.dataService.getCheckins().subscribe({
       next: (data) => {
-        this.checkins = data.response.checkins.items;
-        this.transformedCheckins = this.checkins.map((checkin) =>
+        const items = data.response.checkins.items || [];
+        this.checkinsInitial = items;
+        this.transformedCheckins = this.checkinsInitial.map((checkin) =>
           this.transformCheckinData(checkin),
         );
+        this.totalItems = this.transformedCheckins.length;
+        this.updatePagination();
 
         this.cdr.markForCheck();
+
+        // Background load "all" checkins
+        this.loadAllDataInBackground();
 
         // Check for ID in URL and scroll if present
         const targetId = this.route.snapshot.paramMap.get("id");
@@ -70,6 +89,35 @@ export class CheckinsComponent implements OnInit {
       },
       error: (err) => {
         console.error("Error fetching checkins:", err);
+      },
+    });
+  }
+
+  loadAllDataInBackground(): void {
+    if (this.hasLoadedAll || this.isLoadingAll) return;
+
+    this.isLoadingAll = true;
+    this.dataService.getCheckins().subscribe({
+      next: (data) => {
+        const items = data.response.checkins.items || [];
+        this.checkinsAll = items;
+        this.hasLoadedAll = true;
+        this.isLoadingAll = false;
+
+        // Since checkins.json is currently only 50 items anyway,
+        // and we already loaded them in initial, this is more for future-proofing
+        // or for when we get a real paginated checkins feed.
+
+        this.transformedCheckins = this.checkinsAll.map((checkin) =>
+          this.transformCheckinData(checkin),
+        );
+        this.totalItems = this.transformedCheckins.length;
+        this.updatePagination();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error("Error fetching all checkins in background:", err);
+        this.isLoadingAll = false;
       },
     });
   }
@@ -99,6 +147,29 @@ export class CheckinsComponent implements OnInit {
       width: "400px",
       data: badge,
     });
+  }
+
+  updatePagination() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedCheckins = this.transformedCheckins.slice(
+      startIndex,
+      endIndex,
+    );
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.updatePagination();
+    this.cdr.markForCheck();
+    window.scrollTo(0, 0);
+  }
+
+  onItemsPerPageChange(size: number) {
+    this.itemsPerPage = size;
+    this.currentPage = 1;
+    this.updatePagination();
+    this.cdr.markForCheck();
   }
 
   transformCheckinData(checkin: Checkin): BaseCardData {

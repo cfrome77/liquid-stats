@@ -1,7 +1,7 @@
 <div class="main-content-container">
   <h1>Recent Checkin List</h1>
   <div class="flex-column" style="align-items: stretch; gap: 15px">
-    @for (checkin of transformedCheckins; track checkin.extraData?.checkinId) {
+    @for (checkin of paginatedCheckins; track checkin.extraData?.checkinId) {
       <div
         [id]="'checkin-' + checkin.extraData?.checkinId"
         class="card-wrapper"
@@ -16,4 +16,13 @@
       ></app-empty-state>
     }
   </div>
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage"
+    [totalItems]="totalItems"
+    (pageChange)="onPageChange($event)"
+    (itemsPerPageChange)="onItemsPerPageChange($event)"
+  >
+  </app-pagination>
 </div>

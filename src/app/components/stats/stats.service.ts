@@ -22,12 +22,13 @@ export class StatsService {
 
   constructor(private dataService: DataService) {}
 
-  loadBeerData(): Observable<BeerCheckin[]> {
-    return this.dataService
-      .getBeersAll()
-      .pipe(
-        map((data) => data?.response?.checkins?.items || data?.beers || data),
-      );
+  loadBeerData(all: boolean = true): Observable<BeerCheckin[]> {
+    const loader = all
+      ? this.dataService.getBeersAll()
+      : this.dataService.getBeers(1);
+    return loader.pipe(
+      map((data) => data?.response?.checkins?.items || data?.beers || data),
+    );
   }
 
   computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {
