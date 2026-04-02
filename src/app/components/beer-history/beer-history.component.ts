@@ -53,6 +53,10 @@ export class BeerHistoryComponent implements OnInit {
   public currentPage = 1;
   public itemsPerPage = 10;
   public searchTerm = "";
+  public dataPage = 1;
+  public totalPages = 1;
+  public isLoadingMore = false;
+  private hasLoadedAll = false;
 
   public filterFields: FilterField[] = [
     { field: "brewery", label: "Brewery", options: [], selected: [] },
@@ -81,15 +85,68 @@ export class BeerHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.dataService.getBeers().subscribe({
+    this.loadInitialData();
+  }
+
+  loadInitialData(): void {
+    this.dataService.getBeers(1).subscribe({
       next: (data) => {
         this.beers = data?.beers || [];
+        this.totalPages = data?.total_pages || 1;
         this.initializeFilters();
         this.applyFilters();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error("Error fetching beers:", err);
+        console.error("Error fetching initial beers:", err);
+      },
+    });
+  }
+
+  loadMore(): void {
+    if (
+      this.dataPage >= this.totalPages ||
+      this.isLoadingMore ||
+      this.hasLoadedAll
+    )
+      return;
+
+    this.isLoadingMore = true;
+    this.dataPage++;
+    this.dataService.getBeers(this.dataPage).subscribe({
+      next: (data) => {
+        const newBeers = data?.beers || [];
+        this.beers = [...this.beers, ...newBeers];
+        // Note: we don't re-initialize filters here to avoid resetting user selections
+        // but we might need to update options if new ones appear.
+        // For simplicity in pagination + filtering, once a user filters, we load all.
+        this.applyFilters();
+        this.isLoadingMore = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Error loading more beers:", err);
+        this.isLoadingMore = false;
+      },
+    });
+  }
+
+  loadAllDataAndFilter(): void {
+    if (this.hasLoadedAll) return;
+
+    this.isLoadingMore = true; // reuse loader
+    this.dataService.getBeersAll().subscribe({
+      next: (data) => {
+        this.beers = data?.beers || [];
+        this.hasLoadedAll = true;
+        this.isLoadingMore = false;
+        this.initializeFilters();
+        this.applyFilters();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Error fetching all beers:", err);
+        this.isLoadingMore = false;
       },
     });
   }
@@ -157,12 +214,20 @@ export class BeerHistoryComponent implements OnInit {
 
   onFilterChange() {
     this.currentPage = 1;
-    this.applyFilters();
+    if (!this.hasLoadedAll) {
+      this.loadAllDataAndFilter();
+    } else {
+      this.applyFilters();
+    }
   }
 
   onSearchChange() {
     this.currentPage = 1;
-    this.applyFilters();
+    if (!this.hasLoadedAll) {
+      this.loadAllDataAndFilter();
+    } else {
+      this.applyFilters();
+    }
   }
 
   applyFilters() {

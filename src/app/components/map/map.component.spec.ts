@@ -20,6 +20,7 @@ describe("MapComponent", () => {
   let mockDataService: any;
 
   beforeEach(async () => {
+    // Mock MarkerService
     mockMarkerService = jasmine.createSpyObj("MarkerService", [
       "makeBreweryMarkers",
       "getMarkerByBreweryId",
@@ -29,13 +30,13 @@ describe("MapComponent", () => {
       addLayer: jasmine.createSpy("addLayer"),
       zoomToShowLayer: jasmine.createSpy("zoomToShowLayer"),
     };
-    mockDataService = jasmine.createSpyObj("DataService", ["getBeers"]);
-    mockDataService.getBeers.and.returnValue(
-      of({
-        beers: [],
-      }),
-    );
 
+    // Mock DataService
+    mockDataService = jasmine.createSpyObj("DataService", ["getBeers", "getBeersAll"]);
+    mockDataService.getBeers.and.returnValue(of({ beers: [] }));
+    mockDataService.getBeersAll.and.returnValue(of({ beers: [] }));
+
+    // Configure TestBed
     await TestBed.configureTestingModule({
       imports: [MapComponent, HttpClientTestingModule, RouterTestingModule],
       providers: [
@@ -50,9 +51,7 @@ describe("MapComponent", () => {
       ],
     })
       .overrideComponent(MapComponent, {
-        set: {
-          providers: [{ provide: MarkerService, useValue: mockMarkerService }],
-        },
+        set: { providers: [{ provide: MarkerService, useValue: mockMarkerService }] },
       })
       .compileComponents();
 
@@ -65,7 +64,7 @@ describe("MapComponent", () => {
   });
 
   it("should initialize map on AfterViewInit", fakeAsync(() => {
-    // We need a div with the mapId in the DOM for Leaflet to initialize
+    // Add a div with the mapId in the DOM for Leaflet
     const mapDiv = document.createElement("div");
     mapDiv.id = "myMap";
     document.body.appendChild(mapDiv);
@@ -81,11 +80,12 @@ describe("MapComponent", () => {
   }));
 
   it("should use zoomToShowLayer for deep links when marker exists", fakeAsync(() => {
-    // We need a div with the mapId in the DOM for Leaflet to initialize
+    // Add a div with the mapId in the DOM for Leaflet
     const mapDiv = document.createElement("div");
     mapDiv.id = "myMap";
     document.body.appendChild(mapDiv);
 
+    // Mock marker
     const mockMarker: any = {
       getElement: jasmine
         .createSpy("getElement")
@@ -112,7 +112,7 @@ describe("MapComponent", () => {
     fixture.detectChanges();
     tick();
 
-    // Directly call the private handleDeepLink via any to test the logic
+    // Call private handleDeepLink to test zoom
     (component as any).handleDeepLink(10, 20, "brewery-1");
 
     expect(mockMarkerService.markers.zoomToShowLayer).toHaveBeenCalledWith(

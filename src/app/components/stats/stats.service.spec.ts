@@ -9,7 +9,7 @@ describe('StatsService', () => {
   let dataServiceSpy: jasmine.SpyObj<DataService>;
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('DataService', ['getBeers']);
+    const spy = jasmine.createSpyObj('DataService', ['getBeers', 'getBeersAll']);
     TestBed.configureTestingModule({
       providers: [
         StatsService,

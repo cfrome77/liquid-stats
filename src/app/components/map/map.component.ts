@@ -117,7 +117,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     // Load beer data
-    this.dataService.getBeers().subscribe({
+    this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.allBeers = data?.beers || [];
 

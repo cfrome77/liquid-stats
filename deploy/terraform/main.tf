@@ -39,32 +39,11 @@ resource "aws_s3_bucket_policy" "public_jsons" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "BadgesPublicReadGetObject"
+        Sid       = "PublicReadGetObject"
         Effect    = "Allow"
         Principal = "*"
         Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::${aws_s3_bucket.this.bucket}/badges.json"
-      },
-      {
-        Sid       = "BeersPublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::${aws_s3_bucket.this.bucket}/beers.json"
-      },
-      {
-        Sid       = "CheckinsPublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::${aws_s3_bucket.this.bucket}/checkins.json"
-      },
-      {
-        Sid       = "WishlistPublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::${aws_s3_bucket.this.bucket}/wishlist.json"
+        Resource  = "arn:aws:s3:::${aws_s3_bucket.this.bucket}/*.json"
       }
     ]
   })
