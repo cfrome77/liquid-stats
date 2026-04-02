@@ -60,6 +60,7 @@ import { ThemeService } from "src/app/core/services/theme.service";
 })
 export class StatsComponent implements OnInit {
   beers: BeerCheckin[] = [];
+  hasLoadedAll = false;
   processedStats: ProcessedStats | null = null;
   sortedBeerStyles: string[] = [];
 
@@ -235,17 +236,32 @@ export class StatsComponent implements OnInit {
   }
 
   loadBeerData(): void {
-    this.statsService.loadBeerData().subscribe({
+    // Initial load: fast
+    this.statsService.loadBeerData(false).subscribe({
       next: (data: BeerCheckin[]) => {
         this.beers = data;
         this.onDateChange();
         this.cdr.markForCheck();
+
+        // Background load all
+        this.loadAllDataInBackground();
       },
       error: (err) => {
-        console.error("Error fetching beers:", err);
+        console.error("Error fetching initial beers for stats:", err);
       },
-      complete: () => {
-        console.log("Beers fetch completed");
+    });
+  }
+
+  private loadAllDataInBackground(): void {
+    this.statsService.loadBeerData(true).subscribe({
+      next: (data: BeerCheckin[]) => {
+        this.beers = data;
+        this.hasLoadedAll = true;
+        this.onDateChange();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error("Error fetching all beers for stats in background:", err);
       },
     });
   }

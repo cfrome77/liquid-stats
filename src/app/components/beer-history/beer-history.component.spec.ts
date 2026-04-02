@@ -24,6 +24,10 @@ describe("BeerHistoryComponent", () => {
             },
           },
         }),
+      getBeersAll: () =>
+        of({
+          beers: [],
+        }),
     };
 
     await TestBed.configureTestingModule({

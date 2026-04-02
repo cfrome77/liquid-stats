@@ -43,7 +43,12 @@
   </div>
 
   <div
-    *ngIf="dataPage < totalPages && !isLoadingMore && searchTerm === ''"
+    *ngIf="
+      dataPage < totalPages &&
+      !isLoadingMore &&
+      searchTerm === '' &&
+      !hasLoadedAll
+    "
     class="flex-row"
     style="justify-content: center; margin: 20px 0"
   >
