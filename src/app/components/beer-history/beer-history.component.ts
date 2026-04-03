@@ -46,7 +46,6 @@ export interface FilterField {
   ],
 })
 export class BeerHistoryComponent implements OnInit {
-  public beersInitial: BeerCheckin[] = [];
   public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];
@@ -54,10 +53,6 @@ export class BeerHistoryComponent implements OnInit {
   public currentPage = 1;
   public itemsPerPage = 10;
   public searchTerm = "";
-  public dataPage = 1;
-  public totalPages = 1;
-  public isLoadingMore = false;
-  public hasLoadedAll = false;
   public isLoadingAll = false;
 
   public filterFields: FilterField[] = [
@@ -87,72 +82,23 @@ export class BeerHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadInitialData();
+    this.loadData();
   }
 
-  loadInitialData(): void {
-    this.dataService.getBeers(1).subscribe({
-      next: (data) => {
-        this.beersInitial = data?.beers || [];
-        this.totalPages = data?.total_pages || 1;
-        this.initializeFilters();
-        this.applyFilters();
-        this.cdr.detectChanges();
-
-        // Start loading full dataset in background
-        this.loadAllDataInBackground();
-      },
-      error: (err) => {
-        console.error("Error fetching initial beers:", err);
-      },
-    });
-  }
-
-  loadMore(): void {
-    if (
-      this.dataPage >= this.totalPages ||
-      this.isLoadingMore ||
-      this.hasLoadedAll
-    )
-      return;
-
-    this.isLoadingMore = true;
-    this.dataPage++;
-    this.dataService.getBeers(this.dataPage).subscribe({
-      next: (data) => {
-        const newBeers = data?.beers || [];
-        this.beersInitial = [...this.beersInitial, ...newBeers];
-        // Note: we don't re-initialize filters here to avoid resetting user selections
-        // but we might need to update options if new ones appear.
-        // For simplicity in pagination + filtering, once a user filters, we load all.
-        this.applyFilters();
-        this.isLoadingMore = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error("Error loading more beers:", err);
-        this.isLoadingMore = false;
-      },
-    });
-  }
-
-  loadAllDataInBackground(): void {
-    if (this.hasLoadedAll || this.isLoadingAll) return;
-
+  loadData(): void {
     this.isLoadingAll = true;
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.beersAll = data?.beers || [];
-        this.hasLoadedAll = true;
         this.isLoadingAll = false;
-        this.isLoadingMore = false; // Add this to stop spinner if triggered by changeItemsPerPage
         this.initializeFilters();
         this.applyFilters();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error("Error fetching all beers in background:", err);
+        console.error("Error fetching all beers:", err);
         this.isLoadingAll = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -164,7 +110,7 @@ export class BeerHistoryComponent implements OnInit {
     const states = new Set<string>();
     const ratings = new Set<string>();
 
-    const dataset = this.hasLoadedAll ? this.beersAll : this.beersInitial;
+    const dataset = this.beersAll;
 
     dataset.forEach((beer: any) => {
       breweries.add(beer.brewery.brewery_name);
@@ -231,7 +177,7 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   applyFilters() {
-    const dataset = this.hasLoadedAll ? this.beersAll : this.beersInitial;
+    const dataset = this.beersAll;
 
     const breweryFilter = this.filterFields.find((f) => f.field === "brewery")!;
     const styleFilter = this.filterFields.find(
@@ -410,20 +356,7 @@ export class BeerHistoryComponent implements OnInit {
   changeItemsPerPage(items: number) {
     this.itemsPerPage = items;
     this.currentPage = 1;
-    if (!this.hasLoadedAll && items !== 25) {
-      // If user wants a different page size, we should probably load all to support it properly
-      // although beersInitial only has 25.
-      if (this.isLoadingAll) {
-        // Wait for background load to complete
-        this.isLoadingMore = true;
-        // In this case, we don't start a new request, we just wait.
-        // Actually, let's keep it simple and just trigger the load if not already loading.
-      } else {
-        this.loadAllDataInBackground();
-      }
-    } else {
-      this.updatePagination();
-    }
+    this.updatePagination();
   }
 
   resetFilters() {

@@ -236,24 +236,7 @@ export class StatsComponent implements OnInit {
   }
 
   loadBeerData(): void {
-    // Initial load: fast
-    this.statsService.loadBeerData(false).subscribe({
-      next: (data: BeerCheckin[]) => {
-        this.beers = data;
-        this.onDateChange();
-        this.cdr.markForCheck();
-
-        // Background load all
-        this.loadAllDataInBackground();
-      },
-      error: (err) => {
-        console.error("Error fetching initial beers for stats:", err);
-      },
-    });
-  }
-
-  private loadAllDataInBackground(): void {
-    this.statsService.loadBeerData(true).subscribe({
+    this.statsService.loadBeerData().subscribe({
       next: (data: BeerCheckin[]) => {
         this.beers = data;
         this.hasLoadedAll = true;
@@ -261,7 +244,7 @@ export class StatsComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error("Error fetching all beers for stats in background:", err);
+        console.error("Error fetching beers for stats:", err);
       },
     });
   }

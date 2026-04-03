@@ -41,9 +41,8 @@ export class DataService {
     return this.http.get<any>(`${this.baseUrl}stats.json`);
   }
 
-  public getBeers(page?: number): Observable<any> {
-    const filename = page ? `beers_page_${page}.json` : "beers.json";
-    return this.http.get<any>(`${this.baseUrl}${filename}`);
+  public getBeers(): Observable<any> {
+    return this.getBeersAll();
   }
 
   public getBeersAll(): Observable<any> {
