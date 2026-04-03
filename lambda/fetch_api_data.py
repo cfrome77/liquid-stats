@@ -10,9 +10,7 @@ CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 UNTAPPD_USERNAME = os.environ.get("UNTAPPD_USERNAME")
 S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
-USE_AWS = os.environ.get("USE_AWS", "false").lower() == "true"
-
-s3 = boto3.client("s3") if USE_AWS else None
+s3 = boto3.client("s3")
 
 STEP = 50  # number of items per API call
 THROTTLE = 0.2  # seconds delay between calls to avoid hitting rate limit
@@ -31,20 +29,18 @@ def fetch_untappd_data(endpoint, params=None):
 
 
 def save_json(filename, data):
-    """Save JSON locally or to S3."""
-    if USE_AWS and S3_BUCKET_NAME:
-        s3.put_object(
-            Bucket=S3_BUCKET_NAME,
-            Key=filename,
-            Body=json.dumps(data),
-            ContentType="application/json"
-        )
-        print(f"Uploaded {filename} to S3 bucket {S3_BUCKET_NAME}")
-    else:
-        os.makedirs("data", exist_ok=True)
-        with open(f"data/{filename}", "w") as f:
-            json.dump(data, f)
-        print(f"Saved {filename} locally")
+    """Save JSON to S3."""
+    if not S3_BUCKET_NAME:
+        print(f"Warning: S3_BUCKET_NAME not set. Skipping save for {filename}")
+        return
+
+    s3.put_object(
+        Bucket=S3_BUCKET_NAME,
+        Key=filename,
+        Body=json.dumps(data),
+        ContentType="application/json"
+    )
+    print(f"Uploaded {filename} to S3 bucket {S3_BUCKET_NAME}")
 
 
 def get_all_beers():
@@ -116,6 +112,9 @@ def lambda_handler(event, context):
     if not UNTAPPD_USERNAME:
         print("Error: UNTAPPD_USERNAME not set")
         return {"statusCode": 500, "body": "UNTAPPD_USERNAME not set"}
+    if not S3_BUCKET_NAME:
+        print("Error: S3_BUCKET_NAME not set")
+        return {"statusCode": 500, "body": "S3_BUCKET_NAME not set"}
 
     print(f"Starting data fetch for {UNTAPPD_USERNAME}")
 
