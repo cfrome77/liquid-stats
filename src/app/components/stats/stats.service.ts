@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Observable, map } from "rxjs";
 import {
   ProcessedStats,
@@ -13,6 +13,8 @@ import { DateUtils } from "../../core/utils/date-utils";
 
 @Injectable({ providedIn: "root" })
 export class StatsService {
+  private dataService = inject(DataService);
+
   private memoizedStats: {
     beers: BeerCheckin[];
     start: number;
@@ -20,12 +22,10 @@ export class StatsService {
     result: ProcessedStats;
   } | null = null;
 
-  constructor(private dataService: DataService) {}
-
   loadBeerData(): Observable<BeerCheckin[]> {
-    return this.dataService.getBeersAll().pipe(
-      map((data) => data?.response?.checkins?.items || data?.beers || data),
-    );
+    return this.dataService
+      .getBeersAll()
+      .pipe(map((data) => data?.beers || []));
   }
 
   computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {
