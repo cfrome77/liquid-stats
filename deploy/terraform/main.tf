@@ -111,7 +111,7 @@ resource "aws_lambda_function" "fetch_api_data" {
   handler       = "fetch_api_data.lambda_handler"
   runtime       = "python3.12"
   memory_size   = 128
-  timeout       = 60
+  timeout       = 900
   role          = aws_iam_role.lambda_execution.arn
 
   filename         = var.lambda_zip_file
