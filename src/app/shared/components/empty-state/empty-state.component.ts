@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-empty-state",
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [MatIconModule, MatButtonModule],
   template: `
     <div class="empty-state">
       <mat-icon>{{ icon }}</mat-icon>
@@ -49,8 +49,8 @@ import { MatButtonModule } from "@angular/material/button";
   ],
 })
 export class EmptyStateComponent {
-  @Input() icon: string = "search_off";
-  @Input() message: string = "No items found.";
+  @Input() icon = "search_off";
+  @Input() message = "No items found.";
   @Input() buttonText: string | null = null;
   @Output() action = new EventEmitter<void>();
 }

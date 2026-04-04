@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 
 @Component({
   selector: "app-powered-by",
@@ -6,8 +6,4 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./powered-by.component.css"],
   standalone: true,
 })
-export class PoweredByComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class PoweredByComponent {}

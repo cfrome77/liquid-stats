@@ -20,14 +20,6 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 
-// Your shared / custom components
-import { FilterComponent } from "src/app/shared/components/filter/filter.component";
-import { PaginationComponent } from "src/app/shared/components/pagination/pagination.component";
-import { PoweredByComponent } from "src/app/shared/components/powered-by/powered-by.component";
-import { CardComponent } from "src/app/shared/components/card/card.component";
-import { BadgeDialogComponent } from "src/app/shared/components/badge-dialog/badge-dialog.component";
-import { BeerStyleDialogComponent } from "src/app/shared/components/beer-style-dialog/beer-style-dialog.component";
-
 @NgModule({
   declarations: [],
   imports: [

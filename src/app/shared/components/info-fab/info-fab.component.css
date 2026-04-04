@@ -1,0 +1,30 @@
+.fab-container {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.fab-container > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.fab-container > div button {
+  margin-left: 10px;
+}
+
+.fab-toggler {
+  z-index: 100;
+}
+
+@media (max-width: 600px) {
+  .fab-container {
+    bottom: 75px; /* Adjust FAB to be above bottom nav */
+  }
+}

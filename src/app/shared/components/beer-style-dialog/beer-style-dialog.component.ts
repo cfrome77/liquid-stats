@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, inject } from "@angular/core";
+
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
 import { MatListModule } from "@angular/material/list";
@@ -21,10 +21,8 @@ export interface GenericBeersDialogData {
   templateUrl: "./beer-style-dialog.component.html",
   styleUrls: ["./beer-style-dialog.component.css"],
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatListModule],
+  imports: [MatDialogModule, MatButtonModule, MatListModule],
 })
-export class BeerStyleDialogComponent implements OnInit {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: GenericBeersDialogData) {}
-
-  ngOnInit(): void {}
+export class BeerStyleDialogComponent {
+  data = inject<GenericBeersDialogData>(MAT_DIALOG_DATA);
 }

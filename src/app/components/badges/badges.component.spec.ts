@@ -10,7 +10,7 @@ import { DataService } from "src/app/core/services/data.service";
 describe("BadgesComponent", () => {
   let component: BadgesComponent;
   let fixture: ComponentFixture<BadgesComponent>;
-  let mockDataService: any;
+  let mockDataService: Partial<DataService>;
 
   beforeEach(async () => {
     mockDataService = {

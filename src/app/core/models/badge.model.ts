@@ -1,4 +1,3 @@
-// src/app/core/models/badge.model.ts
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 
 export interface Badge {
@@ -12,4 +11,4 @@ export interface Badge {
   user_badge_id: string | number;
 }
 
-export interface TransformedBadge extends BaseCardData {}
+export type TransformedBadge = BaseCardData;
