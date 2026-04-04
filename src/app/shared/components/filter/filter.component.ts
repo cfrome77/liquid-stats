@@ -8,6 +8,7 @@ import {
 } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { provideNativeDateAdapter } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { DateUtils } from "../../../core/utils/date-utils";
@@ -35,6 +36,7 @@ export interface FilterField {
     FormsModule,
     MatIconModule,
   ],
+  providers: [provideNativeDateAdapter()],
 })
 export class FilterComponent {
   @Input() filterFields: FilterField[] = [];
