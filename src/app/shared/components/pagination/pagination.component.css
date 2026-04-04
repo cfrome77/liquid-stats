@@ -48,6 +48,12 @@
   border-radius: 4px;
 }
 
+/* Hover effect for navigation buttons (Previous/Next) */
+.pagination-controls button:hover:not([disabled]):not(.active):not(.ellipsis) {
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
+  border-radius: 4px;
+}
+
 /* Disabled button styling */
 .pagination-controls button[disabled] {
   color: var(--text-color);

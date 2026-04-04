@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-rating",
   templateUrl: "./rating.component.html",
   styleUrls: ["./rating.component.css"],
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
 })
 export class RatingComponent {
   @Input() ratingScore: number | null = null;

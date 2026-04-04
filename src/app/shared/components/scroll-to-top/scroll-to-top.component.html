@@ -1,9 +1,6 @@
 <!-- Scroll to Top Button -->
-<button
-  *ngIf="isVisible"
-  mat-fab
-  class="fab-scroll-to-top"
-  (click)="scrollToTop()"
->
-  <mat-icon>arrow_upward</mat-icon>
-</button>
+@if (isVisible) {
+  <button mat-fab class="fab-scroll-to-top" (click)="scrollToTop()">
+    <mat-icon>arrow_upward</mat-icon>
+  </button>
+}

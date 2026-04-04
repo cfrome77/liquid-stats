@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, Input, inject } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
 import { RouterModule } from "@angular/router";
@@ -9,23 +8,9 @@ import { RouterModule } from "@angular/router";
   templateUrl: "./social-links.component.html",
   styleUrls: ["./social-links.component.css"],
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterModule],
+  imports: [MatIconModule, RouterModule],
 })
-export class SocialLinksComponent implements OnInit {
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer,
-  ) {
-    this.iconRegistry.addSvgIcon(
-      "instagram",
-      this.sanitizer.bypassSecurityTrustResourceUrl(
-        "assets/icons/instagram.svg",
-      ),
-    );
-  }
-
-  ngOnInit(): void {}
-
+export class SocialLinksComponent {
   @Input() contact!: {
     url?: string;
     facebook?: string;
@@ -39,4 +24,16 @@ export class SocialLinksComponent implements OnInit {
         breweryId: string;
       }
     | undefined;
+
+  private iconRegistry = inject(MatIconRegistry);
+  private sanitizer = inject(DomSanitizer);
+
+  constructor() {
+    this.iconRegistry.addSvgIcon(
+      "instagram",
+      this.sanitizer.bypassSecurityTrustResourceUrl(
+        "assets/icons/instagram.svg",
+      ),
+    );
+  }
 }

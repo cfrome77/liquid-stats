@@ -1,6 +1,6 @@
 import { MatIconModule } from "@angular/material/icon";
 import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
 
@@ -9,7 +9,7 @@ import { MatButtonModule } from "@angular/material/button";
   templateUrl: "./about.component.html",
   styleUrls: ["./about.component.css"],
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [MatDialogModule, MatButtonModule, MatIconModule],
 })
 export class AboutComponent {
   constructor() {}

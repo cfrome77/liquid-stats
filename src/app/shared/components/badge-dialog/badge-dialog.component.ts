@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
@@ -12,12 +12,10 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
   imports: [CommonModule, MatDialogModule, MatButtonModule],
 })
 export class BadgeDialogComponent implements OnInit {
-  public safeDescription: SafeHtml = "";
+  data = inject(MAT_DIALOG_DATA);
+  private sanitizer = inject(DomSanitizer);
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private sanitizer: DomSanitizer,
-  ) {}
+  public safeDescription: SafeHtml = "";
 
   ngOnInit(): void {
     if (this.data.badge_description) {

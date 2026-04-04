@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import {
@@ -34,7 +27,6 @@ export interface FilterField {
   styleUrls: ["./filter.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDatepickerModule,
@@ -44,18 +36,15 @@ export interface FilterField {
     MatIconModule,
   ],
 })
-export class FilterComponent implements OnChanges {
+export class FilterComponent {
   @Input() filterFields: FilterField[] = [];
-  @Output() filterChanged = new EventEmitter<any>();
+  // Fixed: Replaced 'any' with the specific type being emitted
+  @Output() filterChanged = new EventEmitter<FilterField[]>();
 
   activeFilter: FilterField | null = null;
   isModalOpen = false;
 
-  ngOnInit(): void {}
-
-  ngOnChanges(changes: SimpleChanges) {
-    // No longer auto-filling selected options to allow hiding options with 0 matches
-  }
+  // Fixed: Removed empty ngOnInit and ngOnChanges hooks
 
   openFilterModal(filter: FilterField) {
     this.isModalOpen = true;
@@ -183,9 +172,6 @@ export class FilterComponent implements OnChanges {
     const count = this.activeFilter.countMap?.[option] ?? 0;
     if (count > 0) return true;
 
-    // Check if any option in the current list has a count > 0.
-    // We only hide zero-count options if there's at least one non-zero option to show.
-    // This prevents the filter list from being completely empty.
     const hasAnyMatches = Object.values(this.activeFilter.countMap || {}).some(
       (c) => c > 0,
     );
@@ -193,9 +179,6 @@ export class FilterComponent implements OnChanges {
       return true;
     }
 
-    // If count is 0, hide it to keep the list clean and only allow valid combinations.
-    // However, if the user has specifically selected it (and not all are selected),
-    // we show it so they can see their active filters and potentially unselect it.
     return this.activeFilter.selected.includes(option) && !this.allSelected;
   }
 }
