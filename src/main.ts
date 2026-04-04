@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, isDevMode } from "@angular/core";
+import { enableProdMode, isDevMode } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
@@ -26,7 +26,10 @@ bootstrapApplication(AppComponent, {
         // 1. Local Hero Logo
         if (url.includes("LiquidStatsLogo.webp")) {
           if (width && width <= 400) {
-            return url.replace("LiquidStatsLogo.webp", "LiquidStatsLogo-400w.webp");
+            return url.replace(
+              "LiquidStatsLogo.webp",
+              "LiquidStatsLogo-400w.webp",
+            );
           }
           return url;
         }
