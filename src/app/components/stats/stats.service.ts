@@ -22,11 +22,8 @@ export class StatsService {
 
   constructor(private dataService: DataService) {}
 
-  loadBeerData(all: boolean = true): Observable<BeerCheckin[]> {
-    const loader = all
-      ? this.dataService.getBeersAll()
-      : this.dataService.getBeers(1);
-    return loader.pipe(
+  loadBeerData(): Observable<BeerCheckin[]> {
+    return this.dataService.getBeersAll().pipe(
       map((data) => data?.response?.checkins?.items || data?.beers || data),
     );
   }
