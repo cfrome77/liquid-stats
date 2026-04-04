@@ -42,15 +42,7 @@ describe("TopBeersComponent", () => {
       rating_score: 4.5,
       recent_created_at: "2026-02-07",
     };
-    mockDataService.getBeersAll.and.returnValue(
-      of({
-        response: {
-          checkins: {
-            items: [mockBeer],
-          },
-        },
-      }),
-    );
+    mockDataService.getBeersAll.and.returnValue(of([mockBeer]));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -90,21 +82,27 @@ describe("TopBeersComponent", () => {
     expect(component.transformedTopBeers[0].title).toBe("Test Beer");
   });
 
+
   it("should correctly handle beers with count > 1 for minCheckins filter", () => {
     const multiCheckinBeer = {
       beer: {
         beer_name: "Multi Beer",
         beer_style: "Stout",
         bid: 789,
+        beer_slug: "multi-beer",
+        beer_label: "",
       },
-      brewery: { brewery_name: "Multi Brewery", location: {} },
+      brewery: {
+        brewery_name: "Multi Brewery",
+        location: {},
+        brewery_label: "",
+        contact: {},
+      },
       rating_score: 4.0,
       count: 3,
       recent_created_at: "2026-02-07",
     };
-    mockDataService.getBeersAll.and.returnValue(
-      of({ response: { checkins: { items: [multiCheckinBeer] } } }),
-    );
+    mockDataService.getBeersAll.and.returnValue(of([multiCheckinBeer]));
 
     component.ngOnInit();
     component.minCheckins = 3;

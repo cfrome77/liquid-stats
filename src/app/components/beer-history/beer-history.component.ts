@@ -89,7 +89,7 @@ export class BeerHistoryComponent implements OnInit {
     this.isLoadingAll = true;
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
-        this.beersAll = data?.beers || [];
+        this.beersAll = data;
         this.isLoadingAll = false;
         this.initializeFilters();
         this.applyFilters();

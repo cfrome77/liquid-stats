@@ -83,7 +83,7 @@ export class TopBeersComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
-        this.beers = data.beers || data?.response?.checkins?.items || [];
+        this.beers = data;
         this.onFilterChange();
       },
       error: (err) => console.error("Error fetching beers:", err),
@@ -100,6 +100,12 @@ export class TopBeersComponent implements OnInit {
   }
 
   filterAndRankBeers() {
+    if (!this.beers || !Array.isArray(this.beers)) {
+      this.transformedTopBeers = [];
+      this.cdr.markForCheck();
+      return;
+    }
+
     let cutoffDate: Date;
 
     const isOverall =

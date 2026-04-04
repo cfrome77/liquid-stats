@@ -33,8 +33,8 @@ describe("MapComponent", () => {
 
     // Mock DataService
     mockDataService = jasmine.createSpyObj("DataService", ["getBeers", "getBeersAll"]);
-    mockDataService.getBeers.and.returnValue(of({ beers: [] }));
-    mockDataService.getBeersAll.and.returnValue(of({ beers: [] }));
+    mockDataService.getBeers.and.returnValue(of([]));
+    mockDataService.getBeersAll.and.returnValue(of([]));
 
     // Configure TestBed
     await TestBed.configureTestingModule({

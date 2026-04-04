@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { Badge } from "../models/badge.model";
 import { CheckinResponse } from "../models/checkin.model";
+import { BeerCheckin } from "../models/beer.model";
 
 @Injectable({
   providedIn: "root",
@@ -41,12 +42,20 @@ export class DataService {
     return this.http.get<any>(`${this.baseUrl}stats.json`);
   }
 
-  public getBeers(): Observable<any> {
+  public getBeers(): Observable<BeerCheckin[]> {
     return this.getBeersAll();
   }
 
-  public getBeersAll(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}beers_all.json`);
+  public getBeersAll(): Observable<BeerCheckin[]> {
+    return this.http.get<any>(`${this.baseUrl}beers_all.json`).pipe(
+      map((data) => {
+        return (
+          data?.beers ||
+          data?.response?.checkins?.items ||
+          (Array.isArray(data) ? data : [])
+        );
+      }),
+    );
   }
 
   public getCheckins(): Observable<CheckinResponse> {

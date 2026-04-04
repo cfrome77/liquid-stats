@@ -119,7 +119,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     // Load beer data
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
-        this.allBeers = data?.beers || [];
+        this.allBeers = data;
 
         // Extract filter options
         this.beerStyles = Array.from(
