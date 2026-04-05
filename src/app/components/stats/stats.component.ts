@@ -4,8 +4,9 @@ import {
   ChangeDetectorRef,
   effect,
   ChangeDetectionStrategy,
+  inject,
 } from "@angular/core";
-import { CommonModule, DecimalPipe } from "@angular/common";
+import { DecimalPipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -40,7 +41,6 @@ import { ThemeService } from "src/app/core/services/theme.service";
   styleUrls: ["./stats.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -59,6 +59,11 @@ import { ThemeService } from "src/app/core/services/theme.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsComponent implements OnInit {
+  private statsService = inject(StatsService);
+  private dialog = inject(MatDialog);
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
+
   beers: BeerCheckin[] = [];
   hasLoadedAll = false;
   processedStats: ProcessedStats | null = null;
@@ -174,12 +179,7 @@ export class StatsComponent implements OnInit {
   };
   objectKeys = Object.keys;
 
-  constructor(
-    private statsService: StatsService,
-    private dialog: MatDialog,
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-  ) {
+  constructor() {
     // Consume the theme signal using an effect
     effect(() => {
       const theme = this.themeService.currentTheme();
@@ -487,7 +487,6 @@ export class StatsComponent implements OnInit {
     };
     this.cdr.markForCheck();
   }
-
 
   private openGenericBeersDialog(
     title: string,

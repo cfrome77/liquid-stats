@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -33,7 +33,6 @@ export interface FilterField {
   styleUrls: ["./beer-history.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -46,6 +45,9 @@ export interface FilterField {
   ],
 })
 export class BeerHistoryComponent implements OnInit {
+  private dataService = inject(DataService);
+  private cdr = inject(ChangeDetectorRef);
+
   public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];
@@ -76,11 +78,6 @@ export class BeerHistoryComponent implements OnInit {
     },
   ];
 
-  constructor(
-    private dataService: DataService,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
   ngOnInit(): void {
     this.loadData();
   }
@@ -88,8 +85,8 @@ export class BeerHistoryComponent implements OnInit {
   loadData(): void {
     this.isLoadingAll = true;
     this.dataService.getBeersAll().subscribe({
-      next: (data) => {
-        this.beersAll = data;
+      next: (data: { beers: BeerCheckin[] }) => {
+        this.beersAll = data?.beers || [];
         this.isLoadingAll = false;
         this.initializeFilters();
         this.applyFilters();
@@ -112,7 +109,7 @@ export class BeerHistoryComponent implements OnInit {
 
     const dataset = this.beersAll;
 
-    dataset.forEach((beer: any) => {
+    dataset.forEach((beer: BeerCheckin) => {
       breweries.add(beer.brewery.brewery_name);
       styles.add(beer.beer.beer_style);
       countries.add(beer.brewery.country_name);
@@ -193,7 +190,7 @@ export class BeerHistoryComponent implements OnInit {
     // Reset counts
     this.filterFields.forEach((f) => (f.countMap = {}));
 
-    const filtered = dataset.filter((beer: any) => {
+    const filtered = dataset.filter((beer: BeerCheckin) => {
       const rating = beer.rating_score;
       const formattedRating =
         (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2);
@@ -201,13 +198,15 @@ export class BeerHistoryComponent implements OnInit {
 
       const matchesSearch =
         !search ||
-        beer.beer.beer_name.toLowerCase().includes(search) ||
-        beer.beer.beer_style.toLowerCase().includes(search) ||
-        beer.brewery.brewery_name.toLowerCase().includes(search) ||
-        beer.brewery.country_name.toLowerCase().includes(search) ||
-        beer.brewery.location.brewery_state?.toLowerCase().includes(search) ||
-        beer.beer.beer_description?.toLowerCase().includes(search) ||
-        beer.beer.beer_slug.toLowerCase().includes(search);
+        (beer.beer.beer_name ?? "").toLowerCase().includes(search) ||
+        (beer.beer.beer_style ?? "").toLowerCase().includes(search) ||
+        (beer.brewery.brewery_name ?? "").toLowerCase().includes(search) ||
+        (beer.brewery.country_name ?? "").toLowerCase().includes(search) ||
+        (beer.brewery.location.brewery_state ?? "")
+          .toLowerCase()
+          .includes(search) ||
+        (beer.beer.beer_description ?? "").toLowerCase().includes(search) ||
+        (beer.beer.beer_slug ?? "").toLowerCase().includes(search);
 
       const matchesBrewery = breweryFilter.selected.includes(
         beer.brewery.brewery_name,
@@ -307,7 +306,7 @@ export class BeerHistoryComponent implements OnInit {
     this.updatePagination();
   }
 
-  transformBeerData(beer: any): BaseCardData {
+  transformBeerData(beer: BeerCheckin): BaseCardData {
     const mapData: MapData | undefined = beer.brewery?.location
       ? {
           lat: beer.brewery.location.lat,
