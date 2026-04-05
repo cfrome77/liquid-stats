@@ -5,9 +5,8 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   NgZone,
-  inject,
 } from "@angular/core";
-
+import { CommonModule } from "@angular/common";
 import { ActivatedRoute } from "@angular/router"; // Added
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
@@ -32,6 +31,7 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
   standalone: true,
   imports: [
     MatIconModule,
+    CommonModule,
     CardComponent,
     MatDialogModule,
     EmptyStateComponent,
@@ -40,12 +40,6 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckinsComponent implements OnInit {
-  private dataService = inject(DataService);
-  private dialog = inject(MatDialog);
-  private cdr = inject(ChangeDetectorRef);
-  private route = inject(ActivatedRoute);
-  private ngZone = inject(NgZone);
-
   public checkinsInitial: Checkin[] = [];
   public checkinsAll: Checkin[] = [];
   public transformedCheckins: BaseCardData[] = [];
@@ -57,7 +51,13 @@ export class CheckinsComponent implements OnInit {
   public isLoadingAll = false;
   username: string;
 
-  constructor() {
+  constructor(
+    private dataService: DataService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute, // Added
+    private ngZone: NgZone,
+  ) {
     this.username = environment.UNTAPPD_USERNAME;
   }
 

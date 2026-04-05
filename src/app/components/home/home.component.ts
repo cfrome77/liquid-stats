@@ -4,7 +4,6 @@ import {
   ViewChild,
   ElementRef,
   ChangeDetectorRef,
-  inject,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
@@ -29,9 +28,6 @@ import { DataService } from "../../core/services/data.service";
   ],
 })
 export class HomeComponent implements OnInit {
-  private dataService = inject(DataService);
-  private cdr = inject(ChangeDetectorRef);
-
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
   allCheckins: any[] = [];
@@ -42,6 +38,11 @@ export class HomeComponent implements OnInit {
 
   readonly DEFAULT_IMAGE =
     "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
+
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     // 1. Fetch Stats

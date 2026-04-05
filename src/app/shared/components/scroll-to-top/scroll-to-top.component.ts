@@ -1,5 +1,5 @@
 import { Component, HostListener } from "@angular/core";
-
+import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 
@@ -8,7 +8,7 @@ import { MatIconModule } from "@angular/material/icon";
   templateUrl: "./scroll-to-top.component.html",
   styleUrls: ["./scroll-to-top.component.css"],
   standalone: true,
-  imports: [MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule],
 })
 export class ScrollToTopComponent {
   isVisible = false;

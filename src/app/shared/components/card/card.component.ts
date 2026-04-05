@@ -3,6 +3,7 @@ import {
   Input,
   Output,
   EventEmitter,
+  OnInit,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
@@ -28,11 +29,13 @@ import { SocialLinksComponent } from "../social-links/social-links.component";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardComponent {
+export class CardComponent implements OnInit {
   @Input() cardData: any;
   @Output() badgeClick = new EventEmitter<any>();
 
   constructor() {}
+
+  ngOnInit(): void {}
 
   onBadgeClick(badge: any): void {
     this.badgeClick.emit(badge);

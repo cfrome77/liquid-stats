@@ -1,5 +1,5 @@
-import { Component, inject } from "@angular/core";
-
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -8,13 +8,14 @@ import { Overlay } from "@angular/cdk/overlay";
 @Component({
   selector: "app-info-fab",
   templateUrl: "./info-fab.component.html",
-  styleUrls: ["./info-fab.component.css"],
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
 })
 export class InfoFabComponent {
-  private dialog = inject(MatDialog);
-  private overlay = inject(Overlay);
+  constructor(
+    private dialog: MatDialog,
+    private overlay: Overlay,
+  ) {}
 
   openDialog(): void {
     const scrollStrategy = this.overlay.scrollStrategies.reposition();

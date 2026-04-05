@@ -53,7 +53,7 @@
         <span class="comment">{{ cardData.hint }}</span>
       }
 
-      @if (cardData.rating !== null) {
+      @if (cardData.rating != null) {
         <div class="rating-bar">
           <app-rating
             [ratingScore]="cardData.rating"
@@ -63,12 +63,12 @@
       }
 
       @if (
-        cardData.globalRating !== null ||
+        cardData.globalRating != null ||
         cardData.extraData?.badges?.length ||
         cardData.extraData?.socialLinks
       ) {
         <div class="badges-and-social-links">
-          @if (cardData.globalRating !== null) {
+          @if (cardData.globalRating != null) {
             <div class="global-rating flex-row align-center gap-4">
               <span class="global-rating-label">Overall Rating:</span>
               <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
@@ -76,7 +76,7 @@
           }
 
           <div class="flex-row align-center min-w-0">
-            @if (cardData.extraData?.badges && cardData.globalRating === null) {
+            @if (cardData.extraData?.badges && cardData.globalRating == null) {
               <mat-chip-set class="chip">
                 @for (
                   badge of cardData.extraData.badges;

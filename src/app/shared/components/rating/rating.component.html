@@ -3,10 +3,10 @@
   [class.has-stars]="hasRating"
   [class.unrated]="!hasRating"
 >
-  @if (hasRating) {
+  <ng-container *ngIf="hasRating; else noRating">
     <!-- Stars on the left -->
     <div class="svg-stars" [attr.title]="ratingScore">
-      @for (fill of starFills; track fill; let i = $index) {
+      <ng-container *ngFor="let fill of starFills; let i = index">
         <svg
           viewBox="0 0 24 24"
           class="star"
@@ -34,15 +34,18 @@
             [attr.clip-path]="'url(#clip-star-' + uniqueId + '-' + i + ')'"
           />
         </svg>
-      }
+      </ng-container>
     </div>
+
     <!-- Rating text on the right -->
     <span class="rating-number"
       >Rating: <strong>{{ ratingScore }}</strong></span
     >
-  } @else {
+  </ng-container>
+
+  <ng-template #noRating>
     <span class="rating-number" title="Not yet rated"
       >Rating: <strong>N/A</strong></span
     >
-  }
+  </ng-template>
 </div>

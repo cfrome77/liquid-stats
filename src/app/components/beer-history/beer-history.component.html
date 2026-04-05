@@ -42,11 +42,13 @@
     }
   </div>
 
-  @if (isLoadingAll) {
-    <div class="flex-row" style="justify-content: center; margin: 20px 0">
-      <span>Loading...</span>
-    </div>
-  }
+  <div
+    *ngIf="isLoadingAll"
+    class="flex-row"
+    style="justify-content: center; margin: 20px 0"
+  >
+    <span>Loading...</span>
+  </div>
 
   <app-pagination
     [currentPage]="currentPage"
