@@ -82,7 +82,6 @@ describe("TopBeersComponent", () => {
     expect(component.transformedTopBeers[0].title).toBe("Test Beer");
   });
 
-
   it("should correctly handle beers with count > 1 for minCheckins filter", () => {
     const multiCheckinBeer = {
       beer: {

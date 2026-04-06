@@ -32,7 +32,10 @@ describe("MapComponent", () => {
     };
 
     // Mock DataService
-    mockDataService = jasmine.createSpyObj("DataService", ["getBeers", "getBeersAll"]);
+    mockDataService = jasmine.createSpyObj("DataService", [
+      "getBeers",
+      "getBeersAll",
+    ]);
     mockDataService.getBeers.and.returnValue(of([]));
     mockDataService.getBeersAll.and.returnValue(of([]));
 
@@ -51,7 +54,9 @@ describe("MapComponent", () => {
       ],
     })
       .overrideComponent(MapComponent, {
-        set: { providers: [{ provide: MarkerService, useValue: mockMarkerService }] },
+        set: {
+          providers: [{ provide: MarkerService, useValue: mockMarkerService }],
+        },
       })
       .compileComponents();
 
@@ -104,8 +109,8 @@ describe("MapComponent", () => {
     };
 
     mockMarkerService.getMarkerByBreweryId.and.returnValue(mockMarker);
-    mockMarkerService.markers.zoomToShowLayer.and.callFake(
-      (m: any, cb: any) => cb(),
+    mockMarkerService.markers.zoomToShowLayer.and.callFake((m: any, cb: any) =>
+      cb(),
     );
 
     // Trigger AfterViewInit

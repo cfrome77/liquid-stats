@@ -488,7 +488,6 @@ export class StatsComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-
   private openGenericBeersDialog(
     title: string,
     filteredBeers: BeerCheckin[],

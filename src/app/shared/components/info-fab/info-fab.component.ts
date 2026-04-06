@@ -8,6 +8,7 @@ import { Overlay } from "@angular/cdk/overlay";
 @Component({
   selector: "app-info-fab",
   templateUrl: "./info-fab.component.html",
+  styleUrls: ["./info-fab.component.css"],
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
 })
