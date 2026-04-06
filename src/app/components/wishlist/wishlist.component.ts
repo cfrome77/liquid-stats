@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
-
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterModule } from "@angular/router";
@@ -15,6 +15,7 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
   styleUrls: ["./wishlist.component.css"],
   standalone: true,
   imports: [
+    CommonModule,
     MatButtonModule,
     MatIconModule,
     RouterModule,
@@ -24,15 +25,17 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
   ],
 })
 export class WishlistComponent implements OnInit {
-  private dataService = inject(DataService);
-  private cdr = inject(ChangeDetectorRef);
-  private router = inject(Router);
-
   public wishlist: any[] = [];
   public paginatedWishlist: any[] = [];
   public totalItems = 0;
   public currentPage = 1;
   public itemsPerPage = 10;
+
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.dataService.getWishlist().subscribe({

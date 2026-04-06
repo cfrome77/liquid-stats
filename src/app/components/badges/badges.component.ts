@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
-
-import { MatDialogModule } from "@angular/material/dialog";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { DataService } from "src/app/core/services/data.service";
 import { Badge } from "src/app/core/models/badge.model";
 import { LoggingService } from "src/app/core/services/logger.service";
@@ -14,14 +14,9 @@ import { DomSanitizer } from "@angular/platform-browser";
   templateUrl: "./badges.component.html",
   styleUrls: ["./badges.component.css"],
   standalone: true,
-  imports: [MatDialogModule, PaginationComponent, CardComponent],
+  imports: [CommonModule, MatDialogModule, PaginationComponent, CardComponent],
 })
 export class BadgesComponent implements OnInit {
-  private dataService = inject(DataService);
-  private logger = inject(LoggingService);
-  private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
-
   public badges: Badge[] = [];
   public paginatedBadges: Badge[] = [];
 
@@ -29,9 +24,16 @@ export class BadgesComponent implements OnInit {
   public itemsPerPage = 10;
   public totalItems = 0;
 
+  constructor(
+    private dataService: DataService,
+    private logger: LoggingService,
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer, // Inject the Sanitizer
+  ) {}
+
   ngOnInit(): void {
     this.dataService.getBadges().subscribe({
-      next: (data: Badge[]) => {
+      next: (data: any) => {
         this.badges = data;
         this.totalItems = this.badges.length;
         this.updatePagination();
@@ -77,7 +79,7 @@ export class BadgesComponent implements OnInit {
       // This allows <a> and <strong> tags to work and better utilizes card space
       description: this.sanitizer.bypassSecurityTrustHtml(
         badge.badge_description,
-      ) as string,
+      ) as any,
       mainImage: badge.media.badge_image_sm,
       footerInfo: {
         text: `Earned: ${formattedDate}`,

@@ -1,5 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
-
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  importProvidersFrom,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -23,11 +28,6 @@ import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 
-interface RankedBeerCheckin extends BeerCheckin {
-  totalCheckins: number;
-  avgRating: number;
-}
-
 type DateRangeOption = { label: string; daysBack?: number };
 
 @Component({
@@ -36,6 +36,7 @@ type DateRangeOption = { label: string; daysBack?: number };
   styleUrls: ["./top-beers.component.css"],
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -50,10 +51,6 @@ type DateRangeOption = { label: string; daysBack?: number };
   providers: [provideNativeDateAdapter()],
 })
 export class TopBeersComponent implements OnInit {
-  private dataService = inject(DataService);
-  private cdr = inject(ChangeDetectorRef);
-  private dialog = inject(MatDialog);
-
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
 
@@ -75,15 +72,18 @@ export class TopBeersComponent implements OnInit {
   public topXOptions = [3, 5, 10, 15];
   public minCheckinOptions = [1, 2, 3, 5, 10];
 
-  constructor() {
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
+  ) {
     this.selectedRange = this.dateRangeOptions[0];
   }
 
   ngOnInit(): void {
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
-        // data is guaranteed to have a `beers` property
-        this.beers = data.beers;
+        this.beers = data;
         this.onFilterChange();
       },
       error: (err) => console.error("Error fetching beers:", err),
@@ -100,6 +100,12 @@ export class TopBeersComponent implements OnInit {
   }
 
   filterAndRankBeers() {
+    if (!this.beers || !Array.isArray(this.beers)) {
+      this.transformedTopBeers = [];
+      this.cdr.markForCheck();
+      return;
+    }
+
     let cutoffDate: Date;
 
     const isOverall =
@@ -127,7 +133,7 @@ export class TopBeersComponent implements OnInit {
       }
     });
 
-    const sortedBeers: RankedBeerCheckin[] = Array.from(beerGroups.values())
+    const sortedBeers = Array.from(beerGroups.values())
       .map((group) => {
         const totalCheckins = group.reduce((sum, b) => sum + (b.count || 1), 0);
         // Calculate weighted average rating
@@ -163,7 +169,7 @@ export class TopBeersComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  transformToCardData(beer: RankedBeerCheckin, rank: number): BaseCardData {
+  transformToCardData(beer: any, rank: number): BaseCardData {
     const mapData: MapData | undefined = beer.brewery?.location
       ? {
           lat: beer.brewery.location.lat,

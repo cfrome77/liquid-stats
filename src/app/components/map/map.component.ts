@@ -8,12 +8,11 @@ import {
   ViewChild,
   ElementRef,
   HostListener,
+  Inject,
   PLATFORM_ID,
   ViewEncapsulation,
-  AfterViewChecked,
-  inject,
 } from "@angular/core";
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { MatDividerModule } from "@angular/material/divider";
@@ -42,6 +41,7 @@ import { BeerCheckin } from "src/app/core/models/beer.model";
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatDividerModule,
     MatSidenavModule,
@@ -53,17 +53,7 @@ import { BeerCheckin } from "src/app/core/models/beer.model";
   ],
   providers: [MarkerService],
 })
-export class MapComponent
-  implements OnInit, AfterViewInit, OnDestroy, AfterViewChecked
-{
-  private platformId = inject(PLATFORM_ID);
-  private markerService = inject(MarkerService);
-  private dataService = inject(DataService);
-  private cdr = inject(ChangeDetectorRef);
-  private breakpointObserver = inject(BreakpointObserver);
-  private route = inject(ActivatedRoute);
-  private ngZone = inject(NgZone);
-
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   public mapId = "myMap";
   public selectedBrewery: any = null;
   private map: L.Map | undefined;
@@ -82,6 +72,16 @@ export class MapComponent
 
   @ViewChild("drawer") drawer!: MatSidenav;
   @ViewChild("overlayPanel") overlayPanel?: ElementRef;
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private markerService: MarkerService,
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private breakpointObserver: BreakpointObserver,
+    private route: ActivatedRoute,
+    private ngZone: NgZone,
+  ) {}
 
   ngOnInit() {
     this.breakpointObserver
@@ -119,7 +119,7 @@ export class MapComponent
     // Load beer data
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
-        this.allBeers = data?.beers || [];
+        this.allBeers = data;
 
         // Extract filter options
         this.beerStyles = Array.from(

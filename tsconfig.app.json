@@ -6,7 +6,6 @@
     "types": [],
     "lib": ["es2022", "dom"]
   },
-  "files": [],
-  "include": ["src/**/*.ts"],
+  "files": ["src/main.ts", "src/polyfills.ts"],
   "exclude": ["src/**/*.spec.ts"]
 }
