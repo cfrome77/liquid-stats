@@ -1,10 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+
+import { BeerCheckin } from "src/app/core/models/beer.model";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterModule } from "@angular/router";
 import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "../../core/utils/date-utils";
+import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
@@ -15,7 +17,6 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
   styleUrls: ["./wishlist.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
     RouterModule,
@@ -25,25 +26,26 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
   ],
 })
 export class WishlistComponent implements OnInit {
-  public wishlist: any[] = [];
-  public paginatedWishlist: any[] = [];
+  private dataService = inject(DataService);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+
+  public wishlist: BaseCardData[] = [];
+  public paginatedWishlist: BaseCardData[] = [];
   public totalItems = 0;
   public currentPage = 1;
   public itemsPerPage = 10;
 
-  constructor(
-    private dataService: DataService,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
-  ) {}
-
   ngOnInit(): void {
     this.dataService.getWishlist().subscribe({
-      next: (data: any) => {
-        const items = data?.response?.beers?.items || [];
+      next: (data: unknown) => {
+        const response = data as {
+          response?: { beers?: { items?: unknown[] } };
+        };
+        const items = response?.response?.beers?.items || [];
 
-        this.wishlist = items.map((item: any) =>
-          this.transformWishlistData(item),
+        this.wishlist = items.map((item: unknown) =>
+          this.transformWishlistData(item as BeerCheckin),
         );
         this.totalItems = this.wishlist.length;
         this.updatePagination();
@@ -55,7 +57,9 @@ export class WishlistComponent implements OnInit {
     });
   }
 
-  transformWishlistData(item: any): any {
+  transformWishlistData(
+    item: BeerCheckin & { created_at?: string },
+  ): BaseCardData {
     return {
       title: item.beer.beer_name,
       subtitle: item.beer.beer_style,
@@ -66,7 +70,9 @@ export class WishlistComponent implements OnInit {
       footerInfo: {
         text: "Wishlist Item",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
-        timestamp: `Added ${DateUtils.formatTimestamp(item.created_at)}`,
+        timestamp: item.created_at
+          ? `Added ${DateUtils.formatTimestamp(item.created_at)}`
+          : "Added long ago",
       },
     };
   }

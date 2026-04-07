@@ -3,6 +3,22 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "../models/beer.model";
 
+export interface BreweryMarkerData {
+  breweryId?: string;
+  name?: string;
+  city?: string;
+  state?: string;
+  logo?: string;
+  checkIns?: {
+    beerName: string;
+    beerLabel: string;
+    beerABV: number;
+    beerStyle: string;
+    rating: number;
+    checkInId: number;
+  }[];
+}
+
 export interface BreweryMarker extends L.Marker {
   breweryId?: string;
   checkInsData?: {
@@ -10,7 +26,14 @@ export interface BreweryMarker extends L.Marker {
     city: string;
     state: string;
     logo: string;
-    checkIns: any[];
+    checkIns: {
+      beerName: string;
+      beerLabel: string;
+      beerABV: number;
+      beerStyle: string;
+      rating: number;
+      checkInId: number;
+    }[];
   };
 }
 
@@ -30,7 +53,7 @@ export class MarkerService {
   public makeBreweryMarkers(
     map: L.Map,
     beers: BeerCheckin[],
-    onClick?: (breweryData: any) => void,
+    onClick?: (breweryData: BreweryMarkerData) => void,
   ): void {
     if (!map) return;
 
@@ -45,7 +68,14 @@ export class MarkerService {
         city: string;
         state: string;
         logo: string;
-        checkIns: any[];
+        checkIns: {
+          beerName: string;
+          beerLabel: string;
+          beerABV: number;
+          beerStyle: string;
+          rating: number;
+          checkInId: number;
+        }[];
       }
     > = {};
 

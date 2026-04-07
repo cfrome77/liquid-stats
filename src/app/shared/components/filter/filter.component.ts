@@ -48,6 +48,14 @@ export class FilterComponent {
 
   // Fixed: Removed empty ngOnInit and ngOnChanges hooks
 
+  private initializeFilters(): void {
+    // Initialization logic if any
+  }
+
+  private onFilterUpdate(): void {
+    // Update logic if any
+  }
+
   openFilterModal(filter: FilterField) {
     this.isModalOpen = true;
     this.activeFilter = { ...filter, selected: [...filter.selected] };

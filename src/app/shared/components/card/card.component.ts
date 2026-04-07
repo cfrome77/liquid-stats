@@ -3,7 +3,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnInit,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
@@ -12,6 +11,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
 import { RatingComponent } from "../rating/rating.component";
 import { SocialLinksComponent } from "../social-links/social-links.component";
+import { BaseCardData } from "./card-data.interface";
 
 @Component({
   selector: "app-card",
@@ -29,15 +29,11 @@ import { SocialLinksComponent } from "../social-links/social-links.component";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardComponent implements OnInit {
-  @Input() cardData: any;
-  @Output() badgeClick = new EventEmitter<any>();
+export class CardComponent {
+  @Input() cardData!: BaseCardData;
+  @Output() badgeClick = new EventEmitter<unknown>();
 
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  onBadgeClick(badge: any): void {
+  onBadgeClick(badge: unknown): void {
     this.badgeClick.emit(badge);
   }
 }

@@ -1,10 +1,5 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  importProvidersFrom,
-} from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -36,7 +31,6 @@ type DateRangeOption = { label: string; daysBack?: number };
   styleUrls: ["./top-beers.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -51,6 +45,10 @@ type DateRangeOption = { label: string; daysBack?: number };
   providers: [provideNativeDateAdapter()],
 })
 export class TopBeersComponent implements OnInit {
+  private dataService = inject(DataService);
+  private cdr = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
+
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
 
@@ -72,11 +70,7 @@ export class TopBeersComponent implements OnInit {
   public topXOptions = [3, 5, 10, 15];
   public minCheckinOptions = [1, 2, 3, 5, 10];
 
-  constructor(
-    private dataService: DataService,
-    private cdr: ChangeDetectorRef,
-    private dialog: MatDialog,
-  ) {
+  constructor() {
     this.selectedRange = this.dateRangeOptions[0];
   }
 
@@ -121,7 +115,9 @@ export class TopBeersComponent implements OnInit {
     const beerGroups = new Map<number, BeerCheckin[]>();
 
     this.beers.forEach((b) => {
-      const dateStr = b.recent_created_at || (b as any).created_at;
+      const dateStr =
+        b.recent_created_at ||
+        (b as unknown as { created_at: string }).created_at;
       const beerDate = DateUtils.parseDate(dateStr);
 
       if (isOverall || beerDate >= cutoffDate) {
@@ -169,18 +165,28 @@ export class TopBeersComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  transformToCardData(beer: any, rank: number): BaseCardData {
-    const mapData: MapData | undefined = beer.brewery?.location
-      ? {
-          lat: beer.brewery.location.lat,
-          lng: beer.brewery.location.lng,
-          breweryId: beer.brewery.brewery_id,
-        }
-      : undefined;
+  transformToCardData(
+    beer: BeerCheckin & { totalCheckins: number; avgRating: number },
+    rank: number,
+  ): BaseCardData {
+    const mapData: MapData | undefined =
+      beer.brewery?.location &&
+      beer.brewery.location.lat !== undefined &&
+      beer.brewery.location.lng !== undefined &&
+      beer.brewery.brewery_id !== undefined
+        ? {
+            lat: beer.brewery.location.lat,
+            lng: beer.brewery.location.lng,
+            breweryId: beer.brewery.brewery_id.toString(),
+          }
+        : undefined;
 
     const extraData: CardExtraData = {
       badges: [],
-      socialLinks: beer.brewery.contact,
+      socialLinks: beer.brewery.contact as unknown as Record<
+        string,
+        string | number | boolean | undefined
+      >,
       mapData,
     };
 

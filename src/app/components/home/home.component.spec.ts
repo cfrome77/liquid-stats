@@ -8,11 +8,11 @@ import { DataService } from "../../core/services/data.service";
 describe("HomeComponent", () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let mockDataService: any;
+  let mockDataService: Partial<DataService>;
 
   beforeEach(async () => {
     mockDataService = {
-      getBeers: () => of({ beers: [] }),
+      getBeers: () => of([]),
       getStats: () => of({}),
       getCheckins: () => of({ response: { checkins: { items: [] } } }),
     };

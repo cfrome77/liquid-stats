@@ -11,7 +11,7 @@ import { StatsService } from "./stats.service";
 describe("StatsComponent", () => {
   let component: StatsComponent;
   let fixture: ComponentFixture<StatsComponent>;
-  let mockStatsService: any;
+  let mockStatsService: Partial<StatsService>;
 
   beforeEach(async () => {
     mockStatsService = {

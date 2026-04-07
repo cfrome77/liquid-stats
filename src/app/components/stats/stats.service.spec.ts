@@ -2,11 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
-import { of } from "rxjs";
-
 describe("StatsService", () => {
   let service: StatsService;
-  let dataServiceSpy: jasmine.SpyObj<DataService>;
 
   beforeEach(() => {
     const spy = jasmine.createSpyObj("DataService", [
@@ -17,7 +14,6 @@ describe("StatsService", () => {
       providers: [StatsService, { provide: DataService, useValue: spy }],
     });
     service = TestBed.inject(StatsService);
-    dataServiceSpy = TestBed.inject(DataService) as jasmine.SpyObj<DataService>;
   });
 
   it("should be created", () => {

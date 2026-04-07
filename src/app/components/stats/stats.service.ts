@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Observable, map } from "rxjs";
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
 import {
   ProcessedStats,
   TopBeer,
@@ -13,14 +13,14 @@ import { DateUtils } from "../../core/utils/date-utils";
 
 @Injectable({ providedIn: "root" })
 export class StatsService {
+  private dataService = inject(DataService);
+
   private memoizedStats: {
     beers: BeerCheckin[];
     start: number;
     end: number;
     result: ProcessedStats;
   } | null = null;
-
-  constructor(private dataService: DataService) {}
 
   loadBeerData(): Observable<BeerCheckin[]> {
     return this.dataService.getBeersAll();

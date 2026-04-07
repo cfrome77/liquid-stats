@@ -2,10 +2,10 @@ import { Injectable, isDevMode } from "@angular/core";
 
 // Declare the global gtag function
 // This is necessary for TypeScript to recognize 'gtag' which is loaded via a script tag in index.html
-declare var gtag: (
+declare const gtag: (
   command: string,
   eventName: string,
-  params: { [key: string]: any },
+  params: { [key: string]: unknown },
 ) => void;
 
 @Injectable({ providedIn: "root" })
@@ -53,6 +53,7 @@ export class LoggingService {
    */
   log(message: string, data?: unknown): void {
     if (this.devMode) {
+      // eslint-disable-next-line no-console
       console.log(`[LOG] ${message}`, data ?? "");
     }
   }
@@ -62,6 +63,7 @@ export class LoggingService {
    */
   info(message: string, data?: unknown): void {
     if (this.devMode) {
+      // eslint-disable-next-line no-console
       console.info(`[INFO] ${message}`, data ?? "");
     }
     if (!this.devMode) {

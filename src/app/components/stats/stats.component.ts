@@ -4,8 +4,9 @@ import {
   ChangeDetectorRef,
   effect,
   ChangeDetectionStrategy,
+  inject,
 } from "@angular/core";
-import { CommonModule, DecimalPipe } from "@angular/common";
+import { DecimalPipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -40,7 +41,6 @@ import { ThemeService } from "src/app/core/services/theme.service";
   styleUrls: ["./stats.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -59,6 +59,11 @@ import { ThemeService } from "src/app/core/services/theme.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsComponent implements OnInit {
+  private statsService = inject(StatsService);
+  private dialog = inject(MatDialog);
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
+
   beers: BeerCheckin[] = [];
   hasLoadedAll = false;
   processedStats: ProcessedStats | null = null;
@@ -174,12 +179,7 @@ export class StatsComponent implements OnInit {
   };
   objectKeys = Object.keys;
 
-  constructor(
-    private statsService: StatsService,
-    private dialog: MatDialog,
-    private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
-  ) {
+  constructor() {
     // Consume the theme signal using an effect
     effect(() => {
       const theme = this.themeService.currentTheme();
@@ -388,14 +388,14 @@ export class StatsComponent implements OnInit {
     // Recent activity
     this.recentActivityChartLabels =
       this.processedStats.recentActivityByDate.map(
-        (d: { date: any }) => d.date,
+        (d: { date: string }) => d.date,
       );
     this.recentActivityChartData = {
       labels: this.recentActivityChartLabels,
       datasets: [
         {
           data: this.processedStats.recentActivityByDate.map(
-            (d: { count: any }) => d.count,
+            (d: { count: number }) => d.count,
           ),
           label: "Beers Checked In",
           fill: false,
@@ -417,7 +417,7 @@ export class StatsComponent implements OnInit {
     ];
     const dayOfWeekCounts = new Array(7).fill(0);
     this.processedStats.checkinsByDayOfWeek?.forEach(
-      (item: { day: string; count: any }) => {
+      (item: { day: string; count: number }) => {
         const index = dayOfWeekLabels.indexOf(item.day);
         if (index !== -1) dayOfWeekCounts[index] = item.count;
       },
@@ -450,7 +450,7 @@ export class StatsComponent implements OnInit {
     ];
     const monthCounts = new Array(12).fill(0);
     this.processedStats.checkinsByMonth?.forEach(
-      (item: { month: string; count: any }) => {
+      (item: { month: string; count: number }) => {
         const index = monthLabels.indexOf(item.month);
         if (index !== -1) monthCounts[index] = item.count;
       },
@@ -470,13 +470,13 @@ export class StatsComponent implements OnInit {
     this.ratingChartData = {
       labels:
         this.processedStats.averageRatingsOverTime?.map(
-          (item: { date: any }) => item.date,
+          (item: { date: string }) => item.date,
         ) || [],
       datasets: [
         {
           data:
             this.processedStats.averageRatingsOverTime?.map(
-              (item: { rating: any }) => item.rating,
+              (item: { rating: number }) => item.rating,
             ) || [],
           label: "Average Rating",
           fill: false,

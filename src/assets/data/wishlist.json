@@ -1,0 +1,22 @@
+{
+  "response": {
+    "beers": {
+      "items": [
+        {
+          "beer": {
+            "bid": 1,
+            "beer_name": "Wishlist Beer",
+            "beer_style": "Stout",
+            "beer_label": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+            "beer_slug": "wishlist-beer",
+            "beer_description": "A very dark beer."
+          },
+          "brewery": {
+            "brewery_name": "Wishlist Brewery",
+            "brewery_label": "https://assets.untappd.com/site/assets/images/temp/badge-brewery-default.png"
+          }
+        }
+      ]
+    }
+  }
+}

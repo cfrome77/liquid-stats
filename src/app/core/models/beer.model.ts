@@ -17,7 +17,12 @@ export interface BeerCheckin {
     brewery_id?: number;
     brewery_label?: string;
     brewery_page_url?: string;
-    contact?: any;
+    contact?: {
+      twitter?: string;
+      facebook?: string;
+      instagram?: string;
+      url?: string;
+    };
     location: {
       lat?: number;
       lng?: number;
