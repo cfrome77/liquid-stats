@@ -12,7 +12,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 describe("BeerHistoryComponent", () => {
   let component: BeerHistoryComponent;
   let fixture: ComponentFixture<BeerHistoryComponent>;
-  let mockDataService: any;
+  let mockDataService: Partial<DataService>;
 
   beforeEach(async () => {
     mockDataService = {

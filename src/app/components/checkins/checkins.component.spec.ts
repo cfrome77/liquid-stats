@@ -12,7 +12,7 @@ import { DataService } from "src/app/core/services/data.service";
 describe("CheckinsComponent", () => {
   let component: CheckinsComponent;
   let fixture: ComponentFixture<CheckinsComponent>;
-  let mockDataService: any;
+  let mockDataService: Partial<DataService>;
 
   beforeEach(async () => {
     mockDataService = {

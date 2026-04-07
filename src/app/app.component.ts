@@ -2,12 +2,12 @@ import {
   Component,
   OnInit,
   Renderer2,
-  Inject,
   OnDestroy,
   effect,
   NgZone,
+  inject,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
 import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
@@ -29,7 +29,6 @@ import { InfoFabComponent } from "./shared/components/info-fab/info-fab.componen
   styleUrls: ["./app.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
@@ -42,18 +41,18 @@ import { InfoFabComponent } from "./shared/components/info-fab/info-fab.componen
   animations: [slideInAnimation],
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private ga4Service = inject(Ga4TrackingService);
+  private themeService = inject(ThemeService);
+  private renderer = inject(Renderer2);
+  private document = inject<Document>(DOCUMENT);
+  private ngZone = inject(NgZone);
+
   title = "liquid-stats";
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private router: Router,
-    private ga4Service: Ga4TrackingService,
-    private themeService: ThemeService,
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document,
-    private ngZone: NgZone,
-  ) {
+  constructor() {
     // Consume the theme signal using an effect
     effect(() => {
       const theme = this.themeService.currentTheme();
@@ -66,7 +65,11 @@ export class AppComponent implements OnInit, OnDestroy {
     // Load and initialize GA4 when the browser is idle to improve initial page load performance
     this.ngZone.runOutsideAngular(() => {
       if ("requestIdleCallback" in window) {
-        (window as any).requestIdleCallback(() => {
+        (
+          window as unknown as {
+            requestIdleCallback: (cb: () => void) => void;
+          }
+        ).requestIdleCallback(() => {
           this.ga4Service.loadAndInitialize();
         });
       } else {
@@ -111,11 +114,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  prepareRoute(outlet: any) {
-    return (
-      outlet &&
-      outlet.activatedRouteData &&
-      outlet.activatedRouteData["animation"]
-    );
+  prepareRoute(outlet: unknown) {
+    const o = outlet as { activatedRouteData?: { [key: string]: string } };
+    return o && o.activatedRouteData && o.activatedRouteData["animation"];
   }
 }

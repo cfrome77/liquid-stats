@@ -1,0 +1,10 @@
+[
+  {
+    "badge_name": "Test Badge",
+    "badge_description": "You drank a test beer!",
+    "earned_at": "Mon, 06 Apr 2026 21:00:00 +0000",
+    "media": {
+      "badge_image_sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+    }
+  }
+]

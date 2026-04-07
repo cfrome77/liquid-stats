@@ -10,14 +10,18 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { MapComponent } from "./map.component";
-import { MarkerService } from "../../core/services/marker.service";
+import {
+  MarkerService,
+  BreweryMarker,
+} from "../../core/services/marker.service";
+import * as L from "leaflet";
 import { DataService } from "../../core/services/data.service";
 
 describe("MapComponent", () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
-  let mockMarkerService: any;
-  let mockDataService: any;
+  let mockMarkerService: jasmine.SpyObj<MarkerService>;
+  let mockDataService: jasmine.SpyObj<DataService>;
 
   beforeEach(async () => {
     // Mock MarkerService
@@ -25,11 +29,11 @@ describe("MapComponent", () => {
       "makeBreweryMarkers",
       "getMarkerByBreweryId",
     ]);
-    mockMarkerService.markers = {
-      clearLayers: jasmine.createSpy("clearLayers"),
-      addLayer: jasmine.createSpy("addLayer"),
-      zoomToShowLayer: jasmine.createSpy("zoomToShowLayer"),
-    };
+    mockMarkerService.markers = jasmine.createSpyObj("MarkerClusterGroup", [
+      "clearLayers",
+      "addLayer",
+      "zoomToShowLayer",
+    ]);
 
     // Mock DataService
     mockDataService = jasmine.createSpyObj("DataService", [
@@ -91,7 +95,7 @@ describe("MapComponent", () => {
     document.body.appendChild(mapDiv);
 
     // Mock marker
-    const mockMarker: any = {
+    const mockMarker = {
       getElement: jasmine
         .createSpy("getElement")
         .and.returnValue(document.createElement("div")),
@@ -108,9 +112,11 @@ describe("MapComponent", () => {
       },
     };
 
-    mockMarkerService.getMarkerByBreweryId.and.returnValue(mockMarker);
-    mockMarkerService.markers.zoomToShowLayer.and.callFake((m: any, cb: any) =>
-      cb(),
+    mockMarkerService.getMarkerByBreweryId.and.returnValue(
+      mockMarker as unknown as BreweryMarker,
+    );
+    (mockMarkerService.markers.zoomToShowLayer as jasmine.Spy).and.callFake(
+      (m: unknown, cb: () => void) => cb(),
     );
 
     // Trigger AfterViewInit
@@ -118,10 +124,14 @@ describe("MapComponent", () => {
     tick();
 
     // Call private handleDeepLink to test zoom
-    (component as any).handleDeepLink(10, 20, "brewery-1");
+    (
+      component as unknown as {
+        handleDeepLink: (lat: number, lng: number, id: string) => void;
+      }
+    ).handleDeepLink(10, 20, "brewery-1");
 
     expect(mockMarkerService.markers.zoomToShowLayer).toHaveBeenCalledWith(
-      mockMarker,
+      mockMarker as unknown as L.Layer,
       jasmine.any(Function),
     );
 

@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -33,7 +33,6 @@ export interface FilterField {
   styleUrls: ["./beer-history.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -46,6 +45,9 @@ export interface FilterField {
   ],
 })
 export class BeerHistoryComponent implements OnInit {
+  private dataService = inject(DataService);
+  private cdr = inject(ChangeDetectorRef);
+
   public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];
@@ -75,11 +77,6 @@ export class BeerHistoryComponent implements OnInit {
       type: "date",
     },
   ];
-
-  constructor(
-    private dataService: DataService,
-    private cdr: ChangeDetectorRef,
-  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -112,7 +109,7 @@ export class BeerHistoryComponent implements OnInit {
 
     const dataset = this.beersAll;
 
-    dataset.forEach((beer: any) => {
+    dataset.forEach((beer: BeerCheckin) => {
       breweries.add(beer.brewery.brewery_name);
       styles.add(beer.beer.beer_style);
       countries.add(beer.brewery.country_name);
@@ -142,7 +139,7 @@ export class BeerHistoryComponent implements OnInit {
     });
 
     const dates = dataset
-      .map((b: any) => DateUtils.parseDate(b.recent_created_at))
+      .map((b: BeerCheckin) => DateUtils.parseDate(b.recent_created_at))
       .filter((d) => !isNaN(d.getTime()));
     if (dates.length > 0) {
       const minDate = new Date(Math.min(...dates.map((d) => d.getTime())));
@@ -193,7 +190,7 @@ export class BeerHistoryComponent implements OnInit {
     // Reset counts
     this.filterFields.forEach((f) => (f.countMap = {}));
 
-    const filtered = dataset.filter((beer: any) => {
+    const filtered = dataset.filter((beer: BeerCheckin) => {
       const rating = beer.rating_score;
       const formattedRating =
         (rating * 10) % 1 === 0 ? rating.toFixed(1) : rating.toFixed(2);
@@ -207,7 +204,7 @@ export class BeerHistoryComponent implements OnInit {
         beer.brewery.country_name.toLowerCase().includes(search) ||
         beer.brewery.location.brewery_state?.toLowerCase().includes(search) ||
         beer.beer.beer_description?.toLowerCase().includes(search) ||
-        beer.beer.beer_slug.toLowerCase().includes(search);
+        beer.beer.beer_slug?.toLowerCase().includes(search);
 
       const matchesBrewery = breweryFilter.selected.includes(
         beer.brewery.brewery_name,
@@ -307,18 +304,25 @@ export class BeerHistoryComponent implements OnInit {
     this.updatePagination();
   }
 
-  transformBeerData(beer: any): BaseCardData {
-    const mapData: MapData | undefined = beer.brewery?.location
-      ? {
-          lat: beer.brewery.location.lat,
-          lng: beer.brewery.location.lng,
-          breweryId: beer.brewery.brewery_id,
-        }
-      : undefined;
+  transformBeerData(beer: BeerCheckin): BaseCardData {
+    const mapData: MapData | undefined =
+      beer.brewery?.location &&
+      beer.brewery.location.lat !== undefined &&
+      beer.brewery.location.lng !== undefined &&
+      beer.brewery.brewery_id !== undefined
+        ? {
+            lat: beer.brewery.location.lat,
+            lng: beer.brewery.location.lng,
+            breweryId: beer.brewery.brewery_id.toString(),
+          }
+        : undefined;
 
     const extraData: CardExtraData = {
       badges: [],
-      socialLinks: beer.brewery.contact,
+      socialLinks: beer.brewery.contact as unknown as Record<
+        string,
+        string | number | boolean | undefined
+      >,
       mapData,
       venueId: undefined,
       checkinId: undefined,

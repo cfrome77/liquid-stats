@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, map } from "rxjs";
 import { environment } from "../../../environments/environment";
@@ -10,9 +10,9 @@ import { BeerCheckin } from "../models/beer.model";
   providedIn: "root",
 })
 export class DataService {
-  private baseUrl = this.determineBaseUrl();
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private baseUrl = this.determineBaseUrl();
 
   private determineBaseUrl(): string {
     const url = environment.DATA_URL || "";
@@ -24,6 +24,7 @@ export class DataService {
     // If we're not on localhost and the DATA_URL is set to S3, use the local proxy to avoid CORS issues.
     // This works for both Netlify subdomains and custom domains because of the netlify.toml redirect.
     if (!isLocalhost && url.includes("s3.amazonaws.com")) {
+      // eslint-disable-next-line no-console
       console.log(
         "[DataService] Remote environment, using /api-data/ proxy for S3",
       );
@@ -38,8 +39,8 @@ export class DataService {
     return this.http.get<Badge[]>(`${this.baseUrl}badges.json`);
   }
 
-  public getStats(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}stats.json`);
+  public getStats(): Observable<unknown> {
+    return this.http.get<unknown>(`${this.baseUrl}stats.json`);
   }
 
   public getBeers(): Observable<BeerCheckin[]> {
@@ -47,12 +48,16 @@ export class DataService {
   }
 
   public getBeersAll(): Observable<BeerCheckin[]> {
-    return this.http.get<any>(`${this.baseUrl}beers_all.json`).pipe(
-      map((data) => {
+    return this.http.get<unknown>(`${this.baseUrl}beers_all.json`).pipe(
+      map((data: unknown) => {
+        const d = data as {
+          beers?: BeerCheckin[];
+          response?: { checkins?: { items?: BeerCheckin[] } };
+        };
         return (
-          data?.beers ||
-          data?.response?.checkins?.items ||
-          (Array.isArray(data) ? data : [])
+          d?.beers ||
+          d?.response?.checkins?.items ||
+          (Array.isArray(data) ? (data as BeerCheckin[]) : [])
         );
       }),
     );
@@ -62,7 +67,7 @@ export class DataService {
     return this.http.get<CheckinResponse>(`${this.baseUrl}checkins.json`);
   }
 
-  public getWishlist(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}wishlist.json`);
+  public getWishlist(): Observable<unknown> {
+    return this.http.get<unknown>(`${this.baseUrl}wishlist.json`);
   }
 }

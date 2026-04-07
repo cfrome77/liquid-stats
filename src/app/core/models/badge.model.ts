@@ -5,6 +5,11 @@ export interface Badge {
   badge_name: string;
   badge_description: string;
   badge_hint: string;
+  badge_image: {
+    sm: string;
+    md: string;
+    lg: string;
+  };
   media: {
     badge_image_sm: string;
   };
@@ -12,4 +17,4 @@ export interface Badge {
   user_badge_id: string | number;
 }
 
-export interface TransformedBadge extends BaseCardData {}
+export type TransformedBadge = BaseCardData;

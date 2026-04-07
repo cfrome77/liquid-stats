@@ -7,7 +7,6 @@ import {
   OnChanges,
 } from "@angular/core";
 
-import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -15,7 +14,7 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./pagination.component.html",
   styleUrls: ["./pagination.component.css"],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
 })
 export class PaginationComponent implements OnChanges {
   @Input() currentPage = 1; // The current page
@@ -109,8 +108,8 @@ export class PaginationComponent implements OnChanges {
   }
 
   // Emit the change in items per page
-  changeItemsPerPage(event: any): void {
-    const value = parseInt(event.target.value, 10);
+  changeItemsPerPage(event: Event): void {
+    const value = parseInt((event.target as HTMLSelectElement).value, 10);
     this.itemsPerPageChange.emit(value);
   }
 }

@@ -5,8 +5,9 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  OnInit,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import {
@@ -34,7 +35,6 @@ export interface FilterField {
   styleUrls: ["./filter.component.css"],
   standalone: true,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDatepickerModule,
@@ -44,17 +44,29 @@ export interface FilterField {
     MatIconModule,
   ],
 })
-export class FilterComponent implements OnChanges {
+export class FilterComponent implements OnChanges, OnInit {
   @Input() filterFields: FilterField[] = [];
-  @Output() filterChanged = new EventEmitter<any>();
+  @Output() filterChanged = new EventEmitter<unknown>();
 
   activeFilter: FilterField | null = null;
   isModalOpen = false;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.initializeFilters();
+  }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ngOnChanges(changes: SimpleChanges) {
+    this.onFilterUpdate();
     // No longer auto-filling selected options to allow hiding options with 0 matches
+  }
+
+  private initializeFilters(): void {
+    // Initialization logic if any
+  }
+
+  private onFilterUpdate(): void {
+    // Update logic if any
   }
 
   openFilterModal(filter: FilterField) {

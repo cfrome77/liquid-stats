@@ -5,8 +5,9 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   NgZone,
+  inject,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { ActivatedRoute } from "@angular/router"; // Added
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
@@ -31,7 +32,6 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
   standalone: true,
   imports: [
     MatIconModule,
-    CommonModule,
     CardComponent,
     MatDialogModule,
     EmptyStateComponent,
@@ -40,6 +40,12 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckinsComponent implements OnInit {
+  private dataService = inject(DataService);
+  private dialog = inject(MatDialog);
+  private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
+  private ngZone = inject(NgZone);
+
   public checkinsInitial: Checkin[] = [];
   public checkinsAll: Checkin[] = [];
   public transformedCheckins: BaseCardData[] = [];
@@ -51,13 +57,7 @@ export class CheckinsComponent implements OnInit {
   public isLoadingAll = false;
   username: string;
 
-  constructor(
-    private dataService: DataService,
-    private dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute, // Added
-    private ngZone: NgZone,
-  ) {
+  constructor() {
     this.username = environment.UNTAPPD_USERNAME;
   }
 
@@ -142,7 +142,7 @@ export class CheckinsComponent implements OnInit {
     return DateUtils.formatTimestamp(createdAt);
   }
 
-  openBadgeDialog(badge: any): void {
+  openBadgeDialog(badge: unknown): void {
     this.dialog.open(BadgeDialogComponent, {
       width: "400px",
       data: badge,
@@ -173,17 +173,35 @@ export class CheckinsComponent implements OnInit {
   }
 
   transformCheckinData(checkin: Checkin): BaseCardData {
-    const mapData: MapData | undefined = checkin.brewery?.location
-      ? {
-          lat: checkin.brewery.location.lat,
-          lng: checkin.brewery.location.lng,
-          breweryId: checkin.brewery.brewery_id,
-        }
-      : undefined;
+    const mapData: MapData | undefined =
+      checkin.brewery?.location && checkin.brewery.brewery_id
+        ? {
+            lat: checkin.brewery.location.lat,
+            lng: checkin.brewery.location.lng,
+            breweryId: checkin.brewery.brewery_id.toString(),
+          }
+        : undefined;
 
     const extraData: CardExtraData = {
-      badges: checkin.badges?.items ?? [],
-      socialLinks: checkin.brewery.contact,
+      badges:
+        checkin.badges?.items.map((b) => ({
+          badge_name: b.badge_name,
+          badge_image: {
+            sm: b.badge_image,
+            md: b.badge_image,
+            lg: b.badge_image,
+          },
+          badge_description: "",
+          badge_hint: "",
+          media: { badge_image_sm: b.badge_image },
+          earned_at: "",
+          user_badge_id: 0,
+        })) ?? [],
+      socialLinks: {
+        facebook: checkin.brewery.contact?.facebook as string | undefined,
+        url: checkin.brewery.contact?.url as string | undefined,
+        instagram: checkin.brewery.contact?.instagram as string | undefined,
+      },
       mapData,
       venueId: checkin.venue?.venue_id,
       checkinId: checkin.checkin_id,

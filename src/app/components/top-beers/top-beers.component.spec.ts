@@ -18,7 +18,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 describe("TopBeersComponent", () => {
   let component: TopBeersComponent;
   let fixture: ComponentFixture<TopBeersComponent>;
-  let mockDataService: any;
+  let mockDataService: jasmine.SpyObj<DataService>;
 
   beforeEach(async () => {
     mockDataService = jasmine.createSpyObj("DataService", [
@@ -32,15 +32,19 @@ describe("TopBeersComponent", () => {
         beer_slug: "test-ipa",
         bid: 123,
         beer_label: "",
+        beer_abv: 5.0,
       },
       brewery: {
         brewery_name: "Test Brewery",
         brewery_label: "",
         brewery_id: 456,
         contact: { twitter: "test" },
+        location: { brewery_state: "CA", lat: 0, lng: 0 },
+        country_name: "USA",
       },
       rating_score: 4.5,
       recent_created_at: "2026-02-07",
+      first_created_at: "2026-02-07",
     };
     mockDataService.getBeersAll.and.returnValue(of([mockBeer]));
 
@@ -90,16 +94,19 @@ describe("TopBeersComponent", () => {
         bid: 789,
         beer_slug: "multi-beer",
         beer_label: "",
+        beer_abv: 8.0,
       },
       brewery: {
         brewery_name: "Multi Brewery",
-        location: {},
+        location: { brewery_state: "CA", lat: 0, lng: 0 },
         brewery_label: "",
         contact: {},
+        country_name: "USA",
       },
       rating_score: 4.0,
       count: 3,
       recent_created_at: "2026-02-07",
+      first_created_at: "2026-02-07",
     };
     mockDataService.getBeersAll.and.returnValue(of([multiCheckinBeer]));
 

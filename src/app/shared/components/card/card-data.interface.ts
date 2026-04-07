@@ -1,12 +1,18 @@
+import { Badge } from "src/app/core/models/badge.model";
+
 export interface MapData {
-  lat?: number;
-  lng?: number;
-  breweryId?: number;
+  lat: number;
+  lng: number;
+  breweryId: string;
 }
 
 export interface CardExtraData {
-  badges?: any[];
-  socialLinks?: Record<string, any>;
+  badges?: Badge[];
+  socialLinks?: {
+    url?: string;
+    facebook?: string;
+    instagram?: string;
+  };
   mapData?: MapData;
   venueId?: number;
   checkinId?: number;

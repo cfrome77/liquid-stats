@@ -4,6 +4,7 @@ import {
   ViewChild,
   ElementRef,
   ChangeDetectorRef,
+  inject,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
@@ -12,6 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { RouterModule } from "@angular/router";
 
 import { DataService } from "../../core/services/data.service";
+import { Checkin, CheckinResponse } from "../../core/models/checkin.model";
 
 @Component({
   selector: "app-home",
@@ -28,9 +30,12 @@ import { DataService } from "../../core/services/data.service";
   ],
 })
 export class HomeComponent implements OnInit {
+  private dataService = inject(DataService);
+  private cdr = inject(ChangeDetectorRef);
+
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
-  allCheckins: any[] = [];
+  allCheckins: Checkin[] = [];
   totalCheckins = 0;
   averageRating = 0;
   countriesTried = 0;
@@ -39,26 +44,27 @@ export class HomeComponent implements OnInit {
   readonly DEFAULT_IMAGE =
     "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
 
-  constructor(
-    private dataService: DataService,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
   ngOnInit(): void {
     // 1. Fetch Stats
     this.dataService.getStats().subscribe({
-      next: (res: any) => {
-        this.totalCheckins = res?.totalCheckins || 0;
-        this.averageRating = res?.averageRating || 0;
-        this.countriesTried = res?.countriesTried || 0;
-        this.breweriesVisited = res?.breweriesVisited || 0;
+      next: (res: unknown) => {
+        const stats = res as {
+          totalCheckins?: number;
+          averageRating?: number;
+          countriesTried?: number;
+          breweriesVisited?: number;
+        };
+        this.totalCheckins = stats?.totalCheckins || 0;
+        this.averageRating = stats?.averageRating || 0;
+        this.countriesTried = stats?.countriesTried || 0;
+        this.breweriesVisited = stats?.breweriesVisited || 0;
         this.cdr.detectChanges();
       },
     });
 
     // 2. Fetch Checkins (Full list for the scrollable track)
     this.dataService.getCheckins().subscribe({
-      next: (res: any) => {
+      next: (res: CheckinResponse) => {
         this.allCheckins = res?.response?.checkins?.items || [];
         this.cdr.detectChanges();
       },
@@ -77,7 +83,7 @@ export class HomeComponent implements OnInit {
     track.scrollBy({ left: -track.clientWidth * 0.8, behavior: "smooth" });
   }
 
-  handleImageError(event: any) {
-    event.target.src = this.DEFAULT_IMAGE;
+  handleImageError(event: Event) {
+    (event.target as HTMLImageElement).src = this.DEFAULT_IMAGE;
   }
 }

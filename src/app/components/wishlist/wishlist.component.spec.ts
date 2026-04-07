@@ -8,7 +8,7 @@ import { of } from "rxjs";
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
   let fixture: ComponentFixture<WishlistComponent>;
-  let mockDataService: any;
+  let mockDataService: jasmine.SpyObj<DataService>;
 
   beforeEach(async () => {
     mockDataService = jasmine.createSpyObj("DataService", ["getWishlist"]);
