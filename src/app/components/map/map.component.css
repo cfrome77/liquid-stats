@@ -41,9 +41,9 @@
 /* Controls */
 .top-controls {
   position: absolute;
-  top: 20px;
+  top: 90px;
   left: 20px;
-  z-index: 1000; /* Above map */
+  z-index: 1000; /* Above map and zoom controls */
 }
 
 .drawer-toggle {
@@ -75,7 +75,7 @@
 /* Overlay Panel */
 .map-info-panel {
   position: absolute;
-  top: 20px;
+  top: 90px;
   right: 20px;
   background-color: var(--card-bg);
   color: var(--text-color);
