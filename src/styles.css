@@ -458,3 +458,19 @@ strong {
 .dark-theme {
   --map-bg: #242424;
 }
+
+
+/* Fix for datepicker icon visibility in light mode */
+.mat-datepicker-toggle button {
+  color: var(--text-color) !important;
+}
+
+/* Ensure the default SVG icon also follows the theme color */
+.mat-datepicker-toggle .mat-datepicker-toggle-default-icon {
+  fill: currentColor;
+}
+
+/* Hide date picker touch target to prevent height issues */
+.mat-datepicker-toggle .mat-mdc-button-touch-target {
+  display: none !important;
+}

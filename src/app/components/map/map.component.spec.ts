@@ -115,7 +115,7 @@ describe("MapComponent", () => {
     mockMarkerService.getMarkerByBreweryId.and.returnValue(
       mockMarker as unknown as BreweryMarker,
     );
-    (mockMarkerService.markers.zoomToShowLayer as jasmine.Spy).and.callFake(
+    (mockMarkerService.markers!.zoomToShowLayer as jasmine.Spy).and.callFake(
       (m: unknown, cb: () => void) => cb(),
     );
 
@@ -130,7 +130,7 @@ describe("MapComponent", () => {
       }
     ).handleDeepLink(10, 20, "brewery-1");
 
-    expect(mockMarkerService.markers.zoomToShowLayer).toHaveBeenCalledWith(
+    expect(mockMarkerService.markers!.zoomToShowLayer).toHaveBeenCalledWith(
       mockMarker as unknown as L.Layer,
       jasmine.any(Function),
     );

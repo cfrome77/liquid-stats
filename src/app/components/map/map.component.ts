@@ -38,8 +38,8 @@ import { BeerCheckin } from "src/app/core/models/beer.model";
   selector: "app-map",
   templateUrl: "./map.component.html",
   styleUrls: ["./map.component.css"],
-  encapsulation: ViewEncapsulation.None,
   standalone: true,
+  host: { ngSkipHydration: "true" },
   imports: [
     FormsModule,
     MatDividerModule,

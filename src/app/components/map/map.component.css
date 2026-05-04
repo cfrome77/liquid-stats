@@ -1,127 +1,57 @@
-/* =========================
-   Reset & Base Layout
-========================= */
-html,
-body,
-app-root,
-mat-sidenav-container {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* hide all scrollbars */
-}
-
+/* Map Layout */
 .map-sidenav-container {
-  height: calc(100vh - 64px); /* Subtracting toolbar height */
-  width: 100% !important;
+  height: calc(100vh - 64px);
+  width: 100%;
+  display: block;
   position: relative;
   background-color: var(--map-bg);
-  color: var(--text-color);
-  overflow: hidden; /* prevents container scroll */
 }
 
 @media (max-width: 600px) {
   .map-sidenav-container {
-    height: calc(
-      100vh - 56px - 72px
-    ); /* Subtract toolbar and bottom nav height */
+    height: calc(100vh - 56px - 72px);
   }
 }
 
-/* =========================
-   Sidenav Drawer (Filter Panel)
-========================= */
-.filter-drawer {
+.map-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: block;
+  z-index: 1;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%; /* full container height */
+  display: block;
+}
+
+/* Sidenav Filters */
+.filter-drawer {
   width: 300px;
   padding: 16px;
-  box-sizing: border-box;
   background-color: var(--card-bg);
   color: var(--text-color);
-  transition: transform 0.3s ease;
-  z-index: 1150;
-  transform: translateX(-100%);
-  overflow-y: auto; /* scroll inside drawer only */
 }
 
-.filter-drawer.open {
-  transform: translateX(0);
-}
-
-.filter-drawer .filter-header {
+.filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.filter-drawer .filter-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--header-text);
-  font-family: "Montserrat", sans-serif;
+  margin-bottom: 20px;
 }
 
 .filter-body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
 }
 
-.filter-body mat-form-field {
-  width: 100%;
-}
-
-.filter-drawer .reset-btn {
-  width: 100%;
-  margin-top: 8px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-/* =========================
-   Main Content & Map
-========================= */
-mat-sidenav-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* prevent inner scroll */
-  width: 100%;
-}
-
-.drawer-toggle {
-  position: absolute;
-  top: 20px;
-  left: 80px;
-  z-index: 1250;
-  border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  font-weight: 600;
-}
-
-.map-wrapper {
-  flex: 1 1 auto;
-  min-height: 0; /* critical for flex containers to avoid overflow */
-  width: 100%;
-  position: relative;
-}
-
-.leaflet-map {
-  width: 100% !important;
-  height: 100% !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* =========================
-   Brewery Info Overlay
-========================= */
+/* Overlay Panel */
 .map-info-panel {
   position: absolute;
   top: 20px;
@@ -130,167 +60,65 @@ mat-sidenav-content {
   color: var(--text-color);
   padding: 20px;
   border-radius: 16px;
-  max-width: 400px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  z-index: 1200;
+  max-width: 350px;
+  z-index: 1000;
   border: 1px solid var(--divider-color);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
 }
 
-.map-info-panel .brewery-header {
+.brewery-header {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.map-info-panel .brewery-logo {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  flex-shrink: 0;
-  border-radius: 12px;
-  padding: 6px;
-  background-color: var(--card-bg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.map-info-panel .brewery-details h2 {
-  margin: 0 0 4px 0;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--header-text);
-}
-
-.map-info-panel .brewery-details p {
-  margin: 2px 0;
-  font-size: 13px;
-  color: var(--text-color);
-}
-
-.map-info-panel .checkin-list {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-height: 300px;
-  overflow-y: auto; /* scroll inside overlay only */
-}
-
-.map-info-panel .checkin-list li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 12px;
-  text-align: center;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease;
-  border-radius: 12px;
-  margin-bottom: 4px;
-}
-
-.map-info-panel .checkin-list li:hover {
-  background-color: rgba(var(--accent-blue-rgb), 0.1);
-  transform: translateY(-2px);
-}
-
-.map-info-panel .checkin-list li:active {
-  transform: scale(0.98);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.map-info-panel .checkin-list li + li {
-  border-top: 1px solid var(--divider-color);
-}
-
-.map-info-panel .beer-label {
+.brewery-logo {
   width: 60px;
   height: 60px;
   object-fit: contain;
-  margin-bottom: 8px;
-  border-radius: 4px;
-  flex-shrink: 0;
+  background-color: white;
+  border-radius: 8px;
 }
 
-.map-info-panel .beer-info {
+.checkin-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.checkin-list li {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  gap: 10px;
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--divider-color);
 }
 
-.map-info-panel .beer-name {
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--strong-text);
-}
-
-.map-info-panel .beer-meta {
-  font-size: 12px;
-  color: var(--text-color);
-}
-
-.map-info-panel .close-btn {
+.close-btn {
   position: absolute;
   top: 8px;
   right: 8px;
   background: none;
   border: none;
-  color: var(--text-color);
   font-size: 20px;
+  color: var(--text-color);
   cursor: pointer;
 }
 
-/* =========================
-   Mobile Optimization
-========================= */
-@media (max-width: 768px) {
-  .filter-drawer {
-    width: 85vw;
-  }
-  .drawer-toggle {
-    left: 70px;
-    top: 15px;
-  }
-  .map-info-panel {
-    top: auto;
-    right: 5%;
-    bottom: 20px;
-    width: 90%;
-  }
+/* Deep Selector for Leaflet UI */
+::ng-deep .leaflet-container {
+  background-color: var(--map-bg) !important;
 }
 
-@media (max-width: 480px) {
-  .map-info-panel .brewery-header {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* =========================
-   Leaflet Marker Animations
-========================= */
 ::ng-deep .marker-pulse {
-  animation: pulse-animation 0.8s ease-in-out 4;
-  filter: drop-shadow(0 0 12px var(--accent-glow, #ffca28)) !important;
-  z-index: 1000 !important;
+  animation: pulse-marker 1.5s infinite;
 }
 
-@keyframes pulse-animation {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.4);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+@keyframes pulse-marker {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
 }
