@@ -6,6 +6,8 @@
     [(opened)]="filterOpen"
     [autoFocus]="false"
     class="filter-drawer"
+    (opened)="onDrawerAnimationDone()"
+    (closed)="onDrawerAnimationDone()"
   >
     <div class="filter-header">
       <h3>Map Filters</h3>

@@ -10,7 +10,6 @@ import {
   ElementRef,
   HostListener,
   PLATFORM_ID,
-  ViewEncapsulation,
   inject,
 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
@@ -103,18 +102,6 @@ export class MapComponent
     // Close overlay when clicking on map
     this.map!.on("click", () => this.closeBreweryOverlay());
 
-    // Listen to drawer open/close to recalc map size
-    this.drawer.openedStart.subscribe(() =>
-      this.ngZone.runOutsideAngular(() => {
-        setTimeout(() => this.map?.invalidateSize(), 0);
-      }),
-    );
-    this.drawer.closedStart.subscribe(() =>
-      this.ngZone.runOutsideAngular(() => {
-        setTimeout(() => this.map?.invalidateSize(), 0);
-      }),
-    );
-
     // Load beer data
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
@@ -151,6 +138,12 @@ export class MapComponent
         this.cdr.detectChanges();
       },
       error: (err) => console.error("Error fetching map data:", err),
+    });
+  }
+
+  onDrawerAnimationDone() {
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => this.map?.invalidateSize(), 0);
     });
   }
 
