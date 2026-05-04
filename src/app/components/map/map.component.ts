@@ -96,7 +96,7 @@ export class MapComponent
 
     // Initial invalidateSize after DOM rendered
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      setTimeout(() => this.map?.invalidateSize(), 100);
     });
 
     // Close overlay when clicking on map
@@ -121,7 +121,7 @@ export class MapComponent
 
         // Ensure map resizes after markers added
         this.ngZone.runOutsideAngular(() => {
-          setTimeout(() => this.map?.invalidateSize(), 0);
+          setTimeout(() => this.map?.invalidateSize(), 100);
         });
 
         // Listen for deep links (URL params)
@@ -143,7 +143,8 @@ export class MapComponent
 
   onDrawerAnimationDone() {
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      // Use a small delay to ensure sidenav animation is fully complete
+      setTimeout(() => this.map?.invalidateSize(), 250);
     });
   }
 
@@ -151,7 +152,7 @@ export class MapComponent
   @HostListener("window:resize")
   onResize() {
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      setTimeout(() => this.map?.invalidateSize(), 100);
     });
   }
 
@@ -256,7 +257,7 @@ export class MapComponent
 
     // After markers added, recalc map size
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      setTimeout(() => this.map?.invalidateSize(), 100);
     });
   }
 
