@@ -37,11 +37,7 @@ import { BeerCheckin } from "src/app/core/models/beer.model";
 @Component({
   selector: "app-map",
   templateUrl: "./map.component.html",
-  styleUrls: [
-    "./map.component.css",
-    "../../../../node_modules/leaflet/dist/leaflet.css",
-    "../../../../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-  ],
+  styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [

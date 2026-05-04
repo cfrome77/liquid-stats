@@ -414,6 +414,16 @@ strong {
   cursor: pointer;
 }
 
+/* Date Picker Toggle Icon Color */
+.mat-datepicker-toggle button {
+  color: var(--text-color) !important;
+}
+
+/* Hide date picker touch target to prevent height issues */
+.mat-datepicker-toggle .mat-mdc-button-touch-target {
+  display: none !important;
+}
+
 /* Modern Card Utility */
 .modern-card {
   background-color: var(--card-bg) !important;

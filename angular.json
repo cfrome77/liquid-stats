@@ -30,6 +30,8 @@
               "src/robots.txt"
             ],
             "styles": [
+              "./node_modules/leaflet/dist/leaflet.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/assets/fonts/fonts.css",
               "src/styles.css"

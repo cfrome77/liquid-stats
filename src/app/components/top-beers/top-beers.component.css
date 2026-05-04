@@ -67,13 +67,6 @@ h1 {
     padding: 0 !important;
   }
 
-  .date-picker-field .mat-datepicker-toggle button {
-    color: var(--text-color) !important;
-  }
-
-  .date-picker-field .mat-datepicker-toggle .mat-mdc-button-touch-target {
-    display: none !important;
-  }
 
   /* 5. Remove the bottom 'subscript' area that adds ghost height */
   .filter-controls .mat-mdc-form-field-subscript-wrapper {
