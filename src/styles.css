@@ -450,3 +450,11 @@ strong {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.light-theme {
+  --map-bg: #e5e3df;
+}
+
+.dark-theme {
+  --map-bg: #242424;
+}

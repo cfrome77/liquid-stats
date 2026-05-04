@@ -303,7 +303,7 @@ export class MapComponent
     if (!this.map) return;
 
     const marker = this.markerService.getMarkerByBreweryId(breweryId);
-    if (marker) {
+    if (marker && this.markerService.markers) {
       this.markerService.markers.zoomToShowLayer(marker, () => {
         // Always force zoom level 18 when arriving from history link to pinpoint the brewery
         if (this.map) {
