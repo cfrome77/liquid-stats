@@ -334,7 +334,6 @@ export class BeerHistoryComponent implements OnInit {
       breweryName: beer.brewery.brewery_name,
       description: beer.beer.beer_description,
       rating: beer.rating_score,
-      globalRating: beer.beer.rating_score,
       mainImage: beer.beer.beer_label,
       secondaryImage: beer.brewery.brewery_label,
       footerInfo: {
