@@ -195,6 +195,7 @@ export class TopBeersComponent implements OnInit {
       subtitle: beer.beer.beer_style,
       breweryName: beer.brewery.brewery_name,
       rating: beer.avgRating,
+      globalRating: beer.beer.rating_score,
       mainImage: beer.beer.beer_label,
       secondaryImage: beer.brewery.brewery_label,
       rank: rank,
