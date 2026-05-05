@@ -10,7 +10,6 @@ import {
   ElementRef,
   HostListener,
   PLATFORM_ID,
-  ViewEncapsulation,
   inject,
 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
@@ -37,12 +36,7 @@ import { BeerCheckin } from "src/app/core/models/beer.model";
 @Component({
   selector: "app-map",
   templateUrl: "./map.component.html",
-  styleUrls: [
-    "./map.component.css",
-    "../../../../node_modules/leaflet/dist/leaflet.css",
-    "../../../../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-  ],
-  encapsulation: ViewEncapsulation.None,
+  styleUrls: ["./map.component.css"],
   standalone: true,
   imports: [
     FormsModule,
@@ -101,23 +95,11 @@ export class MapComponent
 
     // Initial invalidateSize after DOM rendered
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      setTimeout(() => this.map?.invalidateSize(), 100);
     });
 
     // Close overlay when clicking on map
     this.map!.on("click", () => this.closeBreweryOverlay());
-
-    // Listen to drawer open/close to recalc map size
-    this.drawer.openedStart.subscribe(() =>
-      this.ngZone.runOutsideAngular(() => {
-        setTimeout(() => this.map?.invalidateSize(), 0);
-      }),
-    );
-    this.drawer.closedStart.subscribe(() =>
-      this.ngZone.runOutsideAngular(() => {
-        setTimeout(() => this.map?.invalidateSize(), 0);
-      }),
-    );
 
     // Load beer data
     this.dataService.getBeersAll().subscribe({
@@ -138,7 +120,7 @@ export class MapComponent
 
         // Ensure map resizes after markers added
         this.ngZone.runOutsideAngular(() => {
-          setTimeout(() => this.map?.invalidateSize(), 0);
+          setTimeout(() => this.map?.invalidateSize(), 100);
         });
 
         // Listen for deep links (URL params)
@@ -158,11 +140,18 @@ export class MapComponent
     });
   }
 
+  onDrawerAnimationDone() {
+    this.ngZone.runOutsideAngular(() => {
+      // Use a small delay to ensure sidenav animation is fully complete
+      setTimeout(() => this.map?.invalidateSize(), 250);
+    });
+  }
+
   /** Recalculate map if window resizes */
   @HostListener("window:resize")
   onResize() {
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      setTimeout(() => this.map?.invalidateSize(), 100);
     });
   }
 
@@ -179,6 +168,11 @@ export class MapComponent
   /** Initialize Leaflet map */
   private initMap(): void {
     if (this.map) return;
+
+    // Debugging duplicate Leaflet instances in production
+    console.log("L keys:", Object.keys(L as any));
+    console.log("cluster fn:", (L as any).markerClusterGroup);
+    console.log("window.L cluster fn:", (window as any).L?.markerClusterGroup);
 
     const iconDefault = L.icon({
       iconUrl: "/assets/images/marker-icon.png",
@@ -267,7 +261,7 @@ export class MapComponent
 
     // After markers added, recalc map size
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.map?.invalidateSize(), 0);
+      setTimeout(() => this.map?.invalidateSize(), 100);
     });
   }
 
@@ -307,7 +301,7 @@ export class MapComponent
     if (!this.map) return;
 
     const marker = this.markerService.getMarkerByBreweryId(breweryId);
-    if (marker) {
+    if (marker && this.markerService.markers) {
       this.markerService.markers.zoomToShowLayer(marker, () => {
         // Always force zoom level 18 when arriving from history link to pinpoint the brewery
         if (this.map) {

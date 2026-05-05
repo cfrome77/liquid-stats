@@ -1,4 +1,4 @@
-<mat-sidenav-container class="map-sidenav-container">
+<mat-sidenav-container class="map-sidenav-container" ngSkipHydration>
   <!-- Filter Drawer -->
   <mat-sidenav
     #drawer
@@ -6,6 +6,8 @@
     [(opened)]="filterOpen"
     [autoFocus]="false"
     class="filter-drawer"
+    (opened)="onDrawerAnimationDone()"
+    (closed)="onDrawerAnimationDone()"
   >
     <div class="filter-header">
       <h3>Map Filters</h3>
@@ -20,7 +22,7 @@
       }
     </div>
 
-    <div class="filter-body">
+    <div class="filter-body" >
       <mat-form-field appearance="outline">
         <mat-label>Search Brewery</mat-label>
         <input
@@ -108,13 +110,13 @@
     </div>
 
     <!-- Map Wrapper -->
-    <div class="map-wrapper">
-      <div [id]="mapId" class="leaflet-map"></div>
+    <div class="map-wrapper" >
+      <div id="myMap" class="leaflet-map"></div>
     </div>
 
     <!-- Brewery Overlay -->
     @if (selectedBrewery) {
-      <div class="map-info-panel mat-elevation-z4">
+      <div class="map-info-panel mat-elevation-z4" >
         <button
           class="close-btn"
           (click)="closeBreweryOverlay()"

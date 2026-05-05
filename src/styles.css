@@ -1,4 +1,9 @@
 /* Importing fonts and styles */
+app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
 :root {
   /* Layout & Spacing */
@@ -40,6 +45,9 @@
   );
   --accent-glow: #e65100;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --hover-overlay: rgba(255, 255, 255, 0.1);
+  --hover-accent: var(--accent-blue);
 }
 
 .dark-theme {
@@ -65,6 +73,9 @@
   );
   --accent-glow: #ffca28;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --hover-bg: rgba(255, 255, 255, 0.04);
+  --hover-overlay: rgba(255, 255, 255, 0.06);
+  --hover-accent: var(--accent-blue);
 }
 
 /* Reset Styles */
@@ -414,6 +425,16 @@ strong {
   cursor: pointer;
 }
 
+/* Date Picker Toggle Icon Color */
+.mat-datepicker-toggle button {
+  color: var(--text-color) !important;
+}
+
+/* Hide date picker touch target to prevent height issues */
+.mat-datepicker-toggle .mat-mdc-button-touch-target {
+  display: none !important;
+}
+
 /* Modern Card Utility */
 .modern-card {
   background-color: var(--card-bg) !important;
@@ -439,4 +460,27 @@ strong {
   line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.light-theme {
+  --map-bg: #e5e3df;
+}
+
+.dark-theme {
+  --map-bg: #242424;
+}
+
+/* Fix for datepicker icon visibility in light mode */
+.mat-datepicker-toggle button {
+  color: var(--text-color) !important;
+}
+
+/* Ensure the default SVG icon also follows the theme color */
+.mat-datepicker-toggle .mat-datepicker-toggle-default-icon {
+  fill: currentColor;
+}
+
+/* Hide date picker touch target to prevent height issues */
+.mat-datepicker-toggle .mat-mdc-button-touch-target {
+  display: none !important;
 }

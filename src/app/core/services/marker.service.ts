@@ -1,4 +1,5 @@
-import { Injectable } from "@angular/core";
+import { Injectable, PLATFORM_ID, inject } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "../models/beer.model";
@@ -39,10 +40,23 @@ export interface BreweryMarker extends L.Marker {
 
 @Injectable()
 export class MarkerService {
-  public markers: L.MarkerClusterGroup = L.markerClusterGroup();
+  private platformId = inject(PLATFORM_ID);
+  public markers: L.MarkerClusterGroup | undefined;
   private breweryMarkers: BreweryMarker[] = [];
 
-  constructor() {}
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      // Safely initialize markerClusterGroup to handle production bundling variations
+      const Lref = (window as any).L || L;
+      if (typeof Lref.markerClusterGroup === "function") {
+        this.markers = Lref.markerClusterGroup();
+      } else if (typeof (L as any).markerClusterGroup === "function") {
+        this.markers = (L as any).markerClusterGroup();
+      } else {
+        console.error("Leaflet.markercluster plugin not found on L or window.L");
+      }
+    }
+  }
 
   /**
    * Create/update brewery markers
@@ -55,7 +69,7 @@ export class MarkerService {
     beers: BeerCheckin[],
     onClick?: (breweryData: BreweryMarkerData) => void,
   ): void {
-    if (!map) return;
+    if (!map || !this.markers) return;
 
     // Aggregate beers by brewery
     const breweryCounts: Record<

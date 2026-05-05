@@ -33,7 +33,7 @@ describe("MapComponent", () => {
       "clearLayers",
       "addLayer",
       "zoomToShowLayer",
-    ]);
+    ]) as any;
 
     // Mock DataService
     mockDataService = jasmine.createSpyObj("DataService", [
@@ -76,10 +76,12 @@ describe("MapComponent", () => {
     // Add a div with the mapId in the DOM for Leaflet
     const mapDiv = document.createElement("div");
     mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
     document.body.appendChild(mapDiv);
 
     fixture.detectChanges();
-    tick();
+    tick(200);
     flush();
 
     expect(mockMarkerService.makeBreweryMarkers).toHaveBeenCalled();
@@ -92,6 +94,8 @@ describe("MapComponent", () => {
     // Add a div with the mapId in the DOM for Leaflet
     const mapDiv = document.createElement("div");
     mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
     document.body.appendChild(mapDiv);
 
     // Mock marker
@@ -115,13 +119,13 @@ describe("MapComponent", () => {
     mockMarkerService.getMarkerByBreweryId.and.returnValue(
       mockMarker as unknown as BreweryMarker,
     );
-    (mockMarkerService.markers.zoomToShowLayer as jasmine.Spy).and.callFake(
+    (mockMarkerService.markers!.zoomToShowLayer as jasmine.Spy).and.callFake(
       (m: unknown, cb: () => void) => cb(),
     );
 
     // Trigger AfterViewInit
     fixture.detectChanges();
-    tick();
+    tick(200);
 
     // Call private handleDeepLink to test zoom
     (
@@ -130,7 +134,7 @@ describe("MapComponent", () => {
       }
     ).handleDeepLink(10, 20, "brewery-1");
 
-    expect(mockMarkerService.markers.zoomToShowLayer).toHaveBeenCalledWith(
+    expect(mockMarkerService.markers!.zoomToShowLayer).toHaveBeenCalledWith(
       mockMarker as unknown as L.Layer,
       jasmine.any(Function),
     );
