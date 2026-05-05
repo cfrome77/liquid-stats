@@ -1,11 +1,12 @@
 :host {
   display: block;
   height: 100%;
+  overflow: hidden;
 }
 
 /* Map Layout */
 .map-sidenav-container {
-  height: 100vh;
+  height: calc(100vh - 64px);
   width: 100%;
   display: flex;
   position: relative;
@@ -264,7 +265,11 @@
 }
 
 @media (max-width: 600px) {
+  .map-sidenav-container {
+    height: calc(100vh - 124px);
+  }
+
   .map-info-panel {
-    bottom: 80px;
+    bottom: 20px;
   }
 }
