@@ -30,7 +30,6 @@ import {
 } from "src/app/core/services/marker.service";
 import { DataService } from "src/app/core/services/data.service";
 import * as L from "leaflet";
-import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 
 @Component({
