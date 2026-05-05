@@ -53,11 +53,7 @@
         <span class="comment">{{ cardData.hint }}</span>
       }
 
-      @if (
-        cardData.rating !== null &&
-        cardData.rating !== undefined &&
-        cardData.globalRating == null
-      ) {
+      @if (cardData.rating != null && cardData.globalRating == null) {
         <div class="rating-bar">
           <app-rating
             [ratingScore]="cardData.rating"
@@ -94,13 +90,15 @@
                     class="clickable-chip"
                     (click)="onBadgeClick(badge)"
                   >
-                    <img
-                      matChipAvatar
-                      [ngSrc]="badge.badge_image.sm"
-                      alt="badge"
-                      width="32"
-                      height="32"
-                    />
+                    @if (badge.badge_image?.sm) {
+                      <img
+                        matChipAvatar
+                        [ngSrc]="badge.badge_image.sm"
+                        alt="badge"
+                        width="32"
+                        height="32"
+                      />
+                    }
                     {{ badge.badge_name }}
                   </mat-chip>
                 }
