@@ -134,7 +134,7 @@
   border-top: 1px solid var(--divider-color);
 }
 
-..checkin-list li {
+.checkin-list li {
   position: relative;
   display: flex;
   align-items: center;
