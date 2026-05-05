@@ -23,6 +23,10 @@ bootstrapApplication(AppComponent, {
         const url = config.src;
         const width = config.width;
 
+        if (typeof url !== "string") {
+          return "";
+        }
+
         // 1. Local Hero Logo
         if (url.includes("LiquidStatsLogo.webp")) {
           if (width && width <= 400) {
