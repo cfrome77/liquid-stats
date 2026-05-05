@@ -459,6 +459,7 @@ strong {
   --map-bg: #242424;
 }
 
+
 /* Fix for datepicker icon visibility in light mode */
 .mat-datepicker-toggle button {
   color: var(--text-color) !important;

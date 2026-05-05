@@ -67,6 +67,7 @@ h1 {
     padding: 0 !important;
   }
 
+
   /* 5. Remove the bottom 'subscript' area that adds ghost height */
   .filter-controls .mat-mdc-form-field-subscript-wrapper {
     display: none !important;

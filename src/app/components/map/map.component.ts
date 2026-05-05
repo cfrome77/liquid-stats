@@ -37,7 +37,6 @@ import { BeerCheckin } from "src/app/core/models/beer.model";
   templateUrl: "./map.component.html",
   styleUrls: ["./map.component.css"],
   standalone: true,
-  host: { ngSkipHydration: "true" },
   imports: [
     FormsModule,
     MatDividerModule,

@@ -14,12 +14,7 @@
         "brewery_name": "Test Brewery",
         "brewery_label": "https://assets.untappd.com/site/assets/images/temp/badge-brewery-default.png",
         "country_name": "USA",
-        "location": {
-          "brewery_state": "CA",
-          "brewery_city": "San Diego",
-          "lat": 32.7157,
-          "lng": -117.1611
-        },
+        "location": { "brewery_state": "CA", "brewery_city": "San Diego", "lat": 32.7157, "lng": -117.1611 },
         "contact": { "url": "http://example.com" }
       },
       "rating_score": 4.5,
