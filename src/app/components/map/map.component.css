@@ -48,7 +48,7 @@
 
 .drawer-toggle {
   border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Sidenav Filters */
@@ -79,43 +79,110 @@
   right: 20px;
   background-color: var(--card-bg);
   color: var(--text-color);
-  padding: 20px;
+  padding: 16px; /* Slightly reduced from 20px to match the condensed vibe */
   border-radius: 16px;
-  max-width: 350px;
+  max-width: 320px; /* Tightened width slightly */
   z-index: 1000;
   border: 1px solid var(--divider-color);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
+/* Header Section */
 .brewery-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 12px;
+  padding-right: 20px; /* Leaves room for the close button */
 }
 
 .brewery-logo {
-  width: 60px;
-  height: 60px;
+  width: 50px; /* Slightly smaller for better balance */
+  height: 50px;
   object-fit: contain;
   background-color: white;
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
+.brewery-details h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.brewery-details p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.8; /* Uses current text color but fades it slightly */
+}
+
+.checkin-count {
+  display: block; /* Ensures it stays on its own line */
+  font-size: 0.75rem;
+  margin-top: 2px;
+  font-weight: 600;
+  color: var(--accent-color, #ffb400);
+}
+
+/* List Section */
 .checkin-list {
   list-style: none;
   padding: 0;
-  margin: 10px 0 0 0;
+  margin: 0;
   max-height: 250px;
   overflow-y: auto;
+  border-top: 1px solid var(--divider-color);
 }
 
 .checkin-list li {
   display: flex;
+  align-items: center;
   gap: 10px;
-  padding: 8px;
+  padding: 8px 4px;
   cursor: pointer;
   border-bottom: 1px solid var(--divider-color);
+  transition: background 0.2s;
+}
+
+.checkin-list li:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* Subtle hover effect */
+}
+
+.beer-label {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.beer-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  overflow: hidden;
+}
+
+.beer-name {
+  font-size: 0.85rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.beer-meta {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  line-height: 1.1;
+}
+
+.rating {
+  font-weight: bold;
+  opacity: 1;
+  color: var(--accent-color, #ffb400);
 }
 
 .close-btn {
@@ -139,9 +206,18 @@
 }
 
 @keyframes pulse-marker {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 768px) {
