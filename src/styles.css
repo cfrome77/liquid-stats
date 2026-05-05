@@ -45,6 +45,9 @@ app-root {
   );
   --accent-glow: #e65100;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --hover-overlay: rgba(255, 255, 255, 0.1);
+  --hover-accent: var(--accent-blue);
 }
 
 .dark-theme {
@@ -70,6 +73,9 @@ app-root {
   );
   --accent-glow: #ffca28;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --hover-bg: rgba(255, 255, 255, 0.04);
+  --hover-overlay: rgba(255, 255, 255, 0.06);
+  --hover-accent: var(--accent-blue);
 }
 
 /* Reset Styles */
