@@ -46,7 +46,15 @@ export class MarkerService {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      this.markers = L.markerClusterGroup();
+      // Safely initialize markerClusterGroup to handle production bundling variations
+      const Lref = (window as any).L || L;
+      if (typeof Lref.markerClusterGroup === "function") {
+        this.markers = Lref.markerClusterGroup();
+      } else if (typeof (L as any).markerClusterGroup === "function") {
+        this.markers = (L as any).markerClusterGroup();
+      } else {
+        console.error("Leaflet.markercluster plugin not found on L or window.L");
+      }
     }
   }
 

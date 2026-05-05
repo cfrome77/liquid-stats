@@ -30,6 +30,7 @@ import {
 } from "src/app/core/services/marker.service";
 import { DataService } from "src/app/core/services/data.service";
 import * as L from "leaflet";
+import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 
 @Component({
@@ -167,6 +168,11 @@ export class MapComponent
   /** Initialize Leaflet map */
   private initMap(): void {
     if (this.map) return;
+
+    // Debugging duplicate Leaflet instances in production
+    console.log("L keys:", Object.keys(L as any));
+    console.log("cluster fn:", (L as any).markerClusterGroup);
+    console.log("window.L cluster fn:", (window as any).L?.markerClusterGroup);
 
     const iconDefault = L.icon({
       iconUrl: "/assets/images/marker-icon.png",
