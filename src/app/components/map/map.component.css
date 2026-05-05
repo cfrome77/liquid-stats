@@ -141,11 +141,16 @@
   padding: 8px 4px;
   cursor: pointer;
   border-bottom: 1px solid var(--divider-color);
-  transition: background 0.2s;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .checkin-list li:hover {
-  background-color: rgba(0, 0, 0, 0.05); /* Subtle hover effect */
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .beer-label {

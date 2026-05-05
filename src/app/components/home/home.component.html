@@ -102,21 +102,21 @@
               mat-card-image
               [ngSrc]="
                 c.media?.items?.[0]?.photo?.photo_img_md ||
-                c.beer?.beer_label ||
+                c.beer.beer_label ||
                 DEFAULT_IMAGE
               "
               ngSrcset="200w, 400w, 600w"
-              [alt]="c.beer?.beer_name"
+              [alt]="c.beer.beer_name"
               width="200"
               height="200"
             />
             <mat-card-content>
-              <h4 class="line-clamp-2">{{ c.beer?.beer_name }}</h4>
+              <h4 class="line-clamp-2">{{ c.beer.beer_name }}</h4>
               <p
                 class="brewery-name line-clamp-2"
-                [title]="c.brewery?.brewery_name"
+                [title]="c.brewery.brewery_name"
               >
-                {{ c.brewery?.brewery_name }}
+                {{ c.brewery.brewery_name }}
               </p>
               <div class="card-footer">
                 <span class="rating-badge">
