@@ -41,8 +41,8 @@
 /* Controls */
 .top-controls {
   position: absolute;
-  top: 90px;
-  left: 20px;
+  top: 12px;
+  left: 60px;
   z-index: 1000; /* Above map and zoom controls */
 }
 
@@ -75,7 +75,7 @@
 /* Overlay Panel */
 .map-info-panel {
   position: absolute;
-  top: 90px;
+  top: 12px;
   right: 20px;
   background-color: var(--card-bg);
   color: var(--text-color);
