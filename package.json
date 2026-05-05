@@ -48,7 +48,7 @@
     "@angular-eslint/template-parser": "21.2.0",
     "@angular/cli": "^21.2.5",
     "@angular/compiler-cli": "^21.2.6",
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.58.2",
     "@types/crossfilter": "^0.0.38",
     "@types/d3": "^7.4.0",
     "@types/dc": "^0.0.29",

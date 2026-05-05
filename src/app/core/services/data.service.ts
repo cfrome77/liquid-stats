@@ -31,7 +31,7 @@ export class DataService {
       return "/api-data/";
     }
 
-    if (!url) return "";
+    if (!url) return "assets/data/";
     return url.endsWith("/") ? url : `${url}/`;
   }
 
