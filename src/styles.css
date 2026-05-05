@@ -1,4 +1,9 @@
 /* Importing fonts and styles */
+app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
 :root {
   /* Layout & Spacing */
@@ -458,7 +463,6 @@ strong {
 .dark-theme {
   --map-bg: #242424;
 }
-
 
 /* Fix for datepicker icon visibility in light mode */
 .mat-datepicker-toggle button {
