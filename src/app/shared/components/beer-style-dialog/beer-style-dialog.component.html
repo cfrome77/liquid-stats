@@ -32,7 +32,7 @@
             ><br />
             <small>ABV: {{ beer.beerABV }}%</small><br />
             <small>Rating: {{ beer.rating.toFixed(2) }}/5</small><br />
-            <small>Date: {{ beer.checkInDate }}</small>
+            <small>Date: {{ formatDate(beer.checkInDate) }}</small>
           </div>
         </div>
       </li>

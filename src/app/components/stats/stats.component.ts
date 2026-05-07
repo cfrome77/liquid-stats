@@ -18,7 +18,7 @@ import {
 } from "@angular/material/core";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import {
   BaseChartDirective,
   provideCharts,
@@ -52,6 +52,7 @@ import { BeerStoreService } from "src/app/core/services/beer-store.service";
     MatNativeDateModule,
     MatInputModule,
     MatIconModule,
+    MatDialogModule,
     BaseChartDirective,
   ],
   providers: [

@@ -8,6 +8,7 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { DomSanitizer } from "@angular/platform-browser";
+import { DateUtils } from "../../core/utils/date-utils";
 
 @Component({
   selector: "app-badges",
@@ -61,15 +62,7 @@ export class BadgesComponent implements OnInit {
   }
 
   transformBadgeData(badge: Badge): BaseCardData {
-    const dateObj = new Date(badge.earned_at);
-    const formattedDate = dateObj.toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const formattedDate = DateUtils.formatTimestamp(badge.earned_at);
 
     return {
       title: badge.badge_name,

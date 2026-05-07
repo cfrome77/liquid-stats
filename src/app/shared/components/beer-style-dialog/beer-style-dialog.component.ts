@@ -3,6 +3,7 @@ import { Component, inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
 import { MatListModule } from "@angular/material/list";
+import { DateUtils } from "../../../core/utils/date-utils";
 
 export interface GenericBeersDialogData {
   title: string;
@@ -25,4 +26,8 @@ export interface GenericBeersDialogData {
 })
 export class BeerStyleDialogComponent {
   data = inject<GenericBeersDialogData>(MAT_DIALOG_DATA);
+
+  formatDate(date: string): string {
+    return DateUtils.formatTimestamp(date);
+  }
 }
