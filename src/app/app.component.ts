@@ -22,6 +22,7 @@ import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatDividerModule } from "@angular/material/divider";
 import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-to-top.component";
 import { InfoFabComponent } from "./shared/components/info-fab/info-fab.component";
+import { BeerStoreService } from "./core/services/beer-store.service";
 
 @Component({
   selector: "app-root",
@@ -52,7 +53,9 @@ export class AppComponent implements OnInit, OnDestroy {
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
   private destroy$ = new Subject<void>();
 
-  constructor() {
+  constructor(private beerStore: BeerStoreService) {
+    this.beerStore.load();
+
     // Consume the theme signal using an effect
     effect(() => {
       const theme = this.themeService.currentTheme();

@@ -1,5 +1,4 @@
-import { Injectable, inject } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable } from "@angular/core";
 import {
   ProcessedStats,
   TopBeer,
@@ -8,23 +7,16 @@ import {
   RatingOverTime,
 } from "../../core/models/stats.model";
 import { BeerCheckin } from "src/app/core/models/beer.model";
-import { DataService } from "src/app/core/services/data.service";
 import { DateUtils } from "../../core/utils/date-utils";
 
 @Injectable({ providedIn: "root" })
 export class StatsService {
-  private dataService = inject(DataService);
-
   private memoizedStats: {
     beers: BeerCheckin[];
     start: number;
     end: number;
     result: ProcessedStats;
   } | null = null;
-
-  loadBeerData(): Observable<BeerCheckin[]> {
-    return this.dataService.getBeersAll();
-  }
 
   computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {
     const startTime = start.getTime();
@@ -66,12 +58,14 @@ export class StatsService {
       (sum, b) => sum + b.rating_score * (b.count ?? 1),
       0,
     );
+
     const averageRating =
       totalCheckins > 0 ? totalRatingSum / totalCheckins : 0;
 
     const uniqueBreweriesSet = new Set(
       beersInRange.map((b) => b.brewery.brewery_name),
     );
+
     const totalUniqueBreweries = uniqueBreweriesSet.size;
 
     const beerStylesCount: Record<string, number> = {};
@@ -112,40 +106,31 @@ export class StatsService {
       const hour = checkinDate.getHours();
       const name = b.beer.beer_name;
 
-      // Count styles
       beerStylesCount[style] = (beerStylesCount[style] || 0) + count;
-
-      // Hourly checkins
       hourly[hour] += count;
 
-      // Beer tally for top beers
       if (!beerTally[name]) beerTally[name] = { count: 0, ratingSum: 0 };
       beerTally[name].count += count;
       beerTally[name].ratingSum += b.rating_score * count;
 
-      // Country and state counts
       const country = b.brewery.country_name || "Unknown";
       countryCounts[country] = (countryCounts[country] || 0) + count;
 
       const state = b.brewery.location.brewery_state || "Unknown";
       stateCounts[state] = (stateCounts[state] || 0) + count;
 
-      // Daily counts (YYYY-MM-DD)
       const dayIso = DateUtils.toISODate(checkinDate);
       dailyCountsMap[dayIso] = (dailyCountsMap[dayIso] || 0) + count;
 
-      // Day of week
       const dayOfWeek = checkinDate.toLocaleDateString("en-US", {
         weekday: "long",
       });
       dayOfWeekCountsMap[dayOfWeek] =
         (dayOfWeekCountsMap[dayOfWeek] || 0) + count;
 
-      // Month
       const month = checkinDate.toLocaleDateString("en-US", { month: "short" });
       monthCountsMap[month] = (monthCountsMap[month] || 0) + count;
 
-      // Average ratings over time
       if (!dailyRatingsMap[dayIso])
         dailyRatingsMap[dayIso] = { sum: 0, count: 0 };
       dailyRatingsMap[dayIso].sum += b.rating_score;
@@ -166,15 +151,9 @@ export class StatsService {
       date,
       count: dailyCountsMap[date],
     }));
-    const checkinsByDay = [...recentActivityByDate];
 
-    function sortCounts(
-      counts: Record<string, number>,
-    ): Record<string, number> {
-      return Object.fromEntries(
-        Object.entries(counts).sort((a, b) => b[1] - a[1]),
-      );
-    }
+    const sortCounts = (counts: Record<string, number>) =>
+      Object.fromEntries(Object.entries(counts).sort((a, b) => b[1] - a[1]));
 
     const dayOfWeekOrder = [
       "Sunday",
@@ -185,6 +164,7 @@ export class StatsService {
       "Friday",
       "Saturday",
     ];
+
     const checkinsByDayOfWeek: DayOfWeekCheckinCount[] = dayOfWeekOrder.map(
       (day) => ({
         day,
@@ -206,6 +186,7 @@ export class StatsService {
       "Nov",
       "Dec",
     ];
+
     const checkinsByMonth: MonthlyCheckinCount[] = monthOrder.map((month) => ({
       month,
       count: monthCountsMap[month] || 0,
@@ -233,7 +214,7 @@ export class StatsService {
       topCountries: sortCounts(countryCounts),
       topStates: sortCounts(stateCounts),
       recentActivityByDate,
-      checkinsByDay,
+      checkinsByDay: recentActivityByDate,
       checkinsByDayOfWeek,
       checkinsByMonth,
       averageRatingsOverTime,

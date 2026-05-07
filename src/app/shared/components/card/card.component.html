@@ -23,9 +23,11 @@
             }
             {{ cardData.title }}
           </h3>
+
           @if (cardData.subtitle) {
             <div class="subtitle" [innerHTML]="cardData.subtitle"></div>
           }
+
           @if (cardData.breweryName) {
             <div class="brewery-name">{{ cardData.breweryName }}</div>
           }
@@ -49,11 +51,12 @@
       @if (cardData.description) {
         <span class="comment" [innerHTML]="cardData.description"></span>
       }
+
       @if (cardData.hint) {
         <span class="comment">{{ cardData.hint }}</span>
       }
 
-      @if (cardData.rating !== null && cardData.rating !== undefined) {
+      @if (cardData.rating != null) {
         <div class="rating-bar">
           <app-rating
             [ratingScore]="cardData.rating"
@@ -63,12 +66,12 @@
       }
 
       @if (
-        cardData.globalRating !== null ||
-        cardData.extraData?.badges?.length ||
-        cardData.extraData?.socialLinks
+        cardData.globalRating != null ||
+        (cardData.extraData?.badges?.length ?? 0) > 0 ||
+        !!cardData.extraData?.socialLinks
       ) {
         <div class="badges-and-social-links">
-          @if (cardData.globalRating !== null) {
+          @if (cardData.globalRating != null) {
             <div class="global-rating flex-row align-center gap-4">
               <span class="global-rating-label">Overall Rating:</span>
               <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
@@ -77,9 +80,8 @@
 
           <div class="flex-row align-center min-w-0">
             @if (
-              cardData.extraData?.badges &&
-              cardData.extraData?.badges?.length &&
-              cardData.globalRating === null
+              (cardData.extraData?.badges?.length ?? 0) > 0 &&
+              cardData.globalRating == null
             ) {
               <mat-chip-set class="chip">
                 @for (
@@ -127,31 +129,37 @@
               class="location-link"
               [title]="cardData.footerInfo.text"
             >
-              <mat-icon class="location-icon">{{
-                cardData.extraData?.venueId ? "location_on" : "info"
-              }}</mat-icon>
-              <span class="location-text">{{ cardData.footerInfo.text }}</span>
+              <mat-icon class="location-icon">
+                {{ cardData.extraData?.venueId ? "location_on" : "info" }}
+              </mat-icon>
+
+              <span class="location-text">
+                {{ cardData.footerInfo.text }}
+              </span>
             </a>
           }
         </div>
+
         <div class="footer-time">
           <time
             [attr.aria-label]="cardData.footerInfo.timestamp"
             [title]="cardData.footerInfo.timestamp"
-            >{{ cardData.footerInfo.timestamp }}</time
           >
+            {{ cardData.footerInfo.timestamp }}
+          </time>
+
           <a
             class="checkin-page view-details"
             [href]="
               cardData.extraData?.userName && cardData.extraData?.checkinId
                 ? 'https://untappd.com/user/' +
-                  cardData.extraData!.userName +
+                  cardData.extraData?.userName +
                   '/checkin/' +
-                  cardData.extraData!.checkinId
+                  cardData.extraData?.checkinId
                 : cardData.footerInfo.link
             "
             target="_blank"
-            title="{{ cardData.footerInfo.rightLinkText || 'View Details' }}"
+            [title]="cardData.footerInfo.rightLinkText || 'View Details'"
           >
             <mat-icon>open_in_new</mat-icon>
           </a>

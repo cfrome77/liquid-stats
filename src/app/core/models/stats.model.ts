@@ -40,5 +40,5 @@ export interface ProcessedStats {
   checkinsByDay: DailyCheckinCount[];
   checkinsByDayOfWeek?: DayOfWeekCheckinCount[];
   checkinsByMonth?: MonthlyCheckinCount[];
-  averageRatingsOverTime?: RatingOverTime[];
+  averageRatingsOverTime: RatingOverTime[];
 }

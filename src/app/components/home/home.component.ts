@@ -3,7 +3,6 @@ import {
   OnInit,
   ViewChild,
   ElementRef,
-  ChangeDetectorRef,
   inject,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
@@ -12,8 +11,7 @@ import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { RouterModule } from "@angular/router";
 
-import { DataService } from "../../core/services/data.service";
-import { Checkin, CheckinResponse } from "../../core/models/checkin.model";
+import { BeerStoreService } from "../../core/services/beer-store.service";
 
 @Component({
   selector: "app-home",
@@ -30,12 +28,11 @@ import { Checkin, CheckinResponse } from "../../core/models/checkin.model";
   ],
 })
 export class HomeComponent implements OnInit {
-  private dataService = inject(DataService);
-  private cdr = inject(ChangeDetectorRef);
+  private beerStore = inject(BeerStoreService);
 
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
-  allCheckins: Checkin[] = [];
+  allCheckins: any[] = [];
   totalCheckins = 0;
   averageRating = 0;
   countriesTried = 0;
@@ -45,36 +42,31 @@ export class HomeComponent implements OnInit {
     "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
 
   ngOnInit(): void {
-    // 1. Fetch Stats
-    this.dataService.getStats().subscribe({
-      next: (res: unknown) => {
-        const stats = res as {
-          totalCheckins?: number;
-          averageRating?: number;
-          countriesTried?: number;
-          breweriesVisited?: number;
-        };
-        this.totalCheckins = stats?.totalCheckins || 0;
-        this.averageRating = stats?.averageRating || 0;
-        this.countriesTried = stats?.countriesTried || 0;
-        this.breweriesVisited = stats?.breweriesVisited || 0;
-        this.cdr.detectChanges();
-      },
-    });
+    this.beerStore.load();
 
-    // 2. Fetch Checkins (Full list for the scrollable track)
-    this.dataService.getCheckins().subscribe({
-      next: (res: CheckinResponse) => {
-        this.allCheckins = res?.response?.checkins?.items || [];
-        this.cdr.detectChanges();
-      },
+    this.beerStore.beers$.subscribe((beers) => {
+      if (!beers) return;
+
+      this.allCheckins = beers;
+
+      this.totalCheckins = beers.reduce((sum, b) => sum + (b.count ?? 1), 0);
+
+      const ratings = beers.map((b) => b.rating_score);
+      this.averageRating =
+        ratings.reduce((a, b) => a + b, 0) / ratings.length || 0;
+
+      this.countriesTried = new Set(
+        beers.map((b) => b.brewery.country_name),
+      ).size;
+
+      this.breweriesVisited = new Set(
+        beers.map((b) => b.brewery.brewery_name),
+      ).size;
     });
   }
 
-  // --- Native Scroll Controls ---
   scrollNext() {
     const track = this.carouselTrack.nativeElement;
-    // Scrolls by the visible width of the container
     track.scrollBy({ left: track.clientWidth * 0.8, behavior: "smooth" });
   }
 

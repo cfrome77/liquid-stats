@@ -23,6 +23,11 @@ bootstrapApplication(AppComponent, {
         const url = config.src;
         const width = config.width;
 
+        // Safety guard: prevent runtime errors from bad inputs
+        if (typeof url !== "string") {
+          return "";
+        }
+
         // 1. Local Hero Logo
         if (url.includes("LiquidStatsLogo.webp")) {
           if (width && width <= 400) {
@@ -39,8 +44,15 @@ bootstrapApplication(AppComponent, {
         // Suffixes: _sm, _md, _lg
         if (url.includes("untappd.com") || url.includes("untp.beer")) {
           if (!width) return url;
+
           const suffix = width <= 100 ? "sm" : width <= 300 ? "md" : "lg";
-          return url.replace(/_(sm|md|lg)\./, `_${suffix}.`);
+
+          // Only replace if a known size suffix exists
+          if (/_(sm|md|lg)\./.test(url)) {
+            return url.replace(/_(sm|md|lg)\./, `_${suffix}.`);
+          }
+
+          return url;
         }
 
         return url;

@@ -53,7 +53,9 @@ export class MarkerService {
       } else if (typeof (L as any).markerClusterGroup === "function") {
         this.markers = (L as any).markerClusterGroup();
       } else {
-        console.error("Leaflet.markercluster plugin not found on L or window.L");
+        console.error(
+          "Leaflet.markercluster plugin not found on L or window.L",
+        );
       }
     }
   }
