@@ -81,7 +81,7 @@
   padding: 16px; /* Slightly reduced from 20px to match the condensed vibe */
   border-radius: 16px;
   max-width: 320px; /* Tightened width slightly */
-  z-index: 1000;
+  z-index: 1100;
   border: 1px solid var(--divider-color);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }

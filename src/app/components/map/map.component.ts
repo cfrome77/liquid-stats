@@ -157,8 +157,11 @@ export class MapComponent
   }
 
   ngAfterViewChecked() {
-    if (this.overlayPanel)
-      L.DomEvent.disableClickPropagation(this.overlayPanel.nativeElement);
+    if (this.overlayPanel) {
+      const el = this.overlayPanel.nativeElement;
+      L.DomEvent.disableClickPropagation(el);
+      L.DomEvent.disableScrollPropagation(el);
+    }
   }
 
   ngOnDestroy(): void {

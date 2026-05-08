@@ -116,7 +116,7 @@
 
     <!-- Brewery Overlay -->
     @if (selectedBrewery) {
-      <div class="map-info-panel mat-elevation-z4">
+      <div #overlayPanel class="map-info-panel mat-elevation-z4">
         <button
           class="close-btn"
           (click)="closeBreweryOverlay()"
