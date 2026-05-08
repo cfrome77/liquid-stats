@@ -32,6 +32,7 @@ import { DataService } from "src/app/core/services/data.service";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
+import { DateUtils } from "src/app/core/utils/date-utils";
 
 @Component({
   selector: "app-map",
@@ -290,7 +291,7 @@ export class MapComponent
         beerStyle: b.beer.beer_style ?? "Unknown",
         rating: b.rating_score ?? 0,
         checkInDate: b.recent_created_at
-          ? new Date(b.recent_created_at).toLocaleString()
+          ? DateUtils.formatTimestamp(b.recent_created_at)
           : "Unknown Date",
         checkInId: b.recent_checkin_id ?? 0,
       }));
