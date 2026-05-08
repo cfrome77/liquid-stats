@@ -8,8 +8,25 @@
   margin: 0 5px;
   background-color: transparent;
   border: none;
-  padding: 5px 10px;
+  padding: 8px 12px;
   color: var(--text-color);
+  border-radius: 8px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pagination-controls button:hover:not([disabled]):not(.active) {
+  background-color: rgba(var(--accent-blue-rgb), 0.1);
+  color: var(--accent-blue);
+}
+
+.pagination-controls button:active:not([disabled]) {
+  transform: scale(0.95);
 }
 
 /* Unselected page numbers color - Using theme text color */
@@ -21,10 +38,10 @@
 
 /* Active page number with bold text, accent blue background, and white text */
 .pagination-controls button.page-number.active {
-  font-weight: bold;
+  font-weight: 700;
   background-color: var(--accent-blue);
   color: white !important;
-  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(var(--accent-blue-rgb), 0.3);
 }
 
 /* Active page number span */
@@ -42,11 +59,6 @@
   border: none;
 }
 
-/* Hover effect for page numbers */
-.pagination-controls button.page-number:hover:not(.active):not(.ellipsis) {
-  background-color: rgba(var(--accent-blue-rgb), 0.1);
-  border-radius: 4px;
-}
 
 /* Disabled button styling */
 .pagination-controls button[disabled] {
