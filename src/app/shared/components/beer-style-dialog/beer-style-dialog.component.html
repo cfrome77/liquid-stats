@@ -10,8 +10,24 @@
   }
   <ul style="padding-left: 0; list-style-type: none">
     @for (beer of data.beers; track beer) {
-      <li style="margin-bottom: 10px">
-        <div style="display: flex; align-items: center">
+      <li style="margin-bottom: 16px">
+        <a
+          [href]="beer.checkinUrl"
+          target="_blank"
+          style="
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+          "
+          [style.cursor]="beer.checkinUrl ? 'pointer' : 'default'"
+          class="beer-item-link"
+          (mouseenter)="$any($event.target).style.backgroundColor = 'rgba(255,255,255,0.05)'"
+          (mouseleave)="$any($event.target).style.backgroundColor = 'transparent'"
+        >
           <img
             [src]="
               beer.beerLabel ||
@@ -19,22 +35,45 @@
             "
             [alt]="beer.beerName"
             style="
-              width: 50px;
-              height: 50px;
-              margin-right: 10px;
+              width: 54px;
+              height: 54px;
+              margin-right: 12px;
               object-fit: cover;
+              border-radius: 4px;
             "
           />
-          <div>
-            <strong style="color: white">{{ beer.beerName }}</strong
-            ><br />
-            <strong style="color: white">{{ beer.breweryName }}</strong
-            ><br />
-            <small>ABV: {{ beer.beerABV }}%</small><br />
-            <small>Rating: {{ beer.rating.toFixed(2) }}/5</small><br />
-            <small>Date: {{ beer.checkInDate }}</small>
+          <div style="flex: 1; min-width: 0">
+            <strong
+              style="
+                color: var(--accent-glow, #ffca28);
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              "
+              >{{ beer.beerName }}</strong
+            >
+            <strong
+              style="
+                color: white;
+                font-size: 0.9em;
+                display: block;
+                opacity: 0.9;
+              "
+              >{{ beer.breweryName }}</strong
+            >
+            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 2px">
+              <span>ABV: {{ beer.beerABV }}%</span> •
+              <span>Rating: {{ beer.rating.toFixed(2) }}/5</span>
+            </div>
+            <div style="font-size: 0.75em; opacity: 0.6">
+              {{ formatDate(beer.checkInDate) }}
+            </div>
           </div>
-        </div>
+          @if (beer.checkinUrl) {
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px; opacity: 0.5; margin-left: 8px">open_in_new</mat-icon>
+          }
+        </a>
       </li>
     }
   </ul>

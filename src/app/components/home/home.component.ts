@@ -46,22 +46,16 @@ export class HomeComponent implements OnInit {
 
     this.beerStore.beers$.subscribe((beers) => {
       if (!beers) return;
-
       this.allCheckins = beers;
+    });
 
-      this.totalCheckins = beers.reduce((sum, b) => sum + (b.count ?? 1), 0);
+    this.beerStore.stats$.subscribe((stats) => {
+      if (!stats) return;
 
-      const ratings = beers.map((b) => b.rating_score);
-      this.averageRating =
-        ratings.reduce((a, b) => a + b, 0) / ratings.length || 0;
-
-      this.countriesTried = new Set(
-        beers.map((b) => b.brewery.country_name),
-      ).size;
-
-      this.breweriesVisited = new Set(
-        beers.map((b) => b.brewery.brewery_name),
-      ).size;
+      this.totalCheckins = stats.totalCheckins;
+      this.averageRating = stats.averageRating;
+      this.countriesTried = Object.keys(stats.topCountries).length;
+      this.breweriesVisited = stats.totalUniqueBreweries;
     });
   }
 
