@@ -3,6 +3,8 @@ import { Component, inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
 import { MatListModule } from "@angular/material/list";
+import { MatIconModule } from "@angular/material/icon";
+import { DateUtils } from "src/app/core/utils/date-utils";
 
 export interface GenericBeersDialogData {
   title: string;
@@ -13,6 +15,7 @@ export interface GenericBeersDialogData {
     beerABV: number;
     rating: number;
     checkInDate: string;
+    checkinUrl?: string;
   }[];
 }
 
@@ -21,8 +24,12 @@ export interface GenericBeersDialogData {
   templateUrl: "./beer-style-dialog.component.html",
   styleUrls: ["./beer-style-dialog.component.css"],
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, MatListModule],
+  imports: [MatDialogModule, MatButtonModule, MatListModule, MatIconModule],
 })
 export class BeerStyleDialogComponent {
   data = inject<GenericBeersDialogData>(MAT_DIALOG_DATA);
+
+  formatDate(date: string): string {
+    return DateUtils.formatTimestamp(date);
+  }
 }

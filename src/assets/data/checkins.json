@@ -21,6 +21,14 @@
             "country_name": "USA",
             "location": { "lat": 32.7157, "lng": -117.1611 },
             "contact": { "url": "http://example.com" }
+          },
+          "badges": {
+            "items": [
+              {
+                "badge_name": "Top Rated Beer",
+                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+              }
+            ]
           }
         }
       ]
