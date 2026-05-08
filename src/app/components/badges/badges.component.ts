@@ -8,7 +8,7 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { DomSanitizer } from "@angular/platform-browser";
-import { DateUtils } from "../../core/utils/date-utils";
+import { DateUtils } from "src/app/core/utils/date-utils";
 
 @Component({
   selector: "app-badges",

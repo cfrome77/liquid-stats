@@ -32,7 +32,7 @@ import { DataService } from "src/app/core/services/data.service";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
-import { DateUtils } from "../../core/utils/date-utils";
+import { DateUtils } from "src/app/core/utils/date-utils";
 
 @Component({
   selector: "app-map",
