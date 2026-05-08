@@ -155,12 +155,17 @@
 
 .badges-and-social-links {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
   padding: 12px 16px;
   min-height: 48px;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.badges-and-social-links::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari and Opera */
 }
 
 .global-rating {

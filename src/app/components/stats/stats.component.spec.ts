@@ -15,7 +15,6 @@ describe("StatsComponent", () => {
 
   beforeEach(async () => {
     mockStatsService = {
-      loadBeerData: () => of([]),
       computeStats: () => ({
         totalUniqueBeers: 0,
         totalCheckins: 0,

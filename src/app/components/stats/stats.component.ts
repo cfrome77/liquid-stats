@@ -18,7 +18,7 @@ import {
 } from "@angular/material/core";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import {
   BaseChartDirective,
   provideCharts,
@@ -37,6 +37,7 @@ import {
 import { DateUtils } from "../../core/utils/date-utils";
 import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-stats",
@@ -52,6 +53,7 @@ import { BeerStoreService } from "src/app/core/services/beer-store.service";
     MatNativeDateModule,
     MatInputModule,
     MatIconModule,
+    MatDialogModule,
     BaseChartDirective,
   ],
   providers: [
@@ -368,6 +370,10 @@ export class StatsComponent implements OnInit, OnDestroy {
         beerABV: b.beer.beer_abv,
         rating: b.rating_score,
         checkInDate: b.recent_created_at,
+        checkinUrl:
+          environment.UNTAPPD_USERNAME && b.recent_checkin_id
+            ? `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${b.recent_checkin_id}`
+            : undefined,
       })),
     };
 
