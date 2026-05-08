@@ -191,10 +191,12 @@ export class CheckinsComponent implements OnInit {
             md: b.badge_image,
             lg: b.badge_image,
           },
-          badge_description: "",
+          badge_description:
+            (b as any).badge_description || "Badge earned during check-in.",
           badge_hint: "",
           media: { badge_image_sm: b.badge_image },
-          earned_at: "",
+          earned_at: checkin.created_at,
+          created_at: checkin.created_at,
           user_badge_id: 0,
         })) ?? [],
       socialLinks: {
