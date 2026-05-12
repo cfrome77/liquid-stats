@@ -20,24 +20,6 @@
   overflow: hidden;
 }
 
-.untappd-logo-container {
-  position: fixed;
-  bottom: 15px;
-  left: 15px;
-  z-index: 100;
-}
-
-.untappd-logo {
-  max-height: 40px;
-  width: auto;
-  opacity: 0.8;
-  transition: opacity 0.3s;
-}
-
-.untappd-logo:hover {
-  opacity: 1;
-}
-
 #fab-dismiss {
   position: fixed;
   top: 0;
@@ -178,13 +160,5 @@ mat-toolbar {
   /* Add padding to the main container to account for bottom nav */
   .main-container {
     padding-bottom: 60px;
-  }
-
-  .untappd-logo-container {
-    bottom: 75px;
-  }
-
-  .untappd-logo {
-    max-height: 30px;
   }
 }

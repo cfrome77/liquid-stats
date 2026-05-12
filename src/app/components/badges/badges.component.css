@@ -24,10 +24,3 @@ p {
   text-decoration: none;
 }
 
-/* Powered by Untappd image */
-.powered-by {
-  display: block;
-  margin: 20px auto 0;
-  max-width: 150px;
-  height: auto;
-}

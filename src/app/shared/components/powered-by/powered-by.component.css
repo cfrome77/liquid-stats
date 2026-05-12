@@ -1,4 +1,6 @@
 .powered-by {
   display: block;
-  margin: 15px auto 15px;
+  margin: 15px auto;
+  max-height: 40px;
+  width: auto;
 }
