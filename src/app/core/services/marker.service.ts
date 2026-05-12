@@ -101,6 +101,9 @@ export class MarkerService {
       const breweryId = beer.brewery.brewery_id?.toString() ?? "unknown";
 
       if (!breweryCounts[breweryId]) {
+        const logo =
+          beer.brewery.brewery_label ??
+          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png";
         breweryCounts[breweryId] = {
           lat,
           lon,
@@ -109,17 +112,24 @@ export class MarkerService {
           city: beer.brewery.location.brewery_city ?? "",
           state: beer.brewery.location.brewery_state ?? "",
           logo:
-            beer.brewery.brewery_label ??
-            "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+            logo && (logo.includes("untappd.com") || logo.includes("untp.beer"))
+              ? logo.replace(/_(lg|md)\./, "_sm.")
+              : logo,
           checkIns: [],
         };
       }
 
+      const beerLabel =
+        beer.beer.beer_label ??
+        "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png";
       breweryCounts[breweryId].checkIns.push({
         beerName: beer.beer.beer_name ?? "Unknown",
         beerLabel:
-          beer.beer.beer_label ??
-          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+          beerLabel &&
+          (beerLabel.includes("untappd.com") ||
+            beerLabel.includes("untp.beer"))
+            ? beerLabel.replace(/_(lg|md)\./, "_sm.")
+            : beerLabel,
         beerABV: beer.beer.beer_abv ?? 0,
         beerStyle: beer.beer.beer_style ?? "Unknown",
         rating: beer.rating_score ?? 0,

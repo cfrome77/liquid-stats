@@ -365,7 +365,12 @@ export class StatsComponent implements OnInit, OnDestroy {
       title,
       beers: filtered.map((b) => ({
         beerName: b.beer.beer_name,
-        beerLabel: b.beer.beer_label,
+        beerLabel:
+          b.beer.beer_label &&
+          (b.beer.beer_label.includes("untappd.com") ||
+            b.beer.beer_label.includes("untp.beer"))
+            ? b.beer.beer_label.replace(/_(lg|md)\./, "_sm.")
+            : b.beer.beer_label,
         breweryName: b.brewery.brewery_name,
         beerABV: b.beer.beer_abv,
         rating: b.rating_score,
