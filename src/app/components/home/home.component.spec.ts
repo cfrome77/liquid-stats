@@ -23,6 +23,7 @@ describe("HomeComponent", () => {
     mockBeerStoreService = {
       load: () => {},
       beers$: of([]),
+      checkins$: of([]),
       stats$: of({
         totalUniqueBeers: 0,
         totalCheckins: 0,

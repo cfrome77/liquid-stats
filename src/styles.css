@@ -468,7 +468,11 @@ strong {
 .badge-image,
 .beer-card img,
 .brewery-logo,
-.beer-label-img {
+.beer-label-img,
+.logo-hero,
+.powered-by,
+.mat-mdc-card-image,
+[mat-card-image] {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   image-rendering: pixelated;

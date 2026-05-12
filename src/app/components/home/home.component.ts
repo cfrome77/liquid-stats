@@ -44,9 +44,9 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.beerStore.load();
 
-    this.beerStore.beers$.subscribe((beers) => {
-      if (!beers) return;
-      this.allCheckins = beers;
+    this.beerStore.checkins$.subscribe((checkins) => {
+      if (!checkins) return;
+      this.allCheckins = checkins;
     });
 
     this.beerStore.stats$.subscribe((stats) => {
