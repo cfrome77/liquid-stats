@@ -4,6 +4,7 @@ import {
   ViewChild,
   ElementRef,
   inject,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
@@ -29,6 +30,7 @@ import { BeerStoreService } from "../../core/services/beer-store.service";
 })
 export class HomeComponent implements OnInit {
   private beerStore = inject(BeerStoreService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
@@ -47,6 +49,7 @@ export class HomeComponent implements OnInit {
     this.beerStore.checkins$.subscribe((checkins) => {
       if (!checkins) return;
       this.allCheckins = checkins;
+      this.cdr.markForCheck();
     });
 
     this.beerStore.stats$.subscribe((stats) => {
@@ -56,6 +59,7 @@ export class HomeComponent implements OnInit {
       this.averageRating = stats.averageRating;
       this.countriesTried = Object.keys(stats.topCountries).length;
       this.breweriesVisited = stats.totalUniqueBreweries;
+      this.cdr.markForCheck();
     });
   }
 

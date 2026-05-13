@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject, map, catchError, of } from "rxjs";
 import { DataService } from "./data.service";
 import { BeerCheckin } from "../models/beer.model";
 import { Checkin } from "../models/checkin.model";
@@ -17,19 +17,44 @@ export class BeerStoreService {
   private checkinsSubject = new BehaviorSubject<Checkin[] | null>(null);
   readonly checkins$ = this.checkinsSubject.asObservable();
 
+  private isLoadingBeers = false;
+  private isLoadingCheckins = false;
+
   // 2. Load once
   load(): void {
-    if (!this.beersSubject.value) {
-      this.dataService.getBeersAll().subscribe((beers) => {
-        this.beersSubject.next(beers);
-      });
+    if (!this.beersSubject.value && !this.isLoadingBeers) {
+      this.isLoadingBeers = true;
+      this.dataService
+        .getBeersAll()
+        .pipe(
+          catchError((err) => {
+            console.error("Error loading beers:", err);
+            this.isLoadingBeers = false;
+            return of([]);
+          }),
+        )
+        .subscribe((beers) => {
+          this.beersSubject.next(beers);
+          this.isLoadingBeers = false;
+        });
     }
 
-    if (!this.checkinsSubject.value) {
-      this.dataService.getCheckins().subscribe((response) => {
-        const items = response.response.checkins.items || [];
-        this.checkinsSubject.next(items);
-      });
+    if (!this.checkinsSubject.value && !this.isLoadingCheckins) {
+      this.isLoadingCheckins = true;
+      this.dataService
+        .getCheckins()
+        .pipe(
+          catchError((err) => {
+            console.error("Error loading checkins:", err);
+            this.isLoadingCheckins = false;
+            return of({ response: { checkins: { items: [] } } } as any);
+          }),
+        )
+        .subscribe((response) => {
+          const items = response?.response?.checkins?.items || [];
+          this.checkinsSubject.next(items);
+          this.isLoadingCheckins = false;
+        });
     }
   }
 
