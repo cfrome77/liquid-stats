@@ -6,26 +6,27 @@ This project uses the Untappd API and allows you to keep track of what beers you
 
 The Untappd API requires that you register your application. Register your app [here](https://untappd.com/api/register?register=new). Currently, new apps cannot be created to get API access. Most likely, you will need to be an insider to gain the ability to download your Untappd JSON data.
 
-The local or AWS steps can be used for testing or production, just know that the data will need to be updated mainually if you go with local JSON files vs the use of the AWS automation.
+The local or AWS steps can be used for testing or production, just know that the data will need to be updated manually if you go with local JSON files vs the use of the AWS automation.
 
 ---
 
 ## Prerequisites
 
+
 | Tool / Package      | Required Version | Purpose                         |
 | ------------------- | ---------------- | ------------------------------- |
-| Node.js             | v20.x            | Runtime for Angular and scripts |
-| npm                 | v10.x            | Package manager                 |
-| Angular CLI         | v14.x            | Building and serving the app    |
+| Node.js             | >=v22.0.0        | Runtime for Angular and scripts |
+| npm                 | >=v9.0.0         | Package manager                 |
+| Angular CLI         | v21.2.x          | Building and serving the app    |
 | Python              | 3.x              | Fetching Untappd data           |
 | pip / python-dotenv | Latest           | Python dependency management    |
 | Terraform           | v1.6.x           | Deploying AWS infrastructure    |
 
-**Note:** We recommend using [NVM (Node Version Manager)](https://github.com/nvm/nvm) to manage Node versions. This allows you to easily switch to Node 16 for this project:
+**Note:** We recommend using [NVM (Node Version Manager)](https://github.com/nvm/nvm) to manage Node versions. This allows you to easily switch to the supported Node version for this project:
 
 ```bash
-nvm install 20
-nvm use 20
+nvm install 22
+nvm use 22
 ```
 
 Check your installed versions with:
@@ -103,7 +104,7 @@ terraform apply
 
 ```bash
 cd deploy
-./liquid-stats-lambda.sh
+./deploy_lambda.sh
 ```
 
 This script builds the Lambda zip from `lambda/`, uploads it to S3, and deploys the CloudFormation template to schedule the Lambda to run (default: 12:00 AM Monday) to fetch Untappd data.
