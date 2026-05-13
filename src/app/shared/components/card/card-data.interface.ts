@@ -17,6 +17,8 @@ export interface CardExtraData {
   venueId?: number;
   checkinId?: number;
   userName?: string;
+  originalMainImage?: string;
+  originalSecondaryImage?: string;
 }
 
 // Base interface

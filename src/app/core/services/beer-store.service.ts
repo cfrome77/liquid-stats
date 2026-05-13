@@ -1,7 +1,8 @@
 import { Injectable, inject } from "@angular/core";
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject, map, catchError, of } from "rxjs";
 import { DataService } from "./data.service";
 import { BeerCheckin } from "../models/beer.model";
+import { Checkin } from "../models/checkin.model";
 import { StatsService } from "../../components/stats/stats.service";
 
 @Injectable({ providedIn: "root" })
@@ -13,13 +14,67 @@ export class BeerStoreService {
   private beersSubject = new BehaviorSubject<BeerCheckin[] | null>(null);
   readonly beers$ = this.beersSubject.asObservable();
 
+  private checkinsSubject = new BehaviorSubject<Checkin[] | null>(null);
+  readonly checkins$ = this.checkinsSubject.asObservable();
+
+  private quickStatsSubject = new BehaviorSubject<any | null>(null);
+  readonly quickStats$ = this.quickStatsSubject.asObservable();
+
+  private isLoadingBeers = false;
+  private isLoadingCheckins = false;
+
   // 2. Load once
   load(): void {
-    if (this.beersSubject.value) return;
+    if (!this.quickStatsSubject.value) {
+      this.dataService
+        .getStats()
+        .pipe(
+          catchError((err) => {
+            console.error("Error loading quick stats:", err);
+            return of(null);
+          }),
+        )
+        .subscribe((stats) => {
+          if (stats) {
+            this.quickStatsSubject.next(stats);
+          }
+        });
+    }
 
-    this.dataService.getBeersAll().subscribe((beers) => {
-      this.beersSubject.next(beers);
-    });
+    if (!this.beersSubject.value && !this.isLoadingBeers) {
+      this.isLoadingBeers = true;
+      this.dataService
+        .getBeersAll()
+        .pipe(
+          catchError((err) => {
+            console.error("Error loading beers:", err);
+            this.isLoadingBeers = false;
+            return of([]);
+          }),
+        )
+        .subscribe((beers) => {
+          this.beersSubject.next(beers);
+          this.isLoadingBeers = false;
+        });
+    }
+
+    if (!this.checkinsSubject.value && !this.isLoadingCheckins) {
+      this.isLoadingCheckins = true;
+      this.dataService
+        .getCheckins()
+        .pipe(
+          catchError((err) => {
+            console.error("Error loading checkins:", err);
+            this.isLoadingCheckins = false;
+            return of({ response: { checkins: { items: [] } } } as any);
+          }),
+        )
+        .subscribe((response) => {
+          const items = response?.response?.checkins?.items || [];
+          this.checkinsSubject.next(items);
+          this.isLoadingCheckins = false;
+        });
+    }
   }
 
   // 3. Derived stream: stats (always consistent)
@@ -35,6 +90,4 @@ export class BeerStoreService {
     }),
   );
 
-  // 4. Derived stream: checkins for home page
-  readonly checkins$ = this.beers$.pipe(map((beers) => beers ?? []));
 }

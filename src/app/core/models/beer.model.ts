@@ -7,6 +7,7 @@ export interface BeerCheckin {
     beer_abv: number;
     bid: number;
     beer_label: string;
+    beer_label_hd?: string;
     beer_name: string;
     beer_style: string;
     beer_description?: string;
@@ -16,6 +17,7 @@ export interface BeerCheckin {
   brewery: {
     brewery_id?: number;
     brewery_label?: string;
+    brewery_label_hd?: string;
     brewery_page_url?: string;
     contact?: {
       twitter?: string;

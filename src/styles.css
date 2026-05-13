@@ -462,6 +462,22 @@ strong {
   text-overflow: ellipsis;
 }
 
+/* Image Sharpening for scaled-up low-res images */
+.beer-label,
+.brewery-label,
+.badge-image,
+.beer-card img,
+.brewery-logo,
+.beer-label-img,
+.logo-hero,
+.powered-by,
+.mat-mdc-card-image,
+[mat-card-image] {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
 .light-theme {
   --map-bg: #e5e3df;
 }

@@ -29,6 +29,7 @@ import { Subscription } from "rxjs";
 
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
+import { sanitizeUntappdUrl } from "../../core/utils/url-utils";
 import { ProcessedStats } from "src/app/core/models/stats.model";
 import {
   BeerStyleDialogComponent,
@@ -365,7 +366,7 @@ export class StatsComponent implements OnInit, OnDestroy {
       title,
       beers: filtered.map((b) => ({
         beerName: b.beer.beer_name,
-        beerLabel: b.beer.beer_label,
+        beerLabel: sanitizeUntappdUrl(b.beer.beer_label) || b.beer.beer_label,
         breweryName: b.brewery.brewery_name,
         beerABV: b.beer.beer_abv,
         rating: b.rating_score,

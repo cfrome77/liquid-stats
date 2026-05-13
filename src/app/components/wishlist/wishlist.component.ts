@@ -65,14 +65,18 @@ export class WishlistComponent implements OnInit {
       subtitle: item.beer.beer_style,
       breweryName: item.brewery.brewery_name,
       description: item.beer.beer_description,
-      mainImage: item.beer.beer_label,
-      secondaryImage: item.brewery.brewery_label,
+      mainImage: item.beer.beer_label_hd || item.beer.beer_label,
+      secondaryImage: item.brewery.brewery_label_hd || item.brewery.brewery_label,
       footerInfo: {
         text: "Wishlist Item",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
         timestamp: item.created_at
           ? `Added ${DateUtils.formatTimestamp(item.created_at)}`
           : "Added long ago",
+      },
+      extraData: {
+        originalMainImage: item.beer.beer_label,
+        originalSecondaryImage: item.brewery.brewery_label,
       },
     };
   }

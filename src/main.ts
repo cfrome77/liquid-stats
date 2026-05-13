@@ -42,14 +42,11 @@ bootstrapApplication(AppComponent, {
         // 2. Untappd Images
         // Example: https://assets.untappd.com/.../photo_img_md.jpg
         // Suffixes: _sm, _md, _lg
+        // User requested to force _sm for all Untappd images due to 403 errors on larger versions.
         if (url.includes("untappd.com") || url.includes("untp.beer")) {
-          if (!width) return url;
-
-          const suffix = width <= 100 ? "sm" : width <= 300 ? "md" : "lg";
-
           // Only replace if a known size suffix exists
           if (/_(sm|md|lg)\./.test(url)) {
-            return url.replace(/_(sm|md|lg)\./, `_${suffix}.`);
+            return url.replace(/_(sm|md|lg)\./, `_sm.`);
           }
 
           return url;

@@ -3,6 +3,7 @@ import { isPlatformBrowser } from "@angular/common";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "../models/beer.model";
+import { sanitizeUntappdUrl } from "../utils/url-utils";
 
 export interface BreweryMarkerData {
   breweryId?: string;
@@ -101,6 +102,9 @@ export class MarkerService {
       const breweryId = beer.brewery.brewery_id?.toString() ?? "unknown";
 
       if (!breweryCounts[breweryId]) {
+        const logo =
+          beer.brewery.brewery_label ??
+          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png";
         breweryCounts[breweryId] = {
           lat,
           lon,
@@ -108,18 +112,17 @@ export class MarkerService {
           name: beer.brewery.brewery_name,
           city: beer.brewery.location.brewery_city ?? "",
           state: beer.brewery.location.brewery_state ?? "",
-          logo:
-            beer.brewery.brewery_label ??
-            "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+          logo: sanitizeUntappdUrl(logo) || logo,
           checkIns: [],
         };
       }
 
+      const beerLabel =
+        beer.beer.beer_label ??
+        "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png";
       breweryCounts[breweryId].checkIns.push({
         beerName: beer.beer.beer_name ?? "Unknown",
-        beerLabel:
-          beer.beer.beer_label ??
-          "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+        beerLabel: sanitizeUntappdUrl(beerLabel) || beerLabel,
         beerABV: beer.beer.beer_abv ?? 0,
         beerStyle: beer.beer.beer_style ?? "Unknown",
         rating: beer.rating_score ?? 0,

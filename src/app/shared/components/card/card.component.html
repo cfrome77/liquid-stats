@@ -6,12 +6,15 @@
           @if (cardData.mainImage) {
             <img
               class="beer-label"
-              [ngSrc]="cardData.mainImage"
-              ngSrcset="54w, 100w"
+              [src]="cardData.mainImage"
+              (error)="
+                $event.target.src = cardData.extraData?.originalMainImage || DEFAULT_IMAGE
+              "
               [alt]="cardData.title"
               [title]="cardData.title"
               width="54"
               height="54"
+              loading="lazy"
             />
           }
         </div>
@@ -37,12 +40,15 @@
           @if (cardData.secondaryImage) {
             <img
               class="brewery-label"
-              [ngSrc]="cardData.secondaryImage"
-              ngSrcset="54w, 100w"
+              [src]="cardData.secondaryImage"
+              (error)="
+                $event.target.src = cardData.extraData?.originalSecondaryImage || DEFAULT_IMAGE
+              "
               [alt]="cardData.breweryName"
               [title]="cardData.breweryName"
               width="54"
               height="54"
+              loading="lazy"
             />
           }
         </div>
