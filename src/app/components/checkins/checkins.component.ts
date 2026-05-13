@@ -216,8 +216,8 @@ export class CheckinsComponent implements OnInit {
       breweryName: checkin.brewery.brewery_name,
       description: checkin.checkin_comment,
       rating: checkin.rating_score,
-      mainImage: checkin.beer.beer_label,
-      secondaryImage: checkin.brewery.brewery_label,
+      mainImage: checkin.beer.beer_label_hd || checkin.beer.beer_label,
+      secondaryImage: checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
       footerInfo: {
         text: checkin.venue?.venue_name ?? "Beer Info",
         link: checkin.venue
@@ -226,7 +226,11 @@ export class CheckinsComponent implements OnInit {
         timestamp: this.published(checkin.created_at),
         rightLinkText: "Checkin Details",
       },
-      extraData,
+      extraData: {
+        ...extraData,
+        originalMainImage: checkin.beer.beer_label,
+        originalSecondaryImage: checkin.brewery.brewery_label,
+      },
     };
   }
 }

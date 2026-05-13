@@ -99,6 +99,24 @@ export class DataService {
   }
 
   public getWishlist(): Observable<unknown> {
-    return this.http.get<unknown>(`${this.baseUrl}wishlist.json`);
+    return this.http.get<unknown>(`${this.baseUrl}wishlist.json`).pipe(
+      map(data => {
+        const d = data as { response?: { beers?: { items?: BeerCheckin[] } } };
+        if (d?.response?.beers?.items) {
+          d.response.beers.items = d.response.beers.items.map(b => ({
+            ...b,
+            beer: {
+              ...b.beer,
+              beer_label_hd: upgradeToHdUrl(b.beer?.beer_label)
+            },
+            brewery: {
+              ...b.brewery,
+              brewery_label_hd: upgradeToHdUrl(b.brewery?.brewery_label)
+            }
+          }));
+        }
+        return d;
+      })
+    );
   }
 }

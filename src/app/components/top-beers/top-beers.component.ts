@@ -196,15 +196,19 @@ export class TopBeersComponent implements OnInit {
       breweryName: beer.brewery.brewery_name,
       rating: beer.avgRating,
       globalRating: beer.beer.rating_score,
-      mainImage: beer.beer.beer_label,
-      secondaryImage: beer.brewery.brewery_label,
+      mainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
+      secondaryImage: beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
       rank: rank,
       footerInfo: {
         text: `Check-ins: ${beer.totalCheckins}`,
         link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
         timestamp: `Last: ${DateUtils.getTimeAgo(DateUtils.parseDate(beer.recent_created_at))}`,
       },
-      extraData,
+      extraData: {
+        ...extraData,
+        originalMainImage: beer.beer.beer_label,
+        originalSecondaryImage: beer.brewery.brewery_label,
+      },
     };
   }
 

@@ -33,6 +33,9 @@ export class CardComponent {
   @Input() cardData!: BaseCardData;
   @Output() badgeClick = new EventEmitter<unknown>();
 
+  readonly DEFAULT_IMAGE =
+    "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
+
   onBadgeClick(badge: unknown): void {
     this.badgeClick.emit(badge);
   }
