@@ -94,11 +94,16 @@ def get_wishlist():
 
 
 def compute_stats(beers):
-    """Compute summary stats for front-end."""
+    """Compute summary stats for front-end, aligned with StatsService.ts."""
     total_checkins = sum(b.get("count", 1) for b in beers)
-    avg_rating = sum(b.get("rating_score", 0) for b in beers) / (len(beers) or 1)
+
+    # Weighted average rating: (rating * checkins) / total_checkins
+    total_weighted_rating = sum(b.get("rating_score", 0) * b.get("count", 1) for b in beers)
+    avg_rating = total_weighted_rating / (total_checkins or 1)
+
     countries = set(b.get("brewery", {}).get("country_name") for b in beers if b.get("brewery"))
     breweries = set(b.get("brewery", {}).get("brewery_name") for b in beers if b.get("brewery"))
+
     return {
         "totalCheckins": total_checkins,
         "averageRating": round(avg_rating, 2),
