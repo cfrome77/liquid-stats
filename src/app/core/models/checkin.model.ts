@@ -8,12 +8,14 @@ export interface Checkin {
     beer_name: string;
     beer_style: string;
     beer_label: string;
+    beer_label_hd?: string;
     beer_slug: string;
   };
   brewery: {
     brewery_id: number;
     brewery_name: string;
     brewery_label: string;
+    brewery_label_hd?: string;
     country_name: string;
     location?: {
       lat: number;

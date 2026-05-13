@@ -100,15 +100,19 @@
           >
             <img
               mat-card-image
-              [ngSrc]="
+              [src]="
                 c.media?.items?.[0]?.photo?.photo_img_sm ||
+                c.beer.beer_label_hd ||
                 c.beer.beer_label ||
                 DEFAULT_IMAGE
               "
-              ngSrcset="200w, 400w, 600w"
+              (error)="
+                $event.target.src = c.beer.beer_label || DEFAULT_IMAGE
+              "
               [alt]="c.beer.beer_name"
               width="200"
               height="200"
+              loading="lazy"
             />
             <mat-card-content>
               <h4 class="line-clamp-2">{{ c.beer.beer_name }}</h4>
