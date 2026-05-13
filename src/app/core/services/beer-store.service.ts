@@ -17,11 +17,30 @@ export class BeerStoreService {
   private checkinsSubject = new BehaviorSubject<Checkin[] | null>(null);
   readonly checkins$ = this.checkinsSubject.asObservable();
 
+  private quickStatsSubject = new BehaviorSubject<any | null>(null);
+  readonly quickStats$ = this.quickStatsSubject.asObservable();
+
   private isLoadingBeers = false;
   private isLoadingCheckins = false;
 
   // 2. Load once
   load(): void {
+    if (!this.quickStatsSubject.value) {
+      this.dataService
+        .getStats()
+        .pipe(
+          catchError((err) => {
+            console.error("Error loading quick stats:", err);
+            return of(null);
+          }),
+        )
+        .subscribe((stats) => {
+          if (stats) {
+            this.quickStatsSubject.next(stats);
+          }
+        });
+    }
+
     if (!this.beersSubject.value && !this.isLoadingBeers) {
       this.isLoadingBeers = true;
       this.dataService
