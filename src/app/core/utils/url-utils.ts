@@ -1,4 +1,17 @@
 /**
+ * Ensures an Untappd URL points to the small version (_sm) to avoid 403 errors.
+ */
+export function sanitizeUntappdUrl(url: string | undefined): string | undefined {
+  if (!url) return url;
+
+  if (url.includes("untappd.com") || url.includes("untp.beer")) {
+    return url.replace(/_(lg|md)\./, "_sm.");
+  }
+
+  return url;
+}
+
+/**
  * Upgrades a low-resolution Untappd image URL to its HD counterpart.
  *
  * Rules:
