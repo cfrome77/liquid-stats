@@ -197,7 +197,8 @@ export class TopBeersComponent implements OnInit {
       rating: beer.avgRating,
       globalRating: beer.beer.rating_score,
       mainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
-      secondaryImage: beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
+      secondaryImage:
+        beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
       rank: rank,
       footerInfo: {
         text: `Check-ins: ${beer.totalCheckins}`,

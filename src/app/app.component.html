@@ -83,6 +83,25 @@
     </div>
   </mat-toolbar>
 
+  @if (hasLoadError) {
+    <div class="global-error-banner flex-row align-center justify-center">
+      <mat-icon class="error-banner-icon">warning</mat-icon>
+      <span class="error-banner-message">
+        Unable to load the latest beer data. You may be offline or the data
+        service is temporarily unavailable.
+      </span>
+      <button
+        mat-flat-button
+        color="warn"
+        class="retry-button"
+        (click)="retryLoad()"
+        aria-label="Retry loading data"
+      >
+        <mat-icon>refresh</mat-icon> Retry
+      </button>
+    </div>
+  }
+
   <nav class="mobile-bottom-nav">
     <a
       routerLink="/"

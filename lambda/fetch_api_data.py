@@ -10,28 +10,63 @@ CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 UNTAPPD_USERNAME = os.environ.get("UNTAPPD_USERNAME")
 S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
-s3 = boto3.client("s3")
+
+# Only initialize boto3 client if S3_BUCKET_NAME is set, allowing local testing without AWS
+s3 = boto3.client("s3") if S3_BUCKET_NAME else None
 
 STEP = 50  # number of items per API call
 THROTTLE = 0.2  # seconds delay between calls to avoid hitting rate limit
 
 
 def fetch_untappd_data(endpoint, params=None):
-    """Fetch JSON from Untappd API."""
+    """Fetch JSON from Untappd API with retries for transient issues/rate limits."""
     url = f"https://api.untappd.com/v4/{endpoint}"
     if params is None:
         params = {}
     print(f"Fetching: {url} with params {params}")
     params.update({"client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    return response.json()
+
+    max_retries = 3
+    backoff = 2
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, params=params, timeout=15)
+            if response.status_code == 429:
+                print(f"Rate limit hit (429) on attempt {attempt + 1}. Retrying in {backoff} seconds...")
+                time.sleep(backoff)
+                backoff *= 2
+                continue
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred on attempt {attempt + 1}: {http_err}")
+            if response.status_code in [429, 500, 502, 503, 504] and attempt < max_retries - 1:
+                print(f"Transient error ({response.status_code}). Retrying in {backoff} seconds...")
+                time.sleep(backoff)
+                backoff *= 2
+            else:
+                raise
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request exception occurred on attempt {attempt + 1}: {req_err}")
+            if attempt < max_retries - 1:
+                print(f"Retrying connection in {backoff} seconds...")
+                time.sleep(backoff)
+                backoff *= 2
+            else:
+                raise
 
 
 def save_json(filename, data):
-    """Save JSON to S3."""
-    if not S3_BUCKET_NAME:
-        print(f"Warning: S3_BUCKET_NAME not set. Skipping save for {filename}")
+    """Save JSON to S3 or locally if running on a dev box without S3 config."""
+    if not S3_BUCKET_NAME or not s3:
+        print(f"Warning: S3_BUCKET_NAME not set. Skipping S3 upload for {filename}")
+        # Optionally, save locally for development
+        local_dir = "src/assets/data"
+        if os.path.exists(local_dir):
+            filepath = os.path.join(local_dir, filename)
+            with open(filepath, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            print(f"Saved {filename} locally to {filepath}")
         return
 
     s3.put_object(
@@ -114,37 +149,46 @@ def compute_stats(beers):
 
 
 def lambda_handler(event, context):
+    print("Proactively validating environment credentials...")
+    if not CLIENT_ID or not CLIENT_SECRET:
+        print("Error: CLIENT_ID or CLIENT_SECRET environment variables are missing.")
+        return {"statusCode": 500, "body": "CLIENT_ID or CLIENT_SECRET missing"}
+
     if not UNTAPPD_USERNAME:
-        print("Error: UNTAPPD_USERNAME not set")
-        return {"statusCode": 500, "body": "UNTAPPD_USERNAME not set"}
+        print("Error: UNTAPPD_USERNAME environment variable is missing.")
+        return {"statusCode": 500, "body": "UNTAPPD_USERNAME missing"}
+
     if not S3_BUCKET_NAME:
-        print("Error: S3_BUCKET_NAME not set")
-        return {"statusCode": 500, "body": "S3_BUCKET_NAME not set"}
+        print("Warning: S3_BUCKET_NAME environment variable is missing. Will save data locally if directories exist.")
 
-    print(f"Starting data fetch for {UNTAPPD_USERNAME}")
+    print(f"Starting data fetch for Untappd user: {UNTAPPD_USERNAME}")
 
-    # 1. Fetch all beers
-    beers = get_all_beers()
-    save_json("beers_all.json", {"beers": beers})
+    try:
+        # 1. Fetch all beers
+        beers = get_all_beers()
+        save_json("beers_all.json", {"beers": beers})
 
-    # 2. Fetch all badges
-    badges = get_all_badges()
-    save_json("badges.json", badges)
+        # 2. Fetch all badges
+        badges = get_all_badges()
+        save_json("badges.json", badges)
 
-    # 3. Fetch recent checkins
-    checkins = get_checkins()
-    save_json("checkins.json", checkins)
+        # 3. Fetch recent checkins
+        checkins = get_checkins()
+        save_json("checkins.json", checkins)
 
-    # 4. Fetch wishlist
-    wishlist = get_wishlist()
-    save_json("wishlist.json", wishlist)
+        # 4. Fetch wishlist
+        wishlist = get_wishlist()
+        save_json("wishlist.json", wishlist)
 
-    # 5. Compute and save stats
-    stats = compute_stats(beers)
-    save_json("stats.json", stats)
+        # 5. Compute and save stats
+        stats = compute_stats(beers)
+        save_json("stats.json", stats)
 
-    print("Data fetch and processing completed.")
-    return {"statusCode": 200, "body": json.dumps("Success")}
+        print("Data fetch and processing completed successfully.")
+        return {"statusCode": 200, "body": json.dumps("Success")}
+    except Exception as e:
+        print(f"Critical error occurred during Lambda execution: {e}")
+        return {"statusCode": 500, "body": json.dumps(f"Critical error: {e}")}
 
 
 if __name__ == "__main__":

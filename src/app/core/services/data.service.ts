@@ -55,11 +55,10 @@ export class DataService {
           beers?: BeerCheckin[];
           response?: { checkins?: { items?: BeerCheckin[] } };
         };
-        const beers = (
+        const beers =
           d?.beers ||
           d?.response?.checkins?.items ||
-          (Array.isArray(data) ? (data as BeerCheckin[]) : [])
-        );
+          (Array.isArray(data) ? (data as BeerCheckin[]) : []);
 
         // Mutate to add HD labels and sanitize original labels to prevent 403s on fallbacks
         return beers.map((b) => ({
@@ -93,7 +92,8 @@ export class DataService {
               },
               brewery: {
                 ...c.brewery,
-                brewery_label: sanitizeUntappdUrl(c.brewery?.brewery_label) || "",
+                brewery_label:
+                  sanitizeUntappdUrl(c.brewery?.brewery_label) || "",
                 brewery_label_hd: upgradeToHdUrl(c.brewery?.brewery_label),
               },
             }));

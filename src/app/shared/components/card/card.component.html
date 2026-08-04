@@ -8,7 +8,8 @@
               class="beer-label"
               [src]="cardData.mainImage"
               (error)="
-                $event.target.src = cardData.extraData?.originalMainImage || DEFAULT_IMAGE
+                $event.target.src =
+                  cardData.extraData?.originalMainImage || DEFAULT_IMAGE
               "
               [alt]="cardData.title"
               [title]="cardData.title"
@@ -42,7 +43,8 @@
               class="brewery-label"
               [src]="cardData.secondaryImage"
               (error)="
-                $event.target.src = cardData.extraData?.originalSecondaryImage || DEFAULT_IMAGE
+                $event.target.src =
+                  cardData.extraData?.originalSecondaryImage || DEFAULT_IMAGE
               "
               [alt]="cardData.breweryName"
               [title]="cardData.breweryName"
@@ -62,7 +64,7 @@
         <span class="comment">{{ cardData.hint }}</span>
       }
 
-      @if (cardData.rating != null) {
+      @if (cardData.rating !== null && cardData.rating !== undefined) {
         <div class="rating-bar">
           <app-rating
             [ratingScore]="cardData.rating"
@@ -72,22 +74,27 @@
       }
 
       @if (
-        cardData.globalRating != null ||
+        (cardData.globalRating !== null &&
+          cardData.globalRating !== undefined) ||
         (cardData.extraData?.badges?.length ?? 0) > 0 ||
         !!cardData.extraData?.socialLinks
       ) {
         <div class="badges-and-social-links">
-          @if (cardData.globalRating != null) {
+          @if (
+            cardData.globalRating !== null &&
+            cardData.globalRating !== undefined
+          ) {
             <div class="global-rating flex-row align-center gap-4">
               <span class="global-rating-label">Overall Rating:</span>
               <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
             </div>
           }
 
-          <div class="flex-row align-center min-w-0">
+          <div class="flex-row align-center min-w-0 chip-scroll-container">
             @if (
               (cardData.extraData?.badges?.length ?? 0) > 0 &&
-              cardData.globalRating == null
+              (cardData.globalRating === null ||
+                cardData.globalRating === undefined)
             ) {
               <mat-chip-set class="chip">
                 @for (

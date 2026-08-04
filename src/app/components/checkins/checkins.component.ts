@@ -192,7 +192,7 @@ export class CheckinsComponent implements OnInit {
             lg: b.badge_image,
           },
           badge_description:
-            (b as any).badge_description || "Badge earned during check-in.",
+            b.badge_description || "Badge earned during check-in.",
           badge_hint: "",
           media: { badge_image_sm: b.badge_image },
           earned_at: checkin.created_at,
@@ -217,7 +217,8 @@ export class CheckinsComponent implements OnInit {
       description: checkin.checkin_comment,
       rating: checkin.rating_score,
       mainImage: checkin.beer.beer_label_hd || checkin.beer.beer_label,
-      secondaryImage: checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
+      secondaryImage:
+        checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
       footerInfo: {
         text: checkin.venue?.venue_name ?? "Beer Info",
         link: checkin.venue

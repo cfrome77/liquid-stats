@@ -173,11 +173,6 @@ export class MapComponent
   private initMap(): void {
     if (this.map) return;
 
-    // Debugging duplicate Leaflet instances in production
-    console.log("L keys:", Object.keys(L as any));
-    console.log("cluster fn:", (L as any).markerClusterGroup);
-    console.log("window.L cluster fn:", (window as any).L?.markerClusterGroup);
-
     const iconDefault = L.icon({
       iconUrl: "/assets/images/marker-icon.png",
       shadowUrl: "/assets/images/marker-shadow.png",

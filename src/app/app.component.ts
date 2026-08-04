@@ -6,6 +6,7 @@ import {
   effect,
   NgZone,
   inject,
+  ChangeDetectorRef,
 } from "@angular/core";
 
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
@@ -14,7 +15,7 @@ import { filter, takeUntil } from "rxjs/operators";
 import { slideInAnimation } from "./animations";
 import { Ga4TrackingService } from "./core/services/ga4-tracking.service";
 import { ThemeService } from "./core/services/theme.service";
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT, CommonModule } from "@angular/common";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -30,6 +31,7 @@ import { BeerStoreService } from "./core/services/beer-store.service";
   styleUrls: ["./app.component.css"],
   standalone: true,
   imports: [
+    CommonModule,
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
@@ -48,12 +50,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private renderer = inject(Renderer2);
   private document = inject<Document>(DOCUMENT);
   private ngZone = inject(NgZone);
+  private beerStore = inject(BeerStoreService);
+  private cdr = inject(ChangeDetectorRef);
 
   title = "liquid-stats";
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
+  hasLoadError = false;
   private destroy$ = new Subject<void>();
 
-  constructor(private beerStore: BeerStoreService) {
+  constructor() {
     this.beerStore.load();
 
     // Consume the theme signal using an effect
@@ -65,6 +70,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Listen for data load errors
+    this.beerStore.loadError$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((err) => {
+        this.hasLoadError = err;
+        this.cdr.markForCheck();
+      });
+
     // Load and initialize GA4 when the browser is idle to improve initial page load performance
     this.ngZone.runOutsideAngular(() => {
       if ("requestIdleCallback" in window) {
@@ -99,6 +112,10 @@ export class AppComponent implements OnInit, OnDestroy {
           this.ga4Service.trackPageView(newPath, newTitle);
         });
     });
+  }
+
+  retryLoad(): void {
+    this.beerStore.load(true);
   }
 
   toggleTheme(): void {

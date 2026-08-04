@@ -106,9 +106,7 @@
                 c.beer.beer_label ||
                 DEFAULT_IMAGE
               "
-              (error)="
-                $event.target.src = c.beer.beer_label || DEFAULT_IMAGE
-              "
+              (error)="$event.target.src = c.beer.beer_label || DEFAULT_IMAGE"
               [alt]="c.beer.beer_name"
               width="200"
               height="200"

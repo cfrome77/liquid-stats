@@ -69,23 +69,39 @@ test("no overlap on mobile", async ({ page }) => {
 
   const badgesCount = await badges.count();
   const socialBox = await socialLinks.boundingBox();
+  const scrollContainer = card.locator(".chip-scroll-container");
+  const scrollBox = await scrollContainer.boundingBox();
 
   if (socialBox) {
     for (let i = 0; i < badgesCount; i++) {
       const badgeBox = await badges.nth(i).boundingBox();
       if (badgeBox) {
+        // Since badges are in a horizontal scroll container, any portion extending beyond
+        // the scroll container is clipped and not visually overlapping with social links.
+        const visibleWidth = scrollBox
+          ? Math.min(badgeBox.width, Math.max(0, scrollBox.x + scrollBox.width - badgeBox.x))
+          : badgeBox.width;
+
+        const visibleBadgeBox = {
+          x: badgeBox.x,
+          y: badgeBox.y,
+          width: visibleWidth,
+          height: badgeBox.height,
+        };
+
         // Check for overlap: simple intersection check
         const overlap = !(
-          socialBox.x + socialBox.width <= badgeBox.x ||
-          badgeBox.x + badgeBox.width <= socialBox.x ||
-          socialBox.y + socialBox.height <= badgeBox.y ||
-          badgeBox.y + badgeBox.height <= socialBox.y
+          socialBox.x + socialBox.width <= visibleBadgeBox.x ||
+          visibleBadgeBox.x + visibleBadgeBox.width <= socialBox.x ||
+          socialBox.y + socialBox.height <= visibleBadgeBox.y ||
+          visibleBadgeBox.y + visibleBadgeBox.height <= socialBox.y
         );
 
         if (overlap) {
           console.log(`Overlap detected with badge ${i}!`);
           console.log("Social:", socialBox);
           console.log(`Badge ${i}:`, badgeBox);
+          console.log(`Visible Badge ${i}:`, visibleBadgeBox);
         }
         expect(overlap).toBe(false);
       }
