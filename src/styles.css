@@ -435,6 +435,37 @@ strong {
   display: none !important;
 }
 
+/* Global Error Banner */
+.global-error-banner {
+  background-color: #f44336;
+  color: #ffffff;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 12px;
+  z-index: 1001;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  flex-wrap: wrap;
+}
+
+.error-banner-icon {
+  color: #ffffff;
+}
+
+.error-banner-message {
+  flex: 1;
+  min-width: 200px;
+}
+
+.retry-button {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.retry-button:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
 /* Modern Card Utility */
 .modern-card {
   background-color: var(--card-bg) !important;

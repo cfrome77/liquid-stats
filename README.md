@@ -12,7 +12,6 @@ The local or AWS steps can be used for testing or production, just know that the
 
 ## Prerequisites
 
-
 | Tool / Package      | Required Version | Purpose                         |
 | ------------------- | ---------------- | ------------------------------- |
 | Node.js             | >=v22.0.0        | Runtime for Angular and scripts |

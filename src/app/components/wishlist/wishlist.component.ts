@@ -66,7 +66,8 @@ export class WishlistComponent implements OnInit {
       breweryName: item.brewery.brewery_name,
       description: item.beer.beer_description,
       mainImage: item.beer.beer_label_hd || item.beer.beer_label,
-      secondaryImage: item.brewery.brewery_label_hd || item.brewery.brewery_label,
+      secondaryImage:
+        item.brewery.brewery_label_hd || item.brewery.brewery_label,
       footerInfo: {
         text: "Wishlist Item",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,

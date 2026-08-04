@@ -5,6 +5,7 @@ import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { DataService } from "../../core/services/data.service";
 import { BeerStoreService } from "../../core/services/beer-store.service";
+import { ProcessedStats } from "../../core/models/stats.model";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -29,6 +30,7 @@ describe("HomeComponent", () => {
         averageRating: 0,
         countriesTried: 0,
         breweriesVisited: 0,
+        lastUpdated: "2026-02-19T12:00:00Z",
       }),
       stats$: of({
         totalUniqueBeers: 0,
@@ -47,7 +49,7 @@ describe("HomeComponent", () => {
         checkinsByDayOfWeek: [],
         checkinsByMonth: [],
         averageRatingsOverTime: [],
-      } as any),
+      } as unknown as ProcessedStats),
     };
 
     await TestBed.configureTestingModule({

@@ -33,7 +33,7 @@ describe("MapComponent", () => {
       "clearLayers",
       "addLayer",
       "zoomToShowLayer",
-    ]) as any;
+    ]) as unknown as L.MarkerClusterGroup;
 
     // Mock DataService
     mockDataService = jasmine.createSpyObj("DataService", [

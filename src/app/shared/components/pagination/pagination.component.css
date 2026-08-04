@@ -59,7 +59,6 @@
   border: none;
 }
 
-
 /* Disabled button styling */
 .pagination-controls button[disabled] {
   color: var(--text-color);

@@ -336,7 +336,8 @@ export class BeerHistoryComponent implements OnInit {
       rating: beer.rating_score,
       globalRating: beer.beer.rating_score,
       mainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
-      secondaryImage: beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
+      secondaryImage:
+        beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
       footerInfo: {
         text: "Brewery Info",
         link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,

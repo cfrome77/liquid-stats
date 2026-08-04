@@ -5,7 +5,7 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { CommonModule, NgOptimizedImage } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
@@ -20,7 +20,6 @@ import { BaseCardData } from "./card-data.interface";
   standalone: true,
   imports: [
     CommonModule,
-    NgOptimizedImage,
     MatCardModule,
     MatIconModule,
     MatChipsModule,

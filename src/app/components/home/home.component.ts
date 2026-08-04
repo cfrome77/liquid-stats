@@ -13,6 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { RouterModule } from "@angular/router";
 
 import { BeerStoreService } from "../../core/services/beer-store.service";
+import { Checkin } from "../../core/models/checkin.model";
 
 @Component({
   selector: "app-home",
@@ -34,7 +35,7 @@ export class HomeComponent implements OnInit {
 
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
-  allCheckins: any[] = [];
+  allCheckins: Checkin[] = [];
   totalCheckins = 0;
   averageRating = 0;
   countriesTried = 0;

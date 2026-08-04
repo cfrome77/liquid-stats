@@ -160,11 +160,17 @@
   gap: 16px;
   padding: 12px 16px;
   min-height: 48px;
-  overflow-x: auto;
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  width: 100%;
 }
 
-.badges-and-social-links::-webkit-scrollbar {
+.chip-scroll-container {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  min-width: 0;
+}
+
+.chip-scroll-container::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome, Safari and Opera */
 }
 
