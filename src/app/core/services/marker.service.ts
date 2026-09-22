@@ -20,15 +20,11 @@ export const BREWERY_TYPE_COLORS: Record<string, string> = {
 };
 export const DEFAULT_BREWERY_COLOR = "#455a64"; // Slate Gray
 
-export function extractBreweryType(brewery: {
+export function extractBreweryType(brewery?: {
   brewery_type?: string;
-  type_name?: string;
-  brewery_type_name?: string;
 }): string {
-  if (!brewery) return "Other";
-  const typeStr =
-    brewery.brewery_type || brewery.type_name || brewery.brewery_type_name;
-  return typeStr ? typeStr.trim() : "Other";
+  if (!brewery || !brewery.brewery_type) return "Other";
+  return brewery.brewery_type.trim();
 }
 
 export function getBreweryTypeColor(type?: string): string {

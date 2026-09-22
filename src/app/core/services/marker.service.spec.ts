@@ -24,14 +24,11 @@ describe("MarkerService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should fallback brewery_type, type_name, and brewery_type_name in extractBreweryType", () => {
+  it("should extract brewery_type in extractBreweryType", () => {
     expect(extractBreweryType({ brewery_type: "Micro Brewery" })).toBe(
       "Micro Brewery",
     );
-    expect(extractBreweryType({ type_name: "Brewpub" })).toBe("Brewpub");
-    expect(extractBreweryType({ brewery_type_name: "Regional Brewery" })).toBe(
-      "Regional Brewery",
-    );
+    expect(extractBreweryType({ brewery_type: "Brewpub" })).toBe("Brewpub");
     expect(extractBreweryType({})).toBe("Other");
     expect(getBreweryTypeColor("micro brewery")).toBe("#2e7d32");
   });
