@@ -302,11 +302,30 @@ footer {
 @media (max-width: 600px) {
   .badges-and-social-links {
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .social-links-wrapper {
     /* Ensure it doesn't take full width on mobile unless it wraps */
     width: auto;
+  }
+
+  .chip-scroll-container {
+    overflow-x: visible;
+  }
+
+  .chip ::ng-deep .mdc-evolution-chip-set__chips {
+    flex-wrap: wrap !important;
+  }
+
+  .clickable-chip {
+    font-size: 0.8rem !important;
+  }
+
+  .clickable-chip img[matChipAvatar] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 4px !important;
   }
 }
 
