@@ -10,7 +10,6 @@ test("responsive navigation", async ({ page }) => {
 
   // Desktop view
   await page.setViewportSize({ width: 1280, height: 800 });
-  // Wait for the element to be attached and visible
   const navItems = page.locator(".desktop-nav");
   await expect(navItems).toBeVisible();
 
@@ -29,7 +28,6 @@ test("responsive navigation", async ({ page }) => {
 test("beer history layout", async ({ page }) => {
   await page.goto("/beer-history");
 
-  // Check if main-content-container is used
   const container = page.locator(".main-content-container");
   await expect(container).toBeVisible();
 
@@ -40,4 +38,22 @@ test("beer history layout", async ({ page }) => {
   // Check layout on mobile
   await page.setViewportSize({ width: 375, height: 667 });
   await page.screenshot({ path: "e2e/screenshots/beer-history-mobile.png" });
+});
+
+test("routes render on mobile and desktop", async ({ page }) => {
+  const routes = ["/stats", "/badges", "/wishlist"];
+
+  for (const r of routes) {
+    // Desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(r);
+    const containerDesktop = page.locator(".main-content-container");
+    await expect(containerDesktop).toBeVisible();
+
+    // Mobile
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto(r);
+    const containerMobile = page.locator(".main-content-container");
+    await expect(containerMobile).toBeVisible();
+  }
 });

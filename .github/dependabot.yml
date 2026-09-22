@@ -7,10 +7,26 @@ updates:
       interval: "weekly" # weekly for all deps
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "deps"
+      prefix: "deps(npm)"
     ignore:
       - dependency-name: "*" # ignore major version bumps
         versions:
           - ">=2.0.0"
     allow:
       - dependency-type: "all" # includes both runtime and dev deps
+
+  - package-ecosystem: "pip"
+    directory: "/lambda"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps(pip)"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps(actions)"

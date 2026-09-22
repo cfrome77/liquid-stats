@@ -79,7 +79,10 @@ test("no overlap on mobile", async ({ page }) => {
         // Since badges are in a horizontal scroll container, any portion extending beyond
         // the scroll container is clipped and not visually overlapping with social links.
         const visibleWidth = scrollBox
-          ? Math.min(badgeBox.width, Math.max(0, scrollBox.x + scrollBox.width - badgeBox.x))
+          ? Math.min(
+              badgeBox.width,
+              Math.max(0, scrollBox.x + scrollBox.width - badgeBox.x),
+            )
           : badgeBox.width;
 
         const visibleBadgeBox = {
