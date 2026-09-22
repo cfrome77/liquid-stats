@@ -32,6 +32,7 @@ export interface BeerCheckin {
       brewery_city?: string;
     };
     brewery_name: string;
+    brewery_type?: string;
     country_name: string;
   };
   venue?: {
