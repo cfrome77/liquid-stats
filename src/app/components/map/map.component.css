@@ -183,6 +183,10 @@
   width: 24px;
   height: 24px;
   line-height: 24px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
 }
 
 .legend-toggle-btn mat-icon {
