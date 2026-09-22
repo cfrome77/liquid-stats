@@ -31,12 +31,19 @@ export class StatsService {
       return this.memoizedStats.result;
     }
 
-    const beersInRange = beers.filter((b) => {
+    const safeBeers = beers || [];
+
+    const beersInRange = safeBeers.filter((b) => {
+      if (!b || !b.recent_created_at) return false;
       const date = DateUtils.parseDate(b.recent_created_at);
       return date >= start && date <= end;
     });
 
-    const uniqueBeersSet = new Set(beersInRange.map((b) => b.beer.bid));
+    const uniqueBeersSet = new Set(
+      beersInRange
+        .map((b) => b.beer?.bid)
+        .filter((bid): bid is number => bid !== undefined && bid !== null),
+    );
     const totalUniqueBeers = uniqueBeersSet.size;
 
     const totalCheckins = beersInRange.reduce(
@@ -44,7 +51,8 @@ export class StatsService {
       0,
     );
 
-    const newBeersCount = beers.filter((b) => {
+    const newBeersCount = safeBeers.filter((b) => {
+      if (!b || !b.first_created_at || !b.beer?.bid) return false;
       const firstDate = DateUtils.parseDate(b.first_created_at);
       return (
         firstDate >= start && firstDate <= end && uniqueBeersSet.has(b.beer.bid)
@@ -55,7 +63,7 @@ export class StatsService {
       totalUniqueBeers > 0 ? newBeersCount / totalUniqueBeers : 0;
 
     const totalRatingSum = beersInRange.reduce(
-      (sum, b) => sum + b.rating_score * (b.count ?? 1),
+      (sum, b) => sum + (b.rating_score ?? 0) * (b.count ?? 1),
       0,
     );
 
@@ -63,7 +71,9 @@ export class StatsService {
       totalCheckins > 0 ? totalRatingSum / totalCheckins : 0;
 
     const uniqueBreweriesSet = new Set(
-      beersInRange.map((b) => b.brewery.brewery_name),
+      beersInRange
+        .map((b) => b.brewery?.brewery_name)
+        .filter((name): name is string => Boolean(name)),
     );
 
     const totalUniqueBreweries = uniqueBreweriesSet.size;
@@ -101,22 +111,23 @@ export class StatsService {
 
     beersInRange.forEach((b) => {
       const count = b.count ?? 1;
-      const style = b.beer.beer_style || "Unknown";
+      const rating = b.rating_score ?? 0;
+      const style = b.beer?.beer_style || "Unknown";
       const checkinDate = DateUtils.parseDate(b.recent_created_at);
       const hour = checkinDate.getHours();
-      const name = b.beer.beer_name;
+      const name = b.beer?.beer_name || "Unknown Beer";
 
       beerStylesCount[style] = (beerStylesCount[style] || 0) + count;
       hourly[hour] += count;
 
       if (!beerTally[name]) beerTally[name] = { count: 0, ratingSum: 0 };
       beerTally[name].count += count;
-      beerTally[name].ratingSum += b.rating_score * count;
+      beerTally[name].ratingSum += rating * count;
 
-      const country = b.brewery.country_name || "Unknown";
+      const country = b.brewery?.country_name || "Unknown";
       countryCounts[country] = (countryCounts[country] || 0) + count;
 
-      const state = b.brewery.location.brewery_state || "Unknown";
+      const state = b.brewery?.location?.brewery_state || "Unknown";
       stateCounts[state] = (stateCounts[state] || 0) + count;
 
       const dayIso = DateUtils.toISODate(checkinDate);
@@ -133,7 +144,7 @@ export class StatsService {
 
       if (!dailyRatingsMap[dayIso])
         dailyRatingsMap[dayIso] = { sum: 0, count: 0 };
-      dailyRatingsMap[dayIso].sum += b.rating_score;
+      dailyRatingsMap[dayIso].sum += rating;
       dailyRatingsMap[dayIso].count += 1;
     });
 
@@ -141,7 +152,7 @@ export class StatsService {
       .map(([name, data]) => ({
         name,
         count: data.count,
-        avgRating: data.ratingSum / data.count,
+        avgRating: data.count > 0 ? data.ratingSum / data.count : 0,
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
@@ -198,7 +209,10 @@ export class StatsService {
       .sort()
       .map((date) => ({
         date,
-        rating: dailyRatingsMap[date].sum / dailyRatingsMap[date].count,
+        rating:
+          dailyRatingsMap[date].count > 0
+            ? dailyRatingsMap[date].sum / dailyRatingsMap[date].count
+            : 0,
       }));
 
     const result: ProcessedStats = {
