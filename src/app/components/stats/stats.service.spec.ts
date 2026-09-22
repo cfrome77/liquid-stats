@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
+
 describe("StatsService", () => {
   let service: StatsService;
 
@@ -40,6 +41,7 @@ describe("StatsService", () => {
           location: { brewery_state: "CA", lat: 0, lng: 0 },
         },
         rating_score: 4,
+        recent_checkin_id: 1234,
         recent_created_at: "2023-01-01 12:00:00",
         first_created_at: "2023-01-01 12:00:00",
         count: 1,
@@ -52,6 +54,48 @@ describe("StatsService", () => {
     const result2 = service.computeStats(mockBeers, start, end);
 
     expect(result1).toBe(result2); // Reference equality check for memoization
+  });
+
+  it("should safely handle null/undefined ratings and missing fields", () => {
+    const mockBeers: BeerCheckin[] = [
+      {
+        beer: {
+          bid: 1,
+          beer_name: undefined as unknown as string,
+          beer_style: undefined as unknown as string,
+          beer_label: "",
+          beer_abv: 5,
+          beer_slug: "",
+        },
+        brewery: {
+          brewery_id: 1,
+          brewery_name: undefined as unknown as string,
+          brewery_label: "",
+          country_name: undefined as unknown as string,
+          contact: {},
+          location: {
+            brewery_state: undefined as unknown as string,
+            lat: 0,
+            lng: 0,
+          },
+        },
+        rating_score: undefined as unknown as number,
+        recent_checkin_id: 1234,
+        recent_created_at: "2023-01-01 12:00:00",
+        first_created_at: "2023-01-01 12:00:00",
+        count: undefined as unknown as number,
+      },
+    ];
+    const start = new Date("2023-01-01");
+    const end = new Date("2023-12-31");
+
+    const stats = service.computeStats(mockBeers, start, end);
+
+    expect(stats.totalCheckins).toBe(1);
+    expect(stats.averageRating).toBe(0);
+    expect(isNaN(stats.averageRating)).toBeFalse();
+    expect(stats.beerStylesCount["Unknown"]).toBe(1);
+    expect(stats.topCountries["Unknown"]).toBe(1);
   });
 
   it("should recompute when beers change", () => {
