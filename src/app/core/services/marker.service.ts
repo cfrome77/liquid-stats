@@ -4,6 +4,7 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "../models/beer.model";
 import { sanitizeUntappdUrl } from "../utils/url-utils";
+import { PopUpService } from "./pop-up.service";
 
 export interface BreweryMarkerData {
   breweryId?: string;
@@ -42,6 +43,7 @@ export interface BreweryMarker extends L.Marker {
 @Injectable()
 export class MarkerService {
   private platformId = inject(PLATFORM_ID);
+  private popUpService = inject(PopUpService);
   public markers: L.MarkerClusterGroup | undefined;
   private breweryMarkers: BreweryMarker[] = [];
 
@@ -144,6 +146,18 @@ export class MarkerService {
       const marker = L.marker([lat, lon]) as BreweryMarker;
       marker.breweryId = id;
       marker.checkInsData = { name, city, state, logo, checkIns };
+
+      const popupHtml = this.popUpService.makePopup(
+        name,
+        state,
+        city,
+        logo,
+        checkIns.length,
+      );
+      marker.bindPopup(popupHtml, {
+        offset: L.point(0, -28),
+        className: "custom-brewery-popup",
+      });
 
       if (onClick) {
         marker.on("click", () =>
