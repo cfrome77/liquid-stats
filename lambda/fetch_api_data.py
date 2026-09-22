@@ -23,25 +23,36 @@ def fetch_untappd_data(endpoint, params=None):
     url = f"https://api.untappd.com/v4/{endpoint}"
     if params is None:
         params = {}
-    print(f"Fetching: {url} with params {params}")
-    params.update({"client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
+
+    print(f"Fetching: {url} with query params keys: {list(params.keys())}")
+    request_params = {**params, "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET}
 
     max_retries = 3
     backoff = 2
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, params=params, timeout=15)
+            response = requests.get(url, params=request_params, timeout=15)
             if response.status_code == 429:
                 print(f"Rate limit hit (429) on attempt {attempt + 1}. Retrying in {backoff} seconds...")
                 time.sleep(backoff)
                 backoff *= 2
                 continue
             response.raise_for_status()
-            return response.json()
+
+            try:
+                return response.json()
+            except ValueError as json_err:
+                print(f"Failed to parse JSON payload on attempt {attempt + 1}: {json_err}")
+                if attempt < max_retries - 1:
+                    time.sleep(backoff)
+                    backoff *= 2
+                    continue
+                raise
         except requests.exceptions.HTTPError as http_err:
-            print(f"HTTP error occurred on attempt {attempt + 1}: {http_err}")
-            if response.status_code in [429, 500, 502, 503, 504] and attempt < max_retries - 1:
-                print(f"Transient error ({response.status_code}). Retrying in {backoff} seconds...")
+            status_code = getattr(response, "status_code", None)
+            print(f"HTTP error occurred on attempt {attempt + 1} (status: {status_code}): {http_err}")
+            if status_code in [429, 500, 502, 503, 504] and attempt < max_retries - 1:
+                print(f"Transient error ({status_code}). Retrying in {backoff} seconds...")
                 time.sleep(backoff)
                 backoff *= 2
             else:
@@ -60,7 +71,6 @@ def save_json(filename, data):
     """Save JSON to S3 or locally if running on a dev box without S3 config."""
     if not S3_BUCKET_NAME or not s3:
         print(f"Warning: S3_BUCKET_NAME not set. Skipping S3 upload for {filename}")
-        # Optionally, save locally for development
         local_dir = "src/assets/data"
         if os.path.exists(local_dir):
             filepath = os.path.join(local_dir, filename)
@@ -84,6 +94,8 @@ def get_all_beers():
     offset = 0
     while True:
         res = fetch_untappd_data(f"user/beers/{UNTAPPD_USERNAME}", {"limit": STEP, "offset": offset})
+        if not isinstance(res, dict):
+            break
         beers_batch = res.get("response", {}).get("beers", {}).get("items", [])
         if not beers_batch:
             break
@@ -102,6 +114,8 @@ def get_all_badges():
     offset = 0
     while True:
         res = fetch_untappd_data(f"user/badges/{UNTAPPD_USERNAME}", {"limit": STEP, "offset": offset})
+        if not isinstance(res, dict):
+            break
         badges_batch = res.get("response", {}).get("items", [])
         if not badges_batch:
             break
@@ -118,26 +132,47 @@ def get_checkins():
     """Fetch recent checkins."""
     res = fetch_untappd_data(f"user/checkins/{UNTAPPD_USERNAME}", {"limit": STEP})
     print("Fetched checkins")
-    return res
+    return res if isinstance(res, dict) else {}
 
 
 def get_wishlist():
     """Fetch wishlist items."""
     res = fetch_untappd_data(f"user/wishlist/{UNTAPPD_USERNAME}")
     print("Fetched wishlist")
-    return res
+    return res if isinstance(res, dict) else {}
 
 
 def compute_stats(beers):
     """Compute summary stats for front-end, aligned with StatsService.ts."""
-    total_checkins = sum(b.get("count", 1) for b in beers)
+    if not beers or not isinstance(beers, list):
+        return {
+            "totalCheckins": 0,
+            "averageRating": 0.0,
+            "countriesTried": 0,
+            "breweriesVisited": 0,
+            "lastUpdated": datetime.now().isoformat()
+        }
+
+    total_checkins = sum((b.get("count") or 1) for b in beers if isinstance(b, dict))
 
     # Weighted average rating: (rating * checkins) / total_checkins
-    total_weighted_rating = sum(b.get("rating_score", 0) * b.get("count", 1) for b in beers)
+    total_weighted_rating = sum(
+        ((b.get("rating_score") or 0) * (b.get("count") or 1))
+        for b in beers
+        if isinstance(b, dict)
+    )
     avg_rating = total_weighted_rating / (total_checkins or 1)
 
-    countries = set(b.get("brewery", {}).get("country_name") for b in beers if b.get("brewery"))
-    breweries = set(b.get("brewery", {}).get("brewery_name") for b in beers if b.get("brewery"))
+    countries = {
+        b["brewery"].get("country_name")
+        for b in beers
+        if isinstance(b, dict) and isinstance(b.get("brewery"), dict) and b["brewery"].get("country_name")
+    }
+    breweries = {
+        b["brewery"].get("brewery_name")
+        for b in beers
+        if isinstance(b, dict) and isinstance(b.get("brewery"), dict) and b["brewery"].get("brewery_name")
+    }
 
     return {
         "totalCheckins": total_checkins,

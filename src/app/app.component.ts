@@ -75,7 +75,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((err) => {
         this.hasLoadError = err;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
 
     // Load and initialize GA4 when the browser is idle to improve initial page load performance

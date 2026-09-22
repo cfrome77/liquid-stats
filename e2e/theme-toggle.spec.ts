@@ -18,7 +18,6 @@ test("theme toggle works", async ({ page }) => {
   await expect(body).toHaveClass(/light-theme/);
   await expect(body).not.toHaveClass(/dark-theme/);
 
-  // Verify icon changed (optional, but good)
   // light-theme -> dark_mode icon
   await expect(toggleButton.locator("mat-icon")).toHaveText("dark_mode");
 
@@ -29,7 +28,9 @@ test("theme toggle works", async ({ page }) => {
   await expect(toggleButton.locator("mat-icon")).toHaveText("light_mode");
 });
 
-test("theme preference persists", async ({ page }) => {
+test("theme preference persists across reload and route navigation", async ({
+  page,
+}) => {
   await page.goto("/");
 
   const toggleButton = page.locator(
@@ -45,5 +46,9 @@ test("theme preference persists", async ({ page }) => {
   await page.reload();
 
   // Should still be light theme
+  await expect(body).toHaveClass(/light-theme/);
+
+  // Navigate to /stats page
+  await page.goto("/stats");
   await expect(body).toHaveClass(/light-theme/);
 });

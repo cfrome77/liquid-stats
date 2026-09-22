@@ -53,23 +53,22 @@ export class HomeComponent implements OnInit {
       this.averageRating = stats.averageRating;
       this.countriesTried = stats.countriesTried;
       this.breweriesVisited = stats.breweriesVisited;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
 
     this.beerStore.checkins$.subscribe((checkins) => {
       if (!checkins) return;
       this.allCheckins = checkins;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
 
     this.beerStore.stats$.subscribe((stats) => {
       if (!stats) return;
-
       this.totalCheckins = stats.totalCheckins;
       this.averageRating = stats.averageRating;
       this.countriesTried = Object.keys(stats.topCountries).length;
       this.breweriesVisited = stats.totalUniqueBreweries;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
   }
 

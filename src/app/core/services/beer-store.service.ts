@@ -54,6 +54,7 @@ export class BeerStoreService {
   load(force: boolean = false): void {
     if (force) {
       this.logger.info("Forcing reload of all beer data store feeds.");
+      this.dataService.clearCache();
       this.loadErrorSubject.next(false);
       this.beersSubject.next(null);
       this.checkinsSubject.next(null);
