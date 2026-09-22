@@ -19,6 +19,21 @@
             "brewery_name": "Test HD Brewery",
             "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
             "country_name": "USA"
+          },
+          "badges": {
+            "count": 2,
+            "items": [
+              {
+                "badge_name": "IPA Day (2026)",
+                "badge_description": "Celebrated IPA Day!",
+                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+              },
+              {
+                "badge_name": "Wheel of Styles",
+                "badge_description": "Tried 5 different styles!",
+                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+              }
+            ]
           }
         }
       ]

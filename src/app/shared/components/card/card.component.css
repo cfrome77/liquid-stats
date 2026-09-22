@@ -168,6 +168,7 @@
   overflow-x: auto;
   scrollbar-width: none; /* Hide scrollbar for Firefox */
   min-width: 0;
+  padding: 6px 2px;
 }
 
 .chip-scroll-container::-webkit-scrollbar {
@@ -194,17 +195,48 @@
 
 /* Ensure the chip set has room for the chips to "grow" without clipping */
 .chip {
-  padding: 4px 0;
+  padding: 2px 0;
+}
+
+.chip ::ng-deep .mdc-evolution-chip-set__chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
 }
 
 .clickable-chip {
-  cursor: pointer !important;
+  cursor: pointer;
   transition:
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    filter 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
-  border-radius: 20px !important;
+  border-radius: 20px;
+  max-width: none !important;
+  flex-shrink: 0 !important;
+}
+
+.clickable-chip ::ng-deep .mdc-evolution-chip__action--primary,
+.clickable-chip ::ng-deep .mdc-evolution-chip__cell--primary {
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+.clickable-chip ::ng-deep .mdc-evolution-chip__text-label {
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* Style chip avatar image so it's always displayed properly in MDC chips */
+.clickable-chip img[matChipAvatar] {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 6px;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
 /* The Hover Animation */
@@ -270,11 +302,30 @@ footer {
 @media (max-width: 600px) {
   .badges-and-social-links {
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .social-links-wrapper {
     /* Ensure it doesn't take full width on mobile unless it wraps */
     width: auto;
+  }
+
+  .chip-scroll-container {
+    overflow-x: visible;
+  }
+
+  .chip ::ng-deep .mdc-evolution-chip-set__chips {
+    flex-wrap: wrap !important;
+  }
+
+  .clickable-chip {
+    font-size: 0.8rem !important;
+  }
+
+  .clickable-chip img[matChipAvatar] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 4px !important;
   }
 }
 

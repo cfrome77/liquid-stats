@@ -33,4 +33,37 @@ describe("CardComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should render badge chips with avatar images when extraData contains badges", () => {
+    fixture.componentRef.setInput("cardData", {
+      ...component.cardData,
+      extraData: {
+        badges: [
+          {
+            badge_name: "Tested Badge",
+            badge_image: {
+              sm: "badge-sm.jpg",
+              md: "badge-md.jpg",
+              lg: "badge-lg.jpg",
+            },
+            badge_description: "Badge Description",
+            badge_hint: "",
+            media: { badge_image_sm: "badge-sm.jpg" },
+            earned_at: "2023-01-01",
+            user_badge_id: 1,
+          },
+        ],
+      },
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const chip = compiled.querySelector("mat-chip");
+    expect(chip).toBeTruthy();
+    expect(chip?.textContent).toContain("Tested Badge");
+
+    const img = chip?.querySelector("img[matChipAvatar]") as HTMLImageElement;
+    expect(img).toBeTruthy();
+    expect(img.src).toContain("badge-sm.jpg");
+  });
 });

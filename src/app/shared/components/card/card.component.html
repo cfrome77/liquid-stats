@@ -107,10 +107,10 @@
                   >
                     <img
                       matChipAvatar
-                      [src]="badge.badge_image.sm"
+                      [src]="badge.badge_image?.sm || badge.media?.badge_image_sm"
                       alt="badge"
-                      width="32"
-                      height="32"
+                      width="24"
+                      height="24"
                     />
                     {{ badge.badge_name }}
                   </mat-chip>
