@@ -493,7 +493,7 @@ strong {
   text-overflow: ellipsis;
 }
 
-/* Image Sharpening for scaled-up low-res images */
+/* Image Quality & Scaling */
 .beer-label,
 .brewery-label,
 .badge-image,
@@ -504,9 +504,8 @@ strong {
 .powered-by,
 .mat-mdc-card-image,
 [mat-card-image] {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
+  image-rendering: auto;
+  object-fit: cover;
 }
 
 .light-theme {
