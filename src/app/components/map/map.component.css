@@ -149,7 +149,9 @@
   overflow: hidden;
   max-width: 200px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .legend-header {
