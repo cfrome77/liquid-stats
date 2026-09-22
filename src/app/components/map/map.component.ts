@@ -27,6 +27,8 @@ import { MatInputModule } from "@angular/material/input";
 import {
   MarkerService,
   BreweryMarkerData,
+  extractBreweryType,
+  getBreweryTypeColor,
 } from "src/app/core/services/marker.service";
 import { DataService } from "src/app/core/services/data.service";
 import * as L from "leaflet";
@@ -66,6 +68,7 @@ export class MapComponent
   public selectedBrewery: BreweryMarkerData | null = null;
   private map: L.Map | undefined;
   private routeSub: Subscription | undefined;
+  private isOpeningPopup = false;
 
   public filterOpen = false;
   public filterName = "";
@@ -77,6 +80,9 @@ export class MapComponent
   public countries: string[] = [];
   private allBeers: BeerCheckin[] = [];
   public isMobile = false;
+
+  public legendItems: { type: string; color: string }[] = [];
+  public isLegendCollapsed = false;
 
   @ViewChild("drawer") drawer!: MatSidenav;
   @ViewChild("overlayPanel") overlayPanel?: ElementRef;
@@ -99,8 +105,14 @@ export class MapComponent
       setTimeout(() => this.map?.invalidateSize(), 100);
     });
 
-    // Close overlay when clicking on map
+    // Close overlay when clicking on map background or when marker popup closes
     this.map!.on("click", () => this.closeBreweryOverlay());
+    this.map!.on("popupclose", () => {
+      if (!this.isOpeningPopup) {
+        this.selectedBrewery = null;
+        this.cdr.detectChanges();
+      }
+    });
 
     // Load beer data
     this.dataService.getBeersAll().subscribe({
@@ -202,15 +214,22 @@ export class MapComponent
     const marker = this.markerService.getMarkerByBreweryId(breweryId);
     if (!marker) return;
 
+    this.isOpeningPopup = true;
+
     this.selectedBrewery = {
       breweryId: marker.breweryId,
       name: marker.checkInsData?.name,
+      breweryType: marker.checkInsData?.breweryType,
       city: marker.checkInsData?.city,
       state: marker.checkInsData?.state,
       logo: marker.checkInsData?.logo,
       checkIns: this.getFilteredCheckIns(marker.breweryId!),
     };
     this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.isOpeningPopup = false;
+    }, 100);
   }
 
   /** Opens a single check-in in a new tab */
@@ -221,6 +240,7 @@ export class MapComponent
   /** Close overlay */
   closeBreweryOverlay() {
     this.selectedBrewery = null;
+    this.map?.closePopup();
   }
 
   /** Escape key closes overlay */
@@ -237,6 +257,7 @@ export class MapComponent
       this.selectedBrewery = {
         breweryId: markerData.breweryId,
         name: markerData.name,
+        breweryType: markerData.breweryType,
         city: markerData.city,
         state: markerData.state,
         logo: markerData.logo,
@@ -244,6 +265,8 @@ export class MapComponent
       };
       this.cdr.detectChanges();
     });
+
+    this.updateLegend(beers);
 
     // Update overlay if a brewery is already selected
     if (this.selectedBrewery) {
@@ -262,6 +285,25 @@ export class MapComponent
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => this.map?.invalidateSize(), 100);
     });
+  }
+
+  /** Update legend items based on visible brewery types */
+  private updateLegend(beers: BeerCheckin[]) {
+    const presentTypes = new Set<string>();
+    for (const b of beers) {
+      presentTypes.add(extractBreweryType(b.brewery));
+    }
+
+    this.legendItems = Array.from(presentTypes)
+      .sort()
+      .map((type) => ({
+        type,
+        color: getBreweryTypeColor(type),
+      }));
+  }
+
+  toggleLegend() {
+    this.isLegendCollapsed = !this.isLegendCollapsed;
   }
 
   /** Filter check-ins */

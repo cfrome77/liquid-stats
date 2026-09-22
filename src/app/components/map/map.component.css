@@ -117,12 +117,107 @@
   opacity: 0.8; /* Uses current text color but fades it slightly */
 }
 
+.brewery-type-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: var(--hover-bg, rgba(0, 0, 0, 0.08));
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 .checkin-count {
   display: block; /* Ensures it stays on its own line */
   font-size: 0.75rem;
   margin-top: 2px;
   font-weight: 600;
   color: var(--accent-color, #ffb400);
+}
+
+/* Map Legend Overlay */
+.map-legend {
+  position: absolute;
+  bottom: 24px;
+  left: 12px;
+  background-color: var(--card-bg, #ffffff);
+  color: var(--text-color, #333333);
+  border-radius: 12px;
+  border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+  z-index: 1050;
+  overflow: hidden;
+  max-width: 200px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: var(--card-bg, #ffffff);
+  user-select: none;
+}
+
+.legend-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.legend-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
+}
+
+.legend-toggle-btn {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.legend-toggle-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.legend-body {
+  padding: 8px 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.type-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* List Section */
@@ -233,6 +328,23 @@
 /* Leaflet Overrides */
 ::ng-deep .leaflet-container {
   background-color: var(--map-bg) !important;
+}
+
+::ng-deep .custom-brewery-popup .leaflet-popup-content-wrapper {
+  background-color: var(--card-bg, #ffffff) !important;
+  color: var(--text-color, #333333) !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12)) !important;
+}
+
+::ng-deep .custom-brewery-popup .leaflet-popup-tip {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+::ng-deep .custom-brewery-popup .leaflet-popup-content {
+  margin: 4px 6px !important;
 }
 
 ::ng-deep .marker-pulse {

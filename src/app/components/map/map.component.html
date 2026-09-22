@@ -112,6 +112,43 @@
     <!-- Map Wrapper -->
     <div class="map-wrapper">
       <div id="myMap" class="leaflet-map"></div>
+
+      <!-- Map Legend -->
+      @if (legendItems.length > 0) {
+        <div
+          class="map-legend mat-elevation-z3"
+          [class.collapsed]="isLegendCollapsed"
+        >
+          <div class="legend-header" (click)="toggleLegend()">
+            <span class="legend-title">
+              <mat-icon class="legend-icon">category</mat-icon> Brewery Types
+            </span>
+            <button
+              mat-icon-button
+              type="button"
+              class="legend-toggle-btn"
+              aria-label="Toggle Legend"
+            >
+              <mat-icon>{{
+                isLegendCollapsed ? "expand_less" : "expand_more"
+              }}</mat-icon>
+            </button>
+          </div>
+          @if (!isLegendCollapsed) {
+            <div class="legend-body">
+              @for (item of legendItems; track item.type) {
+                <div class="legend-item">
+                  <span
+                    class="color-dot"
+                    [style.background-color]="item.color"
+                  ></span>
+                  <span class="type-label">{{ item.type }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <!-- Brewery Overlay -->
@@ -133,6 +170,11 @@
           <div class="brewery-details">
             <h2>{{ selectedBrewery.name }}</h2>
             <p>{{ selectedBrewery.city }}, {{ selectedBrewery.state }}</p>
+            @if (selectedBrewery.breweryType) {
+              <p class="brewery-type-badge">
+                {{ selectedBrewery.breweryType }}
+              </p>
+            }
             <p class="checkin-count">
               Total Check-ins: {{ selectedBrewery.checkIns!.length }}
             </p>

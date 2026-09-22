@@ -1,6 +1,10 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { MarkerService } from "./marker.service";
+import {
+  MarkerService,
+  extractBreweryType,
+  getBreweryTypeColor,
+} from "./marker.service";
 import { PopUpService } from "./pop-up.service";
 import * as L from "leaflet";
 import { BeerCheckin } from "../models/beer.model";
@@ -18,6 +22,18 @@ describe("MarkerService", () => {
 
   it("should be created", () => {
     expect(service).toBeTruthy();
+  });
+
+  it("should fallback brewery_type, type_name, and brewery_type_name in extractBreweryType", () => {
+    expect(extractBreweryType({ brewery_type: "Micro Brewery" })).toBe(
+      "Micro Brewery",
+    );
+    expect(extractBreweryType({ type_name: "Brewpub" })).toBe("Brewpub");
+    expect(extractBreweryType({ brewery_type_name: "Regional Brewery" })).toBe(
+      "Regional Brewery",
+    );
+    expect(extractBreweryType({})).toBe("Other");
+    expect(getBreweryTypeColor("micro brewery")).toBe("#2e7d32");
   });
 
   it("should create markers and bind popups", () => {
