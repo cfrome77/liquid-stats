@@ -18,10 +18,19 @@
             "brewery_id": 570608,
             "brewery_name": "Test HD Brewery",
             "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
-            "country_name": "USA"
+            "country_name": "USA",
+            "contact": {
+              "facebook": "testhd",
+              "instagram": "testhd",
+              "url": "https://example.com"
+            },
+            "location": {
+              "lat": 40.7128,
+              "lng": -74.006
+            }
           },
           "badges": {
-            "count": 2,
+            "count": 3,
             "items": [
               {
                 "badge_name": "IPA Day (2026)",
@@ -29,8 +38,13 @@
                 "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
               },
               {
-                "badge_name": "Wheel of Styles",
+                "badge_name": "Wheel of Styles (Level 10)",
                 "badge_description": "Tried 5 different styles!",
+                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+              },
+              {
+                "badge_name": "Middle of the Road (Level 5)",
+                "badge_description": "Middle of the road beers!",
                 "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
               }
             ]

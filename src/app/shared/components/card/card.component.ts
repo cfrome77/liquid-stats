@@ -35,6 +35,12 @@ export class CardComponent {
   readonly DEFAULT_IMAGE =
     "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
 
+  get hasSocialLinks(): boolean {
+    const links = this.cardData?.extraData?.socialLinks;
+    const mapData = this.cardData?.extraData?.mapData;
+    return !!(links?.url || links?.facebook || links?.instagram || mapData);
+  }
+
   onBadgeClick(badge: unknown): void {
     this.badgeClick.emit(badge);
   }
