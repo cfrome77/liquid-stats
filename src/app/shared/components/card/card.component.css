@@ -241,14 +241,8 @@
 
 /* The Hover Animation */
 .clickable-chip:hover {
-  /* Lift and slightly grow */
-  transform: translateY(-3px) scale(1.05);
-
-  /* Add a subtle glow matching your amber/yellow theme */
-  box-shadow: 0 4px 8px rgba(255, 202, 40, 0.3) !important;
-
-  /* Lighten the background slightly on hover */
-  filter: brightness(1.1);
+  transform: translateY(-2px);
+  filter: brightness(1.15);
 }
 
 footer {

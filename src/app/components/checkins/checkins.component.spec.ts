@@ -44,4 +44,51 @@ describe("CheckinsComponent", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it("should correctly parse badge_image as string or object in transformCheckinData", () => {
+    fixture.detectChanges();
+    const mockCheckinObjImage = {
+      checkin_id: 1,
+      created_at: "Sun, 20 Sep 2026 00:11:10 +0000",
+      checkin_comment: "Test Comment",
+      rating_score: 4,
+      beer: {
+        bid: 101,
+        beer_name: "Beer",
+        beer_style: "Style",
+        beer_label: "label.jpg",
+        beer_slug: "beer",
+      },
+      brewery: {
+        brewery_id: 201,
+        brewery_name: "Brewery",
+        brewery_label: "blabel.jpg",
+        country_name: "USA",
+      },
+      badges: {
+        items: [
+          {
+            badge_name: "Obj Badge",
+            badge_image: {
+              sm: "http://example.com/badge_sm.png",
+              md: "http://example.com/badge_md.png",
+              lg: "http://example.com/badge_lg.png",
+            },
+          },
+          {
+            badge_name: "String Badge",
+            badge_image: "http://example.com/badge_str.png",
+          },
+        ],
+      },
+    };
+
+    const cardData = component.transformCheckinData(mockCheckinObjImage);
+    const badges = cardData.extraData?.badges;
+    expect(badges).toBeDefined();
+    expect(badges?.length).toBe(2);
+
+    expect(badges![0].badge_image.sm).toBe("http://example.com/badge_sm.png");
+    expect(badges![1].badge_image.sm).toBe("http://example.com/badge_str.png");
+  });
 });

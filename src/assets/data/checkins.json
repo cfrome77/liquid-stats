@@ -35,17 +35,29 @@
               {
                 "badge_name": "IPA Day (2026)",
                 "badge_description": "Celebrated IPA Day!",
-                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                "badge_image": {
+                  "sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "md": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "lg": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                }
               },
               {
                 "badge_name": "Wheel of Styles (Level 10)",
                 "badge_description": "Tried 5 different styles!",
-                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                "badge_image": {
+                  "sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "md": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "lg": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                }
               },
               {
                 "badge_name": "Middle of the Road (Level 5)",
                 "badge_description": "Middle of the road beers!",
-                "badge_image": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                "badge_image": {
+                  "sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "md": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "lg": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                }
               }
             ]
           }
