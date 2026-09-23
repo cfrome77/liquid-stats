@@ -184,21 +184,36 @@ export class CheckinsComponent implements OnInit {
 
     const extraData: CardExtraData = {
       badges:
-        checkin.badges?.items.map((b) => ({
-          badge_name: b.badge_name,
-          badge_image: {
-            sm: b.badge_image,
-            md: b.badge_image,
-            lg: b.badge_image,
-          },
-          badge_description:
-            b.badge_description || "Badge earned during check-in.",
-          badge_hint: "",
-          media: { badge_image_sm: b.badge_image },
-          earned_at: checkin.created_at,
-          created_at: checkin.created_at,
-          user_badge_id: 0,
-        })) ?? [],
+        checkin.badges?.items.map((b) => {
+          const imgUrl =
+            typeof b.badge_image === "string"
+              ? b.badge_image
+              : b.badge_image?.sm ||
+                b.badge_image?.md ||
+                b.badge_image?.lg ||
+                "";
+          return {
+            badge_name: b.badge_name,
+            badge_image: {
+              sm: imgUrl,
+              md:
+                typeof b.badge_image === "object"
+                  ? b.badge_image?.md || imgUrl
+                  : imgUrl,
+              lg:
+                typeof b.badge_image === "object"
+                  ? b.badge_image?.lg || imgUrl
+                  : imgUrl,
+            },
+            badge_description:
+              b.badge_description || "Badge earned during check-in.",
+            badge_hint: "",
+            media: { badge_image_sm: imgUrl },
+            earned_at: checkin.created_at,
+            created_at: checkin.created_at,
+            user_badge_id: 0,
+          };
+        }) ?? [],
       socialLinks: {
         facebook: checkin.brewery.contact?.facebook as string | undefined,
         url: checkin.brewery.contact?.url as string | undefined,

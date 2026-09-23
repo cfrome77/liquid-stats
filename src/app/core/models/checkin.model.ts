@@ -34,7 +34,7 @@ export interface Checkin {
   badges?: {
     items: Array<{
       badge_name: string;
-      badge_image: string;
+      badge_image: string | { sm?: string; md?: string; lg?: string };
       badge_description?: string;
     }>;
   };

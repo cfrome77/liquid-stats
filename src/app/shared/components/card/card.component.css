@@ -241,14 +241,8 @@
 
 /* The Hover Animation */
 .clickable-chip:hover {
-  /* Lift and slightly grow */
-  transform: translateY(-3px) scale(1.05);
-
-  /* Add a subtle glow matching your amber/yellow theme */
-  box-shadow: 0 4px 8px rgba(255, 202, 40, 0.3) !important;
-
-  /* Lighten the background slightly on hover */
-  filter: brightness(1.1);
+  transform: translateY(-2px);
+  filter: brightness(1.15);
 }
 
 footer {
@@ -301,17 +295,23 @@ footer {
 
 @media (max-width: 600px) {
   .badges-and-social-links {
-    gap: 8px;
+    display: flex;
     flex-wrap: wrap;
-  }
-
-  .social-links-wrapper {
-    /* Ensure it doesn't take full width on mobile unless it wraps */
-    width: auto;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .chip-scroll-container {
     overflow-x: visible;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .social-links-wrapper {
+    flex-shrink: 0;
+    margin-left: auto;
+    align-self: flex-start;
   }
 
   .chip ::ng-deep .mdc-evolution-chip-set__chips {

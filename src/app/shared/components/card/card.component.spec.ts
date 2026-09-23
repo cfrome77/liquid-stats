@@ -34,6 +34,20 @@ describe("CardComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  it("should correctly evaluate hasSocialLinks", () => {
+    expect(component.hasSocialLinks).toBeFalse();
+
+    component.cardData = {
+      ...component.cardData,
+      extraData: {
+        socialLinks: {
+          url: "https://example.com",
+        },
+      },
+    };
+    expect(component.hasSocialLinks).toBeTrue();
+  });
+
   it("should render badge chips with avatar images when extraData contains badges", () => {
     fixture.componentRef.setInput("cardData", {
       ...component.cardData,

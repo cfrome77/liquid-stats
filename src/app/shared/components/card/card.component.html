@@ -77,7 +77,7 @@
         (cardData.globalRating !== null &&
           cardData.globalRating !== undefined) ||
         (cardData.extraData?.badges?.length ?? 0) > 0 ||
-        !!cardData.extraData?.socialLinks
+        hasSocialLinks
       ) {
         <div class="badges-and-social-links">
           @if (
@@ -90,12 +90,12 @@
             </div>
           }
 
-          <div class="flex-row align-center min-w-0 chip-scroll-container">
-            @if (
-              (cardData.extraData?.badges?.length ?? 0) > 0 &&
-              (cardData.globalRating === null ||
-                cardData.globalRating === undefined)
-            ) {
+          @if (
+            (cardData.extraData?.badges?.length ?? 0) > 0 &&
+            (cardData.globalRating === null ||
+              cardData.globalRating === undefined)
+          ) {
+            <div class="flex-row align-center min-w-0 chip-scroll-container">
               <mat-chip-set class="chip">
                 @for (
                   badge of cardData.extraData!.badges!;
@@ -107,7 +107,7 @@
                   >
                     <img
                       matChipAvatar
-                      [src]="badge.badge_image?.sm || badge.media?.badge_image_sm"
+                      [src]="badge.badge_image.sm || badge.media.badge_image_sm"
                       alt="badge"
                       width="24"
                       height="24"
@@ -116,20 +116,20 @@
                   </mat-chip>
                 }
               </mat-chip-set>
-            }
-          </div>
+            </div>
+          }
 
-          <div
-            class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
-          >
-            @if (cardData.extraData?.socialLinks) {
+          @if (hasSocialLinks) {
+            <div
+              class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
+            >
               <app-social-links
                 [contact]="cardData.extraData!.socialLinks!"
                 [mapData]="cardData.extraData?.mapData"
               >
               </app-social-links>
-            }
-          </div>
+            </div>
+          }
         </div>
       }
 
