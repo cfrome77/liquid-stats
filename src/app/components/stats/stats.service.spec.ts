@@ -121,4 +121,114 @@ describe("StatsService", () => {
 
     expect(result1).not.toBe(result2);
   });
+
+  describe("getBeerCountInRange", () => {
+    const start = new Date("2026-09-17T00:00:00Z");
+    const end = new Date("2026-09-24T23:59:59Z");
+
+    it("should return 0 when neither first nor recent date falls in range", () => {
+      const beer: BeerCheckin = {
+        beer: {
+          bid: 1,
+          beer_name: "Beer 1",
+          beer_style: "IPA",
+          beer_label: "",
+          beer_abv: 5,
+          beer_slug: "",
+        },
+        brewery: {
+          brewery_id: 1,
+          brewery_name: "Brewery 1",
+          country_name: "USA",
+          location: {},
+        },
+        rating_score: 4,
+        recent_created_at: "2026-01-01 12:00:00",
+        first_created_at: "2026-01-01 12:00:00",
+        count: 5,
+      };
+      expect(service.getBeerCountInRange(beer, start, end)).toBe(0);
+    });
+
+    it("should return 1 when recent date is in range but first date is before range", () => {
+      const beer: BeerCheckin = {
+        beer: {
+          bid: 1,
+          beer_name: "Riversong",
+          beer_style: "IPA - Rye",
+          beer_label: "",
+          beer_abv: 8.5,
+          beer_slug: "",
+        },
+        brewery: {
+          brewery_id: 1,
+          brewery_name: "Sandbox",
+          country_name: "USA",
+          location: {},
+        },
+        rating_score: 4,
+        recent_created_at: "2026-09-19 20:38:00",
+        first_created_at: "2024-05-10 12:00:00",
+        count: 2,
+      };
+      expect(service.getBeerCountInRange(beer, start, end)).toBe(1);
+    });
+
+    it("should return total count when both first date and recent date fall in range", () => {
+      const beer: BeerCheckin = {
+        beer: {
+          bid: 1,
+          beer_name: "Riversong",
+          beer_style: "IPA - Rye",
+          beer_label: "",
+          beer_abv: 8.5,
+          beer_slug: "",
+        },
+        brewery: {
+          brewery_id: 1,
+          brewery_name: "Sandbox",
+          country_name: "USA",
+          location: {},
+        },
+        rating_score: 4,
+        recent_created_at: "2026-09-20 20:38:00",
+        first_created_at: "2026-09-18 12:00:00",
+        count: 2,
+      };
+      expect(service.getBeerCountInRange(beer, start, end)).toBe(2);
+    });
+  });
+
+  it("should calculate style counts using only in-range checkins", () => {
+    const start = new Date("2026-09-17T00:00:00Z");
+    const end = new Date("2026-09-24T23:59:59Z");
+
+    const mockBeers: BeerCheckin[] = [
+      {
+        beer: {
+          bid: 1,
+          beer_name: "Riversong",
+          beer_style: "IPA - Rye",
+          beer_label: "",
+          beer_abv: 8.5,
+          beer_slug: "",
+        },
+        brewery: {
+          brewery_id: 1,
+          brewery_name: "Sandbox",
+          country_name: "USA",
+          location: {},
+        },
+        rating_score: 4,
+        recent_created_at: "2026-09-19 20:38:00",
+        first_created_at: "2024-05-10 12:00:00",
+        count: 2, // Total count is 2 all-time, but only 1 checkin last week
+      },
+    ];
+
+    const stats = service.computeStats(mockBeers, start, end);
+
+    expect(stats.totalCheckins).toBe(1);
+    expect(stats.beerStylesCount["IPA - Rye"]).toBe(1);
+  });
 });
