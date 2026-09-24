@@ -32,7 +32,9 @@
 
 .hero-label {
   font-size: 0.85rem;
-  opacity: 0.7;
+  color: var(--text-color);
+  opacity: 0.9;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 4px;
@@ -59,7 +61,8 @@
 
 .section-header .subtitle {
   font-size: 0.9rem;
-  opacity: 0.7;
+  color: var(--text-color);
+  opacity: 0.85;
   margin-bottom: 16px;
 }
 
@@ -105,7 +108,9 @@
 
 .milestone-title {
   font-size: 0.8rem;
-  opacity: 0.7;
+  color: var(--text-color);
+  opacity: 0.85;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -122,8 +127,9 @@
 
 .milestone-subtitle {
   font-size: 0.8rem;
-  opacity: 0.8;
+  opacity: 0.9;
   color: var(--accent-blue);
+  font-weight: 500;
 }
 
 @media (max-width: 600px) {
