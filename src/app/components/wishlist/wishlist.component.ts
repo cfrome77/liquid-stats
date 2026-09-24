@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  inject,
+  signal,
+} from "@angular/core";
 
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { MatButtonModule } from "@angular/material/button";
@@ -30,6 +36,7 @@ export class WishlistComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
+  public viewMode = signal<"grid" | "compact">("grid");
   public wishlist: BaseCardData[] = [];
   public paginatedWishlist: BaseCardData[] = [];
   public totalItems = 0;

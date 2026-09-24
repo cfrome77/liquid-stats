@@ -75,6 +75,13 @@
       </button>
       <button
         mat-button
+        routerLink="/insights"
+        routerLinkActive="router-link-active no-border"
+      >
+        Insights
+      </button>
+      <button
+        mat-button
         routerLink="/wishlist"
         routerLinkActive="router-link-active no-border"
       >
@@ -126,6 +133,10 @@
     <a routerLink="/stats" routerLinkActive="active">
       <mat-icon>insert_chart</mat-icon>
       <span>Stats</span>
+    </a>
+    <a routerLink="/insights" routerLinkActive="active">
+      <mat-icon>insights</mat-icon>
+      <span>Insights</span>
     </a>
     <a routerLink="/wishlist" routerLinkActive="active">
       <mat-icon>list</mat-icon>
@@ -188,6 +199,15 @@
           class="drawer-nav-button"
         >
           <mat-icon>insert_chart</mat-icon>Stats
+        </button>
+        <mat-divider></mat-divider>
+        <button
+          mat-button
+          routerLink="/insights"
+          routerLinkActive="selected no-border txt-bold"
+          class="drawer-nav-button"
+        >
+          <mat-icon>insights</mat-icon>Insights
         </button>
         <mat-divider></mat-divider>
         <button

@@ -1,0 +1,139 @@
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.hero-insight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  border-left: 4px solid var(--accent-blue);
+}
+
+.hero-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: var(--accent-blue);
+  margin-bottom: 8px;
+}
+
+.hero-metric {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--header-text);
+  line-height: 1.2;
+}
+
+.hero-label {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  opacity: 0.9;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.radar-card {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--header-text);
+}
+
+.section-header h3 mat-icon {
+  color: var(--accent-blue);
+}
+
+.section-header .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  opacity: 0.85;
+  margin-bottom: 16px;
+}
+
+.radar-chart-container {
+  height: 320px;
+  position: relative;
+}
+
+.milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.milestone-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.milestone-icon-wrapper {
+  background: rgba(var(--accent-blue-rgb), 0.1);
+  color: var(--accent-blue);
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.milestone-icon-wrapper mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.milestone-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.milestone-title {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.85;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.milestone-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--header-text);
+  margin: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.milestone-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  color: var(--accent-blue);
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .radar-chart-container {
+    height: 260px;
+  }
+}

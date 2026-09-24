@@ -1,0 +1,69 @@
+<div class="main-content-container">
+  <div class="flex-row align-center justify-center" style="margin-bottom: 24px">
+    <h1 style="margin: 0">Insights & Flavor Profile</h1>
+  </div>
+
+  @if (isLoading()) {
+    <app-skeleton-card [count]="4"></app-skeleton-card>
+  } @else {
+    <!-- Overview KPI Row -->
+    <div class="insights-grid">
+      <div class="card glass-panel hero-insight">
+        <mat-icon class="hero-icon">local_fire_department</mat-icon>
+        <div class="hero-metric">{{ averageABV() | number: "1.1-1" }}%</div>
+        <div class="hero-label">Average ABV Level</div>
+      </div>
+
+      <div class="card glass-panel hero-insight">
+        <mat-icon class="hero-icon">category</mat-icon>
+        <div class="hero-metric">{{ totalUniqueStyles() }}</div>
+        <div class="hero-label">Unique Styles</div>
+      </div>
+
+      <div class="card glass-panel hero-insight">
+        <mat-icon class="hero-icon">stars</mat-icon>
+        <div class="hero-metric">{{ topCategory() }}</div>
+        <div class="hero-label">Top Style Focus</div>
+      </div>
+    </div>
+
+    <!-- Style Preference Radar Chart -->
+    <div class="card glass-panel radar-card">
+      <div class="section-header">
+        <h3><mat-icon>radar</mat-icon> Style Radar Distribution</h3>
+        <p class="subtitle">
+          A visual representation of your beer style exploration.
+        </p>
+      </div>
+      <div class="radar-chart-container">
+        <canvas
+          baseChart
+          [data]="styleRadarChartData"
+          [options]="radarChartOptions"
+          [type]="'radar'"
+        >
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Key Personal Milestones Grid -->
+    <div class="section-header" style="margin-top: 32px">
+      <h3><mat-icon>workspace_premium</mat-icon> Personal Milestones</h3>
+    </div>
+
+    <div class="milestones-grid">
+      @for (m of milestones(); track m.title) {
+        <div class="card glass-panel milestone-card">
+          <div class="milestone-icon-wrapper">
+            <mat-icon>{{ m.icon }}</mat-icon>
+          </div>
+          <div class="milestone-content">
+            <div class="milestone-title">{{ m.title }}</div>
+            <div class="milestone-value">{{ m.value }}</div>
+            <div class="milestone-subtitle">{{ m.subtitle }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

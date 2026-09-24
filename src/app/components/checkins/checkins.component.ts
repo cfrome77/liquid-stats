@@ -1,4 +1,5 @@
 import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
 import {
   Component,
   OnInit,
@@ -6,6 +7,7 @@ import {
   ChangeDetectionStrategy,
   NgZone,
   inject,
+  signal,
 } from "@angular/core";
 
 import { ActivatedRoute } from "@angular/router"; // Added
@@ -24,6 +26,7 @@ import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 
 @Component({
   selector: "app-checkins",
@@ -32,10 +35,12 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
   standalone: true,
   imports: [
     MatIconModule,
+    MatButtonModule,
     CardComponent,
     MatDialogModule,
     EmptyStateComponent,
     PaginationComponent,
+    SkeletonCardComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,6 +51,7 @@ export class CheckinsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ngZone = inject(NgZone);
 
+  public viewMode = signal<"grid" | "compact">("grid");
   public checkinsInitial: Checkin[] = [];
   public checkinsAll: Checkin[] = [];
   public transformedCheckins: BaseCardData[] = [];

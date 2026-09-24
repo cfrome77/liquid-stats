@@ -1,5 +1,5 @@
 <div class="card-container">
-  <mat-card class="shared-card">
+  <mat-card class="shared-card" [class.compact-view]="viewMode === 'compact'">
     <mat-card-content class="beer">
       <div class="card-header">
         <div class="label-container left">
@@ -160,6 +160,17 @@
           >
             {{ cardData.footerInfo.timestamp }}
           </time>
+
+          @if (canShare) {
+            <button
+              class="checkin-page view-details share-btn"
+              (click)="shareCheckin($event)"
+              title="Share checkin"
+              aria-label="Share checkin"
+            >
+              <mat-icon>share</mat-icon>
+            </button>
+          }
 
           <a
             class="checkin-page view-details"
