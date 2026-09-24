@@ -63,6 +63,14 @@ export const routes: Routes = [
     data: { animation: "StatsPage" },
   },
   {
+    path: "insights",
+    loadComponent: () =>
+      import("./components/insights/insights.component").then(
+        (m) => m.InsightsComponent,
+      ),
+    data: { animation: "InsightsPage" },
+  },
+  {
     path: "wishlist",
     loadComponent: () =>
       import("./components/wishlist/wishlist.component").then(

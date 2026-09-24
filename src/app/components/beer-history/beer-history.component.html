@@ -19,6 +19,16 @@
               [(ngModel)]="searchTerm"
               (input)="onSearchChange()"
             />
+            @if (searchTerm) {
+              <button
+                matSuffix
+                mat-icon-button
+                aria-label="Clear search"
+                (click)="searchTerm = ''; onSearchChange()"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            }
           </mat-form-field>
         </div>
 

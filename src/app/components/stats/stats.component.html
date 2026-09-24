@@ -150,74 +150,80 @@
       }
     </div>
 
-    <div class="charts-section">
-      <h3>Check-ins by Hour</h3>
-      <div class="chart-container">
-        @if (hourChartData.labels && hourChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="hourChartData"
-            [options]="chartOptions"
-            [type]="'bar'"
-          >
-          </canvas>
-        }
-      </div>
-
-      <h3>Check-ins by Day of Week</h3>
-      <div class="chart-container">
-        @if (dayChartData.labels && dayChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="dayChartData"
-            [options]="chartOptions"
-            [type]="'bar'"
-          >
-          </canvas>
-        }
-      </div>
-
-      <h3>Check-ins by Month</h3>
-      <div class="chart-container">
-        @if (monthChartData.labels && monthChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="monthChartData"
-            [options]="chartOptions"
-            [type]="'bar'"
-          >
-          </canvas>
-        }
-      </div>
-
-      <h3>Average Ratings Over Time</h3>
-      <div class="chart-container">
-        @if (ratingChartData.labels && ratingChartData.labels.length > 0) {
-          <canvas
-            baseChart
-            [data]="ratingChartData"
-            [options]="chartOptions"
-            [type]="'line'"
-          >
-          </canvas>
-        }
-      </div>
-
-      @if (
-        recentActivityChartData.labels &&
-        recentActivityChartData.labels.length > 0
-      ) {
-        <h3>Recent Activity</h3>
+    @defer (on viewport) {
+      <div class="charts-section">
+        <h3>Check-ins by Hour</h3>
         <div class="chart-container">
-          <canvas
-            baseChart
-            [data]="recentActivityChartData"
-            [options]="chartOptions"
-            [type]="'line'"
-          >
-          </canvas>
+          @if (hourChartData.labels && hourChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="hourChartData"
+              [options]="chartOptions"
+              [type]="'bar'"
+            >
+            </canvas>
+          }
         </div>
-      }
-    </div>
+
+        <h3>Check-ins by Day of Week</h3>
+        <div class="chart-container">
+          @if (dayChartData.labels && dayChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="dayChartData"
+              [options]="chartOptions"
+              [type]="'bar'"
+            >
+            </canvas>
+          }
+        </div>
+
+        <h3>Check-ins by Month</h3>
+        <div class="chart-container">
+          @if (monthChartData.labels && monthChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="monthChartData"
+              [options]="chartOptions"
+              [type]="'bar'"
+            >
+            </canvas>
+          }
+        </div>
+
+        <h3>Average Ratings Over Time</h3>
+        <div class="chart-container">
+          @if (ratingChartData.labels && ratingChartData.labels.length > 0) {
+            <canvas
+              baseChart
+              [data]="ratingChartData"
+              [options]="chartOptions"
+              [type]="'line'"
+            >
+            </canvas>
+          }
+        </div>
+
+        @if (
+          recentActivityChartData.labels &&
+          recentActivityChartData.labels.length > 0
+        ) {
+          <h3>Recent Activity</h3>
+          <div class="chart-container">
+            <canvas
+              baseChart
+              [data]="recentActivityChartData"
+              [options]="chartOptions"
+              [type]="'line'"
+            >
+            </canvas>
+          </div>
+        }
+      </div>
+    } @placeholder {
+      <div class="charts-section">
+        <p style="text-align: center; opacity: 0.6">Loading charts...</p>
+      </div>
+    }
   }
 </div>
