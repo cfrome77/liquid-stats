@@ -358,24 +358,35 @@ export class StatsComponent implements OnInit, OnDestroy {
     const { start, end } = this.getDateRange();
 
     const filtered = this.beers.filter((b) => {
-      const d = DateUtils.parseDate(b.recent_created_at);
-      return filterFn(b) && d >= start && d <= end;
+      return (
+        filterFn(b) && this.statsService.getBeerCountInRange(b, start, end) > 0
+      );
     });
 
     const data: GenericBeersDialogData = {
       title,
-      beers: filtered.map((b) => ({
-        beerName: b.beer.beer_name,
-        beerLabel: sanitizeUntappdUrl(b.beer.beer_label) || b.beer.beer_label,
-        breweryName: b.brewery.brewery_name,
-        beerABV: b.beer.beer_abv,
-        rating: b.rating_score,
-        checkInDate: b.recent_created_at,
-        checkinUrl:
-          environment.UNTAPPD_USERNAME && b.recent_checkin_id
-            ? `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${b.recent_checkin_id}`
-            : undefined,
-      })),
+      beers: filtered.map((b) => {
+        const recentDate = b.recent_created_at
+          ? DateUtils.parseDate(b.recent_created_at)
+          : null;
+        const checkInDate =
+          recentDate && recentDate >= start && recentDate <= end
+            ? b.recent_created_at
+            : b.first_created_at || b.recent_created_at;
+
+        return {
+          beerName: b.beer.beer_name,
+          beerLabel: sanitizeUntappdUrl(b.beer.beer_label) || b.beer.beer_label,
+          breweryName: b.brewery.brewery_name,
+          beerABV: b.beer.beer_abv,
+          rating: b.rating_score,
+          checkInDate,
+          checkinUrl:
+            environment.UNTAPPD_USERNAME && b.recent_checkin_id
+              ? `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${b.recent_checkin_id}`
+              : undefined,
+        };
+      }),
     };
 
     this.dialog.open(BeerStyleDialogComponent, {
