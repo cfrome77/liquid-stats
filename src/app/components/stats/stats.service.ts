@@ -18,6 +18,37 @@ export class StatsService {
     result: ProcessedStats;
   } | null = null;
 
+  public getBeerCountInRange(b: BeerCheckin, start: Date, end: Date): number {
+    if (!b) return 0;
+    const recentDate = b.recent_created_at
+      ? DateUtils.parseDate(b.recent_created_at)
+      : null;
+    const firstDate = b.first_created_at
+      ? DateUtils.parseDate(b.first_created_at)
+      : null;
+
+    const isRecentInRange = recentDate
+      ? recentDate >= start && recentDate <= end
+      : false;
+    const isFirstInRange = firstDate
+      ? firstDate >= start && firstDate <= end
+      : false;
+
+    if (!isRecentInRange && !isFirstInRange) {
+      return 0;
+    }
+
+    const totalCount = b.count ?? 1;
+
+    // If both first and recent check-ins fell within the range, all check-ins for this beer are in range.
+    if (isFirstInRange && isRecentInRange) {
+      return totalCount;
+    }
+
+    // Otherwise, only 1 check-in (e.g. recent_created_at or first_created_at) occurred in this range window.
+    return 1;
+  }
+
   computeStats(beers: BeerCheckin[], start: Date, end: Date): ProcessedStats {
     const startTime = start.getTime();
     const endTime = end.getTime();
@@ -33,21 +64,22 @@ export class StatsService {
 
     const safeBeers = beers || [];
 
-    const beersInRange = safeBeers.filter((b) => {
-      if (!b || !b.recent_created_at) return false;
-      const date = DateUtils.parseDate(b.recent_created_at);
-      return date >= start && date <= end;
-    });
+    const beersWithCountInRange = safeBeers
+      .map((b) => ({
+        beer: b,
+        countInRange: this.getBeerCountInRange(b, start, end),
+      }))
+      .filter((item) => item.countInRange > 0);
 
     const uniqueBeersSet = new Set(
-      beersInRange
-        .map((b) => b.beer?.bid)
+      beersWithCountInRange
+        .map((item) => item.beer.beer?.bid)
         .filter((bid): bid is number => bid !== undefined && bid !== null),
     );
     const totalUniqueBeers = uniqueBeersSet.size;
 
-    const totalCheckins = beersInRange.reduce(
-      (sum, b) => sum + (b.count ?? 1),
+    const totalCheckins = beersWithCountInRange.reduce(
+      (sum, item) => sum + item.countInRange,
       0,
     );
 
@@ -62,8 +94,8 @@ export class StatsService {
     const newBeerRatio =
       totalUniqueBeers > 0 ? newBeersCount / totalUniqueBeers : 0;
 
-    const totalRatingSum = beersInRange.reduce(
-      (sum, b) => sum + (b.rating_score ?? 0) * (b.count ?? 1),
+    const totalRatingSum = beersWithCountInRange.reduce(
+      (sum, item) => sum + (item.beer.rating_score ?? 0) * item.countInRange,
       0,
     );
 
@@ -71,8 +103,8 @@ export class StatsService {
       totalCheckins > 0 ? totalRatingSum / totalCheckins : 0;
 
     const uniqueBreweriesSet = new Set(
-      beersInRange
-        .map((b) => b.brewery?.brewery_name)
+      beersWithCountInRange
+        .map((item) => item.beer.brewery?.brewery_name)
         .filter((name): name is string => Boolean(name)),
     );
 
@@ -109,11 +141,18 @@ export class StatsService {
     };
     const dailyRatingsMap: Record<string, { sum: number; count: number }> = {};
 
-    beersInRange.forEach((b) => {
-      const count = b.count ?? 1;
+    beersWithCountInRange.forEach(({ beer: b, countInRange: count }) => {
       const rating = b.rating_score ?? 0;
       const style = b.beer?.beer_style || "Unknown";
-      const checkinDate = DateUtils.parseDate(b.recent_created_at);
+
+      const recentDate = b.recent_created_at
+        ? DateUtils.parseDate(b.recent_created_at)
+        : null;
+      const checkinDate =
+        recentDate && recentDate >= start && recentDate <= end
+          ? recentDate
+          : DateUtils.parseDate(b.first_created_at || b.recent_created_at);
+
       const hour = checkinDate.getHours();
       const name = b.beer?.beer_name || "Unknown Beer";
 
@@ -144,8 +183,8 @@ export class StatsService {
 
       if (!dailyRatingsMap[dayIso])
         dailyRatingsMap[dayIso] = { sum: 0, count: 0 };
-      dailyRatingsMap[dayIso].sum += rating;
-      dailyRatingsMap[dayIso].count += 1;
+      dailyRatingsMap[dayIso].sum += rating * count;
+      dailyRatingsMap[dayIso].count += count;
     });
 
     const topBeers: TopBeer[] = Object.entries(beerTally)
