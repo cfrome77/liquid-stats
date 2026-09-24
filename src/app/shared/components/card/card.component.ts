@@ -30,6 +30,7 @@ import { BaseCardData } from "./card-data.interface";
 })
 export class CardComponent {
   @Input() cardData!: BaseCardData;
+  @Input() viewMode: "grid" | "compact" = "grid";
   @Output() badgeClick = new EventEmitter<unknown>();
 
   readonly DEFAULT_IMAGE =
@@ -41,7 +42,26 @@ export class CardComponent {
     return !!(links?.url || links?.facebook || links?.instagram || mapData);
   }
 
+  get canShare(): boolean {
+    return typeof navigator !== "undefined" && !!navigator.share;
+  }
+
   onBadgeClick(badge: unknown): void {
     this.badgeClick.emit(badge);
+  }
+
+  async shareCheckin(event: Event): Promise<void> {
+    event.preventDefault();
+    if (this.canShare) {
+      try {
+        await navigator.share({
+          title: this.cardData?.title || "Liquid Stats Checkin",
+          text: `${this.cardData?.title} by ${this.cardData?.breweryName}`,
+          url: this.cardData?.footerInfo?.link || window.location.href,
+        });
+      } catch {
+        // User cancelled share or share failed silently
+      }
+    }
   }
 }

@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  inject,
+  signal,
+} from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -17,6 +23,7 @@ import { CardComponent } from "../../shared/components/card/card.component";
 import { FilterComponent } from "../../shared/components/filter/filter.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 
 export interface FilterField {
   field: string;
@@ -42,12 +49,14 @@ export interface FilterField {
     FilterComponent,
     PaginationComponent,
     EmptyStateComponent,
+    SkeletonCardComponent,
   ],
 })
 export class BeerHistoryComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
 
+  public viewMode = signal<"grid" | "compact">("grid");
   public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];

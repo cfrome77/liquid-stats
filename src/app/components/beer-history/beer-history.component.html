@@ -1,6 +1,6 @@
 <div class="main-content-container">
   <h1>Beer History</h1>
-  <div class="filter-card">
+  <div class="filter-card glass-panel">
     <div class="filter-card-content">
       <div class="filter-buttons-container">
         <app-filter
@@ -39,31 +39,55 @@
     </div>
   </div>
 
-  <div class="flex-column" style="align-items: stretch; gap: 10px">
-    @for (beerCard of paginatedBeers; track beerCard.title) {
-      <app-card [cardData]="beerCard"></app-card>
-    } @empty {
-      <app-empty-state
-        icon="search_off"
-        message="No beers match your search criteria."
-        buttonText="Clear Filters"
-        (action)="resetFilters()"
-      ></app-empty-state>
-    }
+  <div
+    class="flex-row align-center justify-center gap-4"
+    style="margin-bottom: 20px"
+  >
+    <button
+      mat-stroked-button
+      [color]="viewMode() === 'grid' ? 'primary' : ''"
+      (click)="viewMode.set('grid')"
+      aria-label="Grid view"
+    >
+      <mat-icon>grid_view</mat-icon> Grid
+    </button>
+    <button
+      mat-stroked-button
+      [color]="viewMode() === 'compact' ? 'primary' : ''"
+      (click)="viewMode.set('compact')"
+      aria-label="Compact list view"
+    >
+      <mat-icon>view_list</mat-icon> Compact
+    </button>
   </div>
 
   @if (isLoadingAll) {
-    <div class="flex-row" style="justify-content: center; margin: 20px 0">
-      <span>Loading...</span>
+    <div class="flex-column" style="align-items: stretch; gap: 10px">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <app-skeleton-card [viewMode]="viewMode()"></app-skeleton-card>
+      }
     </div>
-  }
+  } @else {
+    <div class="flex-column" style="align-items: stretch; gap: 10px">
+      @for (beerCard of paginatedBeers; track beerCard.title) {
+        <app-card [cardData]="beerCard" [viewMode]="viewMode()"></app-card>
+      } @empty {
+        <app-empty-state
+          icon="search_off"
+          message="No beers match your search criteria."
+          buttonText="Clear Filters"
+          (action)="resetFilters()"
+        ></app-empty-state>
+      }
+    </div>
 
-  <app-pagination
-    [currentPage]="currentPage"
-    [itemsPerPage]="itemsPerPage"
-    [totalItems]="totalItems"
-    (pageChange)="goToPage($event)"
-    (itemsPerPageChange)="changeItemsPerPage($event)"
-  >
-  </app-pagination>
+    <app-pagination
+      [currentPage]="currentPage"
+      [itemsPerPage]="itemsPerPage"
+      [totalItems]="totalItems"
+      (pageChange)="goToPage($event)"
+      (itemsPerPageChange)="changeItemsPerPage($event)"
+    >
+    </app-pagination>
+  }
 </div>

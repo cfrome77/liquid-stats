@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  inject,
+  signal,
+} from "@angular/core";
 
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -11,6 +17,8 @@ import {
 } from "@angular/material/core";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
 
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
@@ -22,6 +30,7 @@ import {
 import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
+import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 
 type DateRangeOption = { label: string; daysBack?: number };
 
@@ -40,7 +49,10 @@ type DateRangeOption = { label: string; daysBack?: number };
     MatNativeDateModule,
     MatRadioModule,
     MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
     CardComponent,
+    SkeletonCardComponent,
   ],
   providers: [provideNativeDateAdapter()],
 })
@@ -49,8 +61,10 @@ export class TopBeersComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
 
+  public viewMode = signal<"grid" | "compact">("grid");
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
+  public isLoading = true;
 
   // Filter state
   public useCustomDate = false;
@@ -75,12 +89,18 @@ export class TopBeersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.beers = data;
+        this.isLoading = false;
         this.onFilterChange();
       },
-      error: (err) => console.error("Error fetching beers:", err),
+      error: (err) => {
+        console.error("Error fetching beers:", err);
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 

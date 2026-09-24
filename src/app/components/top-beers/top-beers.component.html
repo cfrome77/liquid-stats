@@ -1,7 +1,10 @@
 <div class="main-content-container">
-  <h1>Top {{ topX }} Beers</h1>
+  <div class="flex-row align-center justify-center" style="margin-bottom: 20px">
+    <h1 style="margin: 0">Top {{ topX }} Beers</h1>
+  </div>
+
   <!-- Filters Section -->
-  <div class="filter-card">
+  <div class="filter-card glass-panel">
     <div class="filter-controls">
       <!-- Time Range Dropdown -->
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
@@ -67,12 +70,45 @@
         {{ transformedTopBeers.length }} beers matched the criteria.
       </p>
     }
+
+    <div
+      class="flex-row align-center justify-center gap-4"
+      style="margin-top: 12px"
+    >
+      <button
+        mat-stroked-button
+        [color]="viewMode() === 'grid' ? 'primary' : ''"
+        (click)="viewMode.set('grid')"
+        aria-label="Grid view"
+      >
+        <mat-icon>grid_view</mat-icon> Grid
+      </button>
+      <button
+        mat-stroked-button
+        [color]="viewMode() === 'compact' ? 'primary' : ''"
+        (click)="viewMode.set('compact')"
+        aria-label="Compact list view"
+      >
+        <mat-icon>view_list</mat-icon> Compact
+      </button>
+    </div>
   </div>
 
   <!-- Main container for cards -->
-  <div class="flex-column" style="align-items: stretch; gap: 10px">
-    @for (beer of transformedTopBeers; track beer.title; let i = $index) {
-      <app-card [cardData]="beer"> </app-card>
-    }
-  </div>
+  @if (isLoading) {
+    <app-skeleton-card
+      [viewMode]="viewMode()"
+      [count]="topX"
+    ></app-skeleton-card>
+  } @else {
+    <div class="flex-column" style="align-items: stretch; gap: 10px">
+      @for (
+        beer of transformedTopBeers;
+        track beer.title + "-" + i;
+        let i = $index
+      ) {
+        <app-card [cardData]="beer" [viewMode]="viewMode()"> </app-card>
+      }
+    </div>
+  }
 </div>

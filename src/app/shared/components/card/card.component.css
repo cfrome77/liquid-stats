@@ -6,9 +6,11 @@
 }
 
 .shared-card {
-  background-color: var(--card-bg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -19,7 +21,39 @@
     transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
     box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
     border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--glass-border);
+}
+
+/* Compact view adjustments */
+.shared-card.compact-view .card-header {
+  padding: 8px 12px;
+  grid-template-columns: 40px 1fr 40px;
+}
+
+.shared-card.compact-view .beer-label,
+.shared-card.compact-view .brewery-label {
+  height: 38px;
+  width: 38px;
+}
+
+.shared-card.compact-view .title {
+  font-size: 1.05rem;
+  margin-bottom: 2px;
+}
+
+.shared-card.compact-view .subtitle,
+.shared-card.compact-view .brewery-name {
+  font-size: 0.75rem;
+}
+
+.shared-card.compact-view .comment {
+  margin: 8px 12px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+.shared-card.compact-view footer {
+  padding: 8px 12px;
 }
 
 .shared-card:hover {
@@ -278,17 +312,24 @@ footer {
   opacity: 0.7;
 }
 
-.view-details {
+.view-details,
+.share-btn {
   color: var(--text-color);
   display: flex;
+  align-items: center;
+  justify-content: center;
   transition:
     color 0.2s,
     background-color 0.2s;
   padding: 4px;
   border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
-.view-details:hover {
+.view-details:hover,
+.share-btn:hover {
   color: var(--accent-blue);
   background-color: rgba(var(--accent-blue-rgb), 0.1);
 }

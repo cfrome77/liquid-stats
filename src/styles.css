@@ -25,18 +25,18 @@ app-root {
 }
 
 .light-theme {
-  --bg-color: #fafafa;
-  --text-color: #333333;
-  --card-bg: #ffffff;
-  --navbar-bg: #494d50;
+  --bg-color: #f8fafc;
+  --text-color: #1e293b;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --navbar-bg: #334155;
   --navbar-text: #ffffff;
-  --header-text: #333333;
-  --strong-text: #000000;
-  --divider-color: rgba(0, 0, 0, 0.12);
+  --header-text: #0f172a;
+  --strong-text: #020617;
+  --divider-color: rgba(0, 0, 0, 0.08);
   --input-bg: #ffffff;
-  --input-text: #333333;
-  --input-outline: rgba(0, 0, 0, 0.38);
-  --chip-bg: #e0e0e0;
+  --input-text: #1e293b;
+  --input-outline: rgba(0, 0, 0, 0.2);
+  --chip-bg: #f1f5f9;
   --hero-glow: linear-gradient(
     180deg,
     #fff6e8 0%,
@@ -44,27 +44,31 @@ app-root {
     transparent 60%
   );
   --accent-glow: #e65100;
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --hover-bg: rgba(0, 0, 0, 0.05);
-  --hover-overlay: rgba(255, 255, 255, 0.1);
+  --card-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  --hover-bg: rgba(0, 0, 0, 0.03);
+  --hover-overlay: rgba(255, 255, 255, 0.2);
   --hover-accent: var(--accent-blue);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
 .dark-theme {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --accent-blue: #42a5f5;
-  --accent-blue-rgb: 66, 165, 245;
-  --navbar-bg: #212121;
+  --bg-color: #0b0f17;
+  --text-color: #f1f5f9;
+  --card-bg: rgba(23, 31, 46, 0.85);
+  --accent-blue: #38bdf8;
+  --accent-blue-rgb: 56, 189, 248;
+  --navbar-bg: #0f172a;
   --navbar-text: #ffffff;
   --header-text: #ffffff;
   --strong-text: #ffffff;
-  --divider-color: rgba(255, 255, 255, 0.12);
-  --input-bg: #333333;
+  --divider-color: rgba(255, 255, 255, 0.1);
+  --input-bg: #1e293b;
   --input-text: #ffffff;
-  --input-outline: rgba(255, 255, 255, 0.38);
-  --chip-bg: #424242;
+  --input-outline: rgba(255, 255, 255, 0.2);
+  --chip-bg: #1e293b;
   --hero-glow: linear-gradient(
     180deg,
     #3b2a16 0%,
@@ -72,10 +76,13 @@ app-root {
     transparent 65%
   );
   --accent-glow: #ffca28;
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --hover-bg: rgba(255, 255, 255, 0.04);
-  --hover-overlay: rgba(255, 255, 255, 0.06);
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --hover-overlay: rgba(255, 255, 255, 0.08);
   --hover-accent: var(--accent-blue);
+  --glass-bg: rgba(15, 23, 42, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 /* Reset Styles */
@@ -466,12 +473,24 @@ strong {
   background-color: rgba(255, 255, 255, 0.3) !important;
 }
 
+/* Glassmorphism Panel Utility */
+.glass-panel {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: 16px !important;
+}
+
 /* Modern Card Utility */
 .modern-card {
-  background-color: var(--card-bg) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--card-shadow);
   border-radius: 16px !important;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--glass-border);
   transition:
     transform var(--transition-standard),
     box-shadow var(--transition-standard),
@@ -479,8 +498,21 @@ strong {
 }
 
 .modern-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   border-color: var(--accent-blue);
+}
+
+/* Visually Hidden Helper for Accessibility */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 /* Line Clamp Utility */
