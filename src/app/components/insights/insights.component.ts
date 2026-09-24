@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   inject,
   signal,
+  effect,
 } from "@angular/core";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
@@ -18,6 +19,7 @@ import {
 import { ChartData, ChartOptions } from "chart.js";
 
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
+import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 
@@ -46,6 +48,7 @@ export interface Milestone {
 })
 export class InsightsComponent implements OnInit {
   private beerStore = inject(BeerStoreService);
+  private themeService = inject(ThemeService);
   private cdr = inject(ChangeDetectorRef);
 
   public isLoading = signal<boolean>(true);
@@ -68,7 +71,7 @@ export class InsightsComponent implements OnInit {
       {
         data: [0, 0, 0, 0, 0, 0, 0],
         label: "Style Experience Count",
-        backgroundColor: "rgba(56, 189, 248, 0.2)",
+        backgroundColor: "rgba(56, 189, 248, 0.25)",
         borderColor: "#38bdf8",
         pointBackgroundColor: "#38bdf8",
       },
@@ -80,14 +83,44 @@ export class InsightsComponent implements OnInit {
     maintainAspectRatio: false,
     scales: {
       r: {
-        angleLines: { color: "rgba(255, 255, 255, 0.1)" },
-        grid: { color: "rgba(255, 255, 255, 0.1)" },
+        angleLines: {
+          display: true,
+          color: "rgba(0, 0, 0, 0.25)",
+          lineWidth: 1.5,
+        },
+        grid: {
+          display: true,
+          color: "rgba(0, 0, 0, 0.25)",
+          lineWidth: 1.5,
+        },
         pointLabels: {
+          display: true,
+          color: "#0f172a",
           font: { size: 12, weight: "bold" },
+        },
+        ticks: {
+          display: true,
+          color: "#475569",
+          backdropColor: "transparent",
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: "#0f172a",
         },
       },
     },
   };
+
+  constructor() {
+    effect(() => {
+      const currentTheme = this.themeService.currentTheme();
+      this.updateChartThemeOptions(currentTheme);
+    });
+  }
 
   ngOnInit(): void {
     this.beerStore.load();
@@ -105,6 +138,71 @@ export class InsightsComponent implements OnInit {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  private updateChartThemeOptions(theme: "light-theme" | "dark-theme"): void {
+    const isLight = theme === "light-theme";
+    const textColor = isLight ? "#0f172a" : "#f1f5f9";
+    const gridColor = isLight
+      ? "rgba(0, 0, 0, 0.25)"
+      : "rgba(255, 255, 255, 0.25)";
+    const tickColor = isLight ? "#475569" : "#94a3b8";
+    const brandAccent = isLight ? "#0284c7" : "#38bdf8";
+    const brandBg = isLight
+      ? "rgba(2, 132, 199, 0.25)"
+      : "rgba(56, 189, 248, 0.25)";
+
+    this.radarChartOptions = {
+      ...this.radarChartOptions,
+      scales: {
+        r: {
+          angleLines: {
+            display: true,
+            color: gridColor,
+            lineWidth: 1.5,
+          },
+          grid: {
+            display: true,
+            color: gridColor,
+            lineWidth: 1.5,
+          },
+          pointLabels: {
+            display: true,
+            color: textColor,
+            font: { size: 12, weight: "bold" },
+          },
+          ticks: {
+            display: true,
+            color: tickColor,
+            backdropColor: "transparent",
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: textColor,
+          },
+        },
+      },
+    };
+
+    if (this.styleRadarChartData.datasets[0]) {
+      this.styleRadarChartData = {
+        ...this.styleRadarChartData,
+        datasets: [
+          {
+            ...this.styleRadarChartData.datasets[0],
+            backgroundColor: brandBg,
+            borderColor: brandAccent,
+            pointBackgroundColor: brandAccent,
+          },
+        ],
+      };
+    }
+
+    this.cdr.markForCheck();
   }
 
   private computeInsights(beers: BeerCheckin[]): void {
@@ -184,6 +282,12 @@ export class InsightsComponent implements OnInit {
     this.totalUniqueStyles.set(uniqueStyles.size);
     this.averageABV.set(abvCount > 0 ? totalABV / abvCount : 0);
 
+    const isLight = this.themeService.currentTheme() === "light-theme";
+    const brandAccent = isLight ? "#0284c7" : "#38bdf8";
+    const brandBg = isLight
+      ? "rgba(2, 132, 199, 0.25)"
+      : "rgba(56, 189, 248, 0.25)";
+
     // Radar chart data update
     this.styleRadarChartData = {
       labels: Object.keys(categoryCounts),
@@ -191,9 +295,9 @@ export class InsightsComponent implements OnInit {
         {
           data: Object.values(categoryCounts),
           label: "Check-ins by Style",
-          backgroundColor: "rgba(56, 189, 248, 0.25)",
-          borderColor: "#38bdf8",
-          pointBackgroundColor: "#38bdf8",
+          backgroundColor: brandBg,
+          borderColor: brandAccent,
+          pointBackgroundColor: brandAccent,
         },
       ],
     };

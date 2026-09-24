@@ -49,9 +49,18 @@ app-root {
   --hover-bg: rgba(0, 0, 0, 0.03);
   --hover-overlay: rgba(255, 255, 255, 0.2);
   --hover-accent: var(--accent-blue);
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  /* Chart & Grid theme properties */
+  --chart-grid-color: rgba(0, 0, 0, 0.25);
+  --chart-text-color: #0f172a;
+  --toggle-btn-bg: #ffffff;
+  --toggle-btn-border: #cbd5e1;
+  --toggle-btn-text: #334155;
+  --toggle-btn-active-bg: #0284c7;
+  --toggle-btn-active-text: #ffffff;
 }
 
 .dark-theme {
@@ -83,6 +92,57 @@ app-root {
   --glass-bg: rgba(15, 23, 42, 0.75);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Chart & Grid theme properties */
+  --chart-grid-color: rgba(255, 255, 255, 0.25);
+  --chart-text-color: #f1f5f9;
+  --toggle-btn-bg: #1e293b;
+  --toggle-btn-border: #475569;
+  --toggle-btn-text: #cbd5e1;
+  --toggle-btn-active-bg: #38bdf8;
+  --toggle-btn-active-text: #0f172a;
+}
+
+/* View Mode Toggle Group Styles */
+.view-toggle-group {
+  display: flex;
+  gap: 8px;
+}
+
+.view-toggle-btn {
+  background-color: var(--toggle-btn-bg) !important;
+  color: var(--toggle-btn-text) !important;
+  border: 1px solid var(--toggle-btn-border) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all var(--transition-standard) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 6px 16px !important;
+}
+
+.view-toggle-btn .mdc-button__label,
+.view-toggle-btn mat-icon {
+  color: inherit !important;
+}
+
+.view-toggle-btn.active {
+  background-color: var(--toggle-btn-active-bg) !important;
+  color: var(--toggle-btn-active-text) !important;
+  border-color: var(--toggle-btn-active-bg) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.view-toggle-btn.active .mdc-button__label,
+.view-toggle-btn.active mat-icon {
+  color: var(--toggle-btn-active-text) !important;
+}
+
+.view-toggle-btn:hover:not(.active) {
+  background-color: var(--hover-bg) !important;
+  border-color: var(--accent-blue) !important;
 }
 
 /* Reset Styles */
