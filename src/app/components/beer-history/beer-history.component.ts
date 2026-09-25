@@ -228,10 +228,10 @@ export class BeerHistoryComponent implements OnInit {
       const matchesRating = ratingFilter.selected.includes(formattedRating);
 
       const startDate = dateFilter.selected[0]
-        ? DateUtils.parseDate(dateFilter.selected[0])
+        ? DateUtils.startOfDay(dateFilter.selected[0])
         : null;
       const endDate = dateFilter.selected[1]
-        ? DateUtils.parseDate(dateFilter.selected[1])
+        ? DateUtils.endOfDay(dateFilter.selected[1])
         : null;
       const matchesDate =
         (!startDate || beerDate >= startDate) &&
