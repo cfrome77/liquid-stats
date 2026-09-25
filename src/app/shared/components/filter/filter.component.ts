@@ -1,4 +1,16 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  TemplateRef,
+  ViewContainerRef,
+  OnDestroy,
+  inject,
+} from "@angular/core";
+import { Overlay, OverlayModule, OverlayRef } from "@angular/cdk/overlay";
+import { TemplatePortal } from "@angular/cdk/portal";
 
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -28,6 +40,7 @@ export interface FilterField {
   styleUrls: ["./filter.component.css"],
   standalone: true,
   imports: [
+    OverlayModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDatepickerModule,
@@ -38,32 +51,70 @@ export interface FilterField {
   ],
   providers: [provideNativeDateAdapter()],
 })
-export class FilterComponent {
+export class FilterComponent implements OnDestroy {
   @Input() filterFields: FilterField[] = [];
-  // Fixed: Replaced 'any' with the specific type being emitted
   @Output() filterChanged = new EventEmitter<FilterField[]>();
+
+  @ViewChild("filterModalTemplate") filterModalTemplate!: TemplateRef<unknown>;
+
+  private overlay = inject(Overlay);
+  private viewContainerRef = inject(ViewContainerRef);
+  private overlayRef: OverlayRef | null = null;
 
   activeFilter: FilterField | null = null;
   isModalOpen = false;
 
-  // Fixed: Removed empty ngOnInit and ngOnChanges hooks
-
-  private initializeFilters(): void {
-    // Initialization logic if any
-  }
-
-  private onFilterUpdate(): void {
-    // Update logic if any
-  }
-
   openFilterModal(filter: FilterField) {
-    this.isModalOpen = true;
     this.activeFilter = { ...filter, selected: [...filter.selected] };
+    this.isModalOpen = true;
+
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+    }
+
+    this.overlayRef = this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: "filter-modal-backdrop",
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+      scrollStrategy: this.overlay.scrollStrategies.block(),
+    });
+
+    const portal = new TemplatePortal(
+      this.filterModalTemplate,
+      this.viewContainerRef,
+    );
+    this.overlayRef.attach(portal);
+
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.closeModal();
+    });
+
+    this.overlayRef.keydownEvents().subscribe((event) => {
+      if (event.key === "Escape") {
+        this.closeModal();
+      }
+    });
   }
 
   closeModal() {
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+    }
     this.isModalOpen = false;
     this.activeFilter = null;
+  }
+
+  ngOnDestroy(): void {
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+    }
   }
 
   onCheckboxChange(option: string, event: Event) {

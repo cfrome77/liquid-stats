@@ -14,9 +14,9 @@
   }
 </div>
 
-<!-- Modal -->
-@if (activeFilter) {
-  <div class="modal-overlay" (click)="closeModal()">
+<!-- Modal Template -->
+<ng-template #filterModalTemplate>
+  @if (activeFilter) {
     <div class="modal-content" (click)="$event.stopPropagation()">
       <!-- Header -->
       <div class="modal-header">
@@ -113,5 +113,5 @@
         }
       </div>
     </div>
-  </div>
-}
+  }
+</ng-template>
