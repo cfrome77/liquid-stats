@@ -345,20 +345,21 @@
     filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   border-radius: 20px;
-  max-width: none !important;
+  max-width: 240px !important;
   flex-shrink: 0 !important;
 }
 
 .clickable-chip ::ng-deep .mdc-evolution-chip__action--primary,
 .clickable-chip ::ng-deep .mdc-evolution-chip__cell--primary {
-  max-width: none !important;
-  overflow: visible !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 
 .clickable-chip ::ng-deep .mdc-evolution-chip__text-label {
-  text-overflow: clip !important;
+  text-overflow: ellipsis !important;
   white-space: nowrap !important;
-  overflow: visible !important;
+  overflow: hidden !important;
+  max-width: 180px !important;
 }
 
 /* Style chip avatar image so it's always displayed properly in MDC chips */
