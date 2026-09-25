@@ -32,7 +32,7 @@ import { DateUtils } from "src/app/core/utils/date-utils";
   ],
 })
 export class BadgesComponent implements OnInit {
-  public viewMode = signal<"grid" | "compact">("grid");
+  public viewMode = signal<"cards" | "compact">("cards");
   private dataService = inject(DataService);
   private logger = inject(LoggingService);
   private cdr = inject(ChangeDetectorRef);

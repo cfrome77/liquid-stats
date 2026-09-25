@@ -36,7 +36,7 @@ export class WishlistComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  public viewMode = signal<"grid" | "compact">("grid");
+  public viewMode = signal<"cards" | "compact">("cards");
   public wishlist: BaseCardData[] = [];
   public paginatedWishlist: BaseCardData[] = [];
   public totalItems = 0;

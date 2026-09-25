@@ -1,22 +1,15 @@
-.skeleton-container.grid-mode {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+}
+
+.skeleton-container.cards-mode {
+  gap: 16px;
 }
 
 .skeleton-container.compact-mode {
-  display: flex;
-  flex-direction: column;
   gap: 10px;
-  width: 100%;
-}
-
-@media (max-width: 600px) {
-  .skeleton-container.grid-mode {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
 }
 
 .skeleton-card {

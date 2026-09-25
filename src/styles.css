@@ -329,7 +329,7 @@ strong {
 /* Shared container */
 .main-content-container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 24px 8px;
   box-sizing: border-box;
@@ -339,27 +339,17 @@ strong {
 .cards-layout-container {
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.cards-layout-container.grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+.cards-layout-container.cards-layout {
   gap: 16px;
-  align-items: stretch;
 }
 
 .cards-layout-container.compact-layout {
-  display: flex;
-  flex-direction: column;
   gap: 10px;
-  align-items: stretch;
-}
-
-@media (max-width: 600px) {
-  .cards-layout-container.grid-layout {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
 }
 
 /* Navbar */
