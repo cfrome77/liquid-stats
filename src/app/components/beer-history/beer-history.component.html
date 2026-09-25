@@ -64,13 +64,13 @@
   </div>
 
   @if (isLoadingAll) {
-    <div class="flex-column" style="align-items: stretch; gap: 10px">
-      @for (i of [1, 2, 3, 4]; track i) {
-        <app-skeleton-card [viewMode]="viewMode()"></app-skeleton-card>
-      }
-    </div>
+    <app-skeleton-card [viewMode]="viewMode()" [count]="6"></app-skeleton-card>
   } @else {
-    <div class="flex-column" style="align-items: stretch; gap: 10px">
+    <div
+      class="cards-layout-container"
+      [class.grid-layout]="viewMode() === 'grid'"
+      [class.compact-layout]="viewMode() === 'compact'"
+    >
       @for (beerCard of paginatedBeers; track beerCard.title) {
         <app-card [cardData]="beerCard" [viewMode]="viewMode()"></app-card>
       } @empty {

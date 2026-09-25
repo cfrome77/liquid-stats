@@ -28,9 +28,13 @@
   </div>
 
   @if (isLoadingAll && paginatedCheckins.length === 0) {
-    <app-skeleton-card [viewMode]="viewMode()" [count]="5"></app-skeleton-card>
+    <app-skeleton-card [viewMode]="viewMode()" [count]="6"></app-skeleton-card>
   } @else {
-    <div class="flex-column" style="align-items: stretch; gap: 15px">
+    <div
+      class="cards-layout-container"
+      [class.grid-layout]="viewMode() === 'grid'"
+      [class.compact-layout]="viewMode() === 'compact'"
+    >
       @for (checkin of paginatedCheckins; track checkin.extraData?.checkinId) {
         <div
           [id]="'checkin-' + checkin.extraData?.checkinId"

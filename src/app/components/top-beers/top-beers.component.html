@@ -103,7 +103,11 @@
       [count]="topX"
     ></app-skeleton-card>
   } @else {
-    <div class="flex-column" style="align-items: stretch; gap: 10px">
+    <div
+      class="cards-layout-container"
+      [class.grid-layout]="viewMode() === 'grid'"
+      [class.compact-layout]="viewMode() === 'compact'"
+    >
       @for (
         beer of transformedTopBeers;
         track beer.title + "-" + i;
