@@ -205,6 +205,8 @@
                   ) {
                     <mat-chip
                       class="clickable-chip"
+                      [title]="badge.badge_name"
+                      [attr.aria-label]="badge.badge_name"
                       (click)="onBadgeClick(badge)"
                     >
                       <img

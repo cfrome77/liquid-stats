@@ -333,7 +333,7 @@
 
 .chip ::ng-deep .mdc-evolution-chip-set__chips {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
