@@ -1,6 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  inject,
+  signal,
+} from "@angular/core";
 
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
 import { DataService } from "src/app/core/services/data.service";
 import { Badge } from "src/app/core/models/badge.model";
 import { LoggingService } from "src/app/core/services/logger.service";
@@ -15,9 +23,16 @@ import { DateUtils } from "src/app/core/utils/date-utils";
   templateUrl: "./badges.component.html",
   styleUrls: ["./badges.component.css"],
   standalone: true,
-  imports: [MatDialogModule, PaginationComponent, CardComponent],
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    PaginationComponent,
+    CardComponent,
+  ],
 })
 export class BadgesComponent implements OnInit {
+  public viewMode = signal<"grid" | "compact">("grid");
   private dataService = inject(DataService);
   private logger = inject(LoggingService);
   private cdr = inject(ChangeDetectorRef);
