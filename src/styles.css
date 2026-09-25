@@ -519,6 +519,17 @@ strong {
   display: none !important;
 }
 
+/* CDK Overlay Container & Filter Backdrop Styling */
+.cdk-overlay-container {
+  z-index: 2000 !important;
+}
+
+.filter-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
 /* Global Error Banner */
 .global-error-banner {
   background-color: #f44336;
