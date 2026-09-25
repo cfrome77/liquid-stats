@@ -1,8 +1,38 @@
 <div class="main-content-container">
   <h1>Badges Earned</h1>
-  <div class="flex-column" style="align-items: stretch; gap: 10px">
+
+  <div
+    class="flex-row align-center justify-center gap-4"
+    style="margin-bottom: 20px"
+  >
+    <button
+      mat-stroked-button
+      class="view-toggle-btn"
+      [class.active]="viewMode() === 'cards'"
+      (click)="viewMode.set('cards')"
+      aria-label="Cards view"
+    >
+      <mat-icon>view_agenda</mat-icon> Cards
+    </button>
+    <button
+      mat-stroked-button
+      class="view-toggle-btn"
+      [class.active]="viewMode() === 'compact'"
+      (click)="viewMode.set('compact')"
+      aria-label="Compact view"
+    >
+      <mat-icon>view_list</mat-icon> Compact
+    </button>
+  </div>
+
+  <div
+    class="cards-layout-container"
+    [class.cards-layout]="viewMode() === 'cards'"
+    [class.compact-layout]="viewMode() === 'compact'"
+  >
     @for (badge of paginatedBadges; track badge.badge_name) {
-      <app-card [cardData]="transformBadgeData(badge)"> </app-card>
+      <app-card [cardData]="transformBadgeData(badge)" [viewMode]="viewMode()">
+      </app-card>
     }
   </div>
 </div>

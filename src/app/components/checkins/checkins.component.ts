@@ -51,7 +51,7 @@ export class CheckinsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ngZone = inject(NgZone);
 
-  public viewMode = signal<"grid" | "compact">("grid");
+  public viewMode = signal<"cards" | "compact">("cards");
   public checkinsInitial: Checkin[] = [];
   public checkinsAll: Checkin[] = [];
   public transformedCheckins: BaseCardData[] = [];

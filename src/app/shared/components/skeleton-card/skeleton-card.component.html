@@ -1,19 +1,37 @@
-<div class="skeleton-container" [class.compact-mode]="viewMode() === 'compact'">
+<div
+  class="skeleton-container"
+  [class.cards-mode]="viewMode() === 'cards'"
+  [class.compact-mode]="viewMode() === 'compact'"
+>
   @for (item of items; track item) {
-    <div class="skeleton-card glass-panel" aria-hidden="true">
-      <div class="skeleton-header">
-        <div class="skeleton-avatar shimmer"></div>
+    @if (viewMode() === "compact") {
+      <div
+        class="skeleton-card compact-skeleton glass-panel"
+        aria-hidden="true"
+      >
+        <div class="skeleton-avatar compact-thumb shimmer"></div>
         <div class="skeleton-text-group">
           <div class="skeleton-title shimmer"></div>
           <div class="skeleton-subtitle shimmer"></div>
         </div>
-        <div class="skeleton-avatar shimmer"></div>
+        <div class="skeleton-pill compact-pill shimmer"></div>
       </div>
-      <div class="skeleton-body shimmer"></div>
-      <div class="skeleton-footer">
-        <div class="skeleton-pill shimmer"></div>
-        <div class="skeleton-pill shimmer"></div>
+    } @else {
+      <div class="skeleton-card glass-panel" aria-hidden="true">
+        <div class="skeleton-header">
+          <div class="skeleton-avatar shimmer"></div>
+          <div class="skeleton-text-group">
+            <div class="skeleton-title shimmer"></div>
+            <div class="skeleton-subtitle shimmer"></div>
+          </div>
+          <div class="skeleton-avatar shimmer"></div>
+        </div>
+        <div class="skeleton-body shimmer"></div>
+        <div class="skeleton-footer">
+          <div class="skeleton-pill shimmer"></div>
+          <div class="skeleton-pill shimmer"></div>
+        </div>
       </div>
-    </div>
+    }
   }
 </div>

@@ -78,18 +78,18 @@
       <button
         mat-stroked-button
         class="view-toggle-btn"
-        [class.active]="viewMode() === 'grid'"
-        (click)="viewMode.set('grid')"
-        aria-label="Grid view"
+        [class.active]="viewMode() === 'cards'"
+        (click)="viewMode.set('cards')"
+        aria-label="Cards view"
       >
-        <mat-icon>grid_view</mat-icon> Grid
+        <mat-icon>view_agenda</mat-icon> Cards
       </button>
       <button
         mat-stroked-button
         class="view-toggle-btn"
         [class.active]="viewMode() === 'compact'"
         (click)="viewMode.set('compact')"
-        aria-label="Compact list view"
+        aria-label="Compact view"
       >
         <mat-icon>view_list</mat-icon> Compact
       </button>
@@ -103,7 +103,11 @@
       [count]="topX"
     ></app-skeleton-card>
   } @else {
-    <div class="flex-column" style="align-items: stretch; gap: 10px">
+    <div
+      class="cards-layout-container"
+      [class.cards-layout]="viewMode() === 'cards'"
+      [class.compact-layout]="viewMode() === 'compact'"
+    >
       @for (
         beer of transformedTopBeers;
         track beer.title + "-" + i;

@@ -61,7 +61,7 @@ export class TopBeersComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
 
-  public viewMode = signal<"grid" | "compact">("grid");
+  public viewMode = signal<"cards" | "compact">("cards");
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
   public isLoading = true;

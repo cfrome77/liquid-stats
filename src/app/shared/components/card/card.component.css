@@ -24,36 +24,134 @@
   border: 1px solid var(--glass-border);
 }
 
-/* Compact view adjustments */
-.shared-card.compact-view .card-header {
-  padding: 8px 12px;
-  grid-template-columns: 40px 1fr 40px;
+/* Compact Horizontal Row View Styles */
+.compact-row-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  gap: 12px;
+  width: 100%;
 }
 
-.shared-card.compact-view .beer-label,
-.shared-card.compact-view .brewery-label {
-  height: 38px;
-  width: 38px;
+.compact-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
-.shared-card.compact-view .title {
-  font-size: 1.05rem;
-  margin-bottom: 2px;
+.compact-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  object-fit: cover;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
 
-.shared-card.compact-view .subtitle,
-.shared-card.compact-view .brewery-name {
+.compact-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.compact-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.compact-title {
+  font-size: 0.98rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--header-text);
+}
+
+.compact-subtitle-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.85;
+  line-height: 1.3;
+}
+
+.brewery-name.inline {
+  color: var(--accent-blue);
+  font-weight: 700;
+  text-transform: uppercase;
   font-size: 0.75rem;
+  margin: 0;
+  white-space: normal;
+  word-break: break-word;
 }
 
-.shared-card.compact-view .comment {
-  margin: 8px 12px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
+.subtitle.inline {
+  font-size: 0.8rem;
+  margin: 0;
+  white-space: normal;
+  word-break: break-word;
 }
 
-.shared-card.compact-view footer {
-  padding: 8px 12px;
+.bullet {
+  opacity: 0.5;
+  font-size: 0.7rem;
+}
+
+.compact-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.compact-rating {
+  display: flex;
+  align-items: center;
+}
+
+.compact-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compact-time {
+  font-size: 0.78rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .compact-row-container {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .compact-thumb {
+    width: 32px;
+    height: 32px;
+  }
+
+  .compact-right {
+    gap: 6px;
+  }
+
+  .compact-time {
+    display: none;
+  }
 }
 
 .shared-card:hover {
@@ -234,7 +332,7 @@
 
 .chip ::ng-deep .mdc-evolution-chip-set__chips {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -246,20 +344,21 @@
     filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   border-radius: 20px;
-  max-width: none !important;
+  max-width: 240px !important;
   flex-shrink: 0 !important;
 }
 
 .clickable-chip ::ng-deep .mdc-evolution-chip__action--primary,
 .clickable-chip ::ng-deep .mdc-evolution-chip__cell--primary {
-  max-width: none !important;
-  overflow: visible !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 
 .clickable-chip ::ng-deep .mdc-evolution-chip__text-label {
-  text-overflow: clip !important;
+  text-overflow: ellipsis !important;
   white-space: nowrap !important;
-  overflow: visible !important;
+  overflow: hidden !important;
+  max-width: 180px !important;
 }
 
 /* Style chip avatar image so it's always displayed properly in MDC chips */

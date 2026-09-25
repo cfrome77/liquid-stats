@@ -10,7 +10,7 @@ import { CommonModule } from "@angular/common";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkeletonCardComponent {
-  viewMode = input<"grid" | "compact">("grid");
+  viewMode = input<"cards" | "compact">("cards");
   count = input<number>(3);
 
   get items(): number[] {

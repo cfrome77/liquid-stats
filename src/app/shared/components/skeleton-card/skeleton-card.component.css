@@ -1,8 +1,15 @@
 .skeleton-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   width: 100%;
+}
+
+.skeleton-container.cards-mode {
+  gap: 16px;
+}
+
+.skeleton-container.compact-mode {
+  gap: 10px;
 }
 
 .skeleton-card {
@@ -13,13 +20,23 @@
   border-radius: 16px;
 }
 
-.compact-mode .skeleton-card {
-  padding: 10px 16px;
-  gap: 8px;
+.compact-skeleton {
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 12px;
 }
 
-.compact-mode .skeleton-body {
-  display: none;
+.compact-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.compact-pill {
+  width: 60px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .skeleton-header {

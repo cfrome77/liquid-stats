@@ -30,7 +30,7 @@ import { BaseCardData } from "./card-data.interface";
 })
 export class CardComponent {
   @Input() cardData!: BaseCardData;
-  @Input() viewMode: "grid" | "compact" = "grid";
+  @Input() viewMode: "cards" | "compact" = "cards";
   @Output() badgeClick = new EventEmitter<unknown>();
 
   readonly DEFAULT_IMAGE =

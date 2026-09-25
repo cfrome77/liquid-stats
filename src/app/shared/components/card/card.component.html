@@ -1,194 +1,301 @@
 <div class="card-container">
   <mat-card class="shared-card" [class.compact-view]="viewMode === 'compact'">
     <mat-card-content class="beer">
-      <div class="card-header">
-        <div class="label-container left">
-          @if (cardData.mainImage) {
-            <img
-              class="beer-label"
-              [src]="cardData.mainImage"
-              (error)="
-                $event.target.src =
-                  cardData.extraData?.originalMainImage || DEFAULT_IMAGE
-              "
-              [alt]="cardData.title"
-              [title]="cardData.title"
-              width="54"
-              height="54"
-              loading="lazy"
-            />
-          }
-        </div>
-
-        <div class="beer-info">
-          <h3 class="title">
-            @if (cardData.rank) {
-              <span class="rank-badge">#{{ cardData.rank }}</span>
+      @if (viewMode === "compact") {
+        <!-- Compact Horizontal Row View -->
+        <div class="compact-row-container">
+          <div class="compact-left">
+            @if (cardData.mainImage) {
+              <img
+                class="beer-label compact-thumb"
+                [src]="cardData.mainImage"
+                (error)="
+                  $event.target.src =
+                    cardData.extraData?.originalMainImage || DEFAULT_IMAGE
+                "
+                [alt]="cardData.title"
+                [title]="cardData.title"
+                width="40"
+                height="40"
+                loading="lazy"
+              />
             }
-            {{ cardData.title }}
-          </h3>
-
-          @if (cardData.subtitle) {
-            <div class="subtitle" [innerHTML]="cardData.subtitle"></div>
-          }
-
-          @if (cardData.breweryName) {
-            <div class="brewery-name">{{ cardData.breweryName }}</div>
-          }
-        </div>
-
-        <div class="label-container right">
-          @if (cardData.secondaryImage) {
-            <img
-              class="brewery-label"
-              [src]="cardData.secondaryImage"
-              (error)="
-                $event.target.src =
-                  cardData.extraData?.originalSecondaryImage || DEFAULT_IMAGE
-              "
-              [alt]="cardData.breweryName"
-              [title]="cardData.breweryName"
-              width="54"
-              height="54"
-              loading="lazy"
-            />
-          }
-        </div>
-      </div>
-
-      @if (cardData.description) {
-        <span class="comment" [innerHTML]="cardData.description"></span>
-      }
-
-      @if (cardData.hint) {
-        <span class="comment">{{ cardData.hint }}</span>
-      }
-
-      @if (cardData.rating !== null && cardData.rating !== undefined) {
-        <div class="rating-bar">
-          <app-rating
-            [ratingScore]="cardData.rating"
-            class="flex-1"
-          ></app-rating>
-        </div>
-      }
-
-      @if (
-        (cardData.globalRating !== null &&
-          cardData.globalRating !== undefined) ||
-        (cardData.extraData?.badges?.length ?? 0) > 0 ||
-        hasSocialLinks
-      ) {
-        <div class="badges-and-social-links">
-          @if (
-            cardData.globalRating !== null &&
-            cardData.globalRating !== undefined
-          ) {
-            <div class="global-rating flex-row align-center gap-4">
-              <span class="global-rating-label">Overall Rating:</span>
-              <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
-            </div>
-          }
-
-          @if (
-            (cardData.extraData?.badges?.length ?? 0) > 0 &&
-            (cardData.globalRating === null ||
-              cardData.globalRating === undefined)
-          ) {
-            <div class="flex-row align-center min-w-0 chip-scroll-container">
-              <mat-chip-set class="chip">
-                @for (
-                  badge of cardData.extraData!.badges!;
-                  track badge.badge_name
-                ) {
-                  <mat-chip
-                    class="clickable-chip"
-                    (click)="onBadgeClick(badge)"
-                  >
-                    <img
-                      matChipAvatar
-                      [src]="badge.badge_image.sm || badge.media.badge_image_sm"
-                      alt="badge"
-                      width="24"
-                      height="24"
-                    />
-                    {{ badge.badge_name }}
-                  </mat-chip>
+            <div class="compact-info min-w-0">
+              <div class="compact-title-row">
+                @if (cardData.rank) {
+                  <span class="rank-badge">#{{ cardData.rank }}</span>
                 }
-              </mat-chip-set>
+                <span class="title compact-title" [title]="cardData.title">{{
+                  cardData.title
+                }}</span>
+              </div>
+              <div class="compact-subtitle-row">
+                @if (cardData.breweryName) {
+                  <span class="brewery-name inline">{{
+                    cardData.breweryName
+                  }}</span>
+                }
+                @if (cardData.breweryName && cardData.subtitle) {
+                  <span class="bullet">•</span>
+                }
+                @if (cardData.subtitle) {
+                  <span
+                    class="subtitle inline"
+                    [innerHTML]="cardData.subtitle"
+                  ></span>
+                }
+              </div>
             </div>
-          }
+          </div>
 
-          @if (hasSocialLinks) {
-            <div
-              class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
-            >
-              <app-social-links
-                [contact]="cardData.extraData!.socialLinks!"
-                [mapData]="cardData.extraData?.mapData"
+          <div class="compact-right">
+            @if (cardData.rating !== null && cardData.rating !== undefined) {
+              <div class="compact-rating">
+                <app-rating [ratingScore]="cardData.rating"></app-rating>
+              </div>
+            } @else if (
+              cardData.globalRating !== null &&
+              cardData.globalRating !== undefined
+            ) {
+              <div class="global-rating flex-row align-center gap-4">
+                <span class="global-rating-label">Overall:</span>
+                <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
+              </div>
+            }
+
+            <div class="compact-actions">
+              <time
+                class="compact-time"
+                [attr.aria-label]="cardData.footerInfo.timestamp"
+                [title]="cardData.footerInfo.timestamp"
               >
-              </app-social-links>
+                {{ cardData.footerInfo.timestamp }}
+              </time>
+
+              @if (canShare) {
+                <button
+                  class="checkin-page view-details share-btn"
+                  (click)="shareCheckin($event)"
+                  title="Share checkin"
+                  aria-label="Share checkin"
+                >
+                  <mat-icon>share</mat-icon>
+                </button>
+              }
+
+              <a
+                class="checkin-page view-details"
+                [href]="
+                  cardData.extraData?.userName && cardData.extraData?.checkinId
+                    ? 'https://untappd.com/user/' +
+                      cardData.extraData?.userName +
+                      '/checkin/' +
+                      cardData.extraData?.checkinId
+                    : cardData.footerInfo.link
+                "
+                target="_blank"
+                [title]="cardData.footerInfo.rightLinkText || 'View Details'"
+              >
+                <mat-icon>open_in_new</mat-icon>
+              </a>
             </div>
-          }
+          </div>
         </div>
-      }
+      } @else {
+        <!-- Standard Grid / Full Card View -->
+        <div class="card-header">
+          <div class="label-container left">
+            @if (cardData.mainImage) {
+              <img
+                class="beer-label"
+                [src]="cardData.mainImage"
+                (error)="
+                  $event.target.src =
+                    cardData.extraData?.originalMainImage || DEFAULT_IMAGE
+                "
+                [alt]="cardData.title"
+                [title]="cardData.title"
+                width="54"
+                height="54"
+                loading="lazy"
+              />
+            }
+          </div>
 
-      <footer>
-        <div class="footer-left">
-          @if (cardData.footerInfo.link) {
+          <div class="beer-info">
+            <h3 class="title">
+              @if (cardData.rank) {
+                <span class="rank-badge">#{{ cardData.rank }}</span>
+              }
+              {{ cardData.title }}
+            </h3>
+
+            @if (cardData.subtitle) {
+              <div class="subtitle" [innerHTML]="cardData.subtitle"></div>
+            }
+
+            @if (cardData.breweryName) {
+              <div class="brewery-name">{{ cardData.breweryName }}</div>
+            }
+          </div>
+
+          <div class="label-container right">
+            @if (cardData.secondaryImage) {
+              <img
+                class="brewery-label"
+                [src]="cardData.secondaryImage"
+                (error)="
+                  $event.target.src =
+                    cardData.extraData?.originalSecondaryImage || DEFAULT_IMAGE
+                "
+                [alt]="cardData.breweryName"
+                [title]="cardData.breweryName"
+                width="54"
+                height="54"
+                loading="lazy"
+              />
+            }
+          </div>
+        </div>
+
+        @if (cardData.description) {
+          <span class="comment" [innerHTML]="cardData.description"></span>
+        }
+
+        @if (cardData.hint) {
+          <span class="comment">{{ cardData.hint }}</span>
+        }
+
+        @if (cardData.rating !== null && cardData.rating !== undefined) {
+          <div class="rating-bar">
+            <app-rating
+              [ratingScore]="cardData.rating"
+              class="flex-1"
+            ></app-rating>
+          </div>
+        }
+
+        @if (
+          (cardData.globalRating !== null &&
+            cardData.globalRating !== undefined) ||
+          (cardData.extraData?.badges?.length ?? 0) > 0 ||
+          hasSocialLinks
+        ) {
+          <div class="badges-and-social-links">
+            @if (
+              cardData.globalRating !== null &&
+              cardData.globalRating !== undefined
+            ) {
+              <div class="global-rating flex-row align-center gap-4">
+                <span class="global-rating-label">Overall Rating:</span>
+                <span>{{ cardData.globalRating | number: "1.2-2" }}</span>
+              </div>
+            }
+
+            @if (
+              (cardData.extraData?.badges?.length ?? 0) > 0 &&
+              (cardData.globalRating === null ||
+                cardData.globalRating === undefined)
+            ) {
+              <div class="flex-row align-center min-w-0 chip-scroll-container">
+                <mat-chip-set class="chip">
+                  @for (
+                    badge of cardData.extraData!.badges!;
+                    track badge.badge_name
+                  ) {
+                    <mat-chip
+                      class="clickable-chip"
+                      [title]="badge.badge_name"
+                      [attr.aria-label]="badge.badge_name"
+                      (click)="onBadgeClick(badge)"
+                    >
+                      <img
+                        matChipAvatar
+                        [src]="
+                          badge.badge_image.sm || badge.media.badge_image_sm
+                        "
+                        alt="badge"
+                        width="24"
+                        height="24"
+                      />
+                      {{ badge.badge_name }}
+                    </mat-chip>
+                  }
+                </mat-chip-set>
+              </div>
+            }
+
+            @if (hasSocialLinks) {
+              <div
+                class="flex-shrink-0 flex-row align-center justify-center social-links-wrapper"
+              >
+                <app-social-links
+                  [contact]="cardData.extraData!.socialLinks!"
+                  [mapData]="cardData.extraData?.mapData"
+                >
+                </app-social-links>
+              </div>
+            }
+          </div>
+        }
+
+        <footer>
+          <div class="footer-left">
+            @if (cardData.footerInfo.link) {
+              <a
+                target="_blank"
+                [href]="cardData.footerInfo.link"
+                class="location-link"
+                [title]="cardData.footerInfo.text"
+              >
+                <mat-icon class="location-icon">
+                  {{ cardData.extraData?.venueId ? "location_on" : "info" }}
+                </mat-icon>
+
+                <span class="location-text">
+                  {{ cardData.footerInfo.text }}
+                </span>
+              </a>
+            }
+          </div>
+
+          <div class="footer-time">
+            <time
+              [attr.aria-label]="cardData.footerInfo.timestamp"
+              [title]="cardData.footerInfo.timestamp"
+            >
+              {{ cardData.footerInfo.timestamp }}
+            </time>
+
+            @if (canShare) {
+              <button
+                class="checkin-page view-details share-btn"
+                (click)="shareCheckin($event)"
+                title="Share checkin"
+                aria-label="Share checkin"
+              >
+                <mat-icon>share</mat-icon>
+              </button>
+            }
+
             <a
+              class="checkin-page view-details"
+              [href]="
+                cardData.extraData?.userName && cardData.extraData?.checkinId
+                  ? 'https://untappd.com/user/' +
+                    cardData.extraData?.userName +
+                    '/checkin/' +
+                    cardData.extraData?.checkinId
+                  : cardData.footerInfo.link
+              "
               target="_blank"
-              [href]="cardData.footerInfo.link"
-              class="location-link"
-              [title]="cardData.footerInfo.text"
+              [title]="cardData.footerInfo.rightLinkText || 'View Details'"
             >
-              <mat-icon class="location-icon">
-                {{ cardData.extraData?.venueId ? "location_on" : "info" }}
-              </mat-icon>
-
-              <span class="location-text">
-                {{ cardData.footerInfo.text }}
-              </span>
+              <mat-icon>open_in_new</mat-icon>
             </a>
-          }
-        </div>
-
-        <div class="footer-time">
-          <time
-            [attr.aria-label]="cardData.footerInfo.timestamp"
-            [title]="cardData.footerInfo.timestamp"
-          >
-            {{ cardData.footerInfo.timestamp }}
-          </time>
-
-          @if (canShare) {
-            <button
-              class="checkin-page view-details share-btn"
-              (click)="shareCheckin($event)"
-              title="Share checkin"
-              aria-label="Share checkin"
-            >
-              <mat-icon>share</mat-icon>
-            </button>
-          }
-
-          <a
-            class="checkin-page view-details"
-            [href]="
-              cardData.extraData?.userName && cardData.extraData?.checkinId
-                ? 'https://untappd.com/user/' +
-                  cardData.extraData?.userName +
-                  '/checkin/' +
-                  cardData.extraData?.checkinId
-                : cardData.footerInfo.link
-            "
-            target="_blank"
-            [title]="cardData.footerInfo.rightLinkText || 'View Details'"
-          >
-            <mat-icon>open_in_new</mat-icon>
-          </a>
-        </div>
-      </footer>
+          </div>
+        </footer>
+      }
     </mat-card-content>
   </mat-card>
 </div>

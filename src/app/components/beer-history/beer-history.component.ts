@@ -56,7 +56,7 @@ export class BeerHistoryComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
 
-  public viewMode = signal<"grid" | "compact">("grid");
+  public viewMode = signal<"cards" | "compact">("cards");
   public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];
