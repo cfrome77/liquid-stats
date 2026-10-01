@@ -213,7 +213,16 @@ export class InsightsComponent implements OnInit {
       "Lager / Pilsner": 0,
       "Pale Ale": 0,
       Wheat: 0,
-      "Belgian / Strong": 0,
+      "Belgian / Farmhouse": 0,
+      "Strong Ale": 0,
+      "Cider / Perry / Mead": 0,
+      "Fruit / Field / Spice": 0,
+      Wine: 0,
+      "Spirit / RTD": 0,
+      Sake: 0,
+      "Non-Alcoholic / Soda / Root Beer": 0,
+      "THC / Cannabinoid": 0,
+      "Other / Specialty": 0,
     };
 
     const uniqueStyles = new Set<string>();
@@ -233,6 +242,7 @@ export class InsightsComponent implements OnInit {
       }
 
       const styleLower = style.toLowerCase();
+
       if (styleLower.includes("ipa") || styleLower.includes("india pale")) {
         categoryCounts["IPA"]++;
       } else if (
@@ -243,13 +253,25 @@ export class InsightsComponent implements OnInit {
       } else if (
         styleLower.includes("sour") ||
         styleLower.includes("wild") ||
-        styleLower.includes("gose")
+        styleLower.includes("gose") ||
+        styleLower.includes("berliner weisse") ||
+        styleLower.includes("lambic") ||
+        styleLower.includes("coolship")
       ) {
         categoryCounts["Sour / Wild"]++;
       } else if (
         styleLower.includes("lager") ||
         styleLower.includes("pilsner") ||
-        styleLower.includes("pils")
+        styleLower.includes("pils") ||
+        styleLower.includes("helles") ||
+        styleLower.includes("bock") ||
+        styleLower.includes("märzen") ||
+        styleLower.includes("marzen") ||
+        styleLower.includes("kellerbier") ||
+        styleLower.includes("dunkel") ||
+        styleLower.includes("schwarzbier") ||
+        styleLower.includes("vienna") ||
+        styleLower.includes("zoigl")
       ) {
         categoryCounts["Lager / Pilsner"]++;
       } else if (styleLower.includes("pale ale")) {
@@ -257,11 +279,114 @@ export class InsightsComponent implements OnInit {
       } else if (
         styleLower.includes("wheat") ||
         styleLower.includes("hefeweizen") ||
-        styleLower.includes("witbier")
+        styleLower.includes("witbier") ||
+        styleLower.includes("dunkelweizen") ||
+        styleLower.includes("weizenbock") ||
+        styleLower.includes("grisette")
       ) {
         categoryCounts["Wheat"]++;
+      } else if (
+        styleLower.includes("belgian") ||
+        styleLower.includes("abbey") ||
+        styleLower.includes("trappist") ||
+        styleLower.includes("dubbel") ||
+        styleLower.includes("tripel") ||
+        styleLower.includes("quadrupel") ||
+        styleLower.includes("saison") ||
+        styleLower.includes("bière de garde") ||
+        styleLower.includes("blonde ale") ||
+        styleLower.includes("enkel") ||
+        styleLower.includes("patersbier")
+      ) {
+        categoryCounts["Belgian / Farmhouse"]++;
+      } else if (
+        styleLower.includes("barleywine") ||
+        styleLower.includes("old ale") ||
+        styleLower.includes("wee heavy") ||
+        styleLower.includes("scotch ale") ||
+        styleLower.includes("strong ale") ||
+        styleLower.includes("doppelsticke") ||
+        styleLower.includes("sticke")
+      ) {
+        categoryCounts["Strong Ale"]++;
+      } else if (
+        styleLower.includes("cider") ||
+        styleLower.includes("perry") ||
+        styleLower.includes("graff") ||
+        styleLower.includes("mead") ||
+        styleLower.includes("cyser") ||
+        styleLower.includes("melomel")
+      ) {
+        categoryCounts["Cider / Perry / Mead"]++;
+      } else if (
+        styleLower.includes("wine") ||
+        styleLower.includes("champagne") ||
+        styleLower.includes("prosecco") ||
+        styleLower.includes("vermouth") ||
+        styleLower.includes("port") ||
+        styleLower.includes("sherry") ||
+        styleLower.includes("sangria") ||
+        styleLower.includes("spritz")
+      ) {
+        categoryCounts["Wine"]++;
+      } else if (
+        styleLower.includes("spirit") ||
+        styleLower.includes("whiskey") ||
+        styleLower.includes("whisky") ||
+        styleLower.includes("bourbon") ||
+        styleLower.includes("scotch") ||
+        styleLower.includes("gin") ||
+        styleLower.includes("vodka") ||
+        styleLower.includes("tequila") ||
+        styleLower.includes("mezcal") ||
+        styleLower.includes("rum") ||
+        styleLower.includes("brandy") ||
+        styleLower.includes("cognac") ||
+        styleLower.includes("liqueur") ||
+        styleLower.includes("absinthe") ||
+        styleLower.includes("rtd") ||
+        styleLower.includes("cocktail")
+      ) {
+        categoryCounts["Spirit / RTD"]++;
+      } else if (
+        styleLower.includes("sake") ||
+        styleLower.includes("junmai") ||
+        styleLower.includes("daiginjo") ||
+        styleLower.includes("honjozo")
+      ) {
+        categoryCounts["Sake"]++;
+      } else if (
+        styleLower.includes("non-alcoholic") ||
+        styleLower.includes("root beer") ||
+        styleLower.includes("soda") ||
+        styleLower.includes("cola") ||
+        styleLower.includes("ginger ale") ||
+        styleLower.includes("kombucha") ||
+        styleLower.includes("coffee") ||
+        styleLower.includes("tea") ||
+        styleLower.includes("malta") ||
+        styleLower.includes("fassbrause")
+      ) {
+        categoryCounts["Non-Alcoholic / Soda / Root Beer"]++;
+      } else if (
+        styleLower.includes("thc") ||
+        styleLower.includes("cannabinoid") ||
+        styleLower.includes("cbd") ||
+        styleLower.includes("hemp")
+      ) {
+        categoryCounts["THC / Cannabinoid"]++;
+      } else if (
+        styleLower.includes("fruit") ||
+        styleLower.includes("shandy") ||
+        styleLower.includes("radler") ||
+        styleLower.includes("pumpkin") ||
+        styleLower.includes("spiced") ||
+        styleLower.includes("herb") ||
+        styleLower.includes("vegetable")
+      ) {
+        categoryCounts["Fruit / Field / Spice"]++;
       } else {
-        categoryCounts["Belgian / Strong"]++;
+        categoryCounts["Other / Specialty"]++;
       }
 
       const brewery = b.brewery.brewery_name;
