@@ -1,5 +1,5 @@
 .modal-content {
-  background-color: var(--card-bg);
+  background-color: var(--card-bg-solid);
   color: var(--text-color);
   padding: 0;
   border-radius: 16px;
@@ -21,7 +21,7 @@
   align-items: center;
   width: 100%;
   padding: 16px 20px;
-  background-color: var(--card-bg);
+  background-color: var(--card-bg-solid);
   border-bottom: 1px solid var(--divider-color);
   gap: 15px;
 }
@@ -98,7 +98,7 @@
   position: sticky;
   top: -16px;
   z-index: 10;
-  background-color: var(--card-bg);
+  background-color: var(--card-bg-solid);
   padding-top: 16px;
   padding-bottom: 8px;
   margin-top: -16px;
