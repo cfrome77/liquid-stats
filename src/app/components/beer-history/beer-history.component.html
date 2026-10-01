@@ -1,5 +1,5 @@
 <div class="main-content-container">
-  <h1>Beer History</h1>
+  <h1>Drink History</h1>
   <div class="filter-card glass-panel">
     <div class="filter-card-content">
       <div class="filter-buttons-container">
@@ -15,7 +15,7 @@
             <input
               matInput
               type="text"
-              placeholder="Search beers..."
+              placeholder="Search drinks..."
               [(ngModel)]="searchTerm"
               (input)="onSearchChange()"
             />
@@ -76,7 +76,7 @@
       } @empty {
         <app-empty-state
           icon="search_off"
-          message="No beers match your search criteria."
+          message="No drinks match your search criteria."
           buttonText="Clear Filters"
           (action)="resetFilters()"
         ></app-empty-state>

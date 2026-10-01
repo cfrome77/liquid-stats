@@ -68,7 +68,7 @@ export class BeerHistoryComponent implements OnInit {
 
   public filterFields: FilterField[] = [
     { field: "brewery", label: "Brewery", options: [], selected: [] },
-    { field: "beer_style", label: "Beer Style", options: [], selected: [] },
+    { field: "beer_style", label: "Drink Style", options: [], selected: [] },
     { field: "country", label: "Country", options: [], selected: [] },
     { field: "state", label: "State/Region", options: [], selected: [] },
     {

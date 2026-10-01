@@ -45,7 +45,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Beer Style</mat-label>
+        <mat-label>Drink Style</mat-label>
         <mat-select
           [(ngModel)]="filterStyle"
           (selectionChange)="applyFilters()"
@@ -181,8 +181,35 @@
           </div>
         </div>
 
+        <div class="overlay-search-wrapper" style="margin: 8px 12px 12px 12px">
+          <mat-form-field
+            appearance="outline"
+            style="width: 100%"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>Search check-ins...</mat-label>
+            <input
+              matInput
+              type="text"
+              placeholder="Filter by drink or style..."
+              [(ngModel)]="overlaySearchTerm"
+            />
+            @if (overlaySearchTerm) {
+              <button
+                matSuffix
+                mat-icon-button
+                type="button"
+                aria-label="Clear search"
+                (click)="overlaySearchTerm = ''"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+        </div>
+
         <ul class="checkin-list">
-          @for (checkIn of selectedBrewery.checkIns; track checkIn.checkInId) {
+          @for (checkIn of filteredOverlayCheckins; track checkIn.checkInId) {
             <li
               (click)="
                 openCheckin('https://untappd.com/c/' + checkIn.checkInId)

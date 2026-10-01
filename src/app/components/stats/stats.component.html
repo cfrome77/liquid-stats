@@ -1,5 +1,5 @@
 <div class="main-content-container">
-  <h2>Your Beer Statistics</h2>
+  <h2>Your Drink Statistics</h2>
 
   <div class="stats-filters">
     <mat-form-field appearance="outline" class="date-range-select">
@@ -43,7 +43,7 @@
       <div class="card">
         <mat-icon class="stat-icon">verified</mat-icon>
         <div class="stat-value">{{ processedStats.totalUniqueBeers }}</div>
-        <div class="stat-title">Unique Beers</div>
+        <div class="stat-title">Unique Drinks</div>
       </div>
       <div class="card">
         <mat-icon class="stat-icon">history</mat-icon>
@@ -53,14 +53,14 @@
       <div class="card">
         <mat-icon class="stat-icon">fiber_new</mat-icon>
         <div class="stat-value">{{ processedStats.newBeersCount }}</div>
-        <div class="stat-title">New Beers</div>
+        <div class="stat-title">New Drinks</div>
       </div>
       <div class="card">
         <mat-icon class="stat-icon">pie_chart</mat-icon>
         <div class="stat-value">
           {{ (processedStats.newBeerRatio * 100).toFixed(0) }}%
         </div>
-        <div class="stat-title">New Beer Ratio</div>
+        <div class="stat-title">New Drink Ratio</div>
       </div>
       <div class="card">
         <mat-icon class="stat-icon">stars</mat-icon>
@@ -76,7 +76,7 @@
       </div>
 
       <div class="card beer-styles-breakdown">
-        <h3><mat-icon>sports_bar</mat-icon> Beer Styles Breakdown</h3>
+        <h3><mat-icon>sports_bar</mat-icon> Drink Styles Breakdown</h3>
         <ul>
           @for (style of sortedBeerStyles; track style) {
             @if (processedStats.beerStylesCount[style] > 0) {
@@ -97,7 +97,7 @@
 
       @if (processedStats.topBeers.length) {
         <div class="card top-beers">
-          <h3><mat-icon>emoji_events</mat-icon> Top Beers</h3>
+          <h3><mat-icon>emoji_events</mat-icon> Top Drinks</h3>
           <ul>
             @for (beer of processedStats.topBeers; track beer.name) {
               <li class="clickable" (click)="openBeersByTopBeer(beer.name)">
