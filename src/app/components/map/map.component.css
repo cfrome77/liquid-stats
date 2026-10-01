@@ -226,6 +226,13 @@
   text-overflow: ellipsis;
 }
 
+.overlay-search-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background-color: var(--card-bg);
+}
+
 /* List Section */
 .checkin-list {
   list-style: none;

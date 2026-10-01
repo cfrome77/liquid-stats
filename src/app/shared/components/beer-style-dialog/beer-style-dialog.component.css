@@ -8,6 +8,14 @@ h2 {
   color: white;
 }
 
+.dialog-search-wrapper {
+  padding: 0 24px 8px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: inherit;
+}
+
 small {
   color: rgba(255, 255, 255, 0.7);
 }
