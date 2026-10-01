@@ -80,6 +80,18 @@ export class MapComponent
   public countries: string[] = [];
   private allBeers: BeerCheckin[] = [];
   public isMobile = false;
+  public overlaySearchTerm = "";
+
+  get filteredOverlayCheckins() {
+    if (!this.selectedBrewery?.checkIns) return [];
+    if (!this.overlaySearchTerm.trim()) return this.selectedBrewery.checkIns;
+    const term = this.overlaySearchTerm.toLowerCase();
+    return this.selectedBrewery.checkIns.filter(
+      (c) =>
+        c.beerName.toLowerCase().includes(term) ||
+        c.beerStyle.toLowerCase().includes(term),
+    );
+  }
 
   public legendItems: { type: string; color: string }[] = [];
   public isLegendCollapsed = false;
@@ -215,6 +227,7 @@ export class MapComponent
     if (!marker) return;
 
     this.isOpeningPopup = true;
+    this.overlaySearchTerm = "";
 
     this.selectedBrewery = {
       breweryId: marker.breweryId,
@@ -240,6 +253,7 @@ export class MapComponent
   /** Close overlay */
   closeBreweryOverlay() {
     this.selectedBrewery = null;
+    this.overlaySearchTerm = "";
     this.map?.closePopup();
   }
 

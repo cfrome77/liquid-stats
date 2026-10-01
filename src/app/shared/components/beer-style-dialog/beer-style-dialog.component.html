@@ -1,15 +1,42 @@
-<h2 mat-dialog-title style="margin-bottom: 16px">{{ data.title }}</h2>
+<h2 mat-dialog-title style="margin-bottom: 8px">{{ data.title }}</h2>
+
+<div style="padding: 0 24px 8px 24px">
+  <mat-form-field
+    appearance="outline"
+    style="width: 100%"
+    subscriptSizing="dynamic"
+  >
+    <mat-label>Search drinks...</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="Filter by drink or brewery..."
+      [(ngModel)]="searchTerm"
+    />
+    @if (searchTerm) {
+      <button
+        matSuffix
+        mat-icon-button
+        type="button"
+        aria-label="Clear search"
+        (click)="searchTerm = ''"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</div>
 
 <div mat-dialog-content style="max-height: 400px; overflow-y: auto">
-  @if (data.beers.length === 0) {
+  @if (filteredBeers.length === 0) {
     <div
       style="padding: 20px; text-align: center; color: #888; font-style: italic"
     >
-      No beers found for this selection within the current date range.
+      No drinks found for this selection matching your search.
     </div>
   }
   <ul style="padding-left: 0; list-style-type: none">
-    @for (beer of data.beers; track beer) {
+    @for (beer of filteredBeers; track beer) {
       <li style="margin-bottom: 16px">
         <a
           [href]="beer.checkinUrl"

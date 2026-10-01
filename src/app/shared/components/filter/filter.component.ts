@@ -63,9 +63,11 @@ export class FilterComponent implements OnDestroy {
 
   activeFilter: FilterField | null = null;
   isModalOpen = false;
+  filterSearchTerm = "";
 
   openFilterModal(filter: FilterField) {
     this.activeFilter = { ...filter, selected: [...filter.selected] };
+    this.filterSearchTerm = "";
     this.isModalOpen = true;
 
     if (this.overlayRef) {
@@ -108,6 +110,7 @@ export class FilterComponent implements OnDestroy {
     }
     this.isModalOpen = false;
     this.activeFilter = null;
+    this.filterSearchTerm = "";
   }
 
   ngOnDestroy(): void {
@@ -229,6 +232,20 @@ export class FilterComponent implements OnDestroy {
 
   shouldShowOption(option: string): boolean {
     if (!this.activeFilter) return false;
+
+    if (this.filterSearchTerm) {
+      const displayLabel =
+        this.activeFilter.field === "rating"
+          ? this.formatRating(option)
+          : option;
+      if (
+        !displayLabel
+          .toLowerCase()
+          .includes(this.filterSearchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+    }
 
     const count = this.activeFilter.countMap?.[option] ?? 0;
     if (count > 0) return true;

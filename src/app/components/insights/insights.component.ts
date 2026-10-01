@@ -81,6 +81,17 @@ export class InsightsComponent implements OnInit {
   public radarChartOptions: ChartOptions<"radar"> = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
+    elements: {
+      point: {
+        radius: 6,
+        hoverRadius: 10,
+        hitRadius: 20,
+      },
+    },
     scales: {
       r: {
         angleLines: {
@@ -111,6 +122,11 @@ export class InsightsComponent implements OnInit {
         labels: {
           color: "#0f172a",
         },
+      },
+      tooltip: {
+        enabled: true,
+        mode: "nearest",
+        intersect: false,
       },
     },
   };
@@ -179,6 +195,7 @@ export class InsightsComponent implements OnInit {
         },
       },
       plugins: {
+        ...this.radarChartOptions.plugins,
         legend: {
           display: true,
           labels: {
@@ -413,12 +430,17 @@ export class InsightsComponent implements OnInit {
       ? "rgba(2, 132, 199, 0.25)"
       : "rgba(56, 189, 248, 0.25)";
 
+    // Filter out categories with 0 check-ins so non-legacy categories without check-ins are excluded
+    const activeCategories = Object.entries(categoryCounts).filter(
+      ([, count]) => count > 0,
+    );
+
     // Radar chart data update
     this.styleRadarChartData = {
-      labels: Object.keys(categoryCounts),
+      labels: activeCategories.map(([cat]) => cat),
       datasets: [
         {
-          data: Object.values(categoryCounts),
+          data: activeCategories.map(([, count]) => count),
           label: "Check-ins by Style",
           backgroundColor: brandBg,
           borderColor: brandAccent,
@@ -428,9 +450,7 @@ export class InsightsComponent implements OnInit {
     };
 
     // Find top category
-    const topCat = Object.entries(categoryCounts).sort(
-      (a, b) => b[1] - a[1],
-    )[0];
+    const topCat = activeCategories.sort((a, b) => b[1] - a[1])[0];
     if (topCat) this.topCategory.set(topCat[0]);
 
     // Top brewery
@@ -452,7 +472,7 @@ export class InsightsComponent implements OnInit {
         icon: "sports_bar",
         title: "Style Diversity",
         value: `${uniqueStyles.size} Styles`,
-        subtitle: "Unique beer sub-styles tried",
+        subtitle: "Unique sub-styles tried",
       },
       {
         icon: "business",

@@ -89,6 +89,30 @@
         }
 
         @if (activeFilter.type !== "date") {
+          <mat-form-field
+            appearance="outline"
+            style="width: 100%; margin-bottom: 8px"
+          >
+            <mat-label>Search {{ activeFilter.label }}</mat-label>
+            <input
+              matInput
+              type="text"
+              placeholder="Search options..."
+              [(ngModel)]="filterSearchTerm"
+            />
+            @if (filterSearchTerm) {
+              <button
+                matSuffix
+                mat-icon-button
+                type="button"
+                aria-label="Clear search"
+                (click)="filterSearchTerm = ''"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+
           @for (option of activeFilter.options; track option) {
             @if (shouldShowOption(option)) {
               <label class="filter-option-label">
