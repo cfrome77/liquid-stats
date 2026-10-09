@@ -8,19 +8,43 @@
   } @else {
     <!-- Overview KPI Row -->
     <div class="insights-grid">
-      <div class="card glass-panel hero-insight">
+      <div
+        class="card glass-panel hero-insight clickable-card"
+        role="button"
+        tabindex="0"
+        aria-label="View drinks by ABV level"
+        (click)="openAbvDialog()"
+        (keydown.enter)="openAbvDialog()"
+        (keydown.space)="openAbvDialog()"
+      >
         <mat-icon class="hero-icon">local_fire_department</mat-icon>
         <div class="hero-metric">{{ averageABV() | number: "1.1-1" }}%</div>
         <div class="hero-label">Average ABV Level</div>
       </div>
 
-      <div class="card glass-panel hero-insight">
+      <div
+        class="card glass-panel hero-insight clickable-card"
+        role="button"
+        tabindex="0"
+        aria-label="Explore unique styles"
+        (click)="openStylesDialog()"
+        (keydown.enter)="openStylesDialog()"
+        (keydown.space)="openStylesDialog()"
+      >
         <mat-icon class="hero-icon">category</mat-icon>
         <div class="hero-metric">{{ totalUniqueStyles() }}</div>
         <div class="hero-label">Unique Styles</div>
       </div>
 
-      <div class="card glass-panel hero-insight">
+      <div
+        class="card glass-panel hero-insight clickable-card"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'View drinks in ' + topCategory()"
+        (click)="openCategoryDialog(topCategory())"
+        (keydown.enter)="openCategoryDialog(topCategory())"
+        (keydown.space)="openCategoryDialog(topCategory())"
+      >
         <mat-icon class="hero-icon">stars</mat-icon>
         <div class="hero-metric">{{ topCategory() }}</div>
         <div class="hero-label">Top Style Focus</div>
@@ -53,7 +77,15 @@
 
     <div class="milestones-grid">
       @for (m of milestones(); track m.title) {
-        <div class="card glass-panel milestone-card">
+        <div
+          class="card glass-panel milestone-card clickable-card"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'View details for ' + m.title"
+          (click)="openMilestoneDialog(m)"
+          (keydown.enter)="openMilestoneDialog(m)"
+          (keydown.space)="openMilestoneDialog(m)"
+        >
           <div class="milestone-icon-wrapper">
             <mat-icon>{{ m.icon }}</mat-icon>
           </div>
