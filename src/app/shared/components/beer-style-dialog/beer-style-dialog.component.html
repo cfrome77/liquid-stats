@@ -120,5 +120,10 @@
 </div>
 
 <div mat-dialog-actions align="end">
+  @if (data.showBackButton) {
+    <button mat-button [mat-dialog-close]="'back'">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+  }
   <button mat-button mat-dialog-close>Close</button>
 </div>

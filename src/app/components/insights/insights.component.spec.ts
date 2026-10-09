@@ -12,7 +12,6 @@ import { InsightsComponent } from "./insights.component";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { GenericBeersDialogData } from "src/app/shared/components/beer-style-dialog/beer-style-dialog.component";
-import { StylesListDialogData } from "src/app/shared/components/styles-list-dialog/styles-list-dialog.component";
 
 describe("InsightsComponent", () => {
   let component: InsightsComponent;
@@ -117,13 +116,35 @@ describe("InsightsComponent", () => {
     expect(data.beers[0].beerName).toBe("Guinness Extra Stout");
   });
 
-  it("should open dialog for openStylesDialog with styles list", () => {
+  it("should open dialog for openStylesDialog with styles list and reopen styles list on back", () => {
+    const mockStylesDialogRefSelect = {
+      afterClosed: () => of("Pilsner - Czech / German"),
+      close: () => {},
+    } as unknown as MatDialogRef<unknown>;
+
+    const mockBeersDialogRef = {
+      afterClosed: () => of("back"),
+      close: () => {},
+    } as unknown as MatDialogRef<unknown>;
+
+    const mockStylesDialogRefClose = {
+      afterClosed: () => of(undefined),
+      close: () => {},
+    } as unknown as MatDialogRef<unknown>;
+
+    dialogSpy.and.returnValues(
+      mockStylesDialogRefSelect,
+      mockBeersDialogRef,
+      mockStylesDialogRefClose,
+    );
+
     component.openStylesDialog();
     expect(dialogSpy).toHaveBeenCalled();
-    const data = dialogSpy.calls.mostRecent().args[1]
-      ?.data as StylesListDialogData;
-    expect(data.title).toBe("Unique Styles Explorer");
-    expect(data.styles.length).toBe(2);
+
+    const data = dialogSpy.calls.argsFor(1)[1]?.data as GenericBeersDialogData;
+    expect(data.title).toBe("Pilsner - Czech / German Drinks");
+    expect(data.showBackButton).toBeTrue();
+    expect(dialogSpy.calls.count()).toBe(3);
   });
 
   it("should open dialog for openCategoryDialog", () => {

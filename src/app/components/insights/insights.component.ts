@@ -384,7 +384,11 @@ export class InsightsComponent implements OnInit {
     }
   }
 
-  private openBeersDialog(title: string, filtered: BeerCheckin[]): void {
+  private openBeersDialog(
+    title: string,
+    filtered: BeerCheckin[],
+    showBackButton = false,
+  ) {
     const data: GenericBeersDialogData = {
       title,
       beers: filtered.map((b) => ({
@@ -399,9 +403,10 @@ export class InsightsComponent implements OnInit {
             ? `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${b.recent_checkin_id}`
             : undefined,
       })),
+      showBackButton,
     };
 
-    this.dialog.open(BeerStyleDialogComponent, {
+    return this.dialog.open(BeerStyleDialogComponent, {
       data,
       width: "350px",
       maxHeight: "80vh",
@@ -425,7 +430,9 @@ export class InsightsComponent implements OnInit {
 
     const styles: StyleItem[] = Object.entries(styleCounts)
       .map(([styleName, count]) => ({ styleName, count }))
-      .sort((a, b) => b.count - a.count || a.styleName.localeCompare(b.styleName));
+      .sort(
+        (a, b) => b.count - a.count || a.styleName.localeCompare(b.styleName),
+      );
 
     const dialogRef = this.dialog.open(StylesListDialogComponent, {
       data: {
@@ -441,7 +448,16 @@ export class InsightsComponent implements OnInit {
         const filtered = this.beers.filter(
           (b) => (b.beer.beer_style || "Unknown") === selectedStyle,
         );
-        this.openBeersDialog(`${selectedStyle} Drinks`, filtered);
+        const beersDialogRef = this.openBeersDialog(
+          `${selectedStyle} Drinks`,
+          filtered,
+          true,
+        );
+        beersDialogRef.afterClosed().subscribe((result) => {
+          if (result === "back") {
+            this.openStylesDialog();
+          }
+        });
       }
     });
   }
