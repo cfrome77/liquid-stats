@@ -20,6 +20,7 @@ export interface GenericBeersDialogData {
     checkInDate: string;
     checkinUrl?: string;
   }[];
+  showBackButton?: boolean;
 }
 
 @Component({
