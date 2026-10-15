@@ -1,0 +1,58 @@
+<h2 mat-dialog-title style="margin-bottom: 8px">{{ data.title }}</h2>
+
+<div class="dialog-search-wrapper">
+  <mat-form-field
+    appearance="outline"
+    style="width: 100%"
+    subscriptSizing="dynamic"
+  >
+    <mat-label>Search styles...</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="Filter sub-styles..."
+      [(ngModel)]="searchTerm"
+    />
+    @if (searchTerm) {
+      <button
+        matSuffix
+        mat-icon-button
+        type="button"
+        aria-label="Clear search"
+        (click)="searchTerm = ''"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</div>
+
+<div mat-dialog-content style="max-height: 400px; overflow-y: auto">
+  @if (filteredStyles.length === 0) {
+    <div
+      style="padding: 20px; text-align: center; color: #888; font-style: italic"
+    >
+      No styles found matching your search.
+    </div>
+  }
+  <ul style="padding-left: 0; list-style-type: none; margin: 0">
+    @for (item of filteredStyles; track item.styleName) {
+      <li style="margin-bottom: 8px">
+        <button
+          type="button"
+          class="style-item-btn"
+          (click)="selectStyle(item.styleName)"
+        >
+          <span class="style-name">{{ item.styleName }}</span>
+          <span class="style-badge"
+            >{{ item.count }} {{ item.count === 1 ? "drink" : "drinks" }}</span
+          >
+        </button>
+      </li>
+    }
+  </ul>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</div>
