@@ -26,6 +26,16 @@
 
 .shared-card.compact-view {
   padding: 0 !important;
+  transition:
+    transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+    background-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.shared-card.compact-view:hover {
+  background: rgba(var(--accent-blue-rgb), 0.05);
+  border-color: var(--accent-blue);
+  transform: translateY(-1px);
 }
 
 .shared-card.compact-view ::ng-deep .mat-mdc-card-content {
@@ -37,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 10px 16px;
   gap: 12px;
   width: 100%;
 }
@@ -51,12 +61,12 @@
 }
 
 .compact-thumb {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 8px;
   flex-shrink: 0;
   object-fit: cover;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .compact-info {
@@ -75,8 +85,9 @@
 }
 
 .compact-title {
-  font-size: 0.98rem !important;
+  font-size: 1rem !important;
   font-weight: 700 !important;
+  line-height: 1.3 !important;
   margin: 0 !important;
   white-space: nowrap;
   overflow: hidden;
@@ -88,9 +99,9 @@
   display: flex;
   align-items: center;
   gap: 4px 6px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-color);
-  opacity: 0.85;
+  opacity: 0.9;
   line-height: 1.3;
   min-width: 0;
 }
@@ -99,7 +110,8 @@
   color: var(--accent-blue);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.2px;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -108,7 +120,7 @@
 }
 
 .subtitle.inline {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -150,7 +162,8 @@
 }
 
 .compact-rating ::ng-deep .rating-number {
-  font-size: 0.85rem !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
 }
 
 .compact-actions {
@@ -160,21 +173,22 @@
 }
 
 .compact-time {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-color);
-  opacity: 0.7;
+  opacity: 0.75;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 @media (max-width: 600px) {
   .compact-row-container {
-    padding: 8px 10px;
+    padding: 8px 12px;
     gap: 8px;
   }
 
   .compact-thumb {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
   }
 
   .compact-right {
@@ -182,7 +196,8 @@
   }
 
   .compact-time {
-    display: none;
+    font-size: 0.72rem;
+    opacity: 0.8;
   }
 
   .compact-rating ::ng-deep .star {
@@ -191,11 +206,7 @@
   }
 
   .compact-rating ::ng-deep .rating-number {
-    font-size: 0 !important;
-  }
-
-  .compact-rating ::ng-deep .rating-number strong {
-    font-size: 0.85rem !important;
+    font-size: 0.82rem !important;
   }
 
   .compact-subtitle-row {
