@@ -3,7 +3,7 @@
   [class.cards-mode]="viewMode() === 'cards'"
   [class.compact-mode]="viewMode() === 'compact'"
 >
-  @for (item of items; track item) {
+  @for (item of items; track $index) {
     @if (viewMode() === "compact") {
       <div
         class="skeleton-card compact-skeleton glass-panel"

@@ -93,7 +93,7 @@
       </button>
 
       <div class="carousel-track" #carouselTrack>
-        @for (c of allCheckins; track c) {
+        @for (c of allCheckins; track c.checkin_id) {
           <mat-card
             class="beer-card modern-card clickable-card"
             [routerLink]="['/checkins', c.checkin_id]"

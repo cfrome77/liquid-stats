@@ -6,7 +6,7 @@
   @if (hasRating) {
     <!-- Stars on the left -->
     <div class="svg-stars" [attr.title]="ratingScore">
-      @for (fill of starFills; track fill; let i = $index) {
+      @for (fill of starFills; track $index; let i = $index) {
         <svg
           viewBox="0 0 24 24"
           class="star"
