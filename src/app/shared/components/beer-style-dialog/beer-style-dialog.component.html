@@ -36,7 +36,7 @@
     </div>
   }
   <ul style="padding-left: 0; list-style-type: none">
-    @for (beer of filteredBeers; track beer) {
+    @for (beer of filteredBeers; track beer.beerName + $index) {
       <li style="margin-bottom: 16px">
         <a
           [href]="beer.checkinUrl"

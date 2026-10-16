@@ -67,6 +67,7 @@ describe("InsightsComponent", () => {
   beforeEach(async () => {
     mockBeerStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
       beers$: of(sampleBeers),
+      checkins$: of([]),
     });
 
     const mockDialogRef = {

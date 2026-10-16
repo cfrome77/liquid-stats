@@ -18,6 +18,15 @@
 
     <button
       mat-icon-button
+      (click)="openCommandPalette()"
+      aria-label="Search or press Ctrl+K"
+      title="Search (Ctrl + K)"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+
+    <button
+      mat-icon-button
       (click)="toggleTheme()"
       aria-label="Toggle dark/light mode"
     >

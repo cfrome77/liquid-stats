@@ -22,6 +22,7 @@ import { ChartData, ChartOptions } from "chart.js";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
+import { Checkin } from "src/app/core/models/checkin.model";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 import {
   BeerStyleDialogComponent,
@@ -65,11 +66,96 @@ export class InsightsComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   public beers: BeerCheckin[] = [];
+  private rawCheckins: Checkin[] = [];
   public isLoading = signal<boolean>(true);
   public milestones = signal<Milestone[]>([]);
   public averageABV = signal<number>(0);
   public topCategory = signal<string>("IPA");
   public totalUniqueStyles = signal<number>(0);
+
+  public checkinHeatmapWeeks = signal<
+    {
+      date: string;
+      formattedDate: string;
+      count: number;
+      intensity: number;
+    }[][]
+  >([]);
+  public heatmapTotalCheckins = signal<number>(0);
+  public activeDaysCount = signal<number>(0);
+  public currentStreak = signal<number>(0);
+  public longestStreak = signal<number>(0);
+
+  public ratingLabels: string[] = [
+    "0.25",
+    "0.50",
+    "0.75",
+    "1.00",
+    "1.25",
+    "1.50",
+    "1.75",
+    "2.00",
+    "2.25",
+    "2.50",
+    "2.75",
+    "3.00",
+    "3.25",
+    "3.50",
+    "3.75",
+    "4.00",
+    "4.25",
+    "4.50",
+    "4.75",
+    "5.00",
+  ];
+
+  public ratingHistogramChartData: ChartData<"bar", number[], string> = {
+    labels: this.ratingLabels,
+    datasets: [
+      {
+        data: Array(20).fill(0),
+        label: "Rating Frequency",
+        backgroundColor: "rgba(245, 158, 11, 0.75)",
+        borderColor: "#f59e0b",
+        borderWidth: 1,
+        borderRadius: 4,
+      },
+    ],
+  };
+
+  public ratingChartOptions: ChartOptions<"bar"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: "#0f172a",
+          font: { size: 10, weight: "bold" },
+        },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+        },
+        ticks: {
+          color: "#475569",
+          stepSize: 1,
+        },
+      },
+    },
+  };
 
   public styleRadarChartData: ChartData<"radar", number[], string> = {
     labels: [
@@ -169,6 +255,19 @@ export class InsightsComponent implements OnInit {
         this.cdr.markForCheck();
       },
     });
+
+    this.beerStore.checkins$.subscribe({
+      next: (checkins: Checkin[] | null) => {
+        if (checkins && checkins.length > 0) {
+          this.rawCheckins = checkins;
+          this.computeHeatmap(checkins);
+          this.cdr.markForCheck();
+        }
+      },
+      error: (err: unknown) => {
+        console.error("Error loading insights checkins:", err);
+      },
+    });
   }
 
   private updateChartThemeOptions(theme: "light-theme" | "dark-theme"): void {
@@ -229,6 +328,47 @@ export class InsightsComponent implements OnInit {
             backgroundColor: brandBg,
             borderColor: brandAccent,
             pointBackgroundColor: brandAccent,
+          },
+        ],
+      };
+    }
+
+    const amberBg = isLight
+      ? "rgba(245, 158, 11, 0.8)"
+      : "rgba(251, 191, 36, 0.8)";
+    const amberBorder = isLight ? "#d97706" : "#fbbf24";
+
+    this.ratingChartOptions = {
+      ...this.ratingChartOptions,
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: textColor,
+            font: { size: 10, weight: "bold" },
+          },
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: isLight ? "rgba(0, 0, 0, 0.1)" : "rgba(255, 255, 255, 0.1)",
+          },
+          ticks: {
+            color: tickColor,
+            stepSize: 1,
+          },
+        },
+      },
+    };
+
+    if (this.ratingHistogramChartData.datasets[0]) {
+      this.ratingHistogramChartData = {
+        ...this.ratingHistogramChartData,
+        datasets: [
+          {
+            ...this.ratingHistogramChartData.datasets[0],
+            backgroundColor: amberBg,
+            borderColor: amberBorder,
           },
         ],
       };
@@ -476,6 +616,44 @@ export class InsightsComponent implements OnInit {
     this.openBeersDialog(`${breweryName} Drinks`, filtered);
   }
 
+  public openDayCheckinsDialog(day: {
+    date: string;
+    formattedDate: string;
+    count: number;
+  }): void {
+    if (day.count === 0) return;
+
+    const matchingCheckins = this.rawCheckins.filter((c) => {
+      if (!c.created_at) return false;
+      const date = new Date(c.created_at);
+      if (isNaN(date.getTime())) return false;
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      return key === day.date;
+    });
+
+    const data: GenericBeersDialogData = {
+      title: `Check-ins on ${day.formattedDate}`,
+      beers: matchingCheckins.map((c) => ({
+        beerName: c.beer.beer_name,
+        beerLabel: sanitizeUntappdUrl(c.beer.beer_label) || c.beer.beer_label,
+        breweryName: c.brewery.brewery_name,
+        beerABV: 0,
+        rating: c.rating_score,
+        checkInDate: c.created_at,
+        checkinUrl:
+          environment.UNTAPPD_USERNAME && c.checkin_id
+            ? `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${c.checkin_id}`
+            : undefined,
+      })),
+    };
+
+    this.dialog.open(BeerStyleDialogComponent, {
+      data,
+      width: "350px",
+      maxHeight: "80vh",
+    });
+  }
+
   public openPeakMonthDialog(monthYear: string): void {
     const filtered = this.beers.filter((b) => {
       if (!b.recent_created_at) return false;
@@ -488,6 +666,124 @@ export class InsightsComponent implements OnInit {
       return my === monthYear;
     });
     this.openBeersDialog(`Check-ins in ${monthYear}`, filtered);
+  }
+
+  public computeHeatmap(checkins: Checkin[]): void {
+    const dailyCounts: Record<string, number> = {};
+    checkins.forEach((c) => {
+      if (!c.created_at) return;
+      const date = new Date(c.created_at);
+      if (isNaN(date.getTime())) return;
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      dailyCounts[key] = (dailyCounts[key] || 0) + 1;
+    });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - 364);
+    while (startDate.getDay() !== 0) {
+      startDate.setDate(startDate.getDate() - 1);
+    }
+
+    const weeks: {
+      date: string;
+      formattedDate: string;
+      count: number;
+      intensity: number;
+    }[][] = [];
+    let currentWeek: {
+      date: string;
+      formattedDate: string;
+      count: number;
+      intensity: number;
+    }[] = [];
+    let totalCount = 0;
+    let activeDays = 0;
+
+    const curr = new Date(startDate);
+    while (curr <= today) {
+      const key = `${curr.getFullYear()}-${String(curr.getMonth() + 1).padStart(2, "0")}-${String(curr.getDate()).padStart(2, "0")}`;
+      const count = dailyCounts[key] || 0;
+      totalCount += count;
+      if (count > 0) activeDays++;
+
+      let intensity = 0;
+      if (count === 1) intensity = 1;
+      else if (count === 2) intensity = 2;
+      else if (count >= 3 && count <= 4) intensity = 3;
+      else if (count >= 5) intensity = 4;
+
+      const formattedDate = curr.toLocaleDateString("default", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      currentWeek.push({
+        date: key,
+        formattedDate,
+        count,
+        intensity,
+      });
+
+      if (currentWeek.length === 7) {
+        weeks.push(currentWeek);
+        currentWeek = [];
+      }
+
+      curr.setDate(curr.getDate() + 1);
+    }
+
+    if (currentWeek.length > 0) {
+      weeks.push(currentWeek);
+    }
+
+    // Calculate streaks
+    let currentStreakVal = 0;
+    let longestStreakVal = 0;
+
+    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
+
+    let streakCheckDate = new Date(today);
+    if (!dailyCounts[todayKey] && dailyCounts[yesterdayKey]) {
+      streakCheckDate = yesterday;
+    }
+
+    while (true) {
+      const key = `${streakCheckDate.getFullYear()}-${String(streakCheckDate.getMonth() + 1).padStart(2, "0")}-${String(streakCheckDate.getDate()).padStart(2, "0")}`;
+      if (dailyCounts[key] && dailyCounts[key] > 0) {
+        currentStreakVal++;
+        streakCheckDate.setDate(streakCheckDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    const scanCurr = new Date(startDate);
+    let runningStreak = 0;
+    while (scanCurr <= today) {
+      const key = `${scanCurr.getFullYear()}-${String(scanCurr.getMonth() + 1).padStart(2, "0")}-${String(scanCurr.getDate()).padStart(2, "0")}`;
+      if (dailyCounts[key] && dailyCounts[key] > 0) {
+        runningStreak++;
+        if (runningStreak > longestStreakVal) {
+          longestStreakVal = runningStreak;
+        }
+      } else {
+        runningStreak = 0;
+      }
+      scanCurr.setDate(scanCurr.getDate() + 1);
+    }
+
+    this.checkinHeatmapWeeks.set(weeks);
+    this.heatmapTotalCheckins.set(totalCount);
+    this.activeDaysCount.set(activeDays);
+    this.currentStreak.set(currentStreakVal);
+    this.longestStreak.set(longestStreakVal);
   }
 
   public openMilestoneDialog(m: Milestone): void {
@@ -528,8 +824,16 @@ export class InsightsComponent implements OnInit {
 
     const breweryCounts: Record<string, number> = {};
     const monthCounts: Record<string, number> = {};
+    const ratingBins = Array(20).fill(0);
 
     beers.forEach((b) => {
+      if (b.rating_score && b.rating_score > 0) {
+        const rounded = Math.round(b.rating_score * 4) / 4;
+        const binIndex = Math.round(rounded * 4) - 1;
+        if (binIndex >= 0 && binIndex < 20) {
+          ratingBins[binIndex] += b.count || 1;
+        }
+      }
       const style = b.beer.beer_style || "";
       uniqueStyles.add(style);
 
@@ -714,6 +1018,27 @@ export class InsightsComponent implements OnInit {
     const activeCategories = Object.entries(categoryCounts).filter(
       ([, count]) => count > 0,
     );
+
+    // Update Rating Score Histogram chart data
+    const isLightTheme = this.themeService.currentTheme() === "light-theme";
+    const amberBg = isLightTheme
+      ? "rgba(245, 158, 11, 0.8)"
+      : "rgba(251, 191, 36, 0.8)";
+    const amberBorder = isLightTheme ? "#d97706" : "#fbbf24";
+
+    this.ratingHistogramChartData = {
+      labels: this.ratingLabels,
+      datasets: [
+        {
+          data: ratingBins,
+          label: "Rating Frequency",
+          backgroundColor: amberBg,
+          borderColor: amberBorder,
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+      ],
+    };
 
     // Radar chart data update
     this.styleRadarChartData = {

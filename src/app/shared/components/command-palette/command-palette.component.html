@@ -1,0 +1,43 @@
+<div class="command-palette-container">
+  <div class="search-header">
+    <mat-icon class="search-icon">search</mat-icon>
+    <input
+      type="text"
+      class="palette-input"
+      placeholder="Type a command or search drinks, breweries, styles, pages..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchChange($event)"
+      autofocus
+    />
+    <span class="esc-kbd">ESC</span>
+  </div>
+
+  <div class="results-list">
+    @if (results().length === 0) {
+      <div class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No results found for "{{ searchTerm() }}"</p>
+      </div>
+    } @else {
+      @for (item of results(); track $index) {
+        <div
+          class="result-item"
+          role="button"
+          tabindex="0"
+          (click)="selectItem(item)"
+          (keydown.enter)="selectItem(item)"
+          (keydown.space)="selectItem(item)"
+        >
+          <div class="item-icon-wrapper" [attr.data-type]="item.type">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </div>
+          <div class="item-details">
+            <span class="item-title">{{ item.title }}</span>
+            <span class="item-subtitle">{{ item.subtitle }}</span>
+          </div>
+          <span class="item-type-badge">{{ item.type }}</span>
+        </div>
+      }
+    }
+  </div>
+</div>
