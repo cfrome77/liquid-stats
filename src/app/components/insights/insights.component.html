@@ -51,22 +51,114 @@
       </div>
     </div>
 
-    <!-- Style Preference Radar Chart -->
-    <div class="card glass-panel radar-card">
-      <div class="section-header">
-        <h3><mat-icon>radar</mat-icon> Style Radar Distribution</h3>
-        <p class="subtitle">
-          A visual representation of your beer style exploration.
-        </p>
+    <!-- 365-Day Activity Heatmap Section -->
+    <div class="card glass-panel heatmap-card">
+      <div class="section-header heatmap-header">
+        <div>
+          <h3>
+            <mat-icon>calendar_view_week</mat-icon> Check-in Activity Calendar
+          </h3>
+          <p class="subtitle">
+            {{ heatmapTotalCheckins() }} check-ins across
+            {{ activeDaysCount() }} active days in the last year
+          </p>
+        </div>
+        <div class="streak-badges">
+          <div class="streak-badge">
+            <span class="streak-value">🔥 {{ currentStreak() }} days</span>
+            <span class="streak-label">Current Streak</span>
+          </div>
+          <div class="streak-badge">
+            <span class="streak-value">⚡ {{ longestStreak() }} days</span>
+            <span class="streak-label">Longest Streak</span>
+          </div>
+        </div>
       </div>
-      <div class="radar-chart-container">
-        <canvas
-          baseChart
-          [data]="styleRadarChartData"
-          [options]="radarChartOptions"
-          [type]="'radar'"
-        >
-        </canvas>
+
+      <div class="heatmap-scroll-wrapper">
+        <div class="heatmap-container">
+          <div class="day-labels">
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+          </div>
+          <div class="heatmap-grid">
+            @for (week of checkinHeatmapWeeks(); track $index) {
+              <div class="heatmap-week">
+                @for (day of week; track day.date) {
+                  <div
+                    class="heatmap-day"
+                    [attr.data-intensity]="day.intensity"
+                    [attr.title]="
+                      (day.count > 0
+                        ? day.count + ' check-in' + (day.count > 1 ? 's' : '')
+                        : 'No check-ins') +
+                      ' on ' +
+                      day.formattedDate
+                    "
+                  ></div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="legend-scale">
+          <div class="heatmap-day" data-intensity="0"></div>
+          <div class="heatmap-day" data-intensity="1"></div>
+          <div class="heatmap-day" data-intensity="2"></div>
+          <div class="heatmap-day" data-intensity="3"></div>
+          <div class="heatmap-day" data-intensity="4"></div>
+        </div>
+        <span>More</span>
+      </div>
+    </div>
+
+    <!-- Visual Charts Row: Radar & Rating Score Histogram -->
+    <div class="charts-row-grid">
+      <!-- Style Preference Radar Chart -->
+      <div class="card glass-panel chart-card">
+        <div class="section-header">
+          <h3><mat-icon>radar</mat-icon> Style Radar Distribution</h3>
+          <p class="subtitle">
+            A visual representation of your drink style exploration.
+          </p>
+        </div>
+        <div class="radar-chart-container">
+          <canvas
+            baseChart
+            [data]="styleRadarChartData"
+            [options]="radarChartOptions"
+            [type]="'radar'"
+          >
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Rating Score Histogram Chart -->
+      <div class="card glass-panel chart-card">
+        <div class="section-header">
+          <h3><mat-icon>star_rate</mat-icon> Rating Score Histogram</h3>
+          <p class="subtitle">
+            Distribution of ratings given (in 0.25 star increments).
+          </p>
+        </div>
+        <div class="histogram-chart-container">
+          <canvas
+            baseChart
+            [data]="ratingHistogramChartData"
+            [options]="ratingChartOptions"
+            [type]="'bar'"
+          >
+          </canvas>
+        </div>
       </div>
     </div>
 

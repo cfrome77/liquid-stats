@@ -7,6 +7,7 @@ import {
   NgZone,
   inject,
   ChangeDetectorRef,
+  HostListener,
 } from "@angular/core";
 
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
@@ -21,7 +22,9 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatDividerModule } from "@angular/material/divider";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-to-top.component";
+import { CommandPaletteComponent } from "./shared/components/command-palette/command-palette.component";
 import { InfoFabComponent } from "./shared/components/info-fab/info-fab.component";
 import { BeerStoreService } from "./core/services/beer-store.service";
 
@@ -38,6 +41,7 @@ import { BeerStoreService } from "./core/services/beer-store.service";
     MatIconModule,
     MatSidenavModule,
     MatDividerModule,
+    MatDialogModule,
     ScrollToTopComponent,
     InfoFabComponent,
   ],
@@ -52,6 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private ngZone = inject(NgZone);
   private beerStore = inject(BeerStoreService);
   private cdr = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
 
   title = "liquid-stats";
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
@@ -111,6 +116,23 @@ export class AppComponent implements OnInit, OnDestroy {
 
           this.ga4Service.trackPageView(newPath, newTitle);
         });
+    });
+  }
+
+  @HostListener("window:keydown", ["$event"])
+  onGlobalKeyDown(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      this.openCommandPalette();
+    }
+  }
+
+  openCommandPalette(): void {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(CommandPaletteComponent, {
+      width: "580px",
+      maxWidth: "92vw",
+      panelClass: "command-palette-dialog-panel",
     });
   }
 
