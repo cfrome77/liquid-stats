@@ -33,4 +33,14 @@ describe("AppComponent", () => {
     const app = fixture.componentInstance;
     expect(app.title).toEqual("liquid-stats");
   });
+
+  it("should render Checkins in the mobile bottom navigation menu", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const checkinsNavLink = compiled.querySelector(
+      '.mobile-bottom-nav a[routerLink="/checkins"]',
+    );
+    expect(checkinsNavLink).toBeTruthy();
+  });
 });
