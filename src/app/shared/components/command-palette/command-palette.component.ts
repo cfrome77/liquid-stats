@@ -11,6 +11,7 @@ import {
   MatDialogRef,
   MatDialogModule,
   MatDialog,
+  MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
@@ -55,6 +56,10 @@ export class CommandPaletteComponent implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router);
   private beerStore = inject(BeerStoreService);
+  private dialogData = inject<{ initialSearchTerm?: string } | null>(
+    MAT_DIALOG_DATA,
+    { optional: true },
+  );
 
   public searchTerm = signal<string>("");
   public allBeers: BeerCheckin[] = [];
@@ -127,6 +132,9 @@ export class CommandPaletteComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    if (this.dialogData?.initialSearchTerm) {
+      this.searchTerm.set(this.dialogData.initialSearchTerm);
+    }
     this.beerStore.load();
     this.beerStore.beers$.subscribe((beers) => {
       this.allBeers = beers || [];
@@ -217,25 +225,31 @@ export class CommandPaletteComponent implements OnInit {
   }
 
   selectItem(item: SearchResultItem): void {
+    const currentSearch = this.searchTerm();
     this.dialogRef.close();
 
     if (item.type === "page" && item.route) {
       this.router.navigate([item.route]);
     } else if (item.type === "drink" && item.data) {
       const b = item.data as BeerCheckin;
-      this.openBeersDialog(b.beer.beer_name, [b]);
+      this.openBeersDialog(b.beer.beer_name, [b], currentSearch);
     } else if (item.type === "brewery" && item.data) {
       const d = item.data as { breweryName: string; beers: BeerCheckin[] };
-      this.openBeersDialog(`${d.breweryName} Drinks`, d.beers);
+      this.openBeersDialog(`${d.breweryName} Drinks`, d.beers, currentSearch);
     } else if (item.type === "style" && item.data) {
       const d = item.data as { styleName: string; beers: BeerCheckin[] };
-      this.openBeersDialog(`${d.styleName} Drinks`, d.beers);
+      this.openBeersDialog(`${d.styleName} Drinks`, d.beers, currentSearch);
     }
   }
 
-  private openBeersDialog(title: string, beers: BeerCheckin[]): void {
+  private openBeersDialog(
+    title: string,
+    beers: BeerCheckin[],
+    savedSearchTerm: string,
+  ): void {
     const data: GenericBeersDialogData = {
       title,
+      showBackButton: true,
       beers: beers.map((b) => ({
         beerName: b.beer.beer_name,
         beerLabel: sanitizeUntappdUrl(b.beer.beer_label) || b.beer.beer_label,
@@ -250,10 +264,21 @@ export class CommandPaletteComponent implements OnInit {
       })),
     };
 
-    this.dialog.open(BeerStyleDialogComponent, {
+    const dialogRef = this.dialog.open(BeerStyleDialogComponent, {
       data,
       width: "350px",
       maxHeight: "80vh",
+    });
+
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res === "back") {
+        this.dialog.open(CommandPaletteComponent, {
+          width: "580px",
+          maxWidth: "92vw",
+          panelClass: "command-palette-dialog-panel",
+          data: { initialSearchTerm: savedSearchTerm },
+        });
+      }
     });
   }
 }

@@ -1,10 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialogRef, MatDialogModule } from "@angular/material/dialog";
+import {
+  MatDialogRef,
+  MatDialogModule,
+  MatDialog,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { Router } from "@angular/router";
 import { of } from "rxjs";
 
 import { CommandPaletteComponent } from "./command-palette.component";
+import { BeerStyleDialogComponent } from "../beer-style-dialog/beer-style-dialog.component";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 
@@ -84,5 +90,70 @@ describe("CommandPaletteComponent", () => {
     component.selectItem(pageItem);
     expect(mockDialogRef.close).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(["/"]);
+  });
+
+  it("should initialize search term if initialSearchTerm is passed in MAT_DIALOG_DATA", async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [
+        CommandPaletteComponent,
+        MatDialogModule,
+        BrowserAnimationsModule,
+      ],
+      providers: [
+        { provide: BeerStoreService, useValue: mockBeerStore },
+        { provide: Router, useValue: mockRouter },
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: { initialSearchTerm: "pilsner" },
+        },
+      ],
+    }).compileComponents();
+
+    const customFixture = TestBed.createComponent(CommandPaletteComponent);
+    const customComp = customFixture.componentInstance;
+    customFixture.detectChanges();
+
+    expect(customComp.searchTerm()).toBe("pilsner");
+    expect(customComp.results().length).toBeGreaterThan(0);
+  });
+
+  it("should open BeerStyleDialog with showBackButton and handle 'back' result to re-open CommandPaletteComponent", () => {
+    const beerDialogRefSpy = jasmine.createSpyObj("MatDialogRef", [
+      "afterClosed",
+    ]);
+    beerDialogRefSpy.afterClosed.and.returnValue(of("back"));
+
+    const dialogSpy = spyOn(
+      (component as unknown as { dialog: MatDialog }).dialog,
+      "open",
+    ).and.returnValue(
+      beerDialogRefSpy as unknown as MatDialogRef<CommandPaletteComponent>,
+    );
+
+    component.onSearchChange("pilsner");
+    const drinkItem = component.results().find((r) => r.type === "drink");
+    expect(drinkItem).toBeTruthy();
+
+    component.selectItem(drinkItem!);
+
+    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(dialogSpy).toHaveBeenCalledWith(
+      BeerStyleDialogComponent,
+      jasmine.objectContaining({
+        data: jasmine.objectContaining({
+          showBackButton: true,
+        }),
+      }),
+    );
+
+    // Verify re-opening of CommandPaletteComponent with saved search term
+    expect(dialogSpy).toHaveBeenCalledWith(
+      CommandPaletteComponent,
+      jasmine.objectContaining({
+        data: { initialSearchTerm: "pilsner" },
+      }),
+    );
   });
 });
