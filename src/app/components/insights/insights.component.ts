@@ -66,6 +66,7 @@ export class InsightsComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   public beers: BeerCheckin[] = [];
+  private rawCheckins: Checkin[] = [];
   public isLoading = signal<boolean>(true);
   public milestones = signal<Milestone[]>([]);
   public averageABV = signal<number>(0);
@@ -258,6 +259,7 @@ export class InsightsComponent implements OnInit {
     this.beerStore.checkins$.subscribe({
       next: (checkins: Checkin[] | null) => {
         if (checkins && checkins.length > 0) {
+          this.rawCheckins = checkins;
           this.computeHeatmap(checkins);
           this.cdr.markForCheck();
         }
@@ -612,6 +614,44 @@ export class InsightsComponent implements OnInit {
       (b) => b.brewery.brewery_name === breweryName,
     );
     this.openBeersDialog(`${breweryName} Drinks`, filtered);
+  }
+
+  public openDayCheckinsDialog(day: {
+    date: string;
+    formattedDate: string;
+    count: number;
+  }): void {
+    if (day.count === 0) return;
+
+    const matchingCheckins = this.rawCheckins.filter((c) => {
+      if (!c.created_at) return false;
+      const date = new Date(c.created_at);
+      if (isNaN(date.getTime())) return false;
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      return key === day.date;
+    });
+
+    const data: GenericBeersDialogData = {
+      title: `Check-ins on ${day.formattedDate}`,
+      beers: matchingCheckins.map((c) => ({
+        beerName: c.beer.beer_name,
+        beerLabel: sanitizeUntappdUrl(c.beer.beer_label) || c.beer.beer_label,
+        breweryName: c.brewery.brewery_name,
+        beerABV: 0,
+        rating: c.rating_score,
+        checkInDate: c.created_at,
+        checkinUrl:
+          environment.UNTAPPD_USERNAME && c.checkin_id
+            ? `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${c.checkin_id}`
+            : undefined,
+      })),
+    };
+
+    this.dialog.open(BeerStyleDialogComponent, {
+      data,
+      width: "350px",
+      maxHeight: "80vh",
+    });
   }
 
   public openPeakMonthDialog(monthYear: string): void {

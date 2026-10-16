@@ -92,6 +92,7 @@
                 @for (day of week; track day.date) {
                   <div
                     class="heatmap-day"
+                    [class.clickable-day]="day.count > 0"
                     [attr.data-intensity]="day.intensity"
                     [attr.title]="
                       (day.count > 0
@@ -100,6 +101,10 @@
                       ' on ' +
                       day.formattedDate
                     "
+                    [attr.tabindex]="day.count > 0 ? 0 : -1"
+                    (click)="openDayCheckinsDialog(day)"
+                    (keydown.enter)="openDayCheckinsDialog(day)"
+                    (keydown.space)="openDayCheckinsDialog(day)"
                   ></div>
                 }
               </div>

@@ -157,22 +157,27 @@ export class CommandPaletteComponent implements OnInit {
     items.push(...matchedPages);
 
     if (this.allBeers.length > 0) {
-      // Search drinks (max 10)
-      const matchedBeers = this.allBeers
-        .filter((b) => b.beer.beer_name.toLowerCase().includes(query))
-        .slice(0, 10);
-
-      matchedBeers.forEach((b) => {
-        items.push({
-          type: "drink",
-          title: b.beer.beer_name,
-          subtitle: `${b.brewery.brewery_name} • ${b.beer.beer_style}`,
-          icon: "local_drink",
-          data: b,
-        });
+      // Search unique styles (all matches)
+      const styleMap = new Map<string, BeerCheckin[]>();
+      this.allBeers.forEach((b) => {
+        const style = b.beer.beer_style || "Unknown";
+        if (!styleMap.has(style)) styleMap.set(style, []);
+        styleMap.get(style)!.push(b);
       });
 
-      // Search unique breweries (max 5)
+      for (const [styleName, beers] of styleMap.entries()) {
+        if (styleName.toLowerCase().includes(query)) {
+          items.push({
+            type: "style",
+            title: styleName,
+            subtitle: `${beers.length} drink(s)`,
+            icon: "category",
+            data: { styleName, beers },
+          });
+        }
+      }
+
+      // Search unique breweries (all matches up to 25)
       const breweryMap = new Map<string, BeerCheckin[]>();
       this.allBeers.forEach((b) => {
         const name = b.brewery.brewery_name;
@@ -182,7 +187,7 @@ export class CommandPaletteComponent implements OnInit {
 
       let breweryMatches = 0;
       for (const [breweryName, beers] of breweryMap.entries()) {
-        if (breweryMatches >= 5) break;
+        if (breweryMatches >= 25) break;
         if (breweryName.toLowerCase().includes(query)) {
           items.push({
             type: "brewery",
@@ -195,28 +200,20 @@ export class CommandPaletteComponent implements OnInit {
         }
       }
 
-      // Search unique styles (max 5)
-      const styleMap = new Map<string, BeerCheckin[]>();
-      this.allBeers.forEach((b) => {
-        const style = b.beer.beer_style || "Unknown";
-        if (!styleMap.has(style)) styleMap.set(style, []);
-        styleMap.get(style)!.push(b);
-      });
+      // Search drinks (up to 25)
+      const matchedBeers = this.allBeers
+        .filter((b) => b.beer.beer_name.toLowerCase().includes(query))
+        .slice(0, 25);
 
-      let styleMatches = 0;
-      for (const [styleName, beers] of styleMap.entries()) {
-        if (styleMatches >= 5) break;
-        if (styleName.toLowerCase().includes(query)) {
-          items.push({
-            type: "style",
-            title: styleName,
-            subtitle: `${beers.length} drink(s)`,
-            icon: "category",
-            data: { styleName, beers },
-          });
-          styleMatches++;
-        }
-      }
+      matchedBeers.forEach((b) => {
+        items.push({
+          type: "drink",
+          title: b.beer.beer_name,
+          subtitle: `${b.brewery.brewery_name} • ${b.beer.beer_style}`,
+          icon: "local_drink",
+          data: b,
+        });
+      });
     }
 
     this.results.set(items);
