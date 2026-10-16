@@ -177,7 +177,7 @@ export class CommandPaletteComponent implements OnInit {
         }
       }
 
-      // Search unique breweries (all matches up to 25)
+      // Search unique breweries (all matches)
       const breweryMap = new Map<string, BeerCheckin[]>();
       this.allBeers.forEach((b) => {
         const name = b.brewery.brewery_name;
@@ -185,9 +185,7 @@ export class CommandPaletteComponent implements OnInit {
         breweryMap.get(name)!.push(b);
       });
 
-      let breweryMatches = 0;
       for (const [breweryName, beers] of breweryMap.entries()) {
-        if (breweryMatches >= 25) break;
         if (breweryName.toLowerCase().includes(query)) {
           items.push({
             type: "brewery",
@@ -196,14 +194,13 @@ export class CommandPaletteComponent implements OnInit {
             icon: "business",
             data: { breweryName, beers },
           });
-          breweryMatches++;
         }
       }
 
-      // Search drinks (up to 25)
-      const matchedBeers = this.allBeers
-        .filter((b) => b.beer.beer_name.toLowerCase().includes(query))
-        .slice(0, 25);
+      // Search drinks (all matches)
+      const matchedBeers = this.allBeers.filter((b) =>
+        b.beer.beer_name.toLowerCase().includes(query),
+      );
 
       matchedBeers.forEach((b) => {
         items.push({
