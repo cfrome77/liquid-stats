@@ -91,11 +91,27 @@
 }
 .recent-checkins h3 {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.view-all-link {
+  color: var(--accent-blue);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.view-all-link:hover {
+  text-decoration: underline;
 }
 .icon-wrapper {
   position: relative;

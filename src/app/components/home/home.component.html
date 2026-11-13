@@ -82,6 +82,7 @@
   <section class="recent-checkins">
     <div class="section-header">
       <h3>Recent Checkins</h3>
+      <a routerLink="/checkins" class="view-all-link">View all</a>
     </div>
     <div class="carousel-wrapper">
       <button
@@ -93,7 +94,7 @@
       </button>
 
       <div class="carousel-track" #carouselTrack>
-        @for (c of allCheckins; track c.checkin_id) {
+        @for (c of recentCheckins; track c.checkin_id) {
           <mat-card
             class="beer-card modern-card clickable-card"
             [routerLink]="['/checkins', c.checkin_id]"

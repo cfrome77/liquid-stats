@@ -38,7 +38,11 @@ export class HomeComponent implements OnInit {
 
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
+  /** Number of check-ins shown in the "Recent Checkins" carousel. */
+  private readonly RECENT_LIMIT = 12;
+
   allCheckins: Checkin[] = [];
+  recentCheckins: Checkin[] = [];
   totalCheckins = 0;
   averageRating = 0;
   countriesTried = 0;
@@ -66,6 +70,7 @@ export class HomeComponent implements OnInit {
       .subscribe((checkins) => {
         if (!checkins) return;
         this.allCheckins = checkins;
+        this.recentCheckins = this.buildRecentCheckins(checkins);
         this.cdr.detectChanges();
       });
 
@@ -79,6 +84,16 @@ export class HomeComponent implements OnInit {
         this.breweriesVisited = stats.totalUniqueBreweries;
         this.cdr.detectChanges();
       });
+  }
+
+  /** Newest check-ins first, capped so the carousel DOM stays small. */
+  private buildRecentCheckins(checkins: Checkin[]): Checkin[] {
+    return [...checkins]
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
+      .slice(0, this.RECENT_LIMIT);
   }
 
   scrollNext() {

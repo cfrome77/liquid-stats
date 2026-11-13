@@ -11,9 +11,14 @@ import {
 import { ProcessedStats } from "../../core/models/stats.model";
 import { Checkin } from "../../core/models/checkin.model";
 
-function makeCheckin(id: number, name: string): Checkin {
+function makeCheckin(
+  id: number,
+  name: string,
+  createdAt = "2026-01-01T00:00:00Z",
+): Checkin {
   return {
     checkin_id: id,
+    created_at: createdAt,
     rating_score: 4.25,
     beer: { beer_name: name, beer_label: `label-${id}.png` },
     brewery: { brewery_name: `Brewery ${id}` },
@@ -75,6 +80,29 @@ describe("HomeComponent", () => {
     expect(cards[0].textContent).toContain("Hazy IPA");
     expect(cards[1].textContent).toContain("Stout");
     expect(component.allCheckins.length).toBe(2);
+  });
+
+  it("caps the carousel to the most recent check-ins, newest first", () => {
+    const checkins = Array.from({ length: 20 }, (_, i) =>
+      makeCheckin(
+        i + 1,
+        `Beer ${i + 1}`,
+        `2026-01-${String(i + 1).padStart(2, "0")}T00:00:00Z`,
+      ),
+    );
+    checkinsSubject.next(checkins);
+    fixture.detectChanges();
+
+    expect(component.allCheckins.length).toBe(20);
+    expect(component.recentCheckins.length).toBe(12);
+    // newest first: the last item in the source array
+    expect(component.recentCheckins[0].checkin_id).toBe(20);
+    expect(component.recentCheckins[11].checkin_id).toBe(9);
+
+    const cards = fixture.nativeElement.querySelectorAll(
+      ".carousel-track .beer-card",
+    ) as NodeListOf<HTMLElement>;
+    expect(cards.length).toBe(12);
   });
 
   it("derives the quick stats from the store streams", () => {
