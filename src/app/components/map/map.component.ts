@@ -103,6 +103,7 @@ export class MapComponent
   readonly isLoading = signal(true);
   readonly dataLoaded = signal(false);
   readonly hasData = signal(true);
+  readonly hasError = signal(false);
 
   @ViewChild("drawer") drawer!: MatSidenav;
   @ViewChild("overlayPanel") overlayPanel?: ElementRef;
@@ -135,6 +136,14 @@ export class MapComponent
     });
 
     // Load beer data
+    this.loadBeerData();
+  }
+
+  /** Fetches the beer data that feeds the map markers and filters. */
+  private loadBeerData(): void {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.allBeers = data;
@@ -177,9 +186,16 @@ export class MapComponent
         this.isLoading.set(false);
         this.dataLoaded.set(true);
         this.hasData.set(false);
+        this.hasError.set(true);
         this.cdr.detectChanges();
       },
     });
+  }
+
+  /** Retries the failed data load after clearing the service cache. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadBeerData();
   }
 
   onDrawerAnimationDone() {

@@ -118,6 +118,16 @@
           <mat-icon>public</mat-icon>
           <p>Loading map…</p>
         </div>
+      } @else if (hasError()) {
+        <div class="map-overlay-message">
+          <app-empty-state
+            icon="cloud_off"
+            variant="error"
+            message="We couldn't load the brewery map. You may be offline or the data service is temporarily unavailable."
+            buttonText="Retry"
+            (action)="retryLoad()"
+          ></app-empty-state>
+        </div>
       } @else if (!hasData()) {
         <div class="map-overlay-message">
           <app-empty-state

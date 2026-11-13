@@ -68,6 +68,7 @@ describe("InsightsComponent", () => {
     mockBeerStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
       beers$: of(sampleBeers),
       checkins$: of([]),
+      loadError$: of(false),
     });
 
     const mockDialogRef = {
@@ -230,6 +231,7 @@ describe("InsightsComponent", () => {
       const emptyStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
         beers$: of([]),
         checkins$: of([]),
+        loadError$: of(false),
       });
       await TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
@@ -251,6 +253,40 @@ describe("InsightsComponent", () => {
       expect(
         emptyFixture.nativeElement.querySelector("app-empty-state"),
       ).not.toBeNull();
+    });
+  });
+
+  describe("load error", () => {
+    it("shows a retryable error state when the store reports a load failure", async () => {
+      const errorStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of([]),
+        checkins$: of([]),
+        loadError$: of(true),
+      });
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [{ provide: BeerStoreService, useValue: errorStore }],
+      }).compileComponents();
+
+      const errorFixture = TestBed.createComponent(InsightsComponent);
+      errorFixture.detectChanges();
+
+      const instance = errorFixture.componentInstance;
+      expect(instance.hasLoadError()).toBeTrue();
+
+      const el = errorFixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain("couldn't load your insights");
+      const button = el.querySelector(
+        "app-empty-state button",
+      ) as HTMLButtonElement;
+      button.click();
+      expect(errorStore.load).toHaveBeenCalledWith(true);
     });
   });
 });

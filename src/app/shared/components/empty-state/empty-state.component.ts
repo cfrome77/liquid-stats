@@ -9,13 +9,17 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 
+/**
+ * Generic placeholder for a region with no content. Use `variant="error"`
+ * to signal a failed load (warning styling) instead of a genuine empty result.
+ */
 @Component({
   selector: "app-empty-state",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIconModule, MatButtonModule],
   template: `
-    <div class="empty-state">
+    <div class="empty-state" [class.error]="variant === 'error'">
       <mat-icon>{{ icon }}</mat-icon>
       <p>{{ message }}</p>
       @if (buttonText) {
@@ -47,6 +51,11 @@ import { MatButtonModule } from "@angular/material/button";
         opacity: 0.5;
       }
 
+      .empty-state.error mat-icon {
+        color: var(--btn-danger, #f44336);
+        opacity: 0.7;
+      }
+
       .empty-state p {
         font-size: 1.25rem;
         margin-bottom: 2rem;
@@ -59,5 +68,6 @@ export class EmptyStateComponent {
   @Input() icon = "search_off";
   @Input() message = "No items found.";
   @Input() buttonText: string | null = null;
+  @Input() variant: "empty" | "error" = "empty";
   @Output() action = new EventEmitter<void>();
 }

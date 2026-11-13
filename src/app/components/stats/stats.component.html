@@ -225,6 +225,14 @@
         <p style="text-align: center; opacity: 0.6">Loading charts...</p>
       </div>
     }
+  } @else if (hasLoadError()) {
+    <app-empty-state
+      icon="cloud_off"
+      variant="error"
+      message="We couldn't load your stats. You may be offline or the data service is temporarily unavailable."
+      buttonText="Retry"
+      (action)="retryLoad()"
+    ></app-empty-state>
   } @else if (dataLoaded()) {
     <app-empty-state
       icon="bar_chart"

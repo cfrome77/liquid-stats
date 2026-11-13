@@ -5,6 +5,14 @@
 
   @if (isLoading()) {
     <app-skeleton-card [count]="4"></app-skeleton-card>
+  } @else if (hasLoadError()) {
+    <app-empty-state
+      icon="cloud_off"
+      variant="error"
+      message="We couldn't load your insights. You may be offline or the data service is temporarily unavailable."
+      buttonText="Retry"
+      (action)="retryLoad()"
+    ></app-empty-state>
   } @else if (!hasData()) {
     <app-empty-state
       icon="insights"

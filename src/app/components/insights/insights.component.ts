@@ -72,6 +72,7 @@ export class InsightsComponent implements OnInit {
 
   public beers: BeerCheckin[] = [];
   public hasData = signal<boolean>(false);
+  public hasLoadError = signal<boolean>(false);
   private rawCheckins: Checkin[] = [];
   public isLoading = signal<boolean>(true);
   public milestones = signal<Milestone[]>([]);
@@ -282,6 +283,18 @@ export class InsightsComponent implements OnInit {
           console.error("Error loading insights checkins:", err);
         },
       });
+
+    this.beerStore.loadError$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((hasError) => {
+        this.hasLoadError.set(hasError);
+        this.cdr.markForCheck();
+      });
+  }
+
+  /** Retries loading all store data after a failed load. */
+  retryLoad(): void {
+    this.beerStore.load(true);
   }
 
   private updateChartThemeOptions(theme: "light-theme" | "dark-theme"): void {

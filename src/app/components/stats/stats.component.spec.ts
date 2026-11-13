@@ -126,4 +126,20 @@ describe("StatsComponent", () => {
       fixture.nativeElement.querySelector("app-empty-state"),
     ).not.toBeNull();
   });
+
+  it("shows a retryable error state when the store reports a load failure", () => {
+    spyOn(component, "retryLoad").and.callThrough();
+    component.hasLoadError.set(true);
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector("app-empty-state")).not.toBeNull();
+    expect(el.textContent).toContain("couldn't load your stats");
+
+    const button = el.querySelector(
+      "app-empty-state button",
+    ) as HTMLButtonElement;
+    button.click();
+    expect(component.retryLoad).toHaveBeenCalled();
+  });
 });

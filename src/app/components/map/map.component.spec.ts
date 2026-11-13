@@ -36,7 +36,10 @@ describe("MapComponent", () => {
     ]) as unknown as L.MarkerClusterGroup;
 
     // Mock DataService
-    mockDataService = jasmine.createSpyObj("DataService", ["getBeersAll"]);
+    mockDataService = jasmine.createSpyObj("DataService", [
+      "getBeersAll",
+      "clearCache",
+    ]);
     mockDataService.getBeersAll.and.returnValue(of([]));
 
     // Configure TestBed
@@ -108,6 +111,39 @@ describe("MapComponent", () => {
     expect(component.isLoading()).toBeFalse();
     expect(component.dataLoaded()).toBeTrue();
     expect(component.hasData()).toBeFalse();
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
+
+  it("shows an error state with a retry that refetches and recovers", fakeAsync(() => {
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
+    document.body.appendChild(mapDiv);
+
+    // First request fails, the retry succeeds.
+    mockDataService.getBeersAll.and.returnValues(
+      throwError(() => new Error("network error")),
+      of([]),
+    );
+
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    expect(component.hasError()).toBeTrue();
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? "";
+    expect(text).toContain("couldn't load the brewery map");
+
+    component.retryLoad();
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    expect(mockDataService.clearCache).toHaveBeenCalled();
+    expect(component.hasError()).toBeFalse();
 
     fixture.destroy();
     document.body.removeChild(mapDiv);
