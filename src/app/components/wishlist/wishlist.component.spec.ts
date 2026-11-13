@@ -39,4 +39,62 @@ describe("WishlistComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("maps a wishlist item into card data with a link and HD images", () => {
+    const card = component.transformWishlistData({
+      count: 1,
+      first_created_at: "2026-01-01",
+      recent_created_at: "2026-01-01",
+      created_at: "2026-01-01",
+      rating_score: 0,
+      beer: {
+        beer_abv: 5,
+        bid: 42,
+        beer_label: "https://example.com/label.png",
+        beer_label_hd: "https://example.com/label_hd.png",
+        beer_name: "Test IPA",
+        beer_style: "IPA",
+        beer_slug: "test-ipa",
+        beer_description: "A hoppy ale",
+      },
+      brewery: {
+        brewery_id: 7,
+        brewery_name: "Test Brewery",
+        brewery_label: "https://example.com/brewery.png",
+        brewery_label_hd: "https://example.com/brewery_hd.png",
+        country_name: "USA",
+        location: { brewery_state: "OR" },
+      },
+    });
+
+    expect(card.title).toBe("Test IPA");
+    expect(card.mainImage).toBe("https://example.com/label_hd.png");
+    expect(card.secondaryImage).toBe("https://example.com/brewery_hd.png");
+    expect(card.footerInfo.link).toBe("https://untappd.com/b/test-ipa/42");
+    expect(card.footerInfo.text).toBe("Wishlist Item");
+  });
+
+  it("falls back to a friendly timestamp when the item has no date", () => {
+    const card = component.transformWishlistData({
+      count: 1,
+      first_created_at: "2026-01-01",
+      recent_created_at: "2026-01-01",
+      rating_score: 0,
+      beer: {
+        beer_abv: 5,
+        bid: 42,
+        beer_label: "label.png",
+        beer_name: "Test IPA",
+        beer_style: "IPA",
+      },
+      brewery: {
+        brewery_name: "Test Brewery",
+        country_name: "USA",
+        location: {},
+      },
+    });
+
+    expect(card.footerInfo.timestamp).toBe("Added long ago");
+    expect(card.mainImage).toBe("label.png");
+  });
 });

@@ -8,6 +8,7 @@ import { provideRouter } from "@angular/router"; // Import this
 
 import { CheckinsComponent } from "./checkins.component";
 import { DataService } from "src/app/core/services/data.service";
+import { BaseCardData } from "src/app/shared/components/card/card-data.interface";
 
 describe("CheckinsComponent", () => {
   let component: CheckinsComponent;
@@ -90,5 +91,39 @@ describe("CheckinsComponent", () => {
 
     expect(badges![0].badge_image.sm).toBe("http://example.com/badge_sm.png");
     expect(badges![1].badge_image.sm).toBe("http://example.com/badge_str.png");
+  });
+
+  describe("pagination", () => {
+    function seed(count: number): void {
+      component.transformedCheckins = Array.from({ length: count }, (_, i) => ({
+        title: `Beer ${i + 1}`,
+      })) as unknown as BaseCardData[];
+      component.totalItems = count;
+      component.itemsPerPage = 10;
+      component.currentPage = 1;
+    }
+
+    it("shows only the first page of results", () => {
+      seed(25);
+      component.updatePagination();
+      expect(component.paginatedCheckins.length).toBe(10);
+      expect(component.paginatedCheckins[0].title).toBe("Beer 1");
+    });
+
+    it("shows the trailing partial page", () => {
+      seed(25);
+      component.currentPage = 3;
+      component.updatePagination();
+      expect(component.paginatedCheckins.length).toBe(5);
+      expect(component.paginatedCheckins[0].title).toBe("Beer 21");
+    });
+
+    it("resets to the first page when the page size changes", () => {
+      seed(25);
+      component.currentPage = 3;
+      component.onItemsPerPageChange(20);
+      expect(component.currentPage).toBe(1);
+      expect(component.paginatedCheckins.length).toBe(20);
+    });
   });
 });
