@@ -114,6 +114,13 @@
         let i = $index
       ) {
         <app-card [cardData]="beer" [viewMode]="viewMode()"> </app-card>
+      } @empty {
+        <app-empty-state
+          icon="leaderboard"
+          message="No drinks match your criteria. Try a wider time range or a lower minimum check-ins."
+          buttonText="Reset Filters"
+          (action)="resetFilters()"
+        ></app-empty-state>
       }
     </div>
   }

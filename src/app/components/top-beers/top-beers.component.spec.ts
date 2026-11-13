@@ -119,4 +119,22 @@ describe("TopBeersComponent", () => {
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBe(0);
   });
+
+  it("resets filters back to their defaults", () => {
+    fixture.detectChanges();
+    component.topX = 15;
+    component.minCheckins = 10;
+    component.selectedRange = component.dateRangeOptions[2];
+    component.useCustomDate = true;
+    component.customStartDate = new Date();
+
+    component.resetFilters();
+
+    expect(component.topX).toBe(5);
+    expect(component.minCheckins).toBe(1);
+    expect(component.selectedRange).toBe(component.dateRangeOptions[0]);
+    expect(component.useCustomDate).toBeFalse();
+    expect(component.customStartDate).toBeNull();
+    expect(component.transformedTopBeers.length).toBeGreaterThan(0);
+  });
 });

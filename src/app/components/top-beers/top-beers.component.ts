@@ -31,6 +31,7 @@ import { DateUtils } from "../../core/utils/date-utils";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 type DateRangeOption = { label: string; daysBack?: number };
 
@@ -53,6 +54,7 @@ type DateRangeOption = { label: string; daysBack?: number };
     MatButtonModule,
     CardComponent,
     SkeletonCardComponent,
+    EmptyStateComponent,
   ],
   providers: [provideNativeDateAdapter()],
 })
@@ -110,6 +112,15 @@ export class TopBeersComponent implements OnInit {
     } else {
       this.useCustomDate = false;
     }
+    this.filterAndRankBeers();
+  }
+
+  resetFilters(): void {
+    this.selectedRange = this.dateRangeOptions[0];
+    this.topX = 5;
+    this.minCheckins = 1;
+    this.useCustomDate = false;
+    this.customStartDate = null;
     this.filterAndRankBeers();
   }
 
