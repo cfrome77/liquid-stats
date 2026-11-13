@@ -3,7 +3,7 @@ import { bootstrapApplication } from "@angular/platform-browser";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { IMAGE_LOADER, ImageLoaderConfig } from "@angular/common";
-import { provideAnimations } from "@angular/platform-browser/animations";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideServiceWorker } from "@angular/service-worker";
 
 import { AppComponent } from "./app/app.component";
@@ -56,7 +56,7 @@ bootstrapApplication(AppComponent, {
       },
     },
     provideHttpClient(),
-    provideAnimations(),
+    provideAnimationsAsync(),
     provideServiceWorker("ngsw-worker.js", {
       enabled: !isDevMode() || String(environment.production) === "true",
       registrationStrategy: "registerWhenStable:30000",

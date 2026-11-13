@@ -26,7 +26,6 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { SwUpdate, VersionReadyEvent } from "@angular/service-worker";
 import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-to-top.component";
-import { CommandPaletteComponent } from "./shared/components/command-palette/command-palette.component";
 import { InfoFabComponent } from "./shared/components/info-fab/info-fab.component";
 import { BeerStoreService } from "./core/services/beer-store.service";
 import { NavItem } from "./core/models/nav-item.model";
@@ -210,11 +209,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   openCommandPalette(): void {
     if (this.dialog.openDialogs.length > 0) return;
-    this.dialog.open(CommandPaletteComponent, {
-      width: "580px",
-      maxWidth: "92vw",
-      panelClass: "command-palette-dialog-panel",
-    });
+    // Loaded on demand so the palette stays out of the initial bundle.
+    void import("./shared/components/command-palette/command-palette.component").then(
+      (m) => {
+        this.dialog.open(m.CommandPaletteComponent, {
+          width: "580px",
+          maxWidth: "92vw",
+          panelClass: "command-palette-dialog-panel",
+        });
+      },
+    );
   }
 
   retryLoad(): void {
