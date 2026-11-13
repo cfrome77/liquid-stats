@@ -114,6 +114,8 @@ mat-toolbar {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 44px;
   text-decoration: none;
   color: var(--navbar-text);
   opacity: 0.6;

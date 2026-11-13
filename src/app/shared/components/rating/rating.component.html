@@ -2,6 +2,10 @@
   class="rating-container"
   [class.has-stars]="hasRating"
   [class.unrated]="!hasRating"
+  role="img"
+  [attr.aria-label]="
+    hasRating ? 'Rating: ' + ratingScore + ' out of 5' : 'Not yet rated'
+  "
 >
   @if (hasRating) {
     <!-- Stars on the left -->
