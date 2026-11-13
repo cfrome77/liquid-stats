@@ -94,7 +94,7 @@
       </button>
 
       <div class="carousel-track" #carouselTrack>
-        @for (c of recentCheckins; track c.checkin_id) {
+        @for (c of recentCheckins; track c.checkin_id; let i = $index) {
           <mat-card
             class="beer-card modern-card clickable-card"
             [routerLink]="['/checkins', c.checkin_id]"
@@ -107,11 +107,13 @@
                 c.beer.beer_label ||
                 DEFAULT_IMAGE
               "
-              (error)="$event.target.src = c.beer.beer_label || DEFAULT_IMAGE"
+              (error)="handleImageError($event)"
               [alt]="c.beer.beer_name"
               width="200"
               height="200"
-              loading="lazy"
+              [attr.loading]="i < EAGER_IMAGE_COUNT ? 'eager' : 'lazy'"
+              [attr.fetchpriority]="i < EAGER_IMAGE_COUNT ? 'high' : 'low'"
+              decoding="async"
             />
             <mat-card-content>
               <h4 class="line-clamp-2">{{ c.beer.beer_name }}</h4>

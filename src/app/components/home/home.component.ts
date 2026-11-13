@@ -41,6 +41,9 @@ export class HomeComponent implements OnInit {
   /** Number of check-ins shown in the "Recent Checkins" carousel. */
   private readonly RECENT_LIMIT = 12;
 
+  /** Leading carousel images that load eagerly (above the fold on desktop). */
+  readonly EAGER_IMAGE_COUNT = 4;
+
   allCheckins: Checkin[] = [];
   recentCheckins: Checkin[] = [];
   totalCheckins = 0;
@@ -106,7 +109,11 @@ export class HomeComponent implements OnInit {
     track.scrollBy({ left: -track.clientWidth * 0.8, behavior: "smooth" });
   }
 
+  /** Falls back to the placeholder, but only once, to avoid an error loop. */
   handleImageError(event: Event) {
-    (event.target as HTMLImageElement).src = this.DEFAULT_IMAGE;
+    const img = event.target as HTMLImageElement;
+    if (img.src !== this.DEFAULT_IMAGE) {
+      img.src = this.DEFAULT_IMAGE;
+    }
   }
 }

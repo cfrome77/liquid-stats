@@ -153,9 +153,43 @@ describe("HomeComponent", () => {
     expect(scrollBy).toHaveBeenCalledWith({ left: -800, behavior: "smooth" });
   });
 
+  it("eagerly loads the leading carousel images and lazily loads the rest", () => {
+    const checkins = Array.from({ length: 8 }, (_, i) =>
+      makeCheckin(i + 1, `Beer ${i + 1}`),
+    );
+    checkinsSubject.next(checkins);
+    fixture.detectChanges();
+
+    const imgs = Array.from(
+      fixture.nativeElement.querySelectorAll(
+        ".carousel-track .beer-card img",
+      ) as NodeListOf<HTMLImageElement>,
+    );
+    expect(imgs.length).toBe(8);
+    expect(imgs.slice(0, 4).map((img) => img.getAttribute("loading"))).toEqual([
+      "eager",
+      "eager",
+      "eager",
+      "eager",
+    ]);
+    expect(
+      imgs.slice(4).every((img) => img.getAttribute("loading") === "lazy"),
+    ).toBeTrue();
+    expect(imgs[0].getAttribute("fetchpriority")).toBe("high");
+    expect(imgs[7].getAttribute("fetchpriority")).toBe("low");
+  });
+
   it("falls back to the default image when a card image fails to load", () => {
     const img = document.createElement("img");
     component.handleImageError({ target: img } as unknown as Event);
     expect(img.src).toContain("placehold.co");
+  });
+
+  it("does not re-assign the placeholder on repeated image errors", () => {
+    const img = document.createElement("img");
+    img.src = component.DEFAULT_IMAGE;
+    const before = img.src;
+    component.handleImageError({ target: img } as unknown as Event);
+    expect(img.src).toBe(before);
   });
 });
