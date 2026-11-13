@@ -80,4 +80,20 @@ describe("CardComponent", () => {
     expect(img).toBeTruthy();
     expect(img.src).toContain("badge-sm.jpg");
   });
+
+  it("should sanitize the description HTML bound via innerHTML", () => {
+    fixture.componentRef.setInput("cardData", {
+      ...component.cardData,
+      description:
+        '<a href="https://untappd.com">Link</a><script>window.hacked = true;</script>',
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const comment = compiled.querySelector(".comment");
+    expect(comment?.querySelector("a")?.getAttribute("href")).toBe(
+      "https://untappd.com",
+    );
+    expect(comment?.querySelector("script")).toBeNull();
+  });
 });
