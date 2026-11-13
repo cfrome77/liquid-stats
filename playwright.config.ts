@@ -12,7 +12,10 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run start:local",
+    // Use the base `serve` target: the `development` configuration replaces
+    // environment.ts with the git-ignored environment.local.ts, which does not
+    // exist on a fresh CI checkout.
+    command: "npm run start",
     url: "http://localhost:4200",
     reuseExistingServer: !process.env["CI"],
     timeout: 120 * 1000,
