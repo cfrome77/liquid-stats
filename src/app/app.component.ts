@@ -29,6 +29,7 @@ import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-t
 import { CommandPaletteComponent } from "./shared/components/command-palette/command-palette.component";
 import { InfoFabComponent } from "./shared/components/info-fab/info-fab.component";
 import { BeerStoreService } from "./core/services/beer-store.service";
+import { NavItem } from "./core/models/nav-item.model";
 
 @Component({
   selector: "app-root",
@@ -64,6 +65,57 @@ export class AppComponent implements OnInit, OnDestroy {
   private swUpdate = inject(SwUpdate, { optional: true });
 
   title = "liquid-stats";
+  // Single source of truth for the desktop, mobile-bottom, and drawer navigation.
+  readonly navItems: NavItem[] = [
+    {
+      path: "/checkins",
+      label: "Checkins",
+      shortLabel: "Checkins",
+      icon: "room",
+    },
+    {
+      path: "/top-beers",
+      label: "Top Drinks",
+      shortLabel: "Top",
+      icon: "emoji_events",
+    },
+    { path: "/badges", label: "Badges", shortLabel: "Badges", icon: "badge" },
+    { path: "/map", label: "Map", shortLabel: "Map", icon: "map" },
+    {
+      path: "/beer-history",
+      label: "History",
+      shortLabel: "History",
+      icon: "history",
+    },
+    {
+      path: "/stats",
+      label: "Stats",
+      shortLabel: "Stats",
+      icon: "insert_chart",
+    },
+    {
+      path: "/insights",
+      label: "Insights",
+      shortLabel: "Insights",
+      icon: "insights",
+    },
+    {
+      path: "/wishlist",
+      label: "Wishlist",
+      shortLabel: "Wishlist",
+      icon: "list",
+    },
+  ];
+  readonly mobileNavItems: NavItem[] = [
+    {
+      path: "/",
+      label: "Home",
+      shortLabel: "Home",
+      icon: "home",
+      exact: true,
+    },
+    ...this.navItems.filter((item) => item.path !== "/badges"),
+  ];
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
   hasLoadError = false;
   private destroy$ = new Subject<void>();

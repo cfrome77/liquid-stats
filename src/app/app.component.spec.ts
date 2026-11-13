@@ -38,8 +38,11 @@ describe("AppComponent", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const checkinsNavLink = compiled.querySelector(
-      '.mobile-bottom-nav a[routerLink="/checkins"]',
+    const navLinks = Array.from(
+      compiled.querySelectorAll<HTMLAnchorElement>(".mobile-bottom-nav a"),
+    );
+    const checkinsNavLink = navLinks.find((link) =>
+      link.getAttribute("href")?.includes("/checkins"),
     );
     expect(checkinsNavLink).toBeTruthy();
   });
