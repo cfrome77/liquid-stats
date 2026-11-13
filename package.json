@@ -8,6 +8,7 @@
     "start": "ng serve --project liquid-stats",
     "start:dev": "ng serve --project liquid-stats --configuration development --hmr",
     "start:local": "ng serve --project liquid-stats --configuration development",
+    "start:e2e": "ng serve --project liquid-stats --configuration e2e",
     "build": "ng build --project liquid-stats --configuration development",
     "build:prod": "npm run generate-env && ng build --project liquid-stats --configuration production",
     "watch": "ng build --project liquid-stats --watch --configuration development",

@@ -12,10 +12,12 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    // Use the base `serve` target: the `development` configuration replaces
-    // environment.ts with the git-ignored environment.local.ts, which does not
-    // exist on a fresh CI checkout.
-    command: "npm run start",
+    // Use the `e2e` serve configuration. The base `serve` target resolves to
+    // the production build, which replaces environment.ts with the generated
+    // environment.prod.ts, and `development` replaces it with the git-ignored
+    // environment.local.ts. Neither exists on a fresh checkout, so e2e uses a
+    // configuration that relies only on the committed environment.ts.
+    command: "npm run start:e2e",
     url: "http://localhost:4200",
     reuseExistingServer: !process.env["CI"],
     timeout: 120 * 1000,
