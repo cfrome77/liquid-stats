@@ -11,6 +11,7 @@ import {
   HostListener,
   PLATFORM_ID,
   inject,
+  signal,
 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -36,6 +37,7 @@ import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DateUtils } from "src/app/core/utils/date-utils";
 import { environment } from "src/environments/environment";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: "app-map",
@@ -51,6 +53,7 @@ import { environment } from "src/environments/environment";
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    EmptyStateComponent,
   ],
   providers: [MarkerService],
 })
@@ -97,6 +100,10 @@ export class MapComponent
   public legendItems: { type: string; color: string }[] = [];
   public isLegendCollapsed = false;
 
+  readonly isLoading = signal(true);
+  readonly dataLoaded = signal(false);
+  readonly hasData = signal(true);
+
   @ViewChild("drawer") drawer!: MatSidenav;
   @ViewChild("overlayPanel") overlayPanel?: ElementRef;
 
@@ -131,6 +138,9 @@ export class MapComponent
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.allBeers = data;
+        this.hasData.set(data.length > 0);
+        this.isLoading.set(false);
+        this.dataLoaded.set(true);
 
         // Extract filter options
         this.beerStyles = Array.from(
@@ -162,7 +172,13 @@ export class MapComponent
 
         this.cdr.detectChanges();
       },
-      error: (err) => console.error("Error fetching map data:", err),
+      error: (err) => {
+        console.error("Error fetching map data:", err);
+        this.isLoading.set(false);
+        this.dataLoaded.set(true);
+        this.hasData.set(false);
+        this.cdr.detectChanges();
+      },
     });
   }
 

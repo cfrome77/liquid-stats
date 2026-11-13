@@ -113,6 +113,20 @@
     <div class="map-wrapper">
       <div id="myMap" class="leaflet-map"></div>
 
+      @if (isLoading()) {
+        <div class="map-overlay-message">
+          <mat-icon>public</mat-icon>
+          <p>Loading map…</p>
+        </div>
+      } @else if (!hasData()) {
+        <div class="map-overlay-message">
+          <app-empty-state
+            icon="location_off"
+            message="No brewery locations to plot yet. Check back once you have a few more check-ins."
+          ></app-empty-state>
+        </div>
+      }
+
       <!-- Map Legend -->
       @if (legendItems.length > 0) {
         <div

@@ -8,7 +8,7 @@ import {
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute } from "@angular/router";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { MapComponent } from "./map.component";
 import {
   MarkerService,
@@ -67,6 +67,51 @@ describe("MapComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("shows the empty state and stops loading when there is no data", fakeAsync(() => {
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
+    document.body.appendChild(mapDiv);
+
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    expect(component.isLoading()).toBeFalse();
+    expect(component.dataLoaded()).toBeTrue();
+    expect(component.hasData()).toBeFalse();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? "";
+    expect(text).toContain("No brewery locations");
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
+
+  it("shows the empty state when the data request fails", fakeAsync(() => {
+    mockDataService.getBeersAll.and.returnValue(
+      throwError(() => new Error("network error")),
+    );
+
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
+    document.body.appendChild(mapDiv);
+
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    expect(component.isLoading()).toBeFalse();
+    expect(component.dataLoaded()).toBeTrue();
+    expect(component.hasData()).toBeFalse();
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
 
   it("should initialize map on AfterViewInit", fakeAsync(() => {
     // Add a div with the mapId in the DOM for Leaflet
