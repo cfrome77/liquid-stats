@@ -210,11 +210,7 @@
 
         <ul class="checkin-list">
           @for (checkIn of filteredOverlayCheckins; track checkIn.checkInId) {
-            <li
-              (click)="
-                openCheckin('https://untappd.com/c/' + checkIn.checkInId)
-              "
-            >
+            <li (click)="openCheckin(getCheckinUrl(checkIn.checkInId))">
               <img
                 [src]="checkIn.beerLabel"
                 class="beer-label"

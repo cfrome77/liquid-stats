@@ -5,7 +5,9 @@ import {
   ElementRef,
   inject,
   ChangeDetectorRef,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -32,6 +34,7 @@ import { Checkin } from "../../core/models/checkin.model";
 export class HomeComponent implements OnInit {
   private beerStore = inject(BeerStoreService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild("carouselTrack") carouselTrack!: ElementRef;
 
@@ -47,29 +50,35 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.beerStore.load();
 
-    this.beerStore.quickStats$.subscribe((stats) => {
-      if (!stats) return;
-      this.totalCheckins = stats.totalCheckins;
-      this.averageRating = stats.averageRating;
-      this.countriesTried = stats.countriesTried;
-      this.breweriesVisited = stats.breweriesVisited;
-      this.cdr.detectChanges();
-    });
+    this.beerStore.quickStats$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((stats) => {
+        if (!stats) return;
+        this.totalCheckins = stats.totalCheckins;
+        this.averageRating = stats.averageRating;
+        this.countriesTried = stats.countriesTried;
+        this.breweriesVisited = stats.breweriesVisited;
+        this.cdr.detectChanges();
+      });
 
-    this.beerStore.checkins$.subscribe((checkins) => {
-      if (!checkins) return;
-      this.allCheckins = checkins;
-      this.cdr.detectChanges();
-    });
+    this.beerStore.checkins$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((checkins) => {
+        if (!checkins) return;
+        this.allCheckins = checkins;
+        this.cdr.detectChanges();
+      });
 
-    this.beerStore.stats$.subscribe((stats) => {
-      if (!stats) return;
-      this.totalCheckins = stats.totalCheckins;
-      this.averageRating = stats.averageRating;
-      this.countriesTried = Object.keys(stats.topCountries).length;
-      this.breweriesVisited = stats.totalUniqueBreweries;
-      this.cdr.detectChanges();
-    });
+    this.beerStore.stats$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((stats) => {
+        if (!stats) return;
+        this.totalCheckins = stats.totalCheckins;
+        this.averageRating = stats.averageRating;
+        this.countriesTried = Object.keys(stats.topCountries).length;
+        this.breweriesVisited = stats.totalUniqueBreweries;
+        this.cdr.detectChanges();
+      });
   }
 
   scrollNext() {

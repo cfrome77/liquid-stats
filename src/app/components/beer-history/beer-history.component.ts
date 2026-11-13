@@ -4,7 +4,10 @@ import {
   ChangeDetectorRef,
   inject,
   signal,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Subject, debounceTime, distinctUntilChanged } from "rxjs";
 
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -55,6 +58,9 @@ export interface FilterField {
 export class BeerHistoryComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+
+  private searchTerm$ = new Subject<string>();
 
   public viewMode = signal<"cards" | "compact">("cards");
   public beersAll: BeerCheckin[] = [];
@@ -88,6 +94,14 @@ export class BeerHistoryComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.searchTerm$
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.applyFilters());
+
     this.loadData();
   }
 
@@ -179,7 +193,7 @@ export class BeerHistoryComponent implements OnInit {
 
   onSearchChange() {
     this.currentPage = 1;
-    this.applyFilters();
+    this.searchTerm$.next(this.searchTerm);
   }
 
   applyFilters() {

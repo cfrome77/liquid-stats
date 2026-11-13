@@ -23,6 +23,8 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { SwUpdate, VersionReadyEvent } from "@angular/service-worker";
 import { ScrollToTopComponent } from "./shared/components/scroll-to-top/scroll-to-top.component";
 import { CommandPaletteComponent } from "./shared/components/command-palette/command-palette.component";
 import { InfoFabComponent } from "./shared/components/info-fab/info-fab.component";
@@ -42,6 +44,7 @@ import { BeerStoreService } from "./core/services/beer-store.service";
     MatSidenavModule,
     MatDividerModule,
     MatDialogModule,
+    MatSnackBarModule,
     ScrollToTopComponent,
     InfoFabComponent,
   ],
@@ -57,6 +60,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private beerStore = inject(BeerStoreService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private swUpdate = inject(SwUpdate, { optional: true });
 
   title = "liquid-stats";
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
@@ -117,6 +122,34 @@ export class AppComponent implements OnInit, OnDestroy {
           this.ga4Service.trackPageView(newPath, newTitle);
         });
     });
+
+    this.watchForAppUpdates();
+  }
+
+  /** Prompts the user to reload when a new app version is available. */
+  private watchForAppUpdates(): void {
+    if (!this.swUpdate?.isEnabled) return;
+
+    this.swUpdate.versionUpdates
+      .pipe(
+        filter(
+          (event): event is VersionReadyEvent => event.type === "VERSION_READY",
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        const ref = this.snackBar.open(
+          "A new version is available.",
+          "Reload",
+          { duration: 10000 },
+        );
+        ref.onAction().subscribe(() => {
+          this.swUpdate
+            ?.activateUpdate()
+            .then(() => this.document.location.reload())
+            .catch((err) => console.error("Failed to activate update:", err));
+        });
+      });
   }
 
   @HostListener("window:keydown", ["$event"])

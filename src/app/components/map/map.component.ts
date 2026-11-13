@@ -35,6 +35,7 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DateUtils } from "src/app/core/utils/date-utils";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-map",
@@ -243,6 +244,14 @@ export class MapComponent
     setTimeout(() => {
       this.isOpeningPopup = false;
     }, 100);
+  }
+
+  /** Builds the Untappd check-in URL for a given check-in id. */
+  getCheckinUrl(checkInId: number): string {
+    if (environment.UNTAPPD_USERNAME && checkInId) {
+      return `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${checkInId}`;
+    }
+    return "https://untappd.com";
   }
 
   /** Opens a single check-in in a new tab */

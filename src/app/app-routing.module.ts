@@ -86,4 +86,12 @@ export const routes: Routes = [
       ),
     data: { animation: "AboutPage" },
   },
+  {
+    path: "**",
+    loadComponent: () =>
+      import("./components/not-found/not-found.component").then(
+        (m) => m.NotFoundComponent,
+      ),
+    data: { animation: "NotFoundPage" },
+  },
 ];

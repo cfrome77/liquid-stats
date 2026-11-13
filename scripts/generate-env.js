@@ -9,9 +9,9 @@ const targetPath = path.resolve(
 
 const content = `export const environment = {
   production: true,
-  DATA_URL: '${process.env.DATA_URL || ""}',
-  UNTAPPD_USERNAME: '${process.env.UNTAPPD_USERNAME || ""}',
-  GA4_MEASUREMENT_ID: '${process.env.GA4_MEASUREMENT_ID || ""}'
+  DATA_URL: "${process.env.DATA_URL || ""}",
+  UNTAPPD_USERNAME: "${process.env.UNTAPPD_USERNAME || ""}",
+  GA4_MEASUREMENT_ID: "${process.env.GA4_MEASUREMENT_ID || ""}",
 };
 `;
 

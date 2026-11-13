@@ -6,7 +6,9 @@ import {
   inject,
   signal,
   effect,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -64,6 +66,7 @@ export class InsightsComponent implements OnInit {
   private themeService = inject(ThemeService);
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   public beers: BeerCheckin[] = [];
   private rawCheckins: Checkin[] = [];
@@ -240,7 +243,7 @@ export class InsightsComponent implements OnInit {
 
   ngOnInit(): void {
     this.beerStore.load();
-    this.beerStore.beers$.subscribe({
+    this.beerStore.beers$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (beers: BeerCheckin[] | null) => {
         if (beers && beers.length > 0) {
           this.beers = beers;
@@ -256,18 +259,20 @@ export class InsightsComponent implements OnInit {
       },
     });
 
-    this.beerStore.checkins$.subscribe({
-      next: (checkins: Checkin[] | null) => {
-        if (checkins && checkins.length > 0) {
-          this.rawCheckins = checkins;
-          this.computeHeatmap(checkins);
-          this.cdr.markForCheck();
-        }
-      },
-      error: (err: unknown) => {
-        console.error("Error loading insights checkins:", err);
-      },
-    });
+    this.beerStore.checkins$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (checkins: Checkin[] | null) => {
+          if (checkins && checkins.length > 0) {
+            this.rawCheckins = checkins;
+            this.computeHeatmap(checkins);
+            this.cdr.markForCheck();
+          }
+        },
+        error: (err: unknown) => {
+          console.error("Error loading insights checkins:", err);
+        },
+      });
   }
 
   private updateChartThemeOptions(theme: "light-theme" | "dark-theme"): void {

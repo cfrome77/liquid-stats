@@ -4,7 +4,9 @@ import {
   inject,
   signal,
   ChangeDetectionStrategy,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import {
@@ -56,6 +58,7 @@ export class CommandPaletteComponent implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router);
   private beerStore = inject(BeerStoreService);
+  private destroyRef = inject(DestroyRef);
   private dialogData = inject<{ initialSearchTerm?: string } | null>(
     MAT_DIALOG_DATA,
     { optional: true },
@@ -136,10 +139,12 @@ export class CommandPaletteComponent implements OnInit {
       this.searchTerm.set(this.dialogData.initialSearchTerm);
     }
     this.beerStore.load();
-    this.beerStore.beers$.subscribe((beers) => {
-      this.allBeers = beers || [];
-      this.updateResults();
-    });
+    this.beerStore.beers$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((beers) => {
+        this.allBeers = beers || [];
+        this.updateResults();
+      });
   }
 
   onSearchChange(term: string): void {
