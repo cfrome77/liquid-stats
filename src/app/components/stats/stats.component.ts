@@ -6,6 +6,7 @@ import {
   effect,
   ChangeDetectionStrategy,
   inject,
+  signal,
 } from "@angular/core";
 import { DecimalPipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
@@ -36,6 +37,7 @@ import {
   GenericBeersDialogData,
 } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { DateUtils } from "../../core/utils/date-utils";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { environment } from "src/environments/environment";
@@ -56,6 +58,7 @@ import { environment } from "src/environments/environment";
     MatIconModule,
     MatDialogModule,
     BaseChartDirective,
+    EmptyStateComponent,
   ],
   providers: [
     DecimalPipe,
@@ -75,6 +78,7 @@ export class StatsComponent implements OnInit, OnDestroy {
 
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
+  readonly dataLoaded = signal<boolean>(false);
   sortedBeerStyles: string[] = [];
 
   dateRange = new FormControl("year");
@@ -177,6 +181,9 @@ export class StatsComponent implements OnInit, OnDestroy {
 
     this.beerSub = this.beerStore.beers$.subscribe((data) => {
       this.beers = data ?? [];
+      if (data !== null) {
+        this.dataLoaded.set(true);
+      }
       this.onDateChange();
       this.cdr.markForCheck();
     });

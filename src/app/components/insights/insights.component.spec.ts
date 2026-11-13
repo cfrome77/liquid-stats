@@ -224,4 +224,33 @@ describe("InsightsComponent", () => {
       expect(dialogSpy).toHaveBeenCalled();
     });
   });
+
+  describe("empty data", () => {
+    it("stops the skeleton and flags no data when the store returns an empty list", async () => {
+      const emptyStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of([]),
+        checkins$: of([]),
+      });
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [{ provide: BeerStoreService, useValue: emptyStore }],
+      }).compileComponents();
+
+      const emptyFixture = TestBed.createComponent(InsightsComponent);
+      emptyFixture.detectChanges();
+
+      const instance = emptyFixture.componentInstance;
+      expect(instance.isLoading()).toBeFalse();
+      expect(instance.hasData()).toBeFalse();
+      expect(
+        emptyFixture.nativeElement.querySelector("app-empty-state"),
+      ).not.toBeNull();
+    });
+  });
 });

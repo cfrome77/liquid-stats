@@ -225,5 +225,10 @@
         <p style="text-align: center; opacity: 0.6">Loading charts...</p>
       </div>
     }
+  } @else if (dataLoaded()) {
+    <app-empty-state
+      icon="bar_chart"
+      message="No check-ins in this range yet. Try a wider date range."
+    ></app-empty-state>
   }
 </div>

@@ -5,6 +5,11 @@
 
   @if (isLoading()) {
     <app-skeleton-card [count]="4"></app-skeleton-card>
+  } @else if (!hasData()) {
+    <app-empty-state
+      icon="insights"
+      message="Not enough data to build insights yet. Check back once you have a few more check-ins."
+    ></app-empty-state>
   } @else {
     <!-- Overview KPI Row -->
     <div class="insights-grid">

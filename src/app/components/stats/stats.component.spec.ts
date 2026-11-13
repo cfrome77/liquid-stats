@@ -114,4 +114,16 @@ describe("StatsComponent", () => {
     expect(dialogData.beers[0].beerName).toBe("Riversong");
     expect(dialogData.beers[0].checkInDate).toBe("2026-09-19 20:38:00");
   });
+
+  it("shows an empty state once data has loaded but nothing falls in range", () => {
+    component.dataLoaded.set(true);
+    component.beers = [];
+    component.onDateChange();
+    fixture.detectChanges();
+
+    expect(component.processedStats).toBeNull();
+    expect(
+      fixture.nativeElement.querySelector("app-empty-state"),
+    ).not.toBeNull();
+  });
 });

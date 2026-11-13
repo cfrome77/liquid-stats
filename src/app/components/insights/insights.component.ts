@@ -26,6 +26,7 @@ import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { Checkin } from "src/app/core/models/checkin.model";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import {
   BeerStyleDialogComponent,
   GenericBeersDialogData,
@@ -57,6 +58,7 @@ export interface Milestone {
     MatDialogModule,
     BaseChartDirective,
     SkeletonCardComponent,
+    EmptyStateComponent,
   ],
   providers: [DecimalPipe, provideCharts(withDefaultRegisterables())],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +71,7 @@ export class InsightsComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   public beers: BeerCheckin[] = [];
+  public hasData = signal<boolean>(false);
   private rawCheckins: Checkin[] = [];
   public isLoading = signal<boolean>(true);
   public milestones = signal<Milestone[]>([]);
@@ -248,6 +251,12 @@ export class InsightsComponent implements OnInit {
         if (beers && beers.length > 0) {
           this.beers = beers;
           this.computeInsights(beers);
+          this.hasData.set(true);
+          this.isLoading.set(false);
+          this.cdr.markForCheck();
+        } else if (beers !== null) {
+          // Loaded but empty (e.g. a failed fetch): stop the skeleton so the
+          // empty state can render instead of spinning forever.
           this.isLoading.set(false);
           this.cdr.markForCheck();
         }

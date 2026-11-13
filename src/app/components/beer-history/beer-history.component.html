@@ -71,7 +71,10 @@
       [class.cards-layout]="viewMode() === 'cards'"
       [class.compact-layout]="viewMode() === 'compact'"
     >
-      @for (beerCard of paginatedBeers; track beerCard.title) {
+      @for (
+        beerCard of paginatedBeers;
+        track beerCard.title + "-" + beerCard.breweryName
+      ) {
         <app-card [cardData]="beerCard" [viewMode]="viewMode()"></app-card>
       } @empty {
         <app-empty-state

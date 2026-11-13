@@ -72,6 +72,30 @@ describe("PaginationComponent", () => {
       setState(1, 10, 0);
       expect(component.pageNumbers).toEqual([]);
     });
+
+    it("renders without duplicated @for track keys when both ellipses show", () => {
+      const warn = spyOn(console, "warn");
+      fixture.componentRef.setInput("currentPage", 6);
+      fixture.componentRef.setInput("itemsPerPage", 10);
+      fixture.componentRef.setInput("totalItems", 200);
+      fixture.detectChanges();
+      expect(component.pageNumbers).toEqual([
+        1,
+        "...",
+        4,
+        5,
+        6,
+        7,
+        8,
+        "...",
+        20,
+      ]);
+      const duplicated = warn.calls
+        .allArgs()
+        .map((args) => String(args[0]))
+        .filter((message) => message.includes("NG0955"));
+      expect(duplicated).toEqual([]);
+    });
   });
 
   describe("navigation", () => {
