@@ -135,9 +135,7 @@ export class TopBeersComponent implements OnInit {
     const beerGroups = new Map<number, BeerCheckin[]>();
 
     this.beers.forEach((b) => {
-      const dateStr =
-        b.recent_created_at ||
-        (b as unknown as { created_at: string }).created_at;
+      const dateStr = b.recent_created_at || b.first_created_at;
       const beerDate = DateUtils.parseDate(dateStr);
 
       if (isOverall || beerDate >= cutoffDate) {
@@ -203,10 +201,7 @@ export class TopBeersComponent implements OnInit {
 
     const extraData: CardExtraData = {
       badges: [],
-      socialLinks: beer.brewery.contact as unknown as Record<
-        string,
-        string | number | boolean | undefined
-      >,
+      socialLinks: beer.brewery.contact,
       mapData,
     };
 

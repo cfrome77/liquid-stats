@@ -143,11 +143,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Load and initialize GA4 when the browser is idle to improve initial page load performance
     this.ngZone.runOutsideAngular(() => {
       if ("requestIdleCallback" in window) {
-        (
-          window as unknown as {
-            requestIdleCallback: (cb: () => void) => void;
-          }
-        ).requestIdleCallback(() => {
+        window.requestIdleCallback(() => {
           this.ga4Service.loadAndInitialize();
         });
       } else {

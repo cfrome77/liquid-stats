@@ -154,7 +154,7 @@ export class StatsComponent implements OnInit, OnDestroy {
         label: "Average Rating",
         borderColor: "rgba(255,82,82,0.9)",
         fill: false,
-      } as unknown as ChartData<"line", number[], string>["datasets"][number],
+      },
     ],
   };
 

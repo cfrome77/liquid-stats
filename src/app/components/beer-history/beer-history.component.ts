@@ -336,10 +336,7 @@ export class BeerHistoryComponent implements OnInit {
 
     const extraData: CardExtraData = {
       badges: [],
-      socialLinks: beer.brewery.contact as unknown as Record<
-        string,
-        string | number | boolean | undefined
-      >,
+      socialLinks: beer.brewery.contact,
       mapData,
       venueId: undefined,
       checkinId: undefined,

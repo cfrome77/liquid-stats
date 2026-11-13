@@ -6,13 +6,16 @@ export interface MapData {
   breweryId: string;
 }
 
+export interface SocialLinks {
+  url?: string;
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+}
+
 export interface CardExtraData {
   badges?: Badge[];
-  socialLinks?: {
-    url?: string;
-    facebook?: string;
-    instagram?: string;
-  };
+  socialLinks?: SocialLinks;
   mapData?: MapData;
   venueId?: number;
   checkinId?: number;
