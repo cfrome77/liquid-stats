@@ -33,7 +33,7 @@
         <mat-icon class="icon-default">local_drink</mat-icon>
         <mat-icon class="icon-hover">history</mat-icon>
       </div>
-      <div class="stat-number">{{ totalCheckins }}</div>
+      <div class="stat-number">{{ totalCheckins() }}</div>
       <div class="stat-label">Checkins</div>
     </mat-card>
 
@@ -46,7 +46,7 @@
         <mat-icon class="icon-default">star</mat-icon>
         <mat-icon class="icon-hover">trending_up</mat-icon>
       </div>
-      <div class="stat-number">{{ averageRating | number: "1.1-1" }}</div>
+      <div class="stat-number">{{ averageRating() | number: "1.1-1" }}</div>
       <div class="stat-label">Avg Rating</div>
     </mat-card>
 
@@ -59,7 +59,7 @@
         <mat-icon class="icon-default">public</mat-icon>
         <mat-icon class="icon-hover">map</mat-icon>
       </div>
-      <div class="stat-number">{{ countriesTried }}</div>
+      <div class="stat-number">{{ countriesTried() }}</div>
       <div class="stat-label">Countries</div>
     </mat-card>
 
@@ -72,7 +72,7 @@
         <mat-icon class="icon-default">storefront</mat-icon>
         <mat-icon class="icon-hover">leaderboard</mat-icon>
       </div>
-      <div class="stat-number">{{ breweriesVisited }}</div>
+      <div class="stat-number">{{ breweriesVisited() }}</div>
       <div class="stat-label">Breweries</div>
     </mat-card>
   </section>
@@ -94,7 +94,7 @@
       </button>
 
       <div class="carousel-track" #carouselTrack>
-        @for (c of recentCheckins; track c.checkin_id; let i = $index) {
+        @for (c of recentCheckins(); track c.checkin_id; let i = $index) {
           <mat-card
             class="beer-card modern-card clickable-card"
             [routerLink]="['/checkins', c.checkin_id]"

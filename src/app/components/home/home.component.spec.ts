@@ -79,7 +79,7 @@ describe("HomeComponent", () => {
     expect(cards.length).toBe(2);
     expect(cards[0].textContent).toContain("Hazy IPA");
     expect(cards[1].textContent).toContain("Stout");
-    expect(component.allCheckins.length).toBe(2);
+    expect(component.allCheckins().length).toBe(2);
   });
 
   it("caps the carousel to the most recent check-ins, newest first", () => {
@@ -93,11 +93,11 @@ describe("HomeComponent", () => {
     checkinsSubject.next(checkins);
     fixture.detectChanges();
 
-    expect(component.allCheckins.length).toBe(20);
-    expect(component.recentCheckins.length).toBe(12);
+    expect(component.allCheckins().length).toBe(20);
+    expect(component.recentCheckins().length).toBe(12);
     // newest first: the last item in the source array
-    expect(component.recentCheckins[0].checkin_id).toBe(20);
-    expect(component.recentCheckins[11].checkin_id).toBe(9);
+    expect(component.recentCheckins()[0].checkin_id).toBe(20);
+    expect(component.recentCheckins()[11].checkin_id).toBe(9);
 
     const cards = fixture.nativeElement.querySelectorAll(
       ".carousel-track .beer-card",
@@ -133,11 +133,11 @@ describe("HomeComponent", () => {
     });
     fixture.detectChanges();
 
-    expect(component.totalCheckins).toBe(42);
-    expect(component.averageRating).toBe(3.8);
+    expect(component.totalCheckins()).toBe(42);
+    expect(component.averageRating()).toBe(3.8);
     // countries come from the count of topCountries keys
-    expect(component.countriesTried).toBe(2);
-    expect(component.breweriesVisited).toBe(12);
+    expect(component.countriesTried()).toBe(2);
+    expect(component.breweriesVisited()).toBe(12);
   });
 
   it("scrolls the carousel forward and backward by 80% of the track width", () => {
