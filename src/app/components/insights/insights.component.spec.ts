@@ -188,4 +188,40 @@ describe("InsightsComponent", () => {
       ?.data as GenericBeersDialogData;
     expect(data.title).toBe("Plzeňský Prazdroj Drinks");
   });
+
+  describe("heatmap accessibility", () => {
+    it("labels a day with its check-in count and date", () => {
+      expect(
+        component.heatmapDayLabel({ count: 3, formattedDate: "May 5, 2026" }),
+      ).toBe("3 check-ins on May 5, 2026");
+    });
+
+    it("uses the singular form for a single check-in", () => {
+      expect(
+        component.heatmapDayLabel({ count: 1, formattedDate: "May 5, 2026" }),
+      ).toBe("1 check-in on May 5, 2026");
+    });
+
+    it("describes a day with no check-ins", () => {
+      expect(
+        component.heatmapDayLabel({ count: 0, formattedDate: "May 5, 2026" }),
+      ).toBe("No check-ins on May 5, 2026");
+    });
+
+    it("opens the day dialog on space keydown and prevents default scroll", () => {
+      component.computeHeatmap([]);
+      const day = {
+        date: "2026-05-05",
+        formattedDate: "May 5, 2026",
+        count: 2,
+      };
+      const event = new KeyboardEvent("keydown", { key: " " });
+      const preventDefault = spyOn(event, "preventDefault");
+
+      component.onDayKeydown(event, day);
+
+      expect(preventDefault).toHaveBeenCalled();
+      expect(dialogSpy).toHaveBeenCalled();
+    });
+  });
 });

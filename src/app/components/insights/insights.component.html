@@ -86,7 +86,11 @@
             <span>Fri</span>
             <span>Sat</span>
           </div>
-          <div class="heatmap-grid">
+          <div
+            class="heatmap-grid"
+            role="group"
+            aria-label="Check-in activity over the last year"
+          >
             @for (week of checkinHeatmapWeeks(); track $index) {
               <div class="heatmap-week">
                 @for (day of week; track day.date) {
@@ -94,17 +98,16 @@
                     class="heatmap-day"
                     [class.clickable-day]="day.count > 0"
                     [attr.data-intensity]="day.intensity"
-                    [attr.title]="
-                      (day.count > 0
-                        ? day.count + ' check-in' + (day.count > 1 ? 's' : '')
-                        : 'No check-ins') +
-                      ' on ' +
-                      day.formattedDate
+                    [attr.role]="day.count > 0 ? 'button' : null"
+                    [attr.aria-hidden]="day.count > 0 ? null : 'true'"
+                    [attr.title]="heatmapDayLabel(day)"
+                    [attr.aria-label]="
+                      day.count > 0 ? heatmapDayLabel(day) : null
                     "
                     [attr.tabindex]="day.count > 0 ? 0 : -1"
                     (click)="openDayCheckinsDialog(day)"
                     (keydown.enter)="openDayCheckinsDialog(day)"
-                    (keydown.space)="openDayCheckinsDialog(day)"
+                    (keydown.space)="onDayKeydown($event, day)"
                   ></div>
                 }
               </div>
@@ -112,6 +115,10 @@
           </div>
         </div>
       </div>
+
+      <p class="heatmap-scroll-hint" aria-hidden="true">
+        <mat-icon inline>swipe</mat-icon> Swipe to see the full year
+      </p>
 
       <div class="heatmap-legend">
         <span>Less</span>

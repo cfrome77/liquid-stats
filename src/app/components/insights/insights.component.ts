@@ -621,6 +621,24 @@ export class InsightsComponent implements OnInit {
     this.openBeersDialog(`${breweryName} Drinks`, filtered);
   }
 
+  public heatmapDayLabel(day: {
+    count: number;
+    formattedDate: string;
+  }): string {
+    const noun = day.count === 1 ? "check-in" : "check-ins";
+    return day.count > 0
+      ? `${day.count} ${noun} on ${day.formattedDate}`
+      : `No check-ins on ${day.formattedDate}`;
+  }
+
+  public onDayKeydown(
+    event: Event,
+    day: { date: string; formattedDate: string; count: number },
+  ): void {
+    event.preventDefault();
+    this.openDayCheckinsDialog(day);
+  }
+
   public openDayCheckinsDialog(day: {
     date: string;
     formattedDate: string;
