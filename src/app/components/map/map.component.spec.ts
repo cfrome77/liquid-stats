@@ -36,11 +36,7 @@ describe("MapComponent", () => {
     ]) as unknown as L.MarkerClusterGroup;
 
     // Mock DataService
-    mockDataService = jasmine.createSpyObj("DataService", [
-      "getBeers",
-      "getBeersAll",
-    ]);
-    mockDataService.getBeers.and.returnValue(of([]));
+    mockDataService = jasmine.createSpyObj("DataService", ["getBeersAll"]);
     mockDataService.getBeersAll.and.returnValue(of([]));
 
     // Configure TestBed

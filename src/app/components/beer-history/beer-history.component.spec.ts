@@ -16,7 +16,6 @@ describe("BeerHistoryComponent", () => {
 
   beforeEach(async () => {
     mockDataService = {
-      getBeers: () => of([]),
       getBeersAll: () => of([]),
     };
 

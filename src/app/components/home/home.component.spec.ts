@@ -15,7 +15,6 @@ describe("HomeComponent", () => {
 
   beforeEach(async () => {
     mockDataService = {
-      getBeers: () => of([]),
       getBeersAll: () => of([]),
       getStats: () => of({}),
       getCheckins: () => of({ response: { checkins: { items: [] } } }),

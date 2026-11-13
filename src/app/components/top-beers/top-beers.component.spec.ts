@@ -21,10 +21,7 @@ describe("TopBeersComponent", () => {
   let mockDataService: jasmine.SpyObj<DataService>;
 
   beforeEach(async () => {
-    mockDataService = jasmine.createSpyObj("DataService", [
-      "getBeers",
-      "getBeersAll",
-    ]);
+    mockDataService = jasmine.createSpyObj("DataService", ["getBeersAll"]);
     const mockBeer = {
       beer: {
         beer_name: "Test Beer",
@@ -72,7 +69,6 @@ describe("TopBeersComponent", () => {
 
     fixture = TestBed.createComponent(TopBeersComponent);
     component = fixture.componentInstance;
-    // We don't need to manually set component.beers here because ngOnInit will call getBeers
   });
 
   it("should create", () => {

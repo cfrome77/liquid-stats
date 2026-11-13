@@ -42,6 +42,7 @@
         [itemsPerPage]="itemsPerPage"
         [currentPage]="currentPage"
         (pageChange)="goToPage($event)"
+        (itemsPerPageChange)="changeItemsPerPage($event)"
       >
       </app-pagination>
     }

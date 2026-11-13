@@ -31,10 +31,7 @@ export class DataService {
         window.location.hostname === "127.0.0.1");
 
     if (!isLocalhost && url.includes("s3.amazonaws.com")) {
-      // eslint-disable-next-line no-console
-      console.log(
-        "[DataService] Remote environment, using /api-data/ proxy for S3",
-      );
+      // Route S3 data through the same-origin /api-data/ proxy in production.
       return "/api-data/";
     }
 
@@ -80,10 +77,6 @@ export class DataService {
         );
     }
     return this.statsCache$;
-  }
-
-  public getBeers(): Observable<BeerCheckin[]> {
-    return this.getBeersAll();
   }
 
   public getBeersAll(): Observable<BeerCheckin[]> {

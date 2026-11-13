@@ -23,19 +23,13 @@ import {
   MapData,
 } from "../../shared/components/card/card-data.interface";
 import { CardComponent } from "../../shared/components/card/card.component";
-import { FilterComponent } from "../../shared/components/filter/filter.component";
+import {
+  FilterComponent,
+  FilterField,
+} from "../../shared/components/filter/filter.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
-
-export interface FilterField {
-  field: string;
-  label: string;
-  options: string[];
-  selected: string[];
-  countMap?: { [option: string]: number };
-  type?: "text" | "date" | "number";
-}
 
 @Component({
   selector: "app-beer-history",
