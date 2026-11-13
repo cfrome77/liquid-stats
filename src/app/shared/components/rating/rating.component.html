@@ -37,12 +37,14 @@
       }
     </div>
     <!-- Rating text on the right -->
-    <span class="rating-number"
-      >Rating: <strong>{{ ratingScore }}</strong></span
-    >
+    <span class="rating-number">
+      <span class="rating-label">Rating:</span>
+      <strong>{{ ratingScore }}</strong>
+    </span>
   } @else {
-    <span class="rating-number" title="Not yet rated"
-      >Rating: <strong>N/A</strong></span
-    >
+    <span class="rating-number" title="Not yet rated">
+      <span class="rating-label">Rating:</span>
+      <strong>N/A</strong>
+    </span>
   }
 </div>
