@@ -564,6 +564,20 @@ footer {
 }
 
 @media (max-width: 480px) {
+  /* Three layers of horizontal padding stack here: the global .mat-mdc-card
+     (15px), Material's .mat-mdc-card-content (16px), and the header's own
+     (12px). On a 320px screen that spends 31px per side before the header
+     starts, leaving the text column about 116px between the two label
+     columns. Reclaim the two outer layers; the inner sections keep their own
+     padding, so nothing touches the card edge. */
+  .shared-card {
+    padding: 0;
+  }
+
+  .shared-card ::ng-deep .mat-mdc-card-content {
+    padding: 0;
+  }
+
   .card-header {
     grid-template-columns: 50px 1fr 50px;
     padding: 12px;
