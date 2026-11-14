@@ -16,43 +16,43 @@
       <stop offset="1" stop-color="#e65100" />
     </linearGradient>
     <clipPath id="ls-glass">
-      <path d="M150 150 H250 L238 300 Q237 310 228 310 H172 Q163 310 162 300 Z" />
+      <path d="M104 96 H296 L272 312 Q270 330 252 330 H148 Q130 330 128 312 Z" />
     </clipPath>
   </defs>
 
   <rect width="400" height="400" rx="28" fill="url(#ls-bg)" />
 
-  <!-- Rising bubbles -->
-  <g fill="#ffffff" opacity="0.22">
-    <circle cx="186" cy="266" r="6" />
-    <circle cx="214" cy="238" r="4" />
-    <circle cx="199" cy="212" r="3" />
-    <circle cx="224" cy="274" r="3.5" />
-  </g>
-
   <!-- Beer + foam, clipped to the glass shape -->
   <g clip-path="url(#ls-glass)">
-    <rect x="140" y="186" width="120" height="140" fill="url(#ls-beer)" />
-    <rect x="140" y="176" width="120" height="16" fill="#fff8e7" />
+    <rect x="90" y="150" width="230" height="200" fill="url(#ls-beer)" />
+    <rect x="90" y="128" width="230" height="30" fill="#fff8e7" />
+  </g>
+
+  <!-- Rising bubbles -->
+  <g fill="#ffffff" opacity="0.35">
+    <circle cx="165" cy="270" r="9" />
+    <circle cx="222" cy="228" r="6" />
+    <circle cx="192" cy="188" r="5" />
+    <circle cx="245" cy="282" r="6" />
   </g>
 
   <!-- Glass outline and rim -->
   <path
-    d="M150 150 H250 L238 300 Q237 310 228 310 H172 Q163 310 162 300 Z"
+    d="M104 96 H296 L272 312 Q270 330 252 330 H148 Q130 330 128 312 Z"
     fill="none"
     stroke="#cbd5e1"
-    stroke-width="8"
+    stroke-width="14"
     stroke-linejoin="round"
-    opacity="0.9"
+    opacity="0.92"
   />
   <line
-    x1="146"
-    y1="150"
-    x2="254"
-    y2="150"
+    x1="96"
+    y1="96"
+    x2="304"
+    y2="96"
     stroke="#cbd5e1"
-    stroke-width="8"
+    stroke-width="14"
     stroke-linecap="round"
-    opacity="0.9"
+    opacity="0.92"
   />
 </svg>
