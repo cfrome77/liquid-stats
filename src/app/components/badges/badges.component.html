@@ -25,31 +25,39 @@
     </button>
   </div>
 
-  <div
-    class="cards-layout-container"
-    [class.cards-layout]="viewMode() === 'cards'"
-    [class.compact-layout]="viewMode() === 'compact'"
-  >
-    @for (badge of paginatedBadges; track badge.badge_name) {
-      <app-card [cardData]="transformBadgeData(badge)" [viewMode]="viewMode()">
-      </app-card>
-    } @empty {
-      @if (hasLoadError()) {
-        <app-empty-state
-          icon="cloud_off"
-          variant="error"
-          message="We couldn't load your badges. You may be offline or the data service is temporarily unavailable."
-          buttonText="Retry"
-          (action)="retryLoad()"
-        ></app-empty-state>
-      } @else {
+  @if (isLoading) {
+    <app-skeleton-card
+      [viewMode]="viewMode()"
+      [count]="itemsPerPage"
+    ></app-skeleton-card>
+  } @else if (hasLoadError()) {
+    <app-empty-state
+      icon="cloud_off"
+      variant="error"
+      message="We couldn't load your badges. You may be offline or the data service is temporarily unavailable."
+      buttonText="Retry"
+      (action)="retryLoad()"
+    ></app-empty-state>
+  } @else {
+    <div
+      class="cards-layout-container"
+      [class.cards-layout]="viewMode() === 'cards'"
+      [class.compact-layout]="viewMode() === 'compact'"
+    >
+      @for (badge of paginatedBadges; track badge.badge_name) {
+        <app-card
+          [cardData]="transformBadgeData(badge)"
+          [viewMode]="viewMode()"
+        >
+        </app-card>
+      } @empty {
         <app-empty-state
           icon="military_tech"
           message="No badges earned yet. Check back after a few more check-ins."
         ></app-empty-state>
       }
-    }
-  </div>
+    </div>
+  }
 </div>
 
 @if (totalItems > 0) {

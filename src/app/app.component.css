@@ -164,3 +164,25 @@ mat-toolbar {
     padding-bottom: 60px;
   }
 }
+
+/* Keyboard-only skip link to jump past the nav into the routed content. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  padding: 10px 16px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+main#main-content:focus {
+  outline: none;
+}

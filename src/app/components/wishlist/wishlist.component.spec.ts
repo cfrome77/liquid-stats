@@ -3,7 +3,7 @@ import { WishlistComponent } from "./wishlist.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { DataService } from "../../core/services/data.service";
-import { of, throwError } from "rxjs";
+import { of, Subject, throwError } from "rxjs";
 
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
@@ -96,6 +96,28 @@ describe("WishlistComponent", () => {
 
     expect(card.footerInfo.timestamp).toBe("Added long ago");
     expect(card.mainImage).toBe("label.png");
+  });
+
+  it("shows a skeleton while the wishlist request is in flight", () => {
+    const pending = new Subject<unknown>();
+    mockDataService.getWishlist.and.returnValue(pending.asObservable());
+
+    const fresh = TestBed.createComponent(WishlistComponent);
+    fresh.detectChanges();
+
+    expect(fresh.componentInstance.isLoading).toBeTrue();
+    expect(
+      (fresh.nativeElement as HTMLElement).querySelector("app-skeleton-card"),
+    ).toBeTruthy();
+
+    pending.next({ response: { beers: { items: [] } } });
+    pending.complete();
+    fresh.detectChanges();
+
+    expect(fresh.componentInstance.isLoading).toBeFalse();
+    expect(
+      (fresh.nativeElement as HTMLElement).querySelector("app-skeleton-card"),
+    ).toBeFalsy();
   });
 
   it("shows a retryable error state when the wishlist request fails", () => {

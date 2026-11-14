@@ -1,4 +1,5 @@
 <div class="flex-column full-screen">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <mat-toolbar
     class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
@@ -103,7 +104,9 @@
     </mat-drawer>
 
     <div [@routeAnimations]="prepareRoute(outlet)">
-      <router-outlet #outlet="outlet"></router-outlet>
+      <main id="main-content" tabindex="-1">
+        <router-outlet #outlet="outlet"></router-outlet>
+      </main>
     </div>
   </mat-drawer-container>
 

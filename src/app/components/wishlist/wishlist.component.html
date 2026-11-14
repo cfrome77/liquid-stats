@@ -1,7 +1,12 @@
 <div class="main-content-container">
   <h1>Wishlist</h1>
 
-  @if (wishlist.length > 0) {
+  @if (isLoading) {
+    <app-skeleton-card
+      [viewMode]="viewMode()"
+      [count]="itemsPerPage"
+    ></app-skeleton-card>
+  } @else if (wishlist.length > 0) {
     <div
       class="flex-row align-center justify-center gap-4"
       style="margin-bottom: 20px"

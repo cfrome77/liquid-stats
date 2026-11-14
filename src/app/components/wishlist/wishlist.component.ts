@@ -16,6 +16,7 @@ import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 
 @Component({
   selector: "app-wishlist",
@@ -29,6 +30,7 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
     CardComponent,
     PaginationComponent,
     EmptyStateComponent,
+    SkeletonCardComponent,
   ],
 })
 export class WishlistComponent implements OnInit {
@@ -43,6 +45,7 @@ export class WishlistComponent implements OnInit {
   public currentPage = 1;
   public itemsPerPage = 10;
   public hasLoadError = signal(false);
+  public isLoading = true;
 
   ngOnInit(): void {
     this.loadWishlist();
@@ -50,6 +53,7 @@ export class WishlistComponent implements OnInit {
 
   /** Fetches the wishlist, tracking a failure so the UI can retry. */
   private loadWishlist(): void {
+    this.isLoading = true;
     this.hasLoadError.set(false);
     this.dataService.getWishlist().subscribe({
       next: (data: unknown) => {
@@ -62,11 +66,13 @@ export class WishlistComponent implements OnInit {
           this.transformWishlistData(item as BeerCheckin),
         );
         this.totalItems = this.wishlist.length;
+        this.isLoading = false;
         this.updatePagination();
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Error fetching wishlist:", err);
+        this.isLoading = false;
         this.hasLoadError.set(true);
         this.cdr.markForCheck();
       },

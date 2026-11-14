@@ -46,4 +46,17 @@ describe("AppComponent", () => {
     );
     expect(checkinsNavLink).toBeTruthy();
   });
+
+  it("exposes a skip link that targets the main landmark", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    const skipLink = compiled.querySelector("a.skip-link") as HTMLAnchorElement;
+    expect(skipLink).toBeTruthy();
+    expect(skipLink.getAttribute("href")).toBe("#main-content");
+
+    const main = compiled.querySelector("main#main-content");
+    expect(main).toBeTruthy();
+  });
 });

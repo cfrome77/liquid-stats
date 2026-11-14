@@ -57,3 +57,14 @@ test("routes render on mobile and desktop", async ({ page }) => {
     await expect(containerMobile).toBeVisible();
   }
 });
+
+test("skip link is reachable by keyboard and targets main content", async ({
+  page,
+}) => {
+  await page.goto("/home");
+  await page.keyboard.press("Tab");
+  const skipLink = page.locator("a.skip-link");
+  await expect(skipLink).toBeFocused();
+  await expect(skipLink).toHaveAttribute("href", "#main-content");
+  await expect(page.locator("main#main-content")).toHaveCount(1);
+});
