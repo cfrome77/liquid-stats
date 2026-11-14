@@ -6,6 +6,7 @@ export const routes: Routes = [
     path: "home",
     loadComponent: () =>
       import("./components/home/home.component").then((m) => m.HomeComponent),
+    title: "Home",
     data: { animation: "HomePage" },
   },
   {
@@ -14,6 +15,7 @@ export const routes: Routes = [
       import("./components/checkins/checkins.component").then(
         (m) => m.CheckinsComponent,
       ),
+    title: "Checkins",
     data: { animation: "CheckinsPage" },
   },
   {
@@ -22,6 +24,7 @@ export const routes: Routes = [
       import("./components/checkins/checkins.component").then(
         (m) => m.CheckinsComponent,
       ),
+    title: "Checkin Details",
     data: { animation: "CheckinsPage" },
   },
   {
@@ -30,6 +33,7 @@ export const routes: Routes = [
       import("./components/top-beers/top-beers.component").then(
         (m) => m.TopBeersComponent,
       ),
+    title: "Top Drinks",
     data: { animation: "TopBeersPage" },
   },
   {
@@ -38,12 +42,14 @@ export const routes: Routes = [
       import("./components/badges/badges.component").then(
         (m) => m.BadgesComponent,
       ),
+    title: "Badges",
     data: { animation: "BadgesPage" },
   },
   {
     path: "map",
     loadComponent: () =>
       import("./components/map/map.component").then((m) => m.MapComponent),
+    title: "Map",
     data: { mapId: "myMap", animation: "MapPage" },
   },
   {
@@ -52,6 +58,7 @@ export const routes: Routes = [
       import("./components/beer-history/beer-history.component").then(
         (m) => m.BeerHistoryComponent,
       ),
+    title: "Beer History",
     data: { animation: "HistoryPage" },
   },
   {
@@ -60,6 +67,7 @@ export const routes: Routes = [
       import("./components/stats/stats.component").then(
         (m) => m.StatsComponent,
       ),
+    title: "Stats",
     data: { animation: "StatsPage" },
   },
   {
@@ -68,6 +76,7 @@ export const routes: Routes = [
       import("./components/insights/insights.component").then(
         (m) => m.InsightsComponent,
       ),
+    title: "Insights",
     data: { animation: "InsightsPage" },
   },
   {
@@ -76,6 +85,7 @@ export const routes: Routes = [
       import("./components/wishlist/wishlist.component").then(
         (m) => m.WishlistComponent,
       ),
+    title: "Wishlist",
     data: { animation: "WishlistPage" },
   },
   {
@@ -84,6 +94,7 @@ export const routes: Routes = [
       import("./components/about/about.component").then(
         (m) => m.AboutComponent,
       ),
+    title: "About",
     data: { animation: "AboutPage" },
   },
   {
@@ -92,6 +103,7 @@ export const routes: Routes = [
       import("./components/not-found/not-found.component").then(
         (m) => m.NotFoundComponent,
       ),
+    title: "Page Not Found",
     data: { animation: "NotFoundPage" },
   },
 ];

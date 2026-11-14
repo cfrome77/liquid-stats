@@ -68,3 +68,11 @@ test("skip link is reachable by keyboard and targets main content", async ({
   await expect(skipLink).toHaveAttribute("href", "#main-content");
   await expect(page.locator("main#main-content")).toHaveCount(1);
 });
+
+test("sets a per-route document title", async ({ page }) => {
+  await page.goto("/stats");
+  await expect(page).toHaveTitle("Stats · Liquid Stats");
+
+  await page.goto("/wishlist");
+  await expect(page).toHaveTitle("Wishlist · Liquid Stats");
+});
