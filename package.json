@@ -4,7 +4,13 @@
   "private": true,
   "scripts": {
     "ng": "ng",
+    "ensure-local-env": "node scripts/ensure-local-env.js",
+    "prestart": "npm run ensure-local-env",
     "generate-env": "node scripts/generate-env.js",
+    "prestart:dev": "npm run ensure-local-env",
+    "prestart:local": "npm run ensure-local-env",
+    "prebuild": "npm run ensure-local-env",
+    "prewatch": "npm run ensure-local-env",
     "start": "ng serve --project liquid-stats",
     "start:dev": "ng serve --project liquid-stats --configuration development --hmr",
     "start:local": "ng serve --project liquid-stats --configuration development",
