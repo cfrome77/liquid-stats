@@ -63,7 +63,17 @@ describe("TopBeersComponent", () => {
       ],
       providers: [
         { provide: DataService, useValue: mockDataService },
-        { provide: ActivatedRoute, useValue: { params: of({}) } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: {
+              queryParamMap: {
+                get: () => null,
+              },
+            },
+          },
+        },
       ],
     }).compileComponents();
 

@@ -16,7 +16,18 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DateUtils } from "../../core/utils/date-utils";
+import {
+  DEFAULT_PER_PAGE,
+  DEFAULT_VIEW,
+  PER_PAGE_OPTIONS,
+  ViewMode,
+  clampPage,
+  parsePositiveInt,
+  parseViewMode,
+  viewStateParams,
+} from "../../core/utils/view-state";
 import {
   BaseCardData,
   CardExtraData,
@@ -53,10 +64,12 @@ export class BeerHistoryComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   private searchTerm$ = new Subject<string>();
 
-  public viewMode = signal<"cards" | "compact">("cards");
+  public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public beersAll: BeerCheckin[] = [];
   public filteredBeers: BaseCardData[] = [];
   public paginatedBeers: BaseCardData[] = [];
@@ -89,15 +102,61 @@ export class BeerHistoryComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.syncFromQueryParams();
+
     this.searchTerm$
       .pipe(
         debounceTime(200),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => this.applyFilters());
+      .subscribe(() => {
+        this.applyFilters();
+        this.updateQueryParams();
+      });
 
     this.loadData();
+  }
+
+  /**
+   * Restores view mode, page, page size, and the search term from the URL so a
+   * shared link reproduces the view. The term is applied through the debounced
+   * stream so it does not bypass normal filtering.
+   */
+  private syncFromQueryParams(): void {
+    const params = this.route.snapshot.queryParamMap;
+    this.viewMode.set(parseViewMode(params.get("view")));
+    this.itemsPerPage = parsePositiveInt(
+      params.get("perPage"),
+      DEFAULT_PER_PAGE,
+      PER_PAGE_OPTIONS,
+    );
+    this.currentPage = parsePositiveInt(params.get("page"), 1);
+    const search = params.get("q") ?? "";
+    if (search) {
+      this.searchTerm = search;
+      this.searchTerm$.next(search);
+    }
+  }
+
+  /** Mirrors the current view state into the URL, replacing history entries. */
+  private updateQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: viewStateParams({
+        view: this.viewMode(),
+        page: this.currentPage,
+        perPage: this.itemsPerPage,
+        search: this.searchTerm,
+      }),
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
+  }
+
+  setViewMode(mode: ViewMode): void {
+    this.viewMode.set(mode);
+    this.updateQueryParams();
   }
 
   loadData(): void {
@@ -192,6 +251,7 @@ export class BeerHistoryComponent implements OnInit {
   onFilterChange() {
     this.currentPage = 1;
     this.applyFilters();
+    this.updateQueryParams();
   }
 
   onSearchChange() {
@@ -375,6 +435,8 @@ export class BeerHistoryComponent implements OnInit {
   }
 
   updatePagination() {
+    const totalPages = Math.ceil(this.filteredBeers.length / this.itemsPerPage);
+    this.currentPage = clampPage(this.currentPage, totalPages);
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedBeers = this.filteredBeers.slice(startIndex, endIndex);
@@ -383,6 +445,7 @@ export class BeerHistoryComponent implements OnInit {
   goToPage(page: number) {
     this.currentPage = page;
     this.updatePagination();
+    this.updateQueryParams();
     window.scrollTo(0, 0);
   }
 
@@ -390,6 +453,7 @@ export class BeerHistoryComponent implements OnInit {
     this.itemsPerPage = items;
     this.currentPage = 1;
     this.updatePagination();
+    this.updateQueryParams();
   }
 
   resetFilters() {

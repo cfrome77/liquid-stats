@@ -20,6 +20,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 
+import { ActivatedRoute, Router } from "@angular/router";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
 import {
@@ -28,6 +29,12 @@ import {
   MapData,
 } from "../../shared/components/card/card-data.interface";
 import { DateUtils } from "../../core/utils/date-utils";
+import {
+  DEFAULT_VIEW,
+  ViewMode,
+  parseViewMode,
+  viewStateParams,
+} from "../../core/utils/view-state";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
@@ -62,8 +69,10 @@ export class TopBeersComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  public viewMode = signal<"cards" | "compact">("cards");
+  public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
   public isLoading = true;
@@ -92,7 +101,29 @@ export class TopBeersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.syncFromQueryParams();
     this.loadBeers();
+  }
+
+  /** Restores the view mode from the URL so a shared link reproduces it. */
+  private syncFromQueryParams(): void {
+    this.viewMode.set(
+      parseViewMode(this.route.snapshot.queryParamMap.get("view")),
+    );
+  }
+
+  setViewMode(mode: ViewMode): void {
+    this.viewMode.set(mode);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: viewStateParams({
+        view: mode,
+        page: 1,
+        perPage: 10,
+      }),
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
   }
 
   /** Fetches all check-ins that feed the ranking filters. */
