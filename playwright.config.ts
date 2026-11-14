@@ -10,6 +10,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4200",
     trace: "on-first-retry",
+    // Emulate a dark OS preference. ThemeService follows prefers-color-scheme
+    // until the user chooses a theme, so pinning it keeps runs deterministic.
+    colorScheme: "dark",
   },
   webServer: {
     // Use the `e2e` serve configuration. The base `serve` target resolves to

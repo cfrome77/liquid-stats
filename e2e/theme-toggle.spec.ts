@@ -1,9 +1,17 @@
 import { test, expect } from "@playwright/test";
 
+test("follows a light OS preference on first visit", async ({ browser }) => {
+  const context = await browser.newContext({ colorScheme: "light" });
+  const page = await context.newPage();
+  await page.goto("/");
+  await expect(page.locator("body")).toHaveClass(/light-theme/);
+  await context.close();
+});
+
 test("theme toggle works", async ({ page }) => {
   await page.goto("/");
 
-  // Initial theme should be dark (default in ThemeService)
+  // Initial theme follows the emulated OS preference (dark in the config).
   const body = page.locator("body");
   await expect(body).toHaveClass(/dark-theme/);
 

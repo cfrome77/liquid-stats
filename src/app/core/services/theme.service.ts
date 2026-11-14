@@ -14,19 +14,51 @@ export class ThemeService {
   // Expose as a read-only signal
   readonly currentTheme = this.themeSignal.asReadonly();
 
+  private systemPrefersLight?: MediaQueryList;
+
   constructor() {
     this.applyThemeColor(this.themeSignal());
+    this.watchSystemPreference();
   }
 
+  /**
+   * Uses a saved choice when the user has made one; otherwise follows the OS
+   * `prefers-color-scheme` so a first-time visitor sees the theme they expect.
+   */
   private getInitialTheme(): "light-theme" | "dark-theme" {
     const savedTheme = localStorage.getItem("theme") as
       | "light-theme"
-      | "dark-theme";
+      | "dark-theme"
+      | null;
     if (savedTheme) {
       return savedTheme;
     }
-    // Default to dark-theme if no preference is saved
-    return "dark-theme";
+    return this.systemPrefersLight?.matches ? "light-theme" : "dark-theme";
+  }
+
+  /**
+   * Follows live OS theme changes, but only while the user has not made an
+   * explicit choice — an explicit choice always wins.
+   */
+  private watchSystemPreference(): void {
+    const win = this.document.defaultView;
+    if (!win?.matchMedia) return;
+
+    this.systemPrefersLight = win.matchMedia("(prefers-color-scheme: light)");
+    // Re-read now that the query exists (getInitialTheme ran first).
+    if (!localStorage.getItem("theme")) {
+      this.themeSignal.set(
+        this.systemPrefersLight.matches ? "light-theme" : "dark-theme",
+      );
+      this.applyThemeColor(this.themeSignal());
+    }
+
+    this.systemPrefersLight.addEventListener?.("change", (event) => {
+      if (localStorage.getItem("theme")) return;
+      const theme = event.matches ? "light-theme" : "dark-theme";
+      this.themeSignal.set(theme);
+      this.applyThemeColor(theme);
+    });
   }
 
   toggleTheme(): void {
