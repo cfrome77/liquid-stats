@@ -203,6 +203,11 @@
 
 .chart-card {
   padding: 24px;
+  /* Grid items default to min-width: auto, so the 1fr track could not shrink
+     below the canvas's 300px intrinsic width: at 320px the card overflowed its
+     304px container by ~46px. Allowing the item to shrink lets Chart.js
+     (responsive: true) resize the canvas to the card. */
+  min-width: 0;
 }
 
 .histogram-chart-container {
