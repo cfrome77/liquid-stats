@@ -5,9 +5,10 @@
 # in exactly one place (the environment variable, which is also what the bundle
 # reads). Netlify does not expand ${...} in netlify.toml directly, but it does
 # substitute values into [[redirects]] when the build command edits the file,
-# because redirects are read after the build completes. DATA_URL must be the
-# bucket origin with a trailing slash.
-command = "if [ -n \"$DATA_URL\" ]; then sed -i \"s|S3_ORIGIN_PLACEHOLDER|$DATA_URL|\" netlify.toml; fi && npm run build:prod"
+# because redirects are read after the build completes. The placeholder is
+# followed by ":splat", so the substituted origin must end in a slash; ${DATA_URL%/}
+# drops any existing one and the trailing "/" adds exactly one back.
+command = "if [ -n \"$DATA_URL\" ]; then sed -i \"s|S3_ORIGIN_PLACEHOLDER|${DATA_URL%/}/|\" netlify.toml; fi && npm run build:prod"
 publish = "dist/liquid-stats/browser"
 
 [build.environment]
