@@ -34,6 +34,48 @@ describe("CardComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  describe("handleImageError", () => {
+    it("walks from the primary image to the provided fallback", () => {
+      const img = document.createElement("img");
+      img.setAttribute("src", "broken-hd.jpg");
+      component.handleImageError(
+        { target: img } as unknown as Event,
+        "broken-sm.jpg",
+      );
+      expect(img.getAttribute("src")).toBe("broken-sm.jpg");
+    });
+
+    it("falls back to the bundled placeholder when no fallback is given", () => {
+      const img = document.createElement("img");
+      img.setAttribute("src", "broken.jpg");
+      component.handleImageError({ target: img } as unknown as Event);
+      expect(img.getAttribute("src")).toBe(
+        "assets/images/beer-placeholder.svg",
+      );
+    });
+
+    it("reaches the placeholder when the fallback is the same broken URL", () => {
+      const img = document.createElement("img");
+      img.setAttribute("src", "broken.jpg");
+      component.handleImageError(
+        { target: img } as unknown as Event,
+        "broken.jpg",
+      );
+      expect(img.getAttribute("src")).toBe(
+        "assets/images/beer-placeholder.svg",
+      );
+    });
+
+    it("does not loop when the placeholder itself fails", () => {
+      const img = document.createElement("img");
+      img.setAttribute("src", "assets/images/beer-placeholder.svg");
+      component.handleImageError({ target: img } as unknown as Event);
+      expect(img.getAttribute("src")).toBe(
+        "assets/images/beer-placeholder.svg",
+      );
+    });
+  });
+
   it("should correctly evaluate hasSocialLinks", () => {
     expect(component.hasSocialLinks).toBeFalse();
 

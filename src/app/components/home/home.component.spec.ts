@@ -182,14 +182,14 @@ describe("HomeComponent", () => {
   it("falls back to the default image when a card image fails to load", () => {
     const img = document.createElement("img");
     component.handleImageError({ target: img } as unknown as Event);
-    expect(img.src).toContain("placehold.co");
+    expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
   });
 
   it("does not re-assign the placeholder on repeated image errors", () => {
     const img = document.createElement("img");
     img.src = component.DEFAULT_IMAGE;
-    const before = img.src;
+    const before = img.getAttribute("src");
     component.handleImageError({ target: img } as unknown as Event);
-    expect(img.src).toBe(before);
+    expect(img.getAttribute("src")).toBe(before);
   });
 });

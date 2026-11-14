@@ -10,8 +10,10 @@
                 class="beer-label compact-thumb"
                 [src]="cardData.mainImage"
                 (error)="
-                  $event.target.src =
-                    cardData.extraData?.originalMainImage || DEFAULT_IMAGE
+                  handleImageError(
+                    $event,
+                    cardData.extraData?.originalMainImage
+                  )
                 "
                 [alt]="cardData.title"
                 [title]="cardData.title"
@@ -110,8 +112,10 @@
                 class="beer-label"
                 [src]="cardData.mainImage"
                 (error)="
-                  $event.target.src =
-                    cardData.extraData?.originalMainImage || DEFAULT_IMAGE
+                  handleImageError(
+                    $event,
+                    cardData.extraData?.originalMainImage
+                  )
                 "
                 [alt]="cardData.title"
                 [title]="cardData.title"
@@ -145,8 +149,10 @@
                 class="brewery-label"
                 [src]="cardData.secondaryImage"
                 (error)="
-                  $event.target.src =
-                    cardData.extraData?.originalSecondaryImage || DEFAULT_IMAGE
+                  handleImageError(
+                    $event,
+                    cardData.extraData?.originalSecondaryImage
+                  )
                 "
                 [alt]="cardData.breweryName"
                 [title]="cardData.breweryName"

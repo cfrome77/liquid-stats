@@ -16,6 +16,10 @@ import { MatIconModule } from "@angular/material/icon";
 import { RouterModule } from "@angular/router";
 
 import { BeerStoreService } from "../../core/services/beer-store.service";
+import {
+  DEFAULT_IMAGE as DEFAULT_IMAGE_URL,
+  applyDefaultImage,
+} from "../../core/default-image";
 import { Checkin } from "../../core/models/checkin.model";
 
 @Component({
@@ -52,8 +56,7 @@ export class HomeComponent implements OnInit {
   readonly countriesTried = signal(0);
   readonly breweriesVisited = signal(0);
 
-  readonly DEFAULT_IMAGE =
-    "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
+  readonly DEFAULT_IMAGE = DEFAULT_IMAGE_URL;
 
   ngOnInit(): void {
     this.beerStore.load();
@@ -109,9 +112,6 @@ export class HomeComponent implements OnInit {
 
   /** Falls back to the placeholder, but only once, to avoid an error loop. */
   handleImageError(event: Event) {
-    const img = event.target as HTMLImageElement;
-    if (img.src !== this.DEFAULT_IMAGE) {
-      img.src = this.DEFAULT_IMAGE;
-    }
+    applyDefaultImage(event);
   }
 }

@@ -83,26 +83,32 @@ test("bottom nav does not permanently obscure page content on mobile", async ({
   await page.setViewportSize({ width: 375, height: 800 });
   await page.goto("/insights");
   await expect(page.locator(".mobile-bottom-nav")).toBeVisible();
+  await expect(page.locator("#main-content app-insights")).toBeVisible();
 
-  // Scroll the routed content to its end.
-  await page.locator(".mat-drawer-content").evaluate((el) => {
-    el.scrollTop = el.scrollHeight;
-  });
-  await page.waitForTimeout(300);
-
-  const clear = await page.evaluate(() => {
-    const nav = document
-      .querySelector(".mobile-bottom-nav")!
-      .getBoundingClientRect();
-    let maxBottom = -Infinity;
-    document.querySelectorAll("#main-content *").forEach((el) => {
-      if (el.children.length) return;
-      if (!(el.textContent || "").trim()) return;
-      const rect = el.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      maxBottom = Math.max(maxBottom, rect.bottom);
-    });
-    return maxBottom <= nav.top + 1;
-  });
-  expect(clear).toBe(true);
+  // Insights content streams in, so poll: re-scroll to the end and assert the
+  // last visible text sits above the fixed nav, retrying until layout settles.
+  await expect
+    .poll(
+      async () => {
+        await page.locator(".mat-drawer-content").evaluate((el) => {
+          el.scrollTop = el.scrollHeight;
+        });
+        return page.evaluate(() => {
+          const nav = document
+            .querySelector(".mobile-bottom-nav")!
+            .getBoundingClientRect();
+          let maxBottom = -Infinity;
+          document.querySelectorAll("#main-content *").forEach((el) => {
+            if (el.children.length) return;
+            if (!(el.textContent || "").trim()) return;
+            const rect = el.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            maxBottom = Math.max(maxBottom, rect.bottom);
+          });
+          return maxBottom <= nav.top + 1;
+        });
+      },
+      { timeout: 5000 },
+    )
+    .toBe(true);
 });
