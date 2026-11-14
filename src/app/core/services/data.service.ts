@@ -6,6 +6,7 @@ import { Badge } from "../models/badge.model";
 import { CheckinResponse, Checkin } from "../models/checkin.model";
 import { BeerCheckin } from "../models/beer.model";
 import { upgradeToHdUrl, sanitizeUntappdUrl } from "../utils/url-utils";
+import { resolveDataBaseUrl } from "../utils/data-source";
 import { LoggingService } from "./logger.service";
 
 @Injectable({
@@ -24,19 +25,9 @@ export class DataService {
   private wishlistCache$?: Observable<unknown>;
 
   private determineBaseUrl(): string {
-    const url = environment.DATA_URL || "";
-    const isLocalhost =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1");
-
-    if (!isLocalhost && url.includes("s3.amazonaws.com")) {
-      // Route S3 data through the same-origin /api-data/ proxy in production.
-      return "/api-data/";
-    }
-
-    if (!url) return "assets/data/";
-    return url.endsWith("/") ? url : `${url}/`;
+    const hostname =
+      typeof window !== "undefined" ? window.location.hostname : "";
+    return resolveDataBaseUrl(environment.DATA_URL || "", hostname);
   }
 
   public clearCache(): void {

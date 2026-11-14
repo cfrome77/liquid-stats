@@ -110,6 +110,11 @@ cp .env.example .env
 
 Fill in variables for Untappd (`CLIENT_ID`, `CLIENT_SECRET`, `UNTAPPD_USERNAME`) and AWS (`S3_BUCKET_NAME`, `LAMBDA_ZIP_FILE`, `ALLOWED_CORS_ORIGINS`, `DATA_URL`).
 
+`DATA_URL` is the one place the S3 bucket origin is written. The app reads it at
+build time, and the `netlify.toml` build command substitutes the same value into
+the `/api-data/*` proxy target, so the bucket name does not need to be updated
+anywhere else when it changes.
+
 2. Deploy AWS resources with Terraform:
 
 ```bash
