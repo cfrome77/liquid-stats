@@ -3,7 +3,7 @@ import { WishlistComponent } from "./wishlist.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { DataService } from "../../core/services/data.service";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
@@ -96,5 +96,25 @@ describe("WishlistComponent", () => {
 
     expect(card.footerInfo.timestamp).toBe("Added long ago");
     expect(card.mainImage).toBe("label.png");
+  });
+
+  it("shows a retryable error state when the wishlist request fails", () => {
+    mockDataService.getWishlist.and.returnValue(
+      throwError(() => new Error("network error")),
+    );
+    mockDataService.clearCache = jasmine.createSpy("clearCache");
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component.hasLoadError()).toBeTrue();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain("couldn't load your wishlist");
+
+    const button = el.querySelector(
+      "app-empty-state button",
+    ) as HTMLButtonElement;
+    button.click();
+    expect(mockDataService.clearCache).toHaveBeenCalled();
   });
 });

@@ -10,7 +10,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatDialogModule } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { DataService } from "../../core/services/data.service";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -80,6 +80,26 @@ describe("TopBeersComponent", () => {
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBeGreaterThan(0);
     expect(component.transformedTopBeers[0].title).toBe("Test Beer");
+  });
+
+  it("shows a retryable error state when the beers request fails", () => {
+    mockDataService.getBeersAll.and.returnValue(
+      throwError(() => new Error("network error")),
+    );
+    mockDataService.clearCache = jasmine.createSpy("clearCache");
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component.hasLoadError()).toBeTrue();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain("couldn't load your drinks");
+
+    const button = el.querySelector(
+      "app-empty-state button",
+    ) as HTMLButtonElement;
+    button.click();
+    expect(mockDataService.clearCache).toHaveBeenCalled();
   });
 
   it("should correctly handle beers with count > 1 for minCheckins filter", () => {

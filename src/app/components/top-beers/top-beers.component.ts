@@ -67,6 +67,7 @@ export class TopBeersComponent implements OnInit {
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
   public isLoading = true;
+  public hasLoadError = signal(false);
 
   // Filter state
   public useCustomDate = false;
@@ -91,7 +92,13 @@ export class TopBeersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadBeers();
+  }
+
+  /** Fetches all check-ins that feed the ranking filters. */
+  private loadBeers(): void {
     this.isLoading = true;
+    this.hasLoadError.set(false);
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.beers = data;
@@ -101,9 +108,16 @@ export class TopBeersComponent implements OnInit {
       error: (err) => {
         console.error("Error fetching beers:", err);
         this.isLoading = false;
+        this.hasLoadError.set(true);
         this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the check-ins fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadBeers();
   }
 
   onFilterChange() {

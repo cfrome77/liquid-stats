@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MatDialogModule } from "@angular/material/dialog";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 
 import { BeerHistoryComponent } from "./beer-history.component";
 import { DataService } from "src/app/core/services/data.service";
@@ -170,6 +170,45 @@ describe("BeerHistoryComponent", () => {
       component.currentPage = 3;
       component.onFilterChange();
       expect(component.currentPage).toBe(1);
+    });
+  });
+
+  describe("load error", () => {
+    beforeEach(async () => {
+      await TestBed.resetTestingModule();
+      mockDataService = {
+        getBeersAll: () => throwError(() => new Error("network error")),
+        clearCache: jasmine.createSpy("clearCache"),
+      } as unknown as Partial<DataService>;
+
+      await TestBed.configureTestingModule({
+        imports: [
+          BeerHistoryComponent,
+          HttpClientTestingModule,
+          RouterTestingModule,
+          MatDialogModule,
+          ReactiveFormsModule,
+          FormsModule,
+        ],
+        providers: [{ provide: DataService, useValue: mockDataService }],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(BeerHistoryComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it("shows a retryable error state when the history request fails", () => {
+      expect(component.hasLoadError()).toBeTrue();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain("couldn't load your drink history");
+
+      const button = el.querySelector(
+        "app-empty-state button",
+      ) as HTMLButtonElement;
+      button.click();
+      expect(mockDataService.clearCache).toHaveBeenCalled();
     });
   });
 });

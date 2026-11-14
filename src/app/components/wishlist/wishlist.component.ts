@@ -42,8 +42,15 @@ export class WishlistComponent implements OnInit {
   public totalItems = 0;
   public currentPage = 1;
   public itemsPerPage = 10;
+  public hasLoadError = signal(false);
 
   ngOnInit(): void {
+    this.loadWishlist();
+  }
+
+  /** Fetches the wishlist, tracking a failure so the UI can retry. */
+  private loadWishlist(): void {
+    this.hasLoadError.set(false);
     this.dataService.getWishlist().subscribe({
       next: (data: unknown) => {
         const response = data as {
@@ -60,8 +67,16 @@ export class WishlistComponent implements OnInit {
       },
       error: (err) => {
         console.error("Error fetching wishlist:", err);
+        this.hasLoadError.set(true);
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the wishlist fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadWishlist();
   }
 
   transformWishlistData(

@@ -15,6 +15,7 @@ import { LoggingService } from "src/app/core/services/logger.service";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { DateUtils } from "src/app/core/utils/date-utils";
 
 @Component({
@@ -28,6 +29,7 @@ import { DateUtils } from "src/app/core/utils/date-utils";
     MatIconModule,
     PaginationComponent,
     CardComponent,
+    EmptyStateComponent,
   ],
 })
 export class BadgesComponent implements OnInit {
@@ -38,12 +40,19 @@ export class BadgesComponent implements OnInit {
 
   public badges: Badge[] = [];
   public paginatedBadges: Badge[] = [];
+  public hasLoadError = signal(false);
 
   public currentPage = 1;
   public itemsPerPage = 10;
   public totalItems = 0;
 
   ngOnInit(): void {
+    this.loadBadges();
+  }
+
+  /** Fetches the earned badges, tracking a failure so the UI can retry. */
+  private loadBadges(): void {
+    this.hasLoadError.set(false);
     this.dataService.getBadges().subscribe({
       next: (data: Badge[]) => {
         this.badges = data;
@@ -52,8 +61,16 @@ export class BadgesComponent implements OnInit {
       },
       error: (err: unknown) => {
         this.logger.error("Error fetching badges", err);
+        this.hasLoadError.set(true);
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the badges fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadBadges();
   }
 
   updatePagination() {

@@ -65,6 +65,7 @@ export class BeerHistoryComponent implements OnInit {
   public itemsPerPage = 10;
   public searchTerm = "";
   public isLoadingAll = false;
+  public hasLoadError = signal(false);
 
   public filterFields: FilterField[] = [
     { field: "brewery", label: "Brewery", options: [], selected: [] },
@@ -101,6 +102,7 @@ export class BeerHistoryComponent implements OnInit {
 
   loadData(): void {
     this.isLoadingAll = true;
+    this.hasLoadError.set(false);
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.beersAll = data;
@@ -112,9 +114,16 @@ export class BeerHistoryComponent implements OnInit {
       error: (err) => {
         console.error("Error fetching all beers:", err);
         this.isLoadingAll = false;
+        this.hasLoadError.set(true);
         this.cdr.detectChanges();
       },
     });
+  }
+
+  /** Clears the cached response and retries the check-ins fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadData();
   }
 
   initializeFilters() {

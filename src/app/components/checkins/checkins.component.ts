@@ -61,6 +61,7 @@ export class CheckinsComponent implements OnInit {
   public itemsPerPage = 10;
   public hasLoadedAll = false;
   public isLoadingAll = false;
+  public hasLoadError = signal(false);
   username: string;
 
   constructor() {
@@ -72,6 +73,7 @@ export class CheckinsComponent implements OnInit {
   }
 
   loadInitialData(): void {
+    this.hasLoadError.set(false);
     this.dataService.getCheckins().subscribe({
       next: (data) => {
         const items = data.response.checkins.items || [];
@@ -95,8 +97,16 @@ export class CheckinsComponent implements OnInit {
       },
       error: (err) => {
         console.error("Error fetching checkins:", err);
+        this.hasLoadError.set(true);
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the check-ins fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadInitialData();
   }
 
   loadAllDataInBackground(): void {

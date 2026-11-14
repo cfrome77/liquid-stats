@@ -2,7 +2,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MatDialogModule } from "@angular/material/dialog";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { provideRouter } from "@angular/router"; // Import this
 
@@ -124,6 +124,26 @@ describe("CheckinsComponent", () => {
       component.onItemsPerPageChange(20);
       expect(component.currentPage).toBe(1);
       expect(component.paginatedCheckins.length).toBe(20);
+    });
+  });
+
+  describe("load error", () => {
+    it("shows a retryable error state when the check-ins request fails", () => {
+      mockDataService.getCheckins = () =>
+        throwError(() => new Error("network error"));
+      mockDataService.clearCache = jasmine.createSpy("clearCache");
+
+      fixture.detectChanges();
+
+      expect(component.hasLoadError()).toBeTrue();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain("couldn't load your check-ins");
+
+      const button = el.querySelector(
+        "app-empty-state button",
+      ) as HTMLButtonElement;
+      button.click();
+      expect(mockDataService.clearCache).toHaveBeenCalled();
     });
   });
 });
