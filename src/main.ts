@@ -2,13 +2,14 @@ import { enableProdMode, isDevMode } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
-import { IMAGE_LOADER, ImageLoaderConfig } from "@angular/common";
+import { IMAGE_LOADER } from "@angular/common";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideServiceWorker } from "@angular/service-worker";
 
 import { AppComponent } from "./app/app.component";
 import { routes } from "./app/app-routing.module";
 import { environment } from "./environments/environment";
+import { imageLoader } from "./app/core/image-loader";
 
 if (environment.production) {
   enableProdMode();
@@ -19,41 +20,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withComponentInputBinding()),
     {
       provide: IMAGE_LOADER,
-      useValue: (config: ImageLoaderConfig) => {
-        const url = config.src;
-        const width = config.width;
-
-        // Safety guard: prevent runtime errors from bad inputs
-        if (typeof url !== "string") {
-          return "";
-        }
-
-        // 1. Local Hero Logo
-        if (url.includes("LiquidStatsLogo.webp")) {
-          if (width && width <= 400) {
-            return url.replace(
-              "LiquidStatsLogo.webp",
-              "LiquidStatsLogo-400w.webp",
-            );
-          }
-          return url;
-        }
-
-        // 2. Untappd Images
-        // Example: https://assets.untappd.com/.../photo_img_md.jpg
-        // Suffixes: _sm, _md, _lg
-        // User requested to force _sm for all Untappd images due to 403 errors on larger versions.
-        if (url.includes("untappd.com") || url.includes("untp.beer")) {
-          // Only replace if a known size suffix exists
-          if (/_(sm|md|lg)\./.test(url)) {
-            return url.replace(/_(sm|md|lg)\./, `_sm.`);
-          }
-
-          return url;
-        }
-
-        return url;
-      },
+      useValue: imageLoader,
     },
     provideHttpClient(),
     provideAnimationsAsync(),
