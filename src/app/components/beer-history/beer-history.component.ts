@@ -41,6 +41,7 @@ import {
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 @Component({
   selector: "app-beer-history",
@@ -418,9 +419,11 @@ export class BeerHistoryComponent implements OnInit {
       description: beer.beer.beer_description,
       rating: beer.rating_score,
       globalRating: beer.beer.rating_score,
-      mainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
-      secondaryImage:
-        beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
+      mainImage: thumbnailLabel(beer.beer.beer_label, beer.beer.beer_label_hd),
+      secondaryImage: thumbnailLabel(
+        beer.brewery.brewery_label,
+        beer.brewery.brewery_label_hd,
+      ),
       footerInfo: {
         text: "Brewery Info",
         link: `https://untappd.com/b/${beer.beer.beer_slug}/${beer.beer.bid}`,
@@ -428,8 +431,9 @@ export class BeerHistoryComponent implements OnInit {
       },
       extraData: {
         ...extraData,
-        originalMainImage: beer.beer.beer_label,
-        originalSecondaryImage: beer.brewery.brewery_label,
+        originalMainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
+        originalSecondaryImage:
+          beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
       },
     };
   }

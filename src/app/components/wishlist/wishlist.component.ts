@@ -17,6 +17,7 @@ import { CardComponent } from "../../shared/components/card/card.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 @Component({
   selector: "app-wishlist",
@@ -93,9 +94,11 @@ export class WishlistComponent implements OnInit {
       subtitle: item.beer.beer_style,
       breweryName: item.brewery.brewery_name,
       description: item.beer.beer_description,
-      mainImage: item.beer.beer_label_hd || item.beer.beer_label,
-      secondaryImage:
-        item.brewery.brewery_label_hd || item.brewery.brewery_label,
+      mainImage: thumbnailLabel(item.beer.beer_label, item.beer.beer_label_hd),
+      secondaryImage: thumbnailLabel(
+        item.brewery.brewery_label,
+        item.brewery.brewery_label_hd,
+      ),
       footerInfo: {
         text: "Wishlist Item",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
@@ -104,8 +107,9 @@ export class WishlistComponent implements OnInit {
           : "Added long ago",
       },
       extraData: {
-        originalMainImage: item.beer.beer_label,
-        originalSecondaryImage: item.brewery.brewery_label,
+        originalMainImage: item.beer.beer_label_hd || item.beer.beer_label,
+        originalSecondaryImage:
+          item.brewery.brewery_label_hd || item.brewery.brewery_label,
       },
     };
   }

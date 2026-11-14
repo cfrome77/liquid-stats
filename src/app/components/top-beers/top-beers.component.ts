@@ -39,6 +39,7 @@ import { CardComponent } from "../../shared/components/card/card.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 type DateRangeOption = { label: string; daysBack?: number };
 
@@ -267,9 +268,11 @@ export class TopBeersComponent implements OnInit {
       breweryName: beer.brewery.brewery_name,
       rating: beer.avgRating,
       globalRating: beer.beer.rating_score,
-      mainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
-      secondaryImage:
-        beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
+      mainImage: thumbnailLabel(beer.beer.beer_label, beer.beer.beer_label_hd),
+      secondaryImage: thumbnailLabel(
+        beer.brewery.brewery_label,
+        beer.brewery.brewery_label_hd,
+      ),
       rank: rank,
       footerInfo: {
         text: `Check-ins: ${beer.totalCheckins}`,
@@ -278,8 +281,9 @@ export class TopBeersComponent implements OnInit {
       },
       extraData: {
         ...extraData,
-        originalMainImage: beer.beer.beer_label,
-        originalSecondaryImage: beer.brewery.brewery_label,
+        originalMainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
+        originalSecondaryImage:
+          beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
       },
     };
   }

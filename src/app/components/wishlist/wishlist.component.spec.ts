@@ -40,7 +40,7 @@ describe("WishlistComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("maps a wishlist item into card data with a link and HD images", () => {
+  it("maps a wishlist item into card data with a link and thumbnail images", () => {
     const card = component.transformWishlistData({
       count: 1,
       first_created_at: "2026-01-01",
@@ -68,8 +68,12 @@ describe("WishlistComponent", () => {
     });
 
     expect(card.title).toBe("Test IPA");
-    expect(card.mainImage).toBe("https://example.com/label_hd.png");
-    expect(card.secondaryImage).toBe("https://example.com/brewery_hd.png");
+    // Thumbnails use the small label; the HD variant is kept only as a fallback.
+    expect(card.mainImage).toBe("https://example.com/label.png");
+    expect(card.secondaryImage).toBe("https://example.com/brewery.png");
+    expect(card.extraData?.originalMainImage).toBe(
+      "https://example.com/label_hd.png",
+    );
     expect(card.footerInfo.link).toBe("https://untappd.com/b/test-ipa/42");
     expect(card.footerInfo.text).toBe("Wishlist Item");
   });

@@ -37,6 +37,7 @@ import { CardComponent } from "../../shared/components/card/card.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 @Component({
   selector: "app-checkins",
@@ -300,9 +301,14 @@ export class CheckinsComponent implements OnInit {
       breweryName: checkin.brewery.brewery_name,
       description: checkin.checkin_comment,
       rating: checkin.rating_score,
-      mainImage: checkin.beer.beer_label_hd || checkin.beer.beer_label,
-      secondaryImage:
-        checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
+      mainImage: thumbnailLabel(
+        checkin.beer.beer_label,
+        checkin.beer.beer_label_hd,
+      ),
+      secondaryImage: thumbnailLabel(
+        checkin.brewery.brewery_label,
+        checkin.brewery.brewery_label_hd,
+      ),
       footerInfo: {
         text: checkin.venue?.venue_name ?? "Beer Info",
         link: checkin.venue
@@ -313,8 +319,10 @@ export class CheckinsComponent implements OnInit {
       },
       extraData: {
         ...extraData,
-        originalMainImage: checkin.beer.beer_label,
-        originalSecondaryImage: checkin.brewery.brewery_label,
+        originalMainImage:
+          checkin.beer.beer_label_hd || checkin.beer.beer_label,
+        originalSecondaryImage:
+          checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
       },
     };
   }
