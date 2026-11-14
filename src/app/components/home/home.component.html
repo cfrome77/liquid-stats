@@ -107,7 +107,7 @@
                 c.beer.beer_label ||
                 DEFAULT_IMAGE
               "
-              (error)="handleImageError($event)"
+              (error)="handleImageError($event, c.beer.beer_label)"
               [alt]="c.beer.beer_name"
               width="200"
               height="200"

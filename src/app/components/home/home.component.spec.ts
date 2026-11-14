@@ -185,6 +185,27 @@ describe("HomeComponent", () => {
     expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
   });
 
+  it("retries the standard label before the placeholder when the HD variant fails", () => {
+    const img = document.createElement("img");
+    img.setAttribute(
+      "src",
+      "https://assets.untappd.com/site/beer_logos_hd/beer-1_hd.jpeg",
+    );
+
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      "small.jpeg",
+    );
+    expect(img.getAttribute("src")).toBe("small.jpeg");
+
+    // The standard label failed too, so now it may drop to the placeholder.
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      "small.jpeg",
+    );
+    expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
+  });
+
   it("does not re-assign the placeholder on repeated image errors", () => {
     const img = document.createElement("img");
     img.src = component.DEFAULT_IMAGE;

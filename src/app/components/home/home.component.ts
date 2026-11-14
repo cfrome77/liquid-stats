@@ -110,8 +110,22 @@ export class HomeComponent implements OnInit {
     track.scrollBy({ left: -track.clientWidth * 0.8, behavior: "smooth" });
   }
 
-  /** Falls back to the placeholder, but only once, to avoid an error loop. */
-  handleImageError(event: Event) {
+  /**
+   * Steps a failed carousel image to its next candidate before the bundled
+   * placeholder. The HD label is synthesised from the small one, and Untappd
+   * answers 403 for beers that have no HD variant, so a failed HD image must
+   * retry the standard label instead of dropping straight to the placeholder.
+   */
+  handleImageError(event: Event, fallback?: string): void {
+    const img = event.target as HTMLImageElement | null;
+    if (!img) return;
+
+    const current = img.getAttribute("src");
+    if (fallback && fallback !== current) {
+      img.src = fallback;
+      return;
+    }
+
     applyDefaultImage(event);
   }
 }
