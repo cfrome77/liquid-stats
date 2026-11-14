@@ -108,7 +108,7 @@ Your Angular app will be available at [http://localhost:4200](http://localhost:4
 cp .env.example .env
 ```
 
-Fill in variables for Untappd (`client_secret`, `client_id`, `untappd username`) and AWS (`CLOUDFORMATION_TEMPLATE`, `S3_BUCKET_NAME`, `STACK_NAME`, `LAMBDA_ZIP_FILE`).
+Fill in variables for Untappd (`CLIENT_ID`, `CLIENT_SECRET`, `UNTAPPD_USERNAME`) and AWS (`S3_BUCKET_NAME`, `LAMBDA_ZIP_FILE`, `ALLOWED_CORS_ORIGINS`, `DATA_URL`).
 
 2. Deploy AWS resources with Terraform:
 
@@ -127,7 +127,7 @@ cd deploy
 ./deploy_lambda.sh
 ```
 
-This script builds the Lambda zip from `lambda/`, uploads it to S3, and deploys the CloudFormation template to schedule the Lambda to run (default: 12:00 AM Monday) to fetch Untappd data.
+This script builds the Lambda zip from `lambda/`, uploads it to S3, and runs Terraform to deploy the Lambda and schedule it to run (default: 12:00 AM Monday) to fetch Untappd data.
 
 4. Once deployed, you can:
 

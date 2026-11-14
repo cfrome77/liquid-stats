@@ -16,63 +16,59 @@ set -a
 source "$TOP_DIR/.env"
 set +a
 
-echo "🌍 Use AWS: $USE_AWS"
 echo "📦 Lambda ZIP file: $LAMBDA_ZIP_FILE"
 
 # -----------------------------------------------------------------------------
 # Lambda build
 # -----------------------------------------------------------------------------
-if [[ "$USE_AWS" == "true" ]]; then
+echo "🧹 Cleaning old artifacts..."
+rm -f "$TOP_DIR/$LAMBDA_ZIP_FILE"
 
-    echo "🧹 Cleaning old artifacts..."
-    rm -f "$TOP_DIR/$LAMBDA_ZIP_FILE"
+TEMP_DIR=$(mktemp -d)
+BUILD_DIR="$TEMP_DIR/build"
 
-    TEMP_DIR=$(mktemp -d)
-    BUILD_DIR="$TEMP_DIR/build"
+mkdir -p "$BUILD_DIR"
 
-    mkdir -p "$BUILD_DIR"
+echo "🐍 Creating isolated build venv..."
+python3 -m venv "$TEMP_DIR/venv"
+source "$TEMP_DIR/venv/bin/activate"
 
-    echo "🐍 Creating isolated build venv..."
-    python3 -m venv "$TEMP_DIR/venv"
-    source "$TEMP_DIR/venv/bin/activate"
+pip install --upgrade pip >/dev/null 2>&1
 
-    pip install --upgrade pip >/dev/null 2>&1
+echo "📦 Installing Lambda dependencies into build folder..."
+pip install \
+    --no-cache-dir \
+    -r "$TOP_DIR/lambda/requirements.txt" \
+    -t "$BUILD_DIR"
 
-    echo "📦 Installing Lambda dependencies into build folder..."
-    pip install \
-        --no-cache-dir \
-        -r "$TOP_DIR/lambda/requirements.txt" \
-        -t "$BUILD_DIR"
+echo "📄 Copying Lambda source..."
+cp "$TOP_DIR/lambda/fetch_api_data.py" "$BUILD_DIR"
 
-    echo "📄 Copying Lambda source..."
-    cp "$TOP_DIR/lambda/fetch_api_data.py" "$BUILD_DIR"
+echo "🧹 Cleaning Python artifacts..."
+find "$BUILD_DIR" -type d -name "__pycache__" -exec rm -rf {} + || true
+find "$BUILD_DIR" -type f -name "*.pyc" -delete || true
+find "$BUILD_DIR" -type d \( \
+    -name "tests" \
+    -o -name "test" \
+    -o -name "pip*" \
+    -o -name "setuptools*" \
+    -o -name "wheel*" \
+    -o -name "pkg_resources*" \
+    -o -name "_distutils_hack*" \
+\) -exec rm -rf {} + || true
 
-    echo "🧹 Cleaning Python artifacts..."
-    find "$BUILD_DIR" -type d -name "__pycache__" -exec rm -rf {} + || true
-    find "$BUILD_DIR" -type f -name "*.pyc" -delete || true
-    find "$BUILD_DIR" -type d \( \
-        -name "tests" \
-        -o -name "test" \
-        -o -name "pip*" \
-        -o -name "setuptools*" \
-        -o -name "wheel*" \
-        -o -name "pkg_resources*" \
-        -o -name "_distutils_hack*" \
-    \) -exec rm -rf {} + || true
+echo "🗜️ Zipping Lambda package..."
+(
+    cd "$BUILD_DIR"
+    zip -qr "$TOP_DIR/$LAMBDA_ZIP_FILE" .
+)
 
-    echo "🗜️ Zipping Lambda package..."
-    (
-        cd "$BUILD_DIR"
-        zip -qr "$TOP_DIR/$LAMBDA_ZIP_FILE" .
-    )
+echo "🧹 Cleaning temp directory..."
+deactivate || true
+rm -rf "$TEMP_DIR"
 
-    echo "🧹 Cleaning temp directory..."
-    deactivate || true
-    rm -rf "$TEMP_DIR"
-
-    echo "✅ Lambda package created:"
-    echo "   $TOP_DIR/$LAMBDA_ZIP_FILE"
-fi
+echo "✅ Lambda package created:"
+echo "   $TOP_DIR/$LAMBDA_ZIP_FILE"
 
 # -----------------------------------------------------------------------------
 # Terraform vars
@@ -88,7 +84,6 @@ cat > "$TFVARS_FILE" <<EOF
 client_id             = "$CLIENT_ID"
 client_secret         = "$CLIENT_SECRET"
 untappd_username      = "$UNTAPPD_USERNAME"
-use_aws               = $USE_AWS
 lambda_zip_file       = "$TOP_DIR/$LAMBDA_ZIP_FILE"
 allowed_cors_origins  = $TF_CORS_ORIGINS
 EOF
