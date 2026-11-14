@@ -7,6 +7,7 @@
     "ensure-local-env": "node scripts/ensure-local-env.js",
     "prestart": "npm run ensure-local-env",
     "generate-env": "node scripts/generate-env.js",
+    "inject:proxy-origin": "node scripts/inject-proxy-origin.js",
     "prestart:dev": "npm run ensure-local-env",
     "prestart:local": "npm run ensure-local-env",
     "prebuild": "npm run ensure-local-env",

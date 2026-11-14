@@ -2,15 +2,12 @@
 
 [build]
 # The /api-data/ proxy target is derived from DATA_URL so the bucket name lives
-# in exactly one place (the environment variable, which is also what the bundle
-# reads). Netlify does not expand ${...} in netlify.toml directly, but it does
-# substitute values into [[redirects]] when the build command edits the file,
-# because redirects are read after the build completes. The placeholder is
-# followed by ":splat", so the substituted origin must end in a slash; ${DATA_URL%/}
-# drops any existing one and the trailing "/" adds exactly one back. The pattern
-# writes the final "R" as [R] so it matches the redirect line but not this
-# command line, which contains the same text.
-command = "if [ -n \"$DATA_URL\" ]; then sed -i \"s|S3_ORIGIN_PLACEHOLDE[R]|${DATA_URL%/}/|\" netlify.toml; fi && npm run build:prod"
+# in exactly one place (the environment variable, which is also what the app
+# bundle reads). Netlify does not expand ${...} in netlify.toml, but it does
+# read [[redirects]] after the build, so the script below writes DATA_URL into
+# the file during the build. It validates DATA_URL and fails the build if it
+# cannot find the placeholder, rather than shipping an unusable proxy target.
+command = "npm run inject:proxy-origin && npm run build:prod"
 publish = "dist/liquid-stats/browser"
 
 [build.environment]
