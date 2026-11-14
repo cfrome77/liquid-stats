@@ -76,3 +76,33 @@ test("sets a per-route document title", async ({ page }) => {
   await page.goto("/wishlist");
   await expect(page).toHaveTitle("Wishlist · Liquid Stats");
 });
+
+test("bottom nav does not permanently obscure page content on mobile", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto("/insights");
+  await expect(page.locator(".mobile-bottom-nav")).toBeVisible();
+
+  // Scroll the routed content to its end.
+  await page.locator(".mat-drawer-content").evaluate((el) => {
+    el.scrollTop = el.scrollHeight;
+  });
+  await page.waitForTimeout(300);
+
+  const clear = await page.evaluate(() => {
+    const nav = document
+      .querySelector(".mobile-bottom-nav")!
+      .getBoundingClientRect();
+    let maxBottom = -Infinity;
+    document.querySelectorAll("#main-content *").forEach((el) => {
+      if (el.children.length) return;
+      if (!(el.textContent || "").trim()) return;
+      const rect = el.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      maxBottom = Math.max(maxBottom, rect.bottom);
+    });
+    return maxBottom <= nav.top + 1;
+  });
+  expect(clear).toBe(true);
+});

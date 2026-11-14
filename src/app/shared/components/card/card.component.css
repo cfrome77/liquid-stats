@@ -209,6 +209,13 @@
     display: none;
   }
 
+  /* The five-star row is redundant with the numeric score and, on narrow
+     screens, it squeezes the brewery/style text down to a few characters.
+     Keep the precise number, drop the stars. */
+  .compact-rating ::ng-deep .svg-stars {
+    display: none !important;
+  }
+
   .compact-rating ::ng-deep .star {
     width: 0.82rem !important;
     height: 0.82rem !important;
