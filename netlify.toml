@@ -7,8 +7,10 @@
 # substitute values into [[redirects]] when the build command edits the file,
 # because redirects are read after the build completes. The placeholder is
 # followed by ":splat", so the substituted origin must end in a slash; ${DATA_URL%/}
-# drops any existing one and the trailing "/" adds exactly one back.
-command = "if [ -n \"$DATA_URL\" ]; then sed -i \"s|S3_ORIGIN_PLACEHOLDER|${DATA_URL%/}/|\" netlify.toml; fi && npm run build:prod"
+# drops any existing one and the trailing "/" adds exactly one back. The pattern
+# writes the final "R" as [R] so it matches the redirect line but not this
+# command line, which contains the same text.
+command = "if [ -n \"$DATA_URL\" ]; then sed -i \"s|S3_ORIGIN_PLACEHOLDE[R]|${DATA_URL%/}/|\" netlify.toml; fi && npm run build:prod"
 publish = "dist/liquid-stats/browser"
 
 [build.environment]
