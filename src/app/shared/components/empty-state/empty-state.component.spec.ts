@@ -47,4 +47,23 @@ describe("EmptyStateComponent", () => {
       fixture.nativeElement.querySelector(".empty-state")?.classList,
     ).toContain("error");
   });
+
+  it("announces an error as an alert", () => {
+    component.message = "We couldn't load your data.";
+    component.variant = "error";
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector(".empty-state")?.getAttribute("role"),
+    ).toBe("alert");
+  });
+
+  it("announces an empty result as a status", () => {
+    component.message = "Nothing here yet.";
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector(".empty-state")?.getAttribute("role"),
+    ).toBe("status");
+  });
 });

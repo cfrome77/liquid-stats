@@ -226,18 +226,29 @@
   }
 
   .compact-subtitle-row {
-    flex-wrap: nowrap;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    white-space: normal;
     overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  /* Measured at 320 px: the brewery was capped at 50% (73 px, ~8 chars) and
+     would not shrink, leaving the style only 57 px (~6 chars) on the same
+     line — both clipped. Letting the row wrap gives each field a full line
+     when they don't fit together; keeping each field on a single ellipsised
+     line bounds the card at two lines instead of a tall block. Short pairs
+     still share one line, so most rows keep the compact height. */
+  .compact-subtitle-row {
+    flex-wrap: wrap;
+    white-space: normal;
+    overflow: hidden;
   }
 
   .brewery-name.inline {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 50%;
-    flex-shrink: 0;
+    max-width: 100%;
+    flex-shrink: 1;
   }
 
   .subtitle.inline {

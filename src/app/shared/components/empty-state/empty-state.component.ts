@@ -19,8 +19,13 @@ import { MatButtonModule } from "@angular/material/button";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIconModule, MatButtonModule],
   template: `
-    <div class="empty-state" [class.error]="variant === 'error'">
-      <mat-icon>{{ icon }}</mat-icon>
+    <div
+      class="empty-state"
+      [class.error]="variant === 'error'"
+      [attr.role]="variant === 'error' ? 'alert' : 'status'"
+      aria-live="polite"
+    >
+      <mat-icon aria-hidden="true">{{ icon }}</mat-icon>
       <p>{{ message }}</p>
       @if (buttonText) {
         <button mat-stroked-button (click)="action.emit()">
