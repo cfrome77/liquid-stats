@@ -1,4 +1,5 @@
 <div class="flex-column full-screen">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <mat-toolbar
     class="navbar-color mat-elevation-z8 p-0 flex-row align-center navbar-header"
   >
@@ -40,62 +41,15 @@
     </button>
 
     <div class="desktop-nav">
-      <button
-        mat-button
-        routerLink="/checkins"
-        routerLinkActive="router-link-active no-border"
-      >
-        Checkins
-      </button>
-      <button
-        mat-button
-        routerLink="/top-beers"
-        routerLinkActive="router-link-active no-border"
-      >
-        Top Drinks
-      </button>
-      <button
-        mat-button
-        routerLink="/badges"
-        routerLinkActive="router-link-active no-border"
-      >
-        Badges
-      </button>
-      <button
-        mat-button
-        routerLink="/map"
-        routerLinkActive="router-link-active no-border"
-      >
-        Map
-      </button>
-      <button
-        mat-button
-        routerLink="/beer-history"
-        routerLinkActive="router-link-active no-border"
-      >
-        History
-      </button>
-      <button
-        mat-button
-        routerLink="/stats"
-        routerLinkActive="router-link-active no-border"
-      >
-        Stats
-      </button>
-      <button
-        mat-button
-        routerLink="/insights"
-        routerLinkActive="router-link-active no-border"
-      >
-        Insights
-      </button>
-      <button
-        mat-button
-        routerLink="/wishlist"
-        routerLinkActive="router-link-active no-border"
-      >
-        Wishlist
-      </button>
+      @for (item of navItems; track item.path) {
+        <button
+          mat-button
+          [routerLink]="item.path"
+          routerLinkActive="router-link-active no-border"
+        >
+          {{ item.label }}
+        </button>
+      }
     </div>
   </mat-toolbar>
 
@@ -119,124 +73,40 @@
   }
 
   <nav class="mobile-bottom-nav">
-    <a
-      routerLink="/"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <mat-icon>home</mat-icon>
-      <span>Home</span>
-    </a>
-    <a routerLink="/checkins" routerLinkActive="active">
-      <mat-icon>room</mat-icon>
-      <span>Checkins</span>
-    </a>
-    <a routerLink="/beer-history" routerLinkActive="active">
-      <mat-icon>history</mat-icon>
-      <span>History</span>
-    </a>
-    <a routerLink="/map" routerLinkActive="active">
-      <mat-icon>map</mat-icon>
-      <span>Map</span>
-    </a>
-    <a routerLink="/top-beers" routerLinkActive="active">
-      <mat-icon>emoji_events</mat-icon>
-      <span>Top</span>
-    </a>
-    <a routerLink="/stats" routerLinkActive="active">
-      <mat-icon>insert_chart</mat-icon>
-      <span>Stats</span>
-    </a>
-    <a routerLink="/insights" routerLinkActive="active">
-      <mat-icon>insights</mat-icon>
-      <span>Insights</span>
-    </a>
-    <a routerLink="/wishlist" routerLinkActive="active">
-      <mat-icon>list</mat-icon>
-      <span>Wishlist</span>
-    </a>
+    @for (item of mobileNavItems; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: !!item.exact }"
+      >
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.shortLabel }}</span>
+      </a>
+    }
   </nav>
 
   <mat-drawer-container autosize class="background main-container">
     <mat-drawer #drawer>
       <div class="flex-column">
-        <button
-          mat-button
-          routerLink="/checkins"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>room</mat-icon>Checkins
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/top-beers"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>emoji_events</mat-icon>Top Drinks
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/badges"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>badge</mat-icon>Badges
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/map"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>map</mat-icon>Map
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/beer-history"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>history</mat-icon>Drink History
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/stats"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>insert_chart</mat-icon>Stats
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/insights"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>insights</mat-icon>Insights
-        </button>
-        <mat-divider></mat-divider>
-        <button
-          mat-button
-          routerLink="/wishlist"
-          routerLinkActive="selected no-border txt-bold"
-          class="drawer-nav-button"
-        >
-          <mat-icon>list</mat-icon>Wishlist
-        </button>
-        <mat-divider></mat-divider>
+        @for (item of navItems; track item.path) {
+          <button
+            mat-button
+            [routerLink]="item.path"
+            routerLinkActive="selected no-border txt-bold"
+            class="drawer-nav-button"
+          >
+            <mat-icon>{{ item.icon }}</mat-icon
+            >{{ item.label }}
+          </button>
+          <mat-divider></mat-divider>
+        }
       </div>
     </mat-drawer>
 
     <div [@routeAnimations]="prepareRoute(outlet)">
-      <router-outlet #outlet="outlet"></router-outlet>
+      <main id="main-content" tabindex="-1">
+        <router-outlet #outlet="outlet"></router-outlet>
+      </main>
     </div>
   </mat-drawer-container>
 

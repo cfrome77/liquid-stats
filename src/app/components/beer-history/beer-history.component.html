@@ -47,7 +47,7 @@
       mat-stroked-button
       class="view-toggle-btn"
       [class.active]="viewMode() === 'cards'"
-      (click)="viewMode.set('cards')"
+      (click)="setViewMode('cards')"
       aria-label="Cards view"
     >
       <mat-icon>view_agenda</mat-icon> Cards
@@ -56,7 +56,7 @@
       mat-stroked-button
       class="view-toggle-btn"
       [class.active]="viewMode() === 'compact'"
-      (click)="viewMode.set('compact')"
+      (click)="setViewMode('compact')"
       aria-label="Compact view"
     >
       <mat-icon>view_list</mat-icon> Compact
@@ -65,13 +65,24 @@
 
   @if (isLoadingAll) {
     <app-skeleton-card [viewMode]="viewMode()" [count]="5"></app-skeleton-card>
+  } @else if (hasLoadError()) {
+    <app-empty-state
+      icon="cloud_off"
+      variant="error"
+      message="We couldn't load your drink history. You may be offline or the data service is temporarily unavailable."
+      buttonText="Retry"
+      (action)="retryLoad()"
+    ></app-empty-state>
   } @else {
     <div
       class="cards-layout-container"
       [class.cards-layout]="viewMode() === 'cards'"
       [class.compact-layout]="viewMode() === 'compact'"
     >
-      @for (beerCard of paginatedBeers; track beerCard.title) {
+      @for (
+        beerCard of paginatedBeers;
+        track beerCard.title + "-" + beerCard.breweryName
+      ) {
         <app-card [cardData]="beerCard" [viewMode]="viewMode()"></app-card>
       } @empty {
         <app-empty-state
@@ -83,13 +94,15 @@
       }
     </div>
 
-    <app-pagination
-      [currentPage]="currentPage"
-      [itemsPerPage]="itemsPerPage"
-      [totalItems]="totalItems"
-      (pageChange)="goToPage($event)"
-      (itemsPerPageChange)="changeItemsPerPage($event)"
-    >
-    </app-pagination>
+    @if (totalItems > 0) {
+      <app-pagination
+        [currentPage]="currentPage"
+        [itemsPerPage]="itemsPerPage"
+        [totalItems]="totalItems"
+        (pageChange)="goToPage($event)"
+        (itemsPerPageChange)="changeItemsPerPage($event)"
+      >
+      </app-pagination>
+    }
   }
 </div>

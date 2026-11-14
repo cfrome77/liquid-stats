@@ -6,5 +6,21 @@
     "media": {
       "badge_image_sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
     }
+  },
+  {
+    "badge_name": "Öläläjä (Level 5)",
+    "badge_description": "",
+    "earned_at": "Sun, 05 Apr 2026 18:30:00 +0000",
+    "media": {
+      "badge_image_sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+    }
+  },
+  {
+    "badge_name": "Wheel of Styles (Level 10)",
+    "badge_description": "Tried 5 different styles!",
+    "earned_at": "Sat, 04 Apr 2026 22:15:00 +0000",
+    "media": {
+      "badge_image_sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+    }
   }
 ]

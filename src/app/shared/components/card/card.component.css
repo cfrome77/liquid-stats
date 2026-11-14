@@ -58,6 +58,7 @@
   gap: 12px;
   min-width: 0;
   flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .compact-thumb {
@@ -75,6 +76,7 @@
   justify-content: center;
   gap: 2px;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .compact-title-row {
@@ -195,33 +197,58 @@
     gap: 6px;
   }
 
+  /* Stars already convey the value; drop the redundant "Rating:" label so
+     the title keeps more room on small screens. */
+  .compact-rating ::ng-deep .rating-label {
+    display: none !important;
+  }
+
+  /* A full timestamp steals the width the title needs on small screens;
+     it stays available in the title tooltip and the detail link. */
   .compact-time {
-    font-size: 0.72rem;
-    opacity: 0.8;
+    display: none;
+  }
+
+  /* The five-star row is redundant with the numeric score and, on narrow
+     screens, it squeezes the brewery/style text down to a few characters.
+     Keep the precise number, drop the stars. */
+  .compact-rating ::ng-deep .svg-stars {
+    display: none !important;
   }
 
   .compact-rating ::ng-deep .star {
-    width: 0.95rem !important;
-    height: 0.95rem !important;
+    width: 0.82rem !important;
+    height: 0.82rem !important;
   }
 
   .compact-rating ::ng-deep .rating-number {
-    font-size: 0.82rem !important;
+    font-size: 0.8rem !important;
   }
 
   .compact-subtitle-row {
-    flex-wrap: nowrap;
-    white-space: nowrap;
+    flex-wrap: wrap;
+    white-space: normal;
     overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  /* Measured at 320 px: the brewery was capped at 50% (73 px, ~8 chars) and
+     would not shrink, leaving the style only 57 px (~6 chars) on the same
+     line — both clipped. Letting the row wrap gives each field a full line
+     when they don't fit together; keeping each field on a single ellipsised
+     line bounds the card at two lines instead of a tall block. Short pairs
+     still share one line, so most rows keep the compact height. */
+  .compact-subtitle-row {
+    flex-wrap: wrap;
+    white-space: normal;
+    overflow: hidden;
   }
 
   .brewery-name.inline {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 50%;
-    flex-shrink: 0;
+    max-width: 100%;
+    flex-shrink: 1;
   }
 
   .subtitle.inline {
@@ -548,9 +575,33 @@ footer {
 }
 
 @media (max-width: 480px) {
+  /* Three layers of horizontal padding stack here: the global .mat-mdc-card
+     (15px), Material's .mat-mdc-card-content (16px), and the header's own
+     (12px). On a 320px screen that spends 31px per side before the header
+     starts, leaving the text column about 116px between the two label
+     columns. Reclaim the two outer layers; the inner sections keep their own
+     padding, so nothing touches the card edge. */
+  .shared-card {
+    padding: 0;
+  }
+
+  .shared-card ::ng-deep .mat-mdc-card-content {
+    padding: 0;
+  }
+
   .card-header {
     grid-template-columns: 50px 1fr 50px;
     padding: 12px;
+  }
+
+  /* On narrow screens single-line titles truncate to a few characters;
+     allow up to two lines so the name stays readable. */
+  .compact-title,
+  .title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   .beer-label,
@@ -566,9 +617,7 @@ footer {
   .subtitle,
   .brewery-name {
     font-size: 0.8rem;
-  }
-
-  .subtitle {
+    /* Wrap instead of clipping hard on the narrowest screens. */
     white-space: normal;
   }
 }

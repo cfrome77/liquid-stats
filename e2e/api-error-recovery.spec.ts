@@ -98,7 +98,7 @@ test("API failure displays error banner and retry recovers successfully", async 
   const errorBanner = page.locator(".global-error-banner");
   await expect(errorBanner).toBeVisible();
   await expect(errorBanner.locator(".error-banner-message")).toContainText(
-    "Unable to load the latest beer data",
+    "Unable to load the latest drink data",
   );
 
   // Take screenshot of failure state

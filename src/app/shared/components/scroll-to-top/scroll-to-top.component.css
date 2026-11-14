@@ -1,6 +1,6 @@
 .fab-scroll-to-top {
   position: fixed;
-  bottom: 15px;
+  bottom: 80px; /* Stack above the info FAB (bottom: 15px + 56px + gap) */
   right: 15px;
   z-index: 100;
   background-color: #007bff;
@@ -19,4 +19,10 @@
 
 .fab-scroll-to-top mat-icon {
   font-size: 24px;
+}
+
+@media (max-width: 600px) {
+  .fab-scroll-to-top {
+    bottom: 140px; /* Clear the info FAB, which sits above the bottom nav */
+  }
 }

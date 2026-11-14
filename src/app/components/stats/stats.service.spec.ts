@@ -7,10 +7,7 @@ describe("StatsService", () => {
   let service: StatsService;
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj("DataService", [
-      "getBeers",
-      "getBeersAll",
-    ]);
+    const spy = jasmine.createSpyObj("DataService", ["getBeersAll"]);
     TestBed.configureTestingModule({
       providers: [StatsService, { provide: DataService, useValue: spy }],
     });

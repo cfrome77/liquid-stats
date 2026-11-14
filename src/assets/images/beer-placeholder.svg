@@ -1,0 +1,58 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 400 400"
+  width="400"
+  height="400"
+  role="img"
+  aria-label="No photo available"
+>
+  <defs>
+    <linearGradient id="ls-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3440" />
+      <stop offset="1" stop-color="#151b23" />
+    </linearGradient>
+    <linearGradient id="ls-beer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffca28" />
+      <stop offset="1" stop-color="#e65100" />
+    </linearGradient>
+    <clipPath id="ls-glass">
+      <path d="M104 96 H296 L272 312 Q270 330 252 330 H148 Q130 330 128 312 Z" />
+    </clipPath>
+  </defs>
+
+  <rect width="400" height="400" rx="28" fill="url(#ls-bg)" />
+
+  <!-- Beer + foam, clipped to the glass shape -->
+  <g clip-path="url(#ls-glass)">
+    <rect x="90" y="150" width="230" height="200" fill="url(#ls-beer)" />
+    <rect x="90" y="128" width="230" height="30" fill="#fff8e7" />
+  </g>
+
+  <!-- Rising bubbles -->
+  <g fill="#ffffff" opacity="0.35">
+    <circle cx="165" cy="270" r="9" />
+    <circle cx="222" cy="228" r="6" />
+    <circle cx="192" cy="188" r="5" />
+    <circle cx="245" cy="282" r="6" />
+  </g>
+
+  <!-- Glass outline and rim -->
+  <path
+    d="M104 96 H296 L272 312 Q270 330 252 330 H148 Q130 330 128 312 Z"
+    fill="none"
+    stroke="#cbd5e1"
+    stroke-width="14"
+    stroke-linejoin="round"
+    opacity="0.92"
+  />
+  <line
+    x1="96"
+    y1="96"
+    x2="304"
+    y2="96"
+    stroke="#cbd5e1"
+    stroke-width="14"
+    stroke-linecap="round"
+    opacity="0.92"
+  />
+</svg>

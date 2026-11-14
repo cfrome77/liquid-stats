@@ -11,6 +11,7 @@ import {
   HostListener,
   PLATFORM_ID,
   inject,
+  signal,
 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -35,6 +36,8 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DateUtils } from "src/app/core/utils/date-utils";
+import { environment } from "src/environments/environment";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: "app-map",
@@ -50,6 +53,7 @@ import { DateUtils } from "src/app/core/utils/date-utils";
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    EmptyStateComponent,
   ],
   providers: [MarkerService],
 })
@@ -96,6 +100,11 @@ export class MapComponent
   public legendItems: { type: string; color: string }[] = [];
   public isLegendCollapsed = false;
 
+  readonly isLoading = signal(true);
+  readonly dataLoaded = signal(false);
+  readonly hasData = signal(true);
+  readonly hasError = signal(false);
+
   @ViewChild("drawer") drawer!: MatSidenav;
   @ViewChild("overlayPanel") overlayPanel?: ElementRef;
 
@@ -127,9 +136,20 @@ export class MapComponent
     });
 
     // Load beer data
+    this.loadBeerData();
+  }
+
+  /** Fetches the beer data that feeds the map markers and filters. */
+  private loadBeerData(): void {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.allBeers = data;
+        this.hasData.set(data.length > 0);
+        this.isLoading.set(false);
+        this.dataLoaded.set(true);
 
         // Extract filter options
         this.beerStyles = Array.from(
@@ -161,8 +181,21 @@ export class MapComponent
 
         this.cdr.detectChanges();
       },
-      error: (err) => console.error("Error fetching map data:", err),
+      error: (err) => {
+        console.error("Error fetching map data:", err);
+        this.isLoading.set(false);
+        this.dataLoaded.set(true);
+        this.hasData.set(false);
+        this.hasError.set(true);
+        this.cdr.detectChanges();
+      },
     });
+  }
+
+  /** Retries the failed data load after clearing the service cache. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadBeerData();
   }
 
   onDrawerAnimationDone() {
@@ -243,6 +276,14 @@ export class MapComponent
     setTimeout(() => {
       this.isOpeningPopup = false;
     }, 100);
+  }
+
+  /** Builds the Untappd check-in URL for a given check-in id. */
+  getCheckinUrl(checkInId: number): string {
+    if (environment.UNTAPPD_USERNAME && checkInId) {
+      return `https://untappd.com/user/${environment.UNTAPPD_USERNAME}/checkin/${checkInId}`;
+    }
+    return "https://untappd.com";
   }
 
   /** Opens a single check-in in a new tab */

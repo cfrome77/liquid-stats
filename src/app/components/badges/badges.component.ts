@@ -15,7 +15,8 @@ import { LoggingService } from "src/app/core/services/logger.service";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
-import { DomSanitizer } from "@angular/platform-browser";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
 import { DateUtils } from "src/app/core/utils/date-utils";
 
 @Component({
@@ -29,6 +30,8 @@ import { DateUtils } from "src/app/core/utils/date-utils";
     MatIconModule,
     PaginationComponent,
     CardComponent,
+    EmptyStateComponent,
+    SkeletonCardComponent,
   ],
 })
 export class BadgesComponent implements OnInit {
@@ -36,26 +39,44 @@ export class BadgesComponent implements OnInit {
   private dataService = inject(DataService);
   private logger = inject(LoggingService);
   private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
 
   public badges: Badge[] = [];
   public paginatedBadges: Badge[] = [];
+  public hasLoadError = signal(false);
+  public isLoading = true;
 
   public currentPage = 1;
   public itemsPerPage = 10;
   public totalItems = 0;
 
   ngOnInit(): void {
+    this.loadBadges();
+  }
+
+  /** Fetches the earned badges, tracking a failure so the UI can retry. */
+  private loadBadges(): void {
+    this.isLoading = true;
+    this.hasLoadError.set(false);
     this.dataService.getBadges().subscribe({
       next: (data: Badge[]) => {
         this.badges = data;
         this.totalItems = this.badges.length;
+        this.isLoading = false;
         this.updatePagination();
       },
       error: (err: unknown) => {
         this.logger.error("Error fetching badges", err);
+        this.isLoading = false;
+        this.hasLoadError.set(true);
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the badges fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadBadges();
   }
 
   updatePagination() {
@@ -81,11 +102,9 @@ export class BadgesComponent implements OnInit {
 
     return {
       title: badge.badge_name,
-      // We wrap the description in the sanitizer and move it to the description field
-      // This allows <a> and <strong> tags to work and better utilizes card space
-      description: this.sanitizer.bypassSecurityTrustHtml(
-        badge.badge_description,
-      ) as unknown as string,
+      // Untappd descriptions contain <a>/<strong>; [innerHTML] sanitizes them
+      // (Angular strips scripts and event handlers) so no bypass is needed.
+      description: badge.badge_description,
       mainImage: badge.media.badge_image_sm,
       footerInfo: {
         text: `Earned: ${formattedDate}`,

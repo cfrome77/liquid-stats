@@ -23,15 +23,32 @@ resource "aws_s3_bucket_ownership_controls" "this" {
 }
 
 # --- Default: block public access (but allow policy exceptions) ---
+# `block_public_policy` and `restrict_public_buckets` stay false because the
+# bucket must serve the app's JSON to the public site: netlify.toml proxies
+# `/api-data/*` here with an anonymous fetch. See SECURITY.md for the trade-off
+# and the CloudFront + OAC upgrade path that would remove public access.
 resource "aws_s3_bucket_public_access_block" "this" {
-  bucket                 = aws_s3_bucket.this.id
+  bucket                  = aws_s3_bucket.this.id
   block_public_acls       = true
-  block_public_policy     = false # allow policy exceptions
+  block_public_policy     = false # allow the scoped read policy below
   ignore_public_acls      = true
   restrict_public_buckets = false
 }
 
-# --- Bucket policy: allow only the JSONs public read ---
+# The only objects the app fetches (see DataService). Listing them explicitly
+# instead of a `*.json` wildcard keeps the bucket fail-closed: a file added
+# later is private until it is named here.
+locals {
+  public_json_objects = [
+    "badges.json",
+    "beers_all.json",
+    "checkins.json",
+    "stats.json",
+    "wishlist.json",
+  ]
+}
+
+# --- Bucket policy: allow public read of only those objects ---
 resource "aws_s3_bucket_policy" "public_jsons" {
   bucket = aws_s3_bucket.this.id
 
@@ -39,11 +56,14 @@ resource "aws_s3_bucket_policy" "public_jsons" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "PublicReadGetObject"
+        Sid       = "PublicReadAppData"
         Effect    = "Allow"
         Principal = "*"
         Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::${aws_s3_bucket.this.bucket}/*.json"
+        Resource = [
+          for object in local.public_json_objects :
+          "arn:aws:s3:::${aws_s3_bucket.this.bucket}/${object}"
+        ]
       }
     ]
   })
@@ -123,7 +143,6 @@ resource "aws_lambda_function" "fetch_api_data" {
       CLIENT_SECRET    = var.client_secret
       S3_BUCKET_NAME   = aws_s3_bucket.this.bucket
       UNTAPPD_USERNAME = var.untappd_username
-      USE_AWS          = "true"
     }
   }
 }

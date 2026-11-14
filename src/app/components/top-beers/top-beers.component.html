@@ -79,7 +79,7 @@
         mat-stroked-button
         class="view-toggle-btn"
         [class.active]="viewMode() === 'cards'"
-        (click)="viewMode.set('cards')"
+        (click)="setViewMode('cards')"
         aria-label="Cards view"
       >
         <mat-icon>view_agenda</mat-icon> Cards
@@ -88,7 +88,7 @@
         mat-stroked-button
         class="view-toggle-btn"
         [class.active]="viewMode() === 'compact'"
-        (click)="viewMode.set('compact')"
+        (click)="setViewMode('compact')"
         aria-label="Compact view"
       >
         <mat-icon>view_list</mat-icon> Compact
@@ -102,6 +102,14 @@
       [viewMode]="viewMode()"
       [count]="topX"
     ></app-skeleton-card>
+  } @else if (hasLoadError()) {
+    <app-empty-state
+      icon="cloud_off"
+      variant="error"
+      message="We couldn't load your drinks. You may be offline or the data service is temporarily unavailable."
+      buttonText="Retry"
+      (action)="retryLoad()"
+    ></app-empty-state>
   } @else {
     <div
       class="cards-layout-container"
@@ -114,6 +122,13 @@
         let i = $index
       ) {
         <app-card [cardData]="beer" [viewMode]="viewMode()"> </app-card>
+      } @empty {
+        <app-empty-state
+          icon="leaderboard"
+          message="No drinks match your criteria. Try a wider time range or a lower minimum check-ins."
+          buttonText="Reset Filters"
+          (action)="resetFilters()"
+        ></app-empty-state>
       }
     </div>
   }

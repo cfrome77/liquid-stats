@@ -8,6 +8,27 @@ The Untappd API requires that you register your application. Register your app [
 
 The local or AWS steps can be used for testing or production, just know that the data will need to be updated manually if you go with local JSON files vs the use of the AWS automation.
 
+### Local fixture data
+
+When no S3 bucket is configured, the app reads its JSON from the committed
+fixtures in [`src/assets/data/`](src/assets/data). These stand in for the S3
+objects during development and for the unmocked e2e tests, so they are a small
+curated set rather than a dump of real data: they deliberately include a beer
+with no label, a check-in with a user photo and one without, non-ASCII and
+over-long names, and several countries and breweries.
+
+Because the app reads some fields without guarding them (for example the map
+and beer-history pages assume every beer has a brewery location), keep the
+shape of these files intact when editing them. `e2e/fixture-integrity.spec.ts`
+checks the structure, cross-file consistency, and the edge cases above, and
+fails if any of them disappear.
+
+To point development at your own data, edit the git-ignored
+`src/environments/environment.local.ts` (created for you on first run) and set
+`DATA_URL` to your data source. `npm run start:dev` and friends create that file
+from committed defaults when it is missing, so a fresh checkout runs without
+extra setup.
+
 ---
 
 ## Prerequisites
@@ -87,7 +108,7 @@ Your Angular app will be available at [http://localhost:4200](http://localhost:4
 cp .env.example .env
 ```
 
-Fill in variables for Untappd (`client_secret`, `client_id`, `untappd username`) and AWS (`CLOUDFORMATION_TEMPLATE`, `S3_BUCKET_NAME`, `STACK_NAME`, `LAMBDA_ZIP_FILE`).
+Fill in variables for Untappd (`CLIENT_ID`, `CLIENT_SECRET`, `UNTAPPD_USERNAME`) and AWS (`S3_BUCKET_NAME`, `LAMBDA_ZIP_FILE`, `ALLOWED_CORS_ORIGINS`, `DATA_URL`).
 
 2. Deploy AWS resources with Terraform:
 
@@ -106,7 +127,7 @@ cd deploy
 ./deploy_lambda.sh
 ```
 
-This script builds the Lambda zip from `lambda/`, uploads it to S3, and deploys the CloudFormation template to schedule the Lambda to run (default: 12:00 AM Monday) to fetch Untappd data.
+This script builds the Lambda zip from `lambda/`, uploads it to S3, and runs Terraform to deploy the Lambda and schedule it to run (default: 12:00 AM Monday) to fetch Untappd data.
 
 4. Once deployed, you can:
 

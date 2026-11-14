@@ -6,7 +6,9 @@ import {
   inject,
   signal,
   effect,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -24,6 +26,7 @@ import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { Checkin } from "src/app/core/models/checkin.model";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import {
   BeerStyleDialogComponent,
   GenericBeersDialogData,
@@ -55,6 +58,7 @@ export interface Milestone {
     MatDialogModule,
     BaseChartDirective,
     SkeletonCardComponent,
+    EmptyStateComponent,
   ],
   providers: [DecimalPipe, provideCharts(withDefaultRegisterables())],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,8 +68,11 @@ export class InsightsComponent implements OnInit {
   private themeService = inject(ThemeService);
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   public beers: BeerCheckin[] = [];
+  public hasData = signal<boolean>(false);
+  public hasLoadError = signal<boolean>(false);
   private rawCheckins: Checkin[] = [];
   public isLoading = signal<boolean>(true);
   public milestones = signal<Milestone[]>([]);
@@ -240,11 +247,17 @@ export class InsightsComponent implements OnInit {
 
   ngOnInit(): void {
     this.beerStore.load();
-    this.beerStore.beers$.subscribe({
+    this.beerStore.beers$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (beers: BeerCheckin[] | null) => {
         if (beers && beers.length > 0) {
           this.beers = beers;
           this.computeInsights(beers);
+          this.hasData.set(true);
+          this.isLoading.set(false);
+          this.cdr.markForCheck();
+        } else if (beers !== null) {
+          // Loaded but empty (e.g. a failed fetch): stop the skeleton so the
+          // empty state can render instead of spinning forever.
           this.isLoading.set(false);
           this.cdr.markForCheck();
         }
@@ -256,18 +269,32 @@ export class InsightsComponent implements OnInit {
       },
     });
 
-    this.beerStore.checkins$.subscribe({
-      next: (checkins: Checkin[] | null) => {
-        if (checkins && checkins.length > 0) {
-          this.rawCheckins = checkins;
-          this.computeHeatmap(checkins);
-          this.cdr.markForCheck();
-        }
-      },
-      error: (err: unknown) => {
-        console.error("Error loading insights checkins:", err);
-      },
-    });
+    this.beerStore.checkins$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (checkins: Checkin[] | null) => {
+          if (checkins && checkins.length > 0) {
+            this.rawCheckins = checkins;
+            this.computeHeatmap(checkins);
+            this.cdr.markForCheck();
+          }
+        },
+        error: (err: unknown) => {
+          console.error("Error loading insights checkins:", err);
+        },
+      });
+
+    this.beerStore.loadError$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((hasError) => {
+        this.hasLoadError.set(hasError);
+        this.cdr.markForCheck();
+      });
+  }
+
+  /** Retries loading all store data after a failed load. */
+  retryLoad(): void {
+    this.beerStore.load(true);
   }
 
   private updateChartThemeOptions(theme: "light-theme" | "dark-theme"): void {
@@ -614,6 +641,24 @@ export class InsightsComponent implements OnInit {
       (b) => b.brewery.brewery_name === breweryName,
     );
     this.openBeersDialog(`${breweryName} Drinks`, filtered);
+  }
+
+  public heatmapDayLabel(day: {
+    count: number;
+    formattedDate: string;
+  }): string {
+    const noun = day.count === 1 ? "check-in" : "check-ins";
+    return day.count > 0
+      ? `${day.count} ${noun} on ${day.formattedDate}`
+      : `No check-ins on ${day.formattedDate}`;
+  }
+
+  public onDayKeydown(
+    event: Event,
+    day: { date: string; formattedDate: string; count: number },
+  ): void {
+    event.preventDefault();
+    this.openDayCheckinsDialog(day);
   }
 
   public openDayCheckinsDialog(day: {

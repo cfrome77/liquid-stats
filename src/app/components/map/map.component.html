@@ -113,6 +113,30 @@
     <div class="map-wrapper">
       <div id="myMap" class="leaflet-map"></div>
 
+      @if (isLoading()) {
+        <div class="map-overlay-message">
+          <mat-icon>public</mat-icon>
+          <p>Loading map…</p>
+        </div>
+      } @else if (hasError()) {
+        <div class="map-overlay-message">
+          <app-empty-state
+            icon="cloud_off"
+            variant="error"
+            message="We couldn't load the brewery map. You may be offline or the data service is temporarily unavailable."
+            buttonText="Retry"
+            (action)="retryLoad()"
+          ></app-empty-state>
+        </div>
+      } @else if (!hasData()) {
+        <div class="map-overlay-message">
+          <app-empty-state
+            icon="location_off"
+            message="No brewery locations to plot yet. Check back once you have a few more check-ins."
+          ></app-empty-state>
+        </div>
+      }
+
       <!-- Map Legend -->
       @if (legendItems.length > 0) {
         <div
@@ -210,11 +234,7 @@
 
         <ul class="checkin-list">
           @for (checkIn of filteredOverlayCheckins; track checkIn.checkInId) {
-            <li
-              (click)="
-                openCheckin('https://untappd.com/c/' + checkIn.checkInId)
-              "
-            >
+            <li (click)="openCheckin(getCheckinUrl(checkIn.checkInId))">
               <img
                 [src]="checkIn.beerLabel"
                 class="beer-label"

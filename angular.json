@@ -57,13 +57,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "850kb",
+                  "maximumError": "950kb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "15kb",
-                  "maximumError": "20kb"
+                  "maximumWarning": "12kb",
+                  "maximumError": "16kb"
                 }
               ]
             },
@@ -74,6 +74,13 @@
                   "with": "src/environments/environment.local.ts"
                 }
               ],
+              "outputHashing": "none",
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "e2e": {
               "outputHashing": "none",
               "optimization": false,
               "extractLicenses": false,
@@ -95,6 +102,9 @@
             "development": {
               "buildTarget": "liquid-stats:build:development",
               "hmr": true
+            },
+            "e2e": {
+              "buildTarget": "liquid-stats:build:e2e"
             }
           }
         },

@@ -33,7 +33,7 @@
         <mat-icon class="icon-default">local_drink</mat-icon>
         <mat-icon class="icon-hover">history</mat-icon>
       </div>
-      <div class="stat-number">{{ totalCheckins }}</div>
+      <div class="stat-number">{{ totalCheckins() }}</div>
       <div class="stat-label">Checkins</div>
     </mat-card>
 
@@ -46,7 +46,7 @@
         <mat-icon class="icon-default">star</mat-icon>
         <mat-icon class="icon-hover">trending_up</mat-icon>
       </div>
-      <div class="stat-number">{{ averageRating | number: "1.1-1" }}</div>
+      <div class="stat-number">{{ averageRating() | number: "1.1-1" }}</div>
       <div class="stat-label">Avg Rating</div>
     </mat-card>
 
@@ -59,7 +59,7 @@
         <mat-icon class="icon-default">public</mat-icon>
         <mat-icon class="icon-hover">map</mat-icon>
       </div>
-      <div class="stat-number">{{ countriesTried }}</div>
+      <div class="stat-number">{{ countriesTried() }}</div>
       <div class="stat-label">Countries</div>
     </mat-card>
 
@@ -72,7 +72,7 @@
         <mat-icon class="icon-default">storefront</mat-icon>
         <mat-icon class="icon-hover">leaderboard</mat-icon>
       </div>
-      <div class="stat-number">{{ breweriesVisited }}</div>
+      <div class="stat-number">{{ breweriesVisited() }}</div>
       <div class="stat-label">Breweries</div>
     </mat-card>
   </section>
@@ -82,6 +82,7 @@
   <section class="recent-checkins">
     <div class="section-header">
       <h3>Recent Checkins</h3>
+      <a routerLink="/checkins" class="view-all-link">View all</a>
     </div>
     <div class="carousel-wrapper">
       <button
@@ -93,7 +94,7 @@
       </button>
 
       <div class="carousel-track" #carouselTrack>
-        @for (c of allCheckins; track c.checkin_id) {
+        @for (c of recentCheckins(); track c.checkin_id; let i = $index) {
           <mat-card
             class="beer-card modern-card clickable-card"
             [routerLink]="['/checkins', c.checkin_id]"
@@ -106,11 +107,13 @@
                 c.beer.beer_label ||
                 DEFAULT_IMAGE
               "
-              (error)="$event.target.src = c.beer.beer_label || DEFAULT_IMAGE"
+              (error)="handleImageError($event, c.beer.beer_label)"
               [alt]="c.beer.beer_name"
               width="200"
               height="200"
-              loading="lazy"
+              [attr.loading]="i < EAGER_IMAGE_COUNT ? 'eager' : 'lazy'"
+              [attr.fetchpriority]="i < EAGER_IMAGE_COUNT ? 'high' : 'low'"
+              decoding="async"
             />
             <mat-card-content>
               <h4 class="line-clamp-2">{{ c.beer.beer_name }}</h4>

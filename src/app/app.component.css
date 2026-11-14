@@ -100,7 +100,8 @@ mat-toolbar {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: calc(60px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   background-color: var(--navbar-bg);
   display: flex;
   justify-content: space-around;
@@ -114,6 +115,8 @@ mat-toolbar {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 44px;
   text-decoration: none;
   color: var(--navbar-text);
   opacity: 0.6;
@@ -161,4 +164,26 @@ mat-toolbar {
   .main-container {
     padding-bottom: 60px;
   }
+}
+
+/* Keyboard-only skip link to jump past the nav into the routed content. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  padding: 10px 16px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+main#main-content:focus {
+  outline: none;
 }

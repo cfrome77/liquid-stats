@@ -652,3 +652,20 @@ strong {
 .mat-datepicker-toggle .mat-mdc-button-touch-target {
   display: none !important;
 }
+
+/* Respect the OS "reduce motion" setting. The app animates in 35 places
+   (hover lifts, skeleton shimmer, carousel transitions, page fades); a
+   vestibular-sensitive user should not have to endure them. Collapse
+   durations rather than removing properties, so state changes still land
+   instantly instead of never firing transitionend. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

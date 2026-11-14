@@ -1,7 +1,12 @@
 <div class="main-content-container">
   <h1>Wishlist</h1>
 
-  @if (wishlist.length > 0) {
+  @if (isLoading) {
+    <app-skeleton-card
+      [viewMode]="viewMode()"
+      [count]="itemsPerPage"
+    ></app-skeleton-card>
+  } @else if (wishlist.length > 0) {
     <div
       class="flex-row align-center justify-center gap-4"
       style="margin-bottom: 20px"
@@ -42,9 +47,18 @@
         [itemsPerPage]="itemsPerPage"
         [currentPage]="currentPage"
         (pageChange)="goToPage($event)"
+        (itemsPerPageChange)="changeItemsPerPage($event)"
       >
       </app-pagination>
     }
+  } @else if (hasLoadError()) {
+    <app-empty-state
+      icon="cloud_off"
+      variant="error"
+      message="We couldn't load your wishlist. You may be offline or the data service is temporarily unavailable."
+      buttonText="Retry"
+      (action)="retryLoad()"
+    ></app-empty-state>
   } @else {
     <app-empty-state
       icon="bookmark_border"

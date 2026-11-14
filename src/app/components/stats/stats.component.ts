@@ -3,10 +3,13 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  DestroyRef,
   effect,
   ChangeDetectionStrategy,
   inject,
+  signal,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DecimalPipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -36,6 +39,7 @@ import {
   GenericBeersDialogData,
 } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { DateUtils } from "../../core/utils/date-utils";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { environment } from "src/environments/environment";
@@ -56,6 +60,7 @@ import { environment } from "src/environments/environment";
     MatIconModule,
     MatDialogModule,
     BaseChartDirective,
+    EmptyStateComponent,
   ],
   providers: [
     DecimalPipe,
@@ -70,11 +75,14 @@ export class StatsComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private themeService = inject(ThemeService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   private beerSub?: Subscription;
 
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
+  readonly dataLoaded = signal<boolean>(false);
+  readonly hasLoadError = signal<boolean>(false);
   sortedBeerStyles: string[] = [];
 
   dateRange = new FormControl("year");
@@ -154,7 +162,7 @@ export class StatsComponent implements OnInit, OnDestroy {
         label: "Average Rating",
         borderColor: "rgba(255,82,82,0.9)",
         fill: false,
-      } as unknown as ChartData<"line", number[], string>["datasets"][number],
+      },
     ],
   };
 
@@ -177,13 +185,28 @@ export class StatsComponent implements OnInit, OnDestroy {
 
     this.beerSub = this.beerStore.beers$.subscribe((data) => {
       this.beers = data ?? [];
+      if (data !== null) {
+        this.dataLoaded.set(true);
+      }
       this.onDateChange();
       this.cdr.markForCheck();
     });
 
+    this.beerStore.loadError$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((hasError) => {
+        this.hasLoadError.set(hasError);
+        this.cdr.markForCheck();
+      });
+
     this.dateRange.valueChanges.subscribe(() => this.onDateChange());
     this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
     this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
+  }
+
+  /** Retries loading all store data after a failed load. */
+  retryLoad(): void {
+    this.beerStore.load(true);
   }
 
   ngOnDestroy(): void {
