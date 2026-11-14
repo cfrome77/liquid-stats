@@ -7,7 +7,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import("./components/home/home.component").then((m) => m.HomeComponent),
     title: "Home",
-    data: { animation: "HomePage" },
+    data: {
+      animation: "HomePage",
+      description:
+        "Track every pour you enjoy. Explore your beer history, checkins, top-rated drinks, badges, and statistics.",
+    },
   },
   {
     path: "checkins",
@@ -16,7 +20,11 @@ export const routes: Routes = [
         (m) => m.CheckinsComponent,
       ),
     title: "Checkins",
-    data: { animation: "CheckinsPage" },
+    data: {
+      animation: "CheckinsPage",
+      description:
+        "Browse every checkin, with ratings, comments, and the drinks behind them.",
+    },
   },
   {
     path: "checkins/:id",
@@ -25,7 +33,11 @@ export const routes: Routes = [
         (m) => m.CheckinsComponent,
       ),
     title: "Checkin Details",
-    data: { animation: "CheckinsPage" },
+    data: {
+      animation: "CheckinsPage",
+      description:
+        "Details for a single checkin, including the drink, brewery, rating, and comment.",
+    },
   },
   {
     path: "top-beers",
@@ -34,7 +46,11 @@ export const routes: Routes = [
         (m) => m.TopBeersComponent,
       ),
     title: "Top Drinks",
-    data: { animation: "TopBeersPage" },
+    data: {
+      animation: "TopBeersPage",
+      description:
+        "Your highest-rated drinks, ranked, with brewery and style breakdowns.",
+    },
   },
   {
     path: "badges",
@@ -43,14 +59,23 @@ export const routes: Routes = [
         (m) => m.BadgesComponent,
       ),
     title: "Badges",
-    data: { animation: "BadgesPage" },
+    data: {
+      animation: "BadgesPage",
+      description:
+        "The badges you have earned on Untappd, collected in one place.",
+    },
   },
   {
     path: "map",
     loadComponent: () =>
       import("./components/map/map.component").then((m) => m.MapComponent),
     title: "Map",
-    data: { mapId: "myMap", animation: "MapPage" },
+    data: {
+      mapId: "myMap",
+      animation: "MapPage",
+      description:
+        "Every place you have checked in, plotted on an interactive map.",
+    },
   },
   {
     path: "beer-history",
@@ -59,7 +84,11 @@ export const routes: Routes = [
         (m) => m.BeerHistoryComponent,
       ),
     title: "Beer History",
-    data: { animation: "HistoryPage" },
+    data: {
+      animation: "HistoryPage",
+      description:
+        "Search and filter your full drinking history by drink, brewery, style, and rating.",
+    },
   },
   {
     path: "stats",
@@ -68,7 +97,11 @@ export const routes: Routes = [
         (m) => m.StatsComponent,
       ),
     title: "Stats",
-    data: { animation: "StatsPage" },
+    data: {
+      animation: "StatsPage",
+      description:
+        "Your drinking statistics: totals, averages, styles, and trends over time.",
+    },
   },
   {
     path: "insights",
@@ -77,7 +110,11 @@ export const routes: Routes = [
         (m) => m.InsightsComponent,
       ),
     title: "Insights",
-    data: { animation: "InsightsPage" },
+    data: {
+      animation: "InsightsPage",
+      description:
+        "Insights into your drinking habits, from favourite styles to busiest months.",
+    },
   },
   {
     path: "wishlist",
@@ -86,7 +123,10 @@ export const routes: Routes = [
         (m) => m.WishlistComponent,
       ),
     title: "Wishlist",
-    data: { animation: "WishlistPage" },
+    data: {
+      animation: "WishlistPage",
+      description: "The drinks you want to try next, saved to your wishlist.",
+    },
   },
   {
     path: "about",
@@ -95,7 +135,11 @@ export const routes: Routes = [
         (m) => m.AboutComponent,
       ),
     title: "About",
-    data: { animation: "AboutPage" },
+    data: {
+      animation: "AboutPage",
+      description:
+        "About Liquid Stats, and how your Untappd data becomes these statistics.",
+    },
   },
   {
     path: "**",
@@ -104,6 +148,9 @@ export const routes: Routes = [
         (m) => m.NotFoundComponent,
       ),
     title: "Page Not Found",
-    data: { animation: "NotFoundPage" },
+    data: {
+      animation: "NotFoundPage",
+      description: "The page you were looking for could not be found.",
+    },
   },
 ];
