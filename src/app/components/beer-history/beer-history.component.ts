@@ -199,7 +199,7 @@ export class BeerHistoryComponent implements OnInit {
       breweries.add(beer.brewery.brewery_name);
       styles.add(beer.beer.beer_style);
       countries.add(beer.brewery.country_name);
-      if (beer.brewery.location.brewery_state) {
+      if (beer.brewery.location?.brewery_state) {
         states.add(beer.brewery.location.brewery_state);
       }
       const rating = beer.rating_score;
@@ -289,7 +289,7 @@ export class BeerHistoryComponent implements OnInit {
         beer.beer.beer_style.toLowerCase().includes(search) ||
         beer.brewery.brewery_name.toLowerCase().includes(search) ||
         beer.brewery.country_name.toLowerCase().includes(search) ||
-        beer.brewery.location.brewery_state?.toLowerCase().includes(search) ||
+        beer.brewery.location?.brewery_state?.toLowerCase().includes(search) ||
         beer.beer.beer_description?.toLowerCase().includes(search) ||
         beer.beer.beer_slug?.toLowerCase().includes(search);
 
@@ -300,9 +300,9 @@ export class BeerHistoryComponent implements OnInit {
       const matchesCountry = countryFilter.selected.includes(
         beer.brewery.country_name,
       );
+      const breweryState = beer.brewery.location?.brewery_state;
       const matchesState =
-        !beer.brewery.location.brewery_state ||
-        stateFilter.selected.includes(beer.brewery.location.brewery_state);
+        !breweryState || stateFilter.selected.includes(breweryState);
       const matchesRating = ratingFilter.selected.includes(formattedRating);
 
       const startDate = dateFilter.selected[0]
@@ -357,7 +357,7 @@ export class BeerHistoryComponent implements OnInit {
         matchesRating &&
         matchesDate
       ) {
-        if (beer.brewery.location.brewery_state) {
+        if (beer.brewery.location?.brewery_state) {
           stateFilter.countMap![beer.brewery.location.brewery_state] =
             (stateFilter.countMap![beer.brewery.location.brewery_state] || 0) +
             1;

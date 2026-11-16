@@ -164,8 +164,8 @@ export class MarkerService {
     > = {};
 
     for (const beer of beers) {
-      const lat = beer.brewery.location.lat ?? 0;
-      const lon = beer.brewery.location.lng ?? 0;
+      const lat = beer.brewery.location?.lat ?? 0;
+      const lon = beer.brewery.location?.lng ?? 0;
       const breweryId = beer.brewery.brewery_id?.toString() ?? "unknown";
 
       if (!breweryCounts[breweryId]) {
@@ -178,8 +178,8 @@ export class MarkerService {
           id: breweryId,
           name: beer.brewery.brewery_name,
           breweryType: extractBreweryType(beer.brewery),
-          city: beer.brewery.location.brewery_city ?? "",
-          state: beer.brewery.location.brewery_state ?? "",
+          city: beer.brewery.location?.brewery_city ?? "",
+          state: beer.brewery.location?.brewery_state ?? "",
           logo: sanitizeUntappdUrl(logo) || logo,
           checkIns: [],
         };
