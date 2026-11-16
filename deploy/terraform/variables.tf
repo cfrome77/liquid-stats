@@ -14,11 +14,6 @@ variable "untappd_username" {
   description = "Username for the application"
 }
 
-variable "use_aws" {
-  type        = bool
-  description = "if the data should come from local files or from AWS S3"
-}
-
 variable "lambda_zip_file" {
   type        = string
   description = "Path to the Lambda zip file"

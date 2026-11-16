@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -10,6 +10,7 @@ import { Overlay } from "@angular/cdk/overlay";
   templateUrl: "./info-fab.component.html",
   styleUrls: ["./info-fab.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, MatDialogModule],
 })
 export class InfoFabComponent {

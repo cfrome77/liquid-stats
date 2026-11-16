@@ -38,9 +38,25 @@ describe("AppComponent", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const checkinsNavLink = compiled.querySelector(
-      '.mobile-bottom-nav a[routerLink="/checkins"]',
+    const navLinks = Array.from(
+      compiled.querySelectorAll<HTMLAnchorElement>(".mobile-bottom-nav a"),
+    );
+    const checkinsNavLink = navLinks.find((link) =>
+      link.getAttribute("href")?.includes("/checkins"),
     );
     expect(checkinsNavLink).toBeTruthy();
+  });
+
+  it("exposes a skip link that targets the main landmark", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    const skipLink = compiled.querySelector("a.skip-link") as HTMLAnchorElement;
+    expect(skipLink).toBeTruthy();
+    expect(skipLink.getAttribute("href")).toBe("#main-content");
+
+    const main = compiled.querySelector("main#main-content");
+    expect(main).toBeTruthy();
   });
 });

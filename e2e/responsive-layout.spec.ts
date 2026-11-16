@@ -57,3 +57,58 @@ test("routes render on mobile and desktop", async ({ page }) => {
     await expect(containerMobile).toBeVisible();
   }
 });
+
+test("skip link is reachable by keyboard and targets main content", async ({
+  page,
+}) => {
+  await page.goto("/home");
+  await page.keyboard.press("Tab");
+  const skipLink = page.locator("a.skip-link");
+  await expect(skipLink).toBeFocused();
+  await expect(skipLink).toHaveAttribute("href", "#main-content");
+  await expect(page.locator("main#main-content")).toHaveCount(1);
+});
+
+test("sets a per-route document title", async ({ page }) => {
+  await page.goto("/stats");
+  await expect(page).toHaveTitle("Stats · Liquid Stats");
+
+  await page.goto("/wishlist");
+  await expect(page).toHaveTitle("Wishlist · Liquid Stats");
+});
+
+test("bottom nav does not permanently obscure page content on mobile", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto("/insights");
+  await expect(page.locator(".mobile-bottom-nav")).toBeVisible();
+  await expect(page.locator("#main-content app-insights")).toBeVisible();
+
+  // Insights content streams in, so poll: re-scroll to the end and assert the
+  // last visible text sits above the fixed nav, retrying until layout settles.
+  await expect
+    .poll(
+      async () => {
+        await page.locator(".mat-drawer-content").evaluate((el) => {
+          el.scrollTop = el.scrollHeight;
+        });
+        return page.evaluate(() => {
+          const nav = document
+            .querySelector(".mobile-bottom-nav")!
+            .getBoundingClientRect();
+          let maxBottom = -Infinity;
+          document.querySelectorAll("#main-content *").forEach((el) => {
+            if (el.children.length) return;
+            if (!(el.textContent || "").trim()) return;
+            const rect = el.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            maxBottom = Math.max(maxBottom, rect.bottom);
+          });
+          return maxBottom <= nav.top + 1;
+        });
+      },
+      { timeout: 5000 },
+    )
+    .toBe(true);
+});

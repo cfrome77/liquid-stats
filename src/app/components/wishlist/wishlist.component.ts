@@ -16,6 +16,8 @@ import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 @Component({
   selector: "app-wishlist",
@@ -29,6 +31,7 @@ import { EmptyStateComponent } from "../../shared/components/empty-state/empty-s
     CardComponent,
     PaginationComponent,
     EmptyStateComponent,
+    SkeletonCardComponent,
   ],
 })
 export class WishlistComponent implements OnInit {
@@ -42,8 +45,17 @@ export class WishlistComponent implements OnInit {
   public totalItems = 0;
   public currentPage = 1;
   public itemsPerPage = 10;
+  public hasLoadError = signal(false);
+  public isLoading = true;
 
   ngOnInit(): void {
+    this.loadWishlist();
+  }
+
+  /** Fetches the wishlist, tracking a failure so the UI can retry. */
+  private loadWishlist(): void {
+    this.isLoading = true;
+    this.hasLoadError.set(false);
     this.dataService.getWishlist().subscribe({
       next: (data: unknown) => {
         const response = data as {
@@ -55,13 +67,23 @@ export class WishlistComponent implements OnInit {
           this.transformWishlistData(item as BeerCheckin),
         );
         this.totalItems = this.wishlist.length;
+        this.isLoading = false;
         this.updatePagination();
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Error fetching wishlist:", err);
+        this.isLoading = false;
+        this.hasLoadError.set(true);
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the wishlist fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadWishlist();
   }
 
   transformWishlistData(
@@ -72,9 +94,11 @@ export class WishlistComponent implements OnInit {
       subtitle: item.beer.beer_style,
       breweryName: item.brewery.brewery_name,
       description: item.beer.beer_description,
-      mainImage: item.beer.beer_label_hd || item.beer.beer_label,
-      secondaryImage:
-        item.brewery.brewery_label_hd || item.brewery.brewery_label,
+      mainImage: thumbnailLabel(item.beer.beer_label, item.beer.beer_label_hd),
+      secondaryImage: thumbnailLabel(
+        item.brewery.brewery_label,
+        item.brewery.brewery_label_hd,
+      ),
       footerInfo: {
         text: "Wishlist Item",
         link: `https://untappd.com/b/${item.beer.beer_slug}/${item.beer.bid}`,
@@ -83,8 +107,9 @@ export class WishlistComponent implements OnInit {
           : "Added long ago",
       },
       extraData: {
-        originalMainImage: item.beer.beer_label,
-        originalSecondaryImage: item.brewery.brewery_label,
+        originalMainImage: item.beer.beer_label_hd || item.beer.beer_label,
+        originalSecondaryImage:
+          item.brewery.brewery_label_hd || item.brewery.brewery_label,
       },
     };
   }

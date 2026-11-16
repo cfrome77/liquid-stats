@@ -1,7 +1,13 @@
 # netlify.toml - Node 22 + esbuild + redirects
 
 [build]
-command = "npm run build:prod"
+# The /api-data/ proxy target is derived from DATA_URL so the bucket name lives
+# in exactly one place (the environment variable, which is also what the app
+# bundle reads). Netlify does not expand ${...} in netlify.toml, but it does
+# read [[redirects]] after the build, so the script below writes DATA_URL into
+# the file during the build. It validates DATA_URL and fails the build if it
+# cannot find the placeholder, rather than shipping an unusable proxy target.
+command = "npm run inject:proxy-origin && npm run build:prod"
 publish = "dist/liquid-stats/browser"
 
 [build.environment]
@@ -11,10 +17,11 @@ NODE_VERSION = "22"
 [functions]
 node_bundler = "esbuild"
 
-# Redirect API data to S3
+# Redirect API data to S3. The target is substituted from DATA_URL by the build
+# command above; see the comment there for why a placeholder is used.
 [[redirects]]
 from = "/api-data/*"
-to = "https://liquid-stats-46ea8b54.s3.amazonaws.com/:splat"
+to = "S3_ORIGIN_PLACEHOLDER:splat"
 status = 200
 force = true
 

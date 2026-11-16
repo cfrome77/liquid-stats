@@ -10,7 +10,7 @@ import {
   signal,
 } from "@angular/core";
 
-import { ActivatedRoute } from "@angular/router"; // Added
+import { ActivatedRoute, Router } from "@angular/router"; // Added
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BadgeDialogComponent } from "../../shared/components/badge-dialog/badge-dialog.component";
 import {
@@ -23,10 +23,21 @@ import { environment } from "../../../environments/environment";
 
 import { Checkin } from "src/app/core/models/checkin.model";
 import { DateUtils } from "../../core/utils/date-utils";
+import {
+  DEFAULT_PER_PAGE,
+  DEFAULT_VIEW,
+  PER_PAGE_OPTIONS,
+  ViewMode,
+  clampPage,
+  parsePositiveInt,
+  parseViewMode,
+  viewStateParams,
+} from "../../core/utils/view-state";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 @Component({
   selector: "app-checkins",
@@ -49,9 +60,10 @@ export class CheckinsComponent implements OnInit {
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private ngZone = inject(NgZone);
 
-  public viewMode = signal<"cards" | "compact">("cards");
+  public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public checkinsInitial: Checkin[] = [];
   public checkinsAll: Checkin[] = [];
   public transformedCheckins: BaseCardData[] = [];
@@ -61,6 +73,7 @@ export class CheckinsComponent implements OnInit {
   public itemsPerPage = 10;
   public hasLoadedAll = false;
   public isLoadingAll = false;
+  public hasLoadError = signal(false);
   username: string;
 
   constructor() {
@@ -68,10 +81,47 @@ export class CheckinsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.syncFromQueryParams();
     this.loadInitialData();
   }
 
+  /**
+   * Restores view mode, page, and page size from the URL so a shared or
+   * bookmarked link reproduces the exact view. Bad or stale values are
+   * clamped rather than trusted.
+   */
+  private syncFromQueryParams(): void {
+    const params = this.route.snapshot.queryParamMap;
+    this.viewMode.set(parseViewMode(params.get("view")));
+    this.itemsPerPage = parsePositiveInt(
+      params.get("perPage"),
+      DEFAULT_PER_PAGE,
+      PER_PAGE_OPTIONS,
+    );
+    this.currentPage = parsePositiveInt(params.get("page"), 1);
+  }
+
+  /** Mirrors the current view state into the URL, replacing history entries. */
+  private updateQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: viewStateParams({
+        view: this.viewMode(),
+        page: this.currentPage,
+        perPage: this.itemsPerPage,
+      }),
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
+  }
+
+  setViewMode(mode: ViewMode): void {
+    this.viewMode.set(mode);
+    this.updateQueryParams();
+  }
+
   loadInitialData(): void {
+    this.hasLoadError.set(false);
     this.dataService.getCheckins().subscribe({
       next: (data) => {
         const items = data.response.checkins.items || [];
@@ -95,8 +145,16 @@ export class CheckinsComponent implements OnInit {
       },
       error: (err) => {
         console.error("Error fetching checkins:", err);
+        this.hasLoadError.set(true);
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the check-ins fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadInitialData();
   }
 
   loadAllDataInBackground(): void {
@@ -156,6 +214,10 @@ export class CheckinsComponent implements OnInit {
   }
 
   updatePagination() {
+    const totalPages = Math.ceil(
+      this.transformedCheckins.length / this.itemsPerPage,
+    );
+    this.currentPage = clampPage(this.currentPage, totalPages);
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedCheckins = this.transformedCheckins.slice(
@@ -167,6 +229,7 @@ export class CheckinsComponent implements OnInit {
   onPageChange(page: number) {
     this.currentPage = page;
     this.updatePagination();
+    this.updateQueryParams();
     this.cdr.markForCheck();
     window.scrollTo(0, 0);
   }
@@ -175,6 +238,7 @@ export class CheckinsComponent implements OnInit {
     this.itemsPerPage = size;
     this.currentPage = 1;
     this.updatePagination();
+    this.updateQueryParams();
     this.cdr.markForCheck();
   }
 
@@ -237,9 +301,14 @@ export class CheckinsComponent implements OnInit {
       breweryName: checkin.brewery.brewery_name,
       description: checkin.checkin_comment,
       rating: checkin.rating_score,
-      mainImage: checkin.beer.beer_label_hd || checkin.beer.beer_label,
-      secondaryImage:
-        checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
+      mainImage: thumbnailLabel(
+        checkin.beer.beer_label,
+        checkin.beer.beer_label_hd,
+      ),
+      secondaryImage: thumbnailLabel(
+        checkin.brewery.brewery_label,
+        checkin.brewery.brewery_label_hd,
+      ),
       footerInfo: {
         text: checkin.venue?.venue_name ?? "Beer Info",
         link: checkin.venue
@@ -250,8 +319,10 @@ export class CheckinsComponent implements OnInit {
       },
       extraData: {
         ...extraData,
-        originalMainImage: checkin.beer.beer_label,
-        originalSecondaryImage: checkin.brewery.brewery_label,
+        originalMainImage:
+          checkin.beer.beer_label_hd || checkin.beer.beer_label,
+        originalSecondaryImage:
+          checkin.brewery.brewery_label_hd || checkin.brewery.brewery_label,
       },
     };
   }

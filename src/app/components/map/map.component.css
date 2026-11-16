@@ -37,6 +37,29 @@
   display: block;
 }
 
+.map-overlay-message {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.map-overlay-message mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: var(--accent-blue);
+  opacity: 0.6;
+}
+
 /* Controls */
 .top-controls {
   position: absolute;

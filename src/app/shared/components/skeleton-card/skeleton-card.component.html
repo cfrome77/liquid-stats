@@ -3,6 +3,9 @@
   [class.cards-mode]="viewMode() === 'cards'"
   [class.compact-mode]="viewMode() === 'compact'"
 >
+  <span class="visually-hidden" role="status" aria-live="polite"
+    >Loading content…</span
+  >
   @for (item of items; track $index) {
     @if (viewMode() === "compact") {
       <div

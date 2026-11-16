@@ -1,4 +1,9 @@
-import { Component, Input, inject } from "@angular/core";
+import {
+  Component,
+  Input,
+  inject,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
@@ -9,6 +14,7 @@ import { RouterModule } from "@angular/router";
   templateUrl: "./social-links.component.html",
   styleUrls: ["./social-links.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIconModule, RouterModule],
 })
 export class SocialLinksComponent {

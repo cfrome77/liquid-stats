@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import {
   MAT_DIALOG_DATA,
@@ -26,6 +26,7 @@ export interface StylesListDialogData {
   templateUrl: "./styles-list-dialog.component.html",
   styleUrls: ["./styles-list-dialog.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     MatDialogModule,

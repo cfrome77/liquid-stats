@@ -1,10 +1,11 @@
 import {
   Component,
-  EventEmitter,
+  OnChanges,
   Input,
   Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
   SimpleChanges,
-  OnChanges,
 } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
@@ -14,6 +15,7 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./pagination.component.html",
   styleUrls: ["./pagination.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule],
 })
 export class PaginationComponent implements OnChanges {

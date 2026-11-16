@@ -1,10 +1,11 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
   selector: "app-rating",
   templateUrl: "./rating.component.html",
   styleUrls: ["./rating.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
 })
 export class RatingComponent {

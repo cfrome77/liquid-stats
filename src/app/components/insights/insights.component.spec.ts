@@ -68,6 +68,7 @@ describe("InsightsComponent", () => {
     mockBeerStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
       beers$: of(sampleBeers),
       checkins$: of([]),
+      loadError$: of(false),
     });
 
     const mockDialogRef = {
@@ -187,5 +188,105 @@ describe("InsightsComponent", () => {
     const data = dialogSpy.calls.mostRecent().args[1]
       ?.data as GenericBeersDialogData;
     expect(data.title).toBe("Plzeňský Prazdroj Drinks");
+  });
+
+  describe("heatmap accessibility", () => {
+    it("labels a day with its check-in count and date", () => {
+      expect(
+        component.heatmapDayLabel({ count: 3, formattedDate: "May 5, 2026" }),
+      ).toBe("3 check-ins on May 5, 2026");
+    });
+
+    it("uses the singular form for a single check-in", () => {
+      expect(
+        component.heatmapDayLabel({ count: 1, formattedDate: "May 5, 2026" }),
+      ).toBe("1 check-in on May 5, 2026");
+    });
+
+    it("describes a day with no check-ins", () => {
+      expect(
+        component.heatmapDayLabel({ count: 0, formattedDate: "May 5, 2026" }),
+      ).toBe("No check-ins on May 5, 2026");
+    });
+
+    it("opens the day dialog on space keydown and prevents default scroll", () => {
+      component.computeHeatmap([]);
+      const day = {
+        date: "2026-05-05",
+        formattedDate: "May 5, 2026",
+        count: 2,
+      };
+      const event = new KeyboardEvent("keydown", { key: " " });
+      const preventDefault = spyOn(event, "preventDefault");
+
+      component.onDayKeydown(event, day);
+
+      expect(preventDefault).toHaveBeenCalled();
+      expect(dialogSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("empty data", () => {
+    it("stops the skeleton and flags no data when the store returns an empty list", async () => {
+      const emptyStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of([]),
+        checkins$: of([]),
+        loadError$: of(false),
+      });
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [{ provide: BeerStoreService, useValue: emptyStore }],
+      }).compileComponents();
+
+      const emptyFixture = TestBed.createComponent(InsightsComponent);
+      emptyFixture.detectChanges();
+
+      const instance = emptyFixture.componentInstance;
+      expect(instance.isLoading()).toBeFalse();
+      expect(instance.hasData()).toBeFalse();
+      expect(
+        emptyFixture.nativeElement.querySelector("app-empty-state"),
+      ).not.toBeNull();
+    });
+  });
+
+  describe("load error", () => {
+    it("shows a retryable error state when the store reports a load failure", async () => {
+      const errorStore = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of([]),
+        checkins$: of([]),
+        loadError$: of(true),
+      });
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [{ provide: BeerStoreService, useValue: errorStore }],
+      }).compileComponents();
+
+      const errorFixture = TestBed.createComponent(InsightsComponent);
+      errorFixture.detectChanges();
+
+      const instance = errorFixture.componentInstance;
+      expect(instance.hasLoadError()).toBeTrue();
+
+      const el = errorFixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain("couldn't load your insights");
+      const button = el.querySelector(
+        "app-empty-state button",
+      ) as HTMLButtonElement;
+      button.click();
+      expect(errorStore.load).toHaveBeenCalledWith(true);
+    });
   });
 });

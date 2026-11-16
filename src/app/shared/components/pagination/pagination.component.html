@@ -11,7 +11,7 @@
   </button>
 
   <!-- Page numbers with ellipses -->
-  @for (page of pageNumbers; track page) {
+  @for (page of pageNumbers; track $index) {
     <button
       mat-button
       (click)="isNumber(page) && goToPage(page)"

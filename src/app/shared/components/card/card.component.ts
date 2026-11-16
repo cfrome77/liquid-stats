@@ -12,6 +12,7 @@ import { MatChipsModule } from "@angular/material/chips";
 import { RatingComponent } from "../rating/rating.component";
 import { SocialLinksComponent } from "../social-links/social-links.component";
 import { BaseCardData } from "./card-data.interface";
+import { DEFAULT_IMAGE as DEFAULT_IMAGE_URL } from "../../../core/default-image";
 
 @Component({
   selector: "app-card",
@@ -33,9 +34,6 @@ export class CardComponent {
   @Input() viewMode: "cards" | "compact" = "cards";
   @Output() badgeClick = new EventEmitter<unknown>();
 
-  readonly DEFAULT_IMAGE =
-    "https://placehold.co/400x400/2c2c2c/white?text=No+Photo";
-
   get hasSocialLinks(): boolean {
     const links = this.cardData?.extraData?.socialLinks;
     const mapData = this.cardData?.extraData?.mapData;
@@ -48,6 +46,26 @@ export class CardComponent {
 
   onBadgeClick(badge: unknown): void {
     this.badgeClick.emit(badge);
+  }
+
+  /**
+   * Walks an image down a fallback chain: high-res variant -> standard variant
+   * -> bundled placeholder. Compares against the markup `src` (not the
+   * resolved `img.src`) and stops when the target is unchanged, so a broken
+   * fallback can never re-trigger the handler in a loop.
+   */
+  handleImageError(event: Event, fallback?: string): void {
+    const img = event.target as HTMLImageElement | null;
+    if (!img) return;
+
+    const current = img.getAttribute("src");
+    if (fallback && fallback !== current) {
+      img.src = fallback;
+      return;
+    }
+    if (current !== DEFAULT_IMAGE_URL) {
+      img.src = DEFAULT_IMAGE_URL;
+    }
   }
 
   async shareCheckin(event: Event): Promise<void> {

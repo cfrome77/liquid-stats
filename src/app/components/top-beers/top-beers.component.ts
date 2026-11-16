@@ -20,6 +20,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 
+import { ActivatedRoute, Router } from "@angular/router";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
 import {
@@ -28,9 +29,17 @@ import {
   MapData,
 } from "../../shared/components/card/card-data.interface";
 import { DateUtils } from "../../core/utils/date-utils";
+import {
+  DEFAULT_VIEW,
+  ViewMode,
+  parseViewMode,
+  viewStateParams,
+} from "../../core/utils/view-state";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { BeerStyleDialogComponent } from "../../shared/components/beer-style-dialog/beer-style-dialog.component";
 import { SkeletonCardComponent } from "../../shared/components/skeleton-card/skeleton-card.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { thumbnailLabel } from "../../core/utils/label-image";
 
 type DateRangeOption = { label: string; daysBack?: number };
 
@@ -53,6 +62,7 @@ type DateRangeOption = { label: string; daysBack?: number };
     MatButtonModule,
     CardComponent,
     SkeletonCardComponent,
+    EmptyStateComponent,
   ],
   providers: [provideNativeDateAdapter()],
 })
@@ -60,11 +70,14 @@ export class TopBeersComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  public viewMode = signal<"cards" | "compact">("cards");
+  public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public beers: BeerCheckin[] = [];
   public transformedTopBeers: BaseCardData[] = [];
   public isLoading = true;
+  public hasLoadError = signal(false);
 
   // Filter state
   public useCustomDate = false;
@@ -89,7 +102,35 @@ export class TopBeersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.syncFromQueryParams();
+    this.loadBeers();
+  }
+
+  /** Restores the view mode from the URL so a shared link reproduces it. */
+  private syncFromQueryParams(): void {
+    this.viewMode.set(
+      parseViewMode(this.route.snapshot.queryParamMap.get("view")),
+    );
+  }
+
+  setViewMode(mode: ViewMode): void {
+    this.viewMode.set(mode);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: viewStateParams({
+        view: mode,
+        page: 1,
+        perPage: 10,
+      }),
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
+  }
+
+  /** Fetches all check-ins that feed the ranking filters. */
+  private loadBeers(): void {
     this.isLoading = true;
+    this.hasLoadError.set(false);
     this.dataService.getBeersAll().subscribe({
       next: (data) => {
         this.beers = data;
@@ -99,9 +140,16 @@ export class TopBeersComponent implements OnInit {
       error: (err) => {
         console.error("Error fetching beers:", err);
         this.isLoading = false;
+        this.hasLoadError.set(true);
         this.cdr.markForCheck();
       },
     });
+  }
+
+  /** Clears the cached response and retries the check-ins fetch. */
+  retryLoad(): void {
+    this.dataService.clearCache();
+    this.loadBeers();
   }
 
   onFilterChange() {
@@ -110,6 +158,15 @@ export class TopBeersComponent implements OnInit {
     } else {
       this.useCustomDate = false;
     }
+    this.filterAndRankBeers();
+  }
+
+  resetFilters(): void {
+    this.selectedRange = this.dateRangeOptions[0];
+    this.topX = 5;
+    this.minCheckins = 1;
+    this.useCustomDate = false;
+    this.customStartDate = null;
     this.filterAndRankBeers();
   }
 
@@ -135,9 +192,7 @@ export class TopBeersComponent implements OnInit {
     const beerGroups = new Map<number, BeerCheckin[]>();
 
     this.beers.forEach((b) => {
-      const dateStr =
-        b.recent_created_at ||
-        (b as unknown as { created_at: string }).created_at;
+      const dateStr = b.recent_created_at || b.first_created_at;
       const beerDate = DateUtils.parseDate(dateStr);
 
       if (isOverall || beerDate >= cutoffDate) {
@@ -203,10 +258,7 @@ export class TopBeersComponent implements OnInit {
 
     const extraData: CardExtraData = {
       badges: [],
-      socialLinks: beer.brewery.contact as unknown as Record<
-        string,
-        string | number | boolean | undefined
-      >,
+      socialLinks: beer.brewery.contact,
       mapData,
     };
 
@@ -216,9 +268,11 @@ export class TopBeersComponent implements OnInit {
       breweryName: beer.brewery.brewery_name,
       rating: beer.avgRating,
       globalRating: beer.beer.rating_score,
-      mainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
-      secondaryImage:
-        beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
+      mainImage: thumbnailLabel(beer.beer.beer_label, beer.beer.beer_label_hd),
+      secondaryImage: thumbnailLabel(
+        beer.brewery.brewery_label,
+        beer.brewery.brewery_label_hd,
+      ),
       rank: rank,
       footerInfo: {
         text: `Check-ins: ${beer.totalCheckins}`,
@@ -227,8 +281,9 @@ export class TopBeersComponent implements OnInit {
       },
       extraData: {
         ...extraData,
-        originalMainImage: beer.beer.beer_label,
-        originalSecondaryImage: beer.brewery.brewery_label,
+        originalMainImage: beer.beer.beer_label_hd || beer.beer.beer_label,
+        originalSecondaryImage:
+          beer.brewery.brewery_label_hd || beer.brewery.brewery_label,
       },
     };
   }

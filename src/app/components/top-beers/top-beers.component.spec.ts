@@ -10,7 +10,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatDialogModule } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { DataService } from "../../core/services/data.service";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -21,10 +21,7 @@ describe("TopBeersComponent", () => {
   let mockDataService: jasmine.SpyObj<DataService>;
 
   beforeEach(async () => {
-    mockDataService = jasmine.createSpyObj("DataService", [
-      "getBeers",
-      "getBeersAll",
-    ]);
+    mockDataService = jasmine.createSpyObj("DataService", ["getBeersAll"]);
     const mockBeer = {
       beer: {
         beer_name: "Test Beer",
@@ -66,13 +63,22 @@ describe("TopBeersComponent", () => {
       ],
       providers: [
         { provide: DataService, useValue: mockDataService },
-        { provide: ActivatedRoute, useValue: { params: of({}) } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: {
+              queryParamMap: {
+                get: () => null,
+              },
+            },
+          },
+        },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopBeersComponent);
     component = fixture.componentInstance;
-    // We don't need to manually set component.beers here because ngOnInit will call getBeers
   });
 
   it("should create", () => {
@@ -84,6 +90,26 @@ describe("TopBeersComponent", () => {
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBeGreaterThan(0);
     expect(component.transformedTopBeers[0].title).toBe("Test Beer");
+  });
+
+  it("shows a retryable error state when the beers request fails", () => {
+    mockDataService.getBeersAll.and.returnValue(
+      throwError(() => new Error("network error")),
+    );
+    mockDataService.clearCache = jasmine.createSpy("clearCache");
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component.hasLoadError()).toBeTrue();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain("couldn't load your drinks");
+
+    const button = el.querySelector(
+      "app-empty-state button",
+    ) as HTMLButtonElement;
+    button.click();
+    expect(mockDataService.clearCache).toHaveBeenCalled();
   });
 
   it("should correctly handle beers with count > 1 for minCheckins filter", () => {
@@ -122,5 +148,23 @@ describe("TopBeersComponent", () => {
     component.onFilterChange();
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBe(0);
+  });
+
+  it("resets filters back to their defaults", () => {
+    fixture.detectChanges();
+    component.topX = 15;
+    component.minCheckins = 10;
+    component.selectedRange = component.dateRangeOptions[2];
+    component.useCustomDate = true;
+    component.customStartDate = new Date();
+
+    component.resetFilters();
+
+    expect(component.topX).toBe(5);
+    expect(component.minCheckins).toBe(1);
+    expect(component.selectedRange).toBe(component.dateRangeOptions[0]);
+    expect(component.useCustomDate).toBeFalse();
+    expect(component.customStartDate).toBeNull();
+    expect(component.transformedTopBeers.length).toBeGreaterThan(0);
   });
 });

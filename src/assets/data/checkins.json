@@ -3,9 +3,8 @@
     "checkins": {
       "items": [
         {
-          "checkin_id": 124,
+          "checkin_id": 101,
           "created_at": "Mon, 06 Apr 2026 21:00:00 +0000",
-          "checkin_comment": "HD Beer Checkin",
           "rating_score": 4.5,
           "beer": {
             "bid": 6658502,
@@ -19,18 +18,21 @@
             "brewery_name": "Test HD Brewery",
             "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
             "country_name": "USA",
+            "location": {
+              "brewery_state": "CA",
+              "brewery_city": "San Diego",
+              "lat": 32.7157,
+              "lng": -117.1611
+            },
             "contact": {
               "facebook": "testhd",
               "instagram": "testhd",
               "url": "https://example.com"
-            },
-            "location": {
-              "lat": 40.7128,
-              "lng": -74.006
             }
           },
+          "checkin_comment": "HD Beer Checkin",
           "badges": {
-            "count": 3,
+            "count": 2,
             "items": [
               {
                 "badge_name": "IPA Day (2026)",
@@ -49,18 +51,368 @@
                   "md": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
                   "lg": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "checkin_id": 102,
+          "created_at": "Mon, 06 Apr 2026 20:10:00 +0000",
+          "rating_score": 4.5,
+          "beer": {
+            "bid": 6658502,
+            "beer_name": "Test HD Beer",
+            "beer_style": "IPA",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "test-hd-beer"
+          },
+          "brewery": {
+            "brewery_id": 570608,
+            "brewery_name": "Test HD Brewery",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "USA",
+            "location": {
+              "brewery_state": "CA",
+              "brewery_city": "San Diego",
+              "lat": 32.7157,
+              "lng": -117.1611
+            },
+            "contact": {
+              "facebook": "testhd",
+              "instagram": "testhd",
+              "url": "https://example.com"
+            }
+          },
+          "checkin_comment": "Shared a photo of this pour.",
+          "media": {
+            "count": 1,
+            "items": [
               {
-                "badge_name": "Middle of the Road (Level 5)",
-                "badge_description": "Middle of the road beers!",
-                "badge_image": {
-                  "sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
-                  "md": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
-                  "lg": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
+                "photo": {
+                  "photo_img_sm": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "photo_img_md": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "photo_img_lg": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+                  "photo_img_og": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png"
                 }
               }
             ]
           }
+        },
+        {
+          "checkin_id": 103,
+          "created_at": "Sun, 05 Apr 2026 18:30:00 +0000",
+          "rating_score": 3.75,
+          "beer": {
+            "bid": 6658503,
+            "beer_name": "Ægir Hoppy Pils",
+            "beer_style": "Pilsner",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "aegir-hoppy-pils"
+          },
+          "brewery": {
+            "brewery_id": 570609,
+            "brewery_name": "Ægir Bryggeri",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "Norway",
+            "location": {
+              "brewery_state": "Vestland",
+              "brewery_city": "Bergen",
+              "lat": 60.3913,
+              "lng": 5.3221
+            }
+          },
+          "checkin_comment": "Crisp Norwegian pils."
+        },
+        {
+          "checkin_id": 104,
+          "created_at": "Sat, 04 Apr 2026 22:15:00 +0000",
+          "rating_score": 4.25,
+          "beer": {
+            "bid": 6658504,
+            "beer_name": "Põhjala Öö Imperial Baltic Porter (Barrel Aged) with Vanilla and a Deliberately Very Long Name",
+            "beer_style": "Baltic Porter",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "pohjala-oo-imperial-baltic-porter-barrel-aged"
+          },
+          "brewery": {
+            "brewery_id": 570610,
+            "brewery_name": "Põhjala Brewery",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "Estonia",
+            "location": {
+              "brewery_state": "Harju",
+              "brewery_city": "Tallinn",
+              "lat": 59.437,
+              "lng": 24.7536
+            }
+          }
+        },
+        {
+          "checkin_id": 105,
+          "created_at": "Wed, 01 Apr 2026 21:30:00 +0000",
+          "rating_score": 3.5,
+          "beer": {
+            "bid": 6658506,
+            "beer_name": "Lambiek No Label",
+            "beer_style": "Lambic",
+            "beer_label": "",
+            "beer_slug": "lambiek-no-label"
+          },
+          "brewery": {
+            "brewery_id": 570612,
+            "brewery_name": "Brussels Lambiek Co.",
+            "brewery_label": "",
+            "country_name": "Belgium",
+            "location": {
+              "brewery_state": "Brussels",
+              "brewery_city": "Brussels",
+              "lat": 50.8503,
+              "lng": 4.3517
+            }
+          },
+          "checkin_comment": "No label on this one."
+        },
+        {
+          "checkin_id": 106,
+          "created_at": "Thu, 02 Apr 2026 19:45:00 +0000",
+          "rating_score": 4.0,
+          "beer": {
+            "bid": 6658505,
+            "beer_name": "Münchner Weiße",
+            "beer_style": "Hefeweizen",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "muenchner-weisse"
+          },
+          "brewery": {
+            "brewery_id": 570611,
+            "brewery_name": "Münchner Brauhaus",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "Germany",
+            "location": {
+              "brewery_state": "Bavaria",
+              "brewery_city": "Munich",
+              "lat": 48.1351,
+              "lng": 11.582
+            }
+          },
+          "checkin_comment": "Bavarian classic.",
+          "venue": {
+            "venue_id": 9001,
+            "venue_name": "Munich Beer Hall"
+          }
+        },
+        {
+          "checkin_id": 107,
+          "created_at": "Tue, 31 Mar 2026 23:00:00 +0000",
+          "rating_score": 4.75,
+          "beer": {
+            "bid": 6658507,
+            "beer_name": "Stone IPA",
+            "beer_style": "IPA",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "stone-ipa"
+          },
+          "brewery": {
+            "brewery_id": 570613,
+            "brewery_name": "Stone Brewing",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "USA",
+            "location": {
+              "brewery_state": "CA",
+              "brewery_city": "Escondido",
+              "lat": 33.1192,
+              "lng": -117.0864
+            }
+          },
+          "checkin_comment": "Classic west coast IPA."
+        },
+        {
+          "checkin_id": 108,
+          "created_at": "Mon, 30 Mar 2026 20:05:00 +0000",
+          "rating_score": 4.0,
+          "beer": {
+            "bid": 6658502,
+            "beer_name": "Test HD Beer",
+            "beer_style": "IPA",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "test-hd-beer"
+          },
+          "brewery": {
+            "brewery_id": 570608,
+            "brewery_name": "Test HD Brewery",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "USA",
+            "location": {
+              "brewery_state": "CA",
+              "brewery_city": "San Diego",
+              "lat": 32.7157,
+              "lng": -117.1611
+            },
+            "contact": {
+              "facebook": "testhd",
+              "instagram": "testhd",
+              "url": "https://example.com"
+            }
+          },
+          "badges": {
+            "count": 0,
+            "items": []
+          }
+        },
+        {
+          "checkin_id": 109,
+          "created_at": "Sun, 29 Mar 2026 19:20:00 +0000",
+          "rating_score": 4.5,
+          "beer": {
+            "bid": 6658502,
+            "beer_name": "Test HD Beer",
+            "beer_style": "IPA",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "test-hd-beer"
+          },
+          "brewery": {
+            "brewery_id": 570608,
+            "brewery_name": "Test HD Brewery",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "USA",
+            "location": {
+              "brewery_state": "CA",
+              "brewery_city": "San Diego",
+              "lat": 32.7157,
+              "lng": -117.1611
+            },
+            "contact": {
+              "facebook": "testhd",
+              "instagram": "testhd",
+              "url": "https://example.com"
+            }
+          },
+          "checkin_comment": "Another one."
+        },
+        {
+          "checkin_id": 110,
+          "created_at": "Sat, 28 Mar 2026 17:00:00 +0000",
+          "rating_score": 3.75,
+          "beer": {
+            "bid": 6658503,
+            "beer_name": "Ægir Hoppy Pils",
+            "beer_style": "Pilsner",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "aegir-hoppy-pils"
+          },
+          "brewery": {
+            "brewery_id": 570609,
+            "brewery_name": "Ægir Bryggeri",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "Norway",
+            "location": {
+              "brewery_state": "Vestland",
+              "brewery_city": "Bergen",
+              "lat": 60.3913,
+              "lng": 5.3221
+            }
+          },
+          "checkin_comment": "Bergen tasting."
+        },
+        {
+          "checkin_id": 111,
+          "created_at": "Fri, 27 Mar 2026 21:45:00 +0000",
+          "rating_score": 4.25,
+          "beer": {
+            "bid": 6658504,
+            "beer_name": "Põhjala Öö Imperial Baltic Porter (Barrel Aged) with Vanilla and a Deliberately Very Long Name",
+            "beer_style": "Baltic Porter",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "pohjala-oo-imperial-baltic-porter-barrel-aged"
+          },
+          "brewery": {
+            "brewery_id": 570610,
+            "brewery_name": "Põhjala Brewery",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "Estonia",
+            "location": {
+              "brewery_state": "Harju",
+              "brewery_city": "Tallinn",
+              "lat": 59.437,
+              "lng": 24.7536
+            }
+          },
+          "checkin_comment": "Tallinn nightcap."
+        },
+        {
+          "checkin_id": 112,
+          "created_at": "Thu, 26 Mar 2026 18:10:00 +0000",
+          "rating_score": 4.0,
+          "beer": {
+            "bid": 6658505,
+            "beer_name": "Münchner Weiße",
+            "beer_style": "Hefeweizen",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "muenchner-weisse"
+          },
+          "brewery": {
+            "brewery_id": 570611,
+            "brewery_name": "Münchner Brauhaus",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "Germany",
+            "location": {
+              "brewery_state": "Bavaria",
+              "brewery_city": "Munich",
+              "lat": 48.1351,
+              "lng": 11.582
+            }
+          },
+          "checkin_comment": "Prost!"
+        },
+        {
+          "checkin_id": 113,
+          "created_at": "Wed, 25 Mar 2026 22:00:00 +0000",
+          "rating_score": 3.5,
+          "beer": {
+            "bid": 6658506,
+            "beer_name": "Lambiek No Label",
+            "beer_style": "Lambic",
+            "beer_label": "",
+            "beer_slug": "lambiek-no-label"
+          },
+          "brewery": {
+            "brewery_id": 570612,
+            "brewery_name": "Brussels Lambiek Co.",
+            "brewery_label": "",
+            "country_name": "Belgium",
+            "location": {
+              "brewery_state": "Brussels",
+              "brewery_city": "Brussels",
+              "lat": 50.8503,
+              "lng": 4.3517
+            }
+          },
+          "checkin_comment": "Sour mood."
+        },
+        {
+          "checkin_id": 114,
+          "created_at": "Tue, 24 Mar 2026 23:30:00 +0000",
+          "rating_score": 4.75,
+          "beer": {
+            "bid": 6658507,
+            "beer_name": "Stone IPA",
+            "beer_style": "IPA",
+            "beer_label": "https://assets.untappd.com/site/beer_logos/beer-6658502_9eb7e_sm.jpeg",
+            "beer_slug": "stone-ipa"
+          },
+          "brewery": {
+            "brewery_id": 570613,
+            "brewery_name": "Stone Brewing",
+            "brewery_label": "https://assets.untappd.com/site/brewery_logos/brewery-570608_92110.jpeg",
+            "country_name": "USA",
+            "location": {
+              "brewery_state": "CA",
+              "brewery_city": "Escondido",
+              "lat": 33.1192,
+              "lng": -117.0864
+            }
+          },
+          "checkin_comment": "Stone cold classic."
         }
       ]
     }

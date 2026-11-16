@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
@@ -28,6 +28,7 @@ export interface GenericBeersDialogData {
   templateUrl: "./beer-style-dialog.component.html",
   styleUrls: ["./beer-style-dialog.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     MatDialogModule,

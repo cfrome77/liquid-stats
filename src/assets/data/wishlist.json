@@ -7,13 +7,40 @@
             "bid": 1,
             "beer_name": "Wishlist Beer",
             "beer_style": "Stout",
-            "beer_label": "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+            "beer_label": "https://assets.untappd.com/site/assets/images/temp/badge-brewery-default.png",
             "beer_slug": "wishlist-beer",
             "beer_description": "A very dark beer."
           },
           "brewery": {
             "brewery_name": "Wishlist Brewery",
             "brewery_label": "https://assets.untappd.com/site/assets/images/temp/badge-brewery-default.png"
+          }
+        },
+        {
+          "beer": {
+            "bid": 2,
+            "beer_name": "Westvleteren XII (Quadrupel with an Extremely Long Trademarked Name)",
+            "beer_style": "Quadrupel",
+            "beer_label": "https://assets.untappd.com/site/assets/images/temp/badge-brewery-default.png",
+            "beer_slug": "westvleteren-xii",
+            "beer_description": "Trappist quadrupel."
+          },
+          "brewery": {
+            "brewery_name": "Sint-Sixtusabdij",
+            "brewery_label": "https://assets.untappd.com/site/assets/images/temp/badge-brewery-default.png"
+          }
+        },
+        {
+          "beer": {
+            "bid": 3,
+            "beer_name": "Mystery Unlabeled Beer",
+            "beer_style": "Saison",
+            "beer_label": "",
+            "beer_slug": "mystery-unlabeled"
+          },
+          "brewery": {
+            "brewery_name": "Unknown Brewery",
+            "brewery_label": ""
           }
         }
       ]
