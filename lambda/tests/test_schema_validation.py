@@ -7,6 +7,7 @@ anything is written.
 """
 
 import copy
+import json
 
 import pytest
 
@@ -211,3 +212,67 @@ def test_lambda_handler_writes_all_files_when_valid(
     }
     # The validated payload is written unchanged, preserving upstream fields.
     assert written["beers_all.json"] == beers_payload
+
+
+class _FakeS3:
+    def __init__(self):
+        self.uploads = []
+
+    def put_object(self, **kwargs):
+        self.uploads.append(kwargs)
+
+
+def test_lambda_handler_uploads_all_files_to_s3_when_valid(
+    fetch_api_data, monkeypatch, beers_payload, checkins_payload, badges_payload,
+    wishlist_payload,
+):
+    """The production path: with a bucket configured, every payload reaches S3."""
+    module = fetch_api_data
+    fake_s3 = _FakeS3()
+
+    _stub_credentials(monkeypatch, module)
+    monkeypatch.setattr(module, "s3", fake_s3)
+    monkeypatch.setattr(module, "S3_BUCKET_NAME", "prod-bucket")
+    monkeypatch.setattr(module, "get_all_beers", lambda: beers_payload["beers"])
+    monkeypatch.setattr(module, "get_all_badges", lambda: badges_payload)
+    monkeypatch.setattr(module, "get_checkins", lambda: checkins_payload)
+    monkeypatch.setattr(module, "get_wishlist", lambda: wishlist_payload)
+
+    result = module.lambda_handler(None, None)
+
+    assert result["statusCode"] == 200
+    assert {u["Key"] for u in fake_s3.uploads} == {
+        "beers_all.json",
+        "badges.json",
+        "checkins.json",
+        "wishlist.json",
+        "stats.json",
+    }
+    assert all(u["Bucket"] == "prod-bucket" for u in fake_s3.uploads)
+    assert all(u["ContentType"] == "application/json" for u in fake_s3.uploads)
+    # Uploaded bodies are the JSON payloads the frontend expects.
+    beers_upload = next(
+        u for u in fake_s3.uploads if u["Key"] == "beers_all.json"
+    )
+    assert json.loads(beers_upload["Body"]) == beers_payload
+
+
+def test_lambda_handler_uploads_nothing_when_invalid(
+    fetch_api_data, monkeypatch, beers_payload
+):
+    """A bad payload must not overwrite any S3 object."""
+    module = fetch_api_data
+    fake_s3 = _FakeS3()
+
+    broken_beers = copy.deepcopy(beers_payload)
+    del broken_beers["beers"][0]["beer"]["beer_style"]
+
+    _stub_credentials(monkeypatch, module)
+    monkeypatch.setattr(module, "s3", fake_s3)
+    monkeypatch.setattr(module, "S3_BUCKET_NAME", "prod-bucket")
+    monkeypatch.setattr(module, "get_all_beers", lambda: broken_beers["beers"])
+
+    result = module.lambda_handler(None, None)
+
+    assert result["statusCode"] == 500
+    assert fake_s3.uploads == []
