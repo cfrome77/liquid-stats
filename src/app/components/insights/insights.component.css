@@ -241,6 +241,30 @@
   min-height: 220px;
 }
 
+/* Charts whose bars open a filtered list. The cursor itself is set by the
+   Chart.js onHover handler, but a fallback pointer and touch affordance keep
+   the chart usable when JS hover events are unavailable. */
+.interactive-chart {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chart-interaction-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -8px 0 16px;
+  font-size: 0.78rem;
+  color: var(--accent-blue);
+  opacity: 0.9;
+}
+
+.chart-interaction-hint mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
 .milestones-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

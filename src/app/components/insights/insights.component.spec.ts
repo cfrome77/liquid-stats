@@ -6,12 +6,14 @@ import {
   MatDialog,
 } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ActivatedRoute, Router, provideRouter } from "@angular/router";
 import { of } from "rxjs";
 
 import { InsightsComponent } from "./insights.component";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { GenericBeersDialogData } from "src/app/shared/components/beer-style-dialog/beer-style-dialog.component";
+import { CHART_FILTER_PARAMS } from "src/app/core/utils/view-state";
 
 describe("InsightsComponent", () => {
   let component: InsightsComponent;
@@ -110,7 +112,10 @@ describe("InsightsComponent", () => {
         MatDialogModule,
         BrowserAnimationsModule,
       ],
-      providers: [{ provide: BeerStoreService, useValue: mockBeerStore }],
+      providers: [
+        { provide: BeerStoreService, useValue: mockBeerStore },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InsightsComponent);
@@ -187,7 +192,10 @@ describe("InsightsComponent", () => {
           MatDialogModule,
           BrowserAnimationsModule,
         ],
-        providers: [{ provide: BeerStoreService, useValue: store }],
+        providers: [
+          { provide: BeerStoreService, useValue: store },
+          provideRouter([]),
+        ],
       }).compileComponents();
 
       const rankedFixture = TestBed.createComponent(InsightsComponent);
@@ -398,7 +406,10 @@ describe("InsightsComponent", () => {
           MatDialogModule,
           BrowserAnimationsModule,
         ],
-        providers: [{ provide: BeerStoreService, useValue: emptyStore }],
+        providers: [
+          { provide: BeerStoreService, useValue: emptyStore },
+          provideRouter([]),
+        ],
       }).compileComponents();
 
       const emptyFixture = TestBed.createComponent(InsightsComponent);
@@ -428,7 +439,10 @@ describe("InsightsComponent", () => {
           MatDialogModule,
           BrowserAnimationsModule,
         ],
-        providers: [{ provide: BeerStoreService, useValue: errorStore }],
+        providers: [
+          { provide: BeerStoreService, useValue: errorStore },
+          provideRouter([]),
+        ],
       }).compileComponents();
 
       const errorFixture = TestBed.createComponent(InsightsComponent);
@@ -444,6 +458,151 @@ describe("InsightsComponent", () => {
       ) as HTMLButtonElement;
       button.click();
       expect(errorStore.load).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe("interactive chart clicks and URL filtering", () => {
+    const labels = (): string[] =>
+      component.styleBarChartData.labels as string[];
+
+    it("registers Chart.js onClick and onHover handlers plus hover events", () => {
+      const style = component.styleBarChartOptions;
+      expect(typeof style.onClick).toBe("function");
+      expect(typeof style.onHover).toBe("function");
+      expect(style.events).toContain("click");
+      expect(style.events).toContain("touchstart");
+
+      const rating = component.ratingChartOptions;
+      expect(typeof rating.onClick).toBe("function");
+      expect(typeof rating.onHover).toBe("function");
+    });
+
+    it("sets a pointer cursor over an active element and resets otherwise", () => {
+      const target = document.createElement("canvas");
+      const setCursor = (
+        component as unknown as {
+          setPointerCursor: (
+            event: { native: { target: HTMLElement } },
+            elements: unknown[],
+          ) => void;
+        }
+      ).setPointerCursor.bind(component);
+
+      setCursor({ native: { target } }, [{}]);
+      expect(target.style.cursor).toBe("pointer");
+
+      setCursor({ native: { target } }, []);
+      expect(target.style.cursor).toBe("default");
+    });
+
+    it("extracts the clicked style label and opens the filtered dialog", () => {
+      const index = labels().indexOf("Lager / Pilsner");
+      expect(index).toBeGreaterThanOrEqual(0);
+
+      (
+        component as unknown as {
+          onStyleBarClick: (elements: { index: number }[]) => void;
+        }
+      ).onStyleBarClick([{ index }]);
+
+      const data = dialogSpy.calls.mostRecent().args[1]
+        ?.data as GenericBeersDialogData;
+      expect(data.title).toBe("Lager / Pilsner Drinks");
+      expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
+    });
+
+    it("writes the selected style into the URL with merged query params", () => {
+      const router = TestBed.inject(Router);
+      const navigate = spyOn(router, "navigate");
+
+      component.selectStyle("IPA");
+
+      expect(navigate).toHaveBeenCalled();
+      const extras = navigate.calls.mostRecent().args[1]!;
+      expect(extras.queryParams).toEqual({
+        [CHART_FILTER_PARAMS.style]: "IPA",
+      });
+      expect(extras.queryParamsHandling).toBe("merge");
+    });
+
+    it("ignores a click when no chart element was hit", () => {
+      dialogSpy.calls.reset();
+      (
+        component as unknown as {
+          onStyleBarClick: (elements: unknown[]) => void;
+        }
+      ).onStyleBarClick([]);
+      expect(dialogSpy).not.toHaveBeenCalled();
+    });
+
+    it("filters check-ins into a rating bin when a histogram bar is clicked", () => {
+      (
+        component as unknown as {
+          onRatingChartClick: (elements: { index: number }[]) => void;
+        }
+      ).onRatingChartClick([{ index: 16 }]); // 4.25 -> rounded to 4.25
+
+      const data = dialogSpy.calls.mostRecent().args[1]
+        ?.data as GenericBeersDialogData;
+      expect(data.title).toBe("4.25★ Drinks");
+      expect(data.beers.length).toBe(1);
+      expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
+    });
+
+    it("writes the selected rating into the URL", () => {
+      const router = TestBed.inject(Router);
+      const navigate = spyOn(router, "navigate");
+
+      component.selectRating("4.25");
+
+      const extras = navigate.calls.mostRecent().args[1]!;
+      expect(extras.queryParams).toEqual({
+        [CHART_FILTER_PARAMS.rating]: "4.25",
+      });
+      expect(extras.queryParamsHandling).toBe("merge");
+    });
+
+    it("deep-links a style from ?style= by opening the filtered list", async () => {
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [
+          { provide: BeerStoreService, useValue: mockBeerStore },
+          provideRouter([]),
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                queryParamMap: {
+                  get: (k: string) =>
+                    k === "style" ? "Lager / Pilsner" : null,
+                },
+              },
+              queryParams: of({ style: "Lager / Pilsner" }),
+            },
+          },
+        ],
+      }).compileComponents();
+
+      const deepLinkFixture = TestBed.createComponent(InsightsComponent);
+      deepLinkFixture.detectChanges();
+      expect(deepLinkFixture.componentInstance).toBeTruthy();
+
+      const data = dialogSpy.calls.mostRecent().args[1]
+        ?.data as GenericBeersDialogData;
+      expect(data.title).toBe("Lager / Pilsner Drinks");
+    });
+
+    it("renders the interaction hint on both charts", () => {
+      const el = fixture.nativeElement as HTMLElement;
+      const hints = el.querySelectorAll(".chart-interaction-hint");
+      expect(hints.length).toBe(2);
+      expect(hints[0]!.textContent).toContain("Tap a bar");
     });
   });
 });

@@ -9,6 +9,7 @@ import {
   DestroyRef,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ActivatedRoute, Router } from "@angular/router";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -19,7 +20,7 @@ import {
   provideCharts,
   withDefaultRegisterables,
 } from "ng2-charts";
-import { ChartData, ChartOptions } from "chart.js";
+import { ChartData, ChartEvent, ChartOptions, ActiveElement } from "chart.js";
 
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { LoggingService } from "src/app/core/services/logger.service";
@@ -37,6 +38,7 @@ import {
   StyleItem,
 } from "../../shared/components/styles-list-dialog/styles-list-dialog.component";
 import { sanitizeUntappdUrl } from "../../core/utils/url-utils";
+import { CHART_FILTER_PARAMS } from "../../core/utils/view-state";
 import { environment } from "src/environments/environment";
 
 export interface Milestone {
@@ -71,6 +73,8 @@ export class InsightsComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
   private logger = inject(LoggingService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   public beers: BeerCheckin[] = [];
   public hasData = signal<boolean>(false);
@@ -81,6 +85,12 @@ export class InsightsComponent implements OnInit {
   public averageABV = signal<number>(0);
   public topCategory = signal<string>("IPA");
   public totalUniqueStyles = signal<number>(0);
+
+  /** A `?style=`/`?rating=` deep link waiting for the beers to finish loading. */
+  private deepLinkSelection: { key: string; value: string } | null = null;
+
+  /** The last selection acted on, so a re-emitted query param is a no-op. */
+  private lastAppliedSelection: { key: string; value: string } | null = null;
 
   public checkinHeatmapWeeks = signal<
     {
@@ -135,6 +145,11 @@ export class InsightsComponent implements OnInit {
   public ratingChartOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
+    events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
+    onHover: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.setPointerCursor(event, elements),
+    onClick: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.onRatingChartClick(elements),
     plugins: {
       legend: {
         display: false,
@@ -191,10 +206,15 @@ export class InsightsComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     indexAxis: "y",
+    events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
     interaction: {
       mode: "nearest",
       intersect: false,
     },
+    onHover: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.setPointerCursor(event, elements),
+    onClick: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.onStyleBarClick(elements),
     plugins: {
       legend: {
         display: false,
@@ -251,6 +271,8 @@ export class InsightsComponent implements OnInit {
           this.computeInsights(beers);
           this.hasData.set(true);
           this.isLoading.set(false);
+          // A deep link may have arrived before the beers finished loading.
+          this.openDeepLinkSelection();
           this.cdr.markForCheck();
         } else if (beers !== null) {
           // Loaded but empty (e.g. a failed fetch): stop the skeleton so the
@@ -287,6 +309,13 @@ export class InsightsComponent implements OnInit {
         this.hasLoadError.set(hasError);
         this.cdr.markForCheck();
       });
+
+    // Deep link: a shared URL carrying `?style=`/`?rating=` reopens the
+    // matching filtered list. `queryParams` replays the current value on
+    // subscribe, so a bookmarked load and an in-page navigation both work.
+    this.route.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.applySelectionFromParams(params));
   }
 
   /** Retries loading all store data after a failed load. */
@@ -434,6 +463,134 @@ export class InsightsComponent implements OnInit {
     if (current) lines.push(current);
 
     return lines.join("\n");
+  }
+
+  // ---------------- CHART INTERACTION ----------------
+
+  /**
+   * Shows a pointer cursor over clickable chart elements (bars, slices) and
+   * resets it otherwise, so the chart reads as interactive on desktop. On
+   * touch devices the `click`/`touchstart` events below still fire.
+   */
+  private setPointerCursor(event: ChartEvent, elements: ActiveElement[]): void {
+    const target = event.native?.target as HTMLElement | null | undefined;
+    if (!target || !target.style) return;
+    target.style.cursor = elements.length > 0 ? "pointer" : "default";
+  }
+
+  /** Resolves the category label behind a clicked bar in the style chart. */
+  private onStyleBarClick(elements: ActiveElement[]): void {
+    const index = elements[0]?.index;
+    if (index === undefined) return;
+
+    const label = this.styleBarChartData.labels?.[index];
+    if (typeof label !== "string") return;
+
+    this.selectStyle(label);
+  }
+
+  /** Resolves the rating bin behind a clicked bar in the histogram. */
+  private onRatingChartClick(elements: ActiveElement[]): void {
+    const index = elements[0]?.index;
+    if (index === undefined) return;
+
+    const label = this.ratingHistogramChartData.labels?.[index];
+    if (typeof label !== "string") return;
+
+    this.selectRating(label);
+  }
+
+  /**
+   * Opens the style's check-in list and mirrors the selection into the URL
+   * (`?style=`), merging with any existing params so other state survives.
+   */
+  public selectStyle(style: string): void {
+    this.lastAppliedSelection = {
+      key: CHART_FILTER_PARAMS.style,
+      value: style,
+    };
+    this.openCategoryDialog(style);
+    this.updateQueryParam(CHART_FILTER_PARAMS.style, style);
+  }
+
+  /** Opens the rating bin's check-in list and mirrors it into the URL. */
+  public selectRating(rating: string): void {
+    this.lastAppliedSelection = {
+      key: CHART_FILTER_PARAMS.rating,
+      value: rating,
+    };
+    this.openRatingDialog(rating);
+    this.updateQueryParam(CHART_FILTER_PARAMS.rating, rating);
+  }
+
+  /** Writes a single chart selection into the URL, merging existing params. */
+  private updateQueryParam(key: string, value: string | null): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [key]: value },
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
+  }
+
+  /**
+   * Restores a chart selection from a shared or bookmarked URL by reopening
+   * the matching dialog.
+   *
+   * A selection this component just wrote (a chart click) is not reopened: the
+   * query-param emission it produces is recognised and skipped, so a click
+   * never opens the dialog twice.
+   */
+  private applySelectionFromParams(params: Record<string, string>): void {
+    const style = params[CHART_FILTER_PARAMS.style];
+    const rating = params[CHART_FILTER_PARAMS.rating];
+    const selection = style
+      ? { key: CHART_FILTER_PARAMS.style, value: style }
+      : rating
+        ? { key: CHART_FILTER_PARAMS.rating, value: rating }
+        : null;
+
+    if (!selection) {
+      this.lastAppliedSelection = null;
+      return;
+    }
+
+    if (
+      this.lastAppliedSelection?.key === selection.key &&
+      this.lastAppliedSelection.value === selection.value
+    ) {
+      return;
+    }
+
+    this.lastAppliedSelection = selection;
+    this.deepLinkSelection = selection;
+    this.openDeepLinkSelection();
+  }
+
+  /**
+   * Opens the list for a deep-linked selection, deferring until the beers are
+   * loaded so the dialog is never built from an empty set.
+   */
+  private openDeepLinkSelection(): void {
+    const selection = this.deepLinkSelection;
+    if (!selection || this.beers.length === 0) return;
+
+    this.deepLinkSelection = null;
+    if (selection.key === CHART_FILTER_PARAMS.style) {
+      this.openCategoryDialog(selection.value);
+    } else {
+      this.openRatingDialog(selection.value);
+    }
+  }
+
+  /** Opens the check-in list for a rating bin (e.g. `4.25`). */
+  public openRatingDialog(ratingLabel: string): void {
+    const target = Number(ratingLabel);
+    const filtered = this.beers.filter((b) => {
+      if (!b.rating_score || b.rating_score <= 0) return false;
+      return Math.round(b.rating_score * 4) / 4 === target;
+    });
+    this.openBeersDialog(`${ratingLabel}★ Drinks`, filtered);
   }
 
   public matchesCategory(b: BeerCheckin, categoryName: string): boolean {
