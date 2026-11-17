@@ -52,6 +52,31 @@ test("a shared ?rating= URL reopens the rating bin list", async ({ page }) => {
   await expect(dialog.locator("h2")).toContainText("4.25");
 });
 
+test("hides the search box when the list has a single drink", async ({
+  page,
+}) => {
+  // Wheat matches exactly one check-in, so there is nothing to search.
+  await page.goto("/insights?style=Wheat");
+
+  const dialog = page.locator("mat-dialog-container");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator("h2")).toHaveText("Wheat Drinks");
+  await expect(dialog.locator("li")).toHaveCount(1);
+  await expect(dialog.locator(".dialog-search-wrapper")).toHaveCount(0);
+});
+
+test("shows the search box when the list has several drinks", async ({
+  page,
+}) => {
+  // IPA matches more than one check-in, so the search box is useful.
+  await page.goto("/insights?style=IPA");
+
+  const dialog = page.locator("mat-dialog-container");
+  await expect(dialog).toBeVisible();
+  expect(await dialog.locator("li").count()).toBeGreaterThan(1);
+  await expect(dialog.locator(".dialog-search-wrapper")).toHaveCount(1);
+});
+
 test("clicking a style bar does not open the dialog twice", async ({
   page,
 }) => {
