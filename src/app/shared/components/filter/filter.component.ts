@@ -13,6 +13,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Overlay, OverlayModule, OverlayRef } from "@angular/cdk/overlay";
 import { TemplatePortal } from "@angular/cdk/portal";
+import { A11yModule } from "@angular/cdk/a11y";
 
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -43,6 +44,7 @@ export interface FilterField {
   standalone: true,
   imports: [
     OverlayModule,
+    A11yModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDatepickerModule,

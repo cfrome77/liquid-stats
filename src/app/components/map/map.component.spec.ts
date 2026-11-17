@@ -219,4 +219,86 @@ describe("MapComponent", () => {
     fixture.destroy();
     document.body.removeChild(mapDiv);
   }));
+
+  it("traps focus inside the brewery overlay while it is open", fakeAsync(() => {
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
+    document.body.appendChild(mapDiv);
+
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    mockMarkerService.getMarkerByBreweryId.and.returnValue({
+      breweryId: "brewery-1",
+      checkInsData: {
+        name: "Test Brewery",
+        city: "Test City",
+        state: "TS",
+        logo: "logo.png",
+        checkIns: [],
+      },
+    } as unknown as BreweryMarker);
+
+    component.openBreweryOverlay("brewery-1");
+    // The component already ran change detection; skip the dev-only
+    // checkNoChanges pass which trips over Leaflet mutating the DOM.
+    fixture.detectChanges(false);
+
+    const host = fixture.nativeElement as HTMLElement;
+    const panel = host.querySelector(".map-info-panel") as HTMLElement;
+    expect(panel).toBeTruthy();
+    expect(panel.getAttribute("role")).toBe("dialog");
+    expect(panel.getAttribute("aria-modal")).toBe("true");
+
+    // cdkTrapFocus inserts a start/end anchor pair around the trapped region.
+    // Scope to the panel's parent so the sidenav's own trap is not counted.
+    const anchors = panel.parentElement!.querySelectorAll(
+      ".cdk-focus-trap-anchor",
+    );
+    expect(anchors.length).toBe(2);
+    for (const anchor of Array.from(anchors)) {
+      expect(panel.parentElement?.contains(anchor)).toBeTrue();
+    }
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
+
+  it("closes the brewery overlay when Escape is pressed", fakeAsync(() => {
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
+    document.body.appendChild(mapDiv);
+
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    mockMarkerService.getMarkerByBreweryId.and.returnValue({
+      breweryId: "brewery-1",
+      checkInsData: {
+        name: "Test Brewery",
+        city: "Test City",
+        state: "TS",
+        logo: "logo.png",
+        checkIns: [],
+      },
+    } as unknown as BreweryMarker);
+
+    component.openBreweryOverlay("brewery-1");
+    fixture.detectChanges(false);
+    expect(component.selectedBrewery).not.toBeNull();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    fixture.detectChanges(false);
+
+    expect(component.selectedBrewery).toBeNull();
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
 });

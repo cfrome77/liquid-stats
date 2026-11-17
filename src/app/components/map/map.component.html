@@ -177,7 +177,15 @@
 
     <!-- Brewery Overlay -->
     @if (selectedBrewery) {
-      <div #overlayPanel class="map-info-panel mat-elevation-z4">
+      <div
+        #overlayPanel
+        class="map-info-panel mat-elevation-z4"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="(selectedBrewery.name || 'Brewery') + ' check-ins'"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+      >
         <button
           class="close-btn"
           (click)="closeBreweryOverlay()"
