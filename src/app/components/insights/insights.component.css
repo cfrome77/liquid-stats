@@ -236,9 +236,9 @@
   margin-bottom: 16px;
 }
 
-.radar-chart-container {
-  height: 420px;
+.style-bar-chart-container {
   position: relative;
+  min-height: 220px;
 }
 
 .milestones-grid {
@@ -325,10 +325,6 @@
 }
 
 @media (max-width: 600px) {
-  .radar-chart-container {
-    height: 260px;
-  }
-
   .heatmap-card {
     padding: 16px;
   }

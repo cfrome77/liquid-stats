@@ -146,22 +146,25 @@
       </div>
     </div>
 
-    <!-- Visual Charts Row: Radar & Rating Score Histogram -->
+    <!-- Visual Charts Row: Ranked Style Bar Chart & Rating Score Histogram -->
     <div class="charts-row-grid">
-      <!-- Style Preference Radar Chart -->
+      <!-- Ranked Style Distribution Bar Chart -->
       <div class="card glass-panel chart-card">
         <div class="section-header">
-          <h3><mat-icon>radar</mat-icon> Style Radar Distribution</h3>
+          <h3><mat-icon>bar_chart</mat-icon> Style Distribution</h3>
           <p class="subtitle">
-            A visual representation of your drink style exploration.
+            Your drink styles ranked by check-in frequency.
           </p>
         </div>
-        <div class="radar-chart-container">
+        <div
+          class="style-bar-chart-container"
+          [style.height.px]="styleBarChartHeight()"
+        >
           <canvas
             baseChart
-            [data]="styleRadarChartData"
-            [options]="radarChartOptions"
-            [type]="'radar'"
+            [data]="styleBarChartData"
+            [options]="styleBarChartOptions"
+            [type]="'bar'"
           >
           </canvas>
         </div>

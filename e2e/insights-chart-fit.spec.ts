@@ -63,3 +63,27 @@ test("insights charts do not widen the page at 320px", async ({ page }) => {
   );
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test("insights shows a ranked style bar chart above the milestones", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 1200 });
+  await page.goto("/insights");
+  await page.locator(".chart-card").first().waitFor();
+
+  const chart = page.locator(".style-bar-chart-container");
+  await expect(chart).toBeVisible();
+  await expect(chart.locator("canvas")).toHaveCount(1);
+
+  // The radar chart was removed.
+  await expect(page.getByText("Style Radar Distribution")).toHaveCount(0);
+
+  // Milestones stay below the chart, as required.
+  const chartBottom = await chart.evaluate(
+    (el) => el.getBoundingClientRect().bottom,
+  );
+  const milestonesTop = await page
+    .locator(".milestones-grid")
+    .evaluate((el) => el.getBoundingClientRect().top);
+  expect(milestonesTop).toBeGreaterThanOrEqual(chartBottom);
+});
