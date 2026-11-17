@@ -8,7 +8,9 @@ import {
   NgZone,
   inject,
   signal,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { ActivatedRoute, Router } from "@angular/router"; // Added
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -19,6 +21,7 @@ import {
   MapData,
 } from "../../shared/components/card/card-data.interface";
 import { DataService } from "src/app/core/services/data.service";
+import { LoggingService } from "src/app/core/services/logger.service";
 import { environment } from "../../../environments/environment";
 
 import { Checkin } from "src/app/core/models/checkin.model";
@@ -62,6 +65,8 @@ export class CheckinsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private ngZone = inject(NgZone);
+  private destroyRef = inject(DestroyRef);
+  private logger = inject(LoggingService);
 
   public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public checkinsInitial: Checkin[] = [];
@@ -122,33 +127,36 @@ export class CheckinsComponent implements OnInit {
 
   loadInitialData(): void {
     this.hasLoadError.set(false);
-    this.dataService.getCheckins().subscribe({
-      next: (data) => {
-        const items = data.response.checkins.items || [];
-        this.checkinsInitial = items;
-        this.transformedCheckins = this.checkinsInitial.map((checkin) =>
-          this.transformCheckinData(checkin),
-        );
-        this.totalItems = this.transformedCheckins.length;
-        this.updatePagination();
+    this.dataService
+      .getCheckins()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          const items = data.response.checkins.items || [];
+          this.checkinsInitial = items;
+          this.transformedCheckins = this.checkinsInitial.map((checkin) =>
+            this.transformCheckinData(checkin),
+          );
+          this.totalItems = this.transformedCheckins.length;
+          this.updatePagination();
 
-        this.cdr.markForCheck();
+          this.cdr.markForCheck();
 
-        // Background load "all" checkins
-        this.loadAllDataInBackground();
+          // Background load "all" checkins
+          this.loadAllDataInBackground();
 
-        // Check for ID in URL and scroll if present
-        const targetId = this.route.snapshot.paramMap.get("id");
-        if (targetId) {
-          this.scrollToCheckin(targetId);
-        }
-      },
-      error: (err) => {
-        console.error("Error fetching checkins:", err);
-        this.hasLoadError.set(true);
-        this.cdr.markForCheck();
-      },
-    });
+          // Check for ID in URL and scroll if present
+          const targetId = this.route.snapshot.paramMap.get("id");
+          if (targetId) {
+            this.scrollToCheckin(targetId);
+          }
+        },
+        error: (err) => {
+          this.logger.error("Error fetching checkins", err);
+          this.hasLoadError.set(true);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   /** Clears the cached response and retries the check-ins fetch. */
@@ -161,29 +169,32 @@ export class CheckinsComponent implements OnInit {
     if (this.hasLoadedAll || this.isLoadingAll) return;
 
     this.isLoadingAll = true;
-    this.dataService.getCheckins().subscribe({
-      next: (data) => {
-        const items = data.response.checkins.items || [];
-        this.checkinsAll = items;
-        this.hasLoadedAll = true;
-        this.isLoadingAll = false;
+    this.dataService
+      .getCheckins()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          const items = data.response.checkins.items || [];
+          this.checkinsAll = items;
+          this.hasLoadedAll = true;
+          this.isLoadingAll = false;
 
-        // Since checkins.json is currently only 50 items anyway,
-        // and we already loaded them in initial, this is more for future-proofing
-        // or for when we get a real paginated checkins feed.
+          // Since checkins.json is currently only 50 items anyway,
+          // and we already loaded them in initial, this is more for future-proofing
+          // or for when we get a real paginated checkins feed.
 
-        this.transformedCheckins = this.checkinsAll.map((checkin) =>
-          this.transformCheckinData(checkin),
-        );
-        this.totalItems = this.transformedCheckins.length;
-        this.updatePagination();
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error("Error fetching all checkins in background:", err);
-        this.isLoadingAll = false;
-      },
-    });
+          this.transformedCheckins = this.checkinsAll.map((checkin) =>
+            this.transformCheckinData(checkin),
+          );
+          this.totalItems = this.transformedCheckins.length;
+          this.updatePagination();
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.logger.error("Error fetching all checkins in background", err);
+          this.isLoadingAll = false;
+        },
+      });
   }
 
   private scrollToCheckin(id: string): void {

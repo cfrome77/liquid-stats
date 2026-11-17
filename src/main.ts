@@ -1,4 +1,9 @@
-import { enableProdMode, isDevMode } from "@angular/core";
+import {
+  enableProdMode,
+  isDevMode,
+  ErrorHandler,
+  provideBrowserGlobalErrorListeners,
+} from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import {
   provideRouter,
@@ -15,6 +20,7 @@ import { routes } from "./app/app-routing.module";
 import { environment } from "./environments/environment";
 import { imageLoader } from "./app/core/image-loader";
 import { AppTitleStrategy } from "./app/core/app-title-strategy";
+import { GlobalErrorHandler } from "./app/core/services/global-error-handler";
 
 if (environment.production) {
   enableProdMode();
@@ -24,6 +30,8 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     { provide: TitleStrategy, useClass: AppTitleStrategy },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    provideBrowserGlobalErrorListeners(),
     {
       provide: IMAGE_LOADER,
       useValue: imageLoader,

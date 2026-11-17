@@ -16,6 +16,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
+import { LoggingService } from "src/app/core/services/logger.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DateUtils } from "../../core/utils/date-utils";
 import {
@@ -67,6 +68,7 @@ export class BeerHistoryComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private logger = inject(LoggingService);
 
   private searchTerm$ = new Subject<string>();
 
@@ -163,21 +165,24 @@ export class BeerHistoryComponent implements OnInit {
   loadData(): void {
     this.isLoadingAll = true;
     this.hasLoadError.set(false);
-    this.dataService.getBeersAll().subscribe({
-      next: (data) => {
-        this.beersAll = data;
-        this.isLoadingAll = false;
-        this.initializeFilters();
-        this.applyFilters();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error("Error fetching all beers:", err);
-        this.isLoadingAll = false;
-        this.hasLoadError.set(true);
-        this.cdr.detectChanges();
-      },
-    });
+    this.dataService
+      .getBeersAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.beersAll = data;
+          this.isLoadingAll = false;
+          this.initializeFilters();
+          this.applyFilters();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.logger.error("Error fetching all beers", err);
+          this.isLoadingAll = false;
+          this.hasLoadError.set(true);
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   /** Clears the cached response and retries the check-ins fetch. */

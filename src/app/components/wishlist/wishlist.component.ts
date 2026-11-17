@@ -4,13 +4,16 @@ import {
   ChangeDetectorRef,
   inject,
   signal,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { WishlistBeer } from "src/app/core/models/beer.model";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterModule } from "@angular/router";
 import { DataService } from "src/app/core/services/data.service";
+import { LoggingService } from "src/app/core/services/logger.service";
 import { DateUtils } from "../../core/utils/date-utils";
 import { BaseCardData } from "../../shared/components/card/card-data.interface";
 import { CardComponent } from "../../shared/components/card/card.component";
@@ -38,6 +41,8 @@ export class WishlistComponent implements OnInit {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
+  private logger = inject(LoggingService);
+  private destroyRef = inject(DestroyRef);
 
   public viewMode = signal<"cards" | "compact">("cards");
   public wishlist: BaseCardData[] = [];
@@ -56,23 +61,26 @@ export class WishlistComponent implements OnInit {
   private loadWishlist(): void {
     this.isLoading = true;
     this.hasLoadError.set(false);
-    this.dataService.getWishlist().subscribe({
-      next: (data) => {
-        const items = data.response.beers.items;
+    this.dataService
+      .getWishlist()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          const items = data.response.beers.items;
 
-        this.wishlist = items.map((item) => this.transformWishlistData(item));
-        this.totalItems = this.wishlist.length;
-        this.isLoading = false;
-        this.updatePagination();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error("Error fetching wishlist:", err);
-        this.isLoading = false;
-        this.hasLoadError.set(true);
-        this.cdr.markForCheck();
-      },
-    });
+          this.wishlist = items.map((item) => this.transformWishlistData(item));
+          this.totalItems = this.wishlist.length;
+          this.isLoading = false;
+          this.updatePagination();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.logger.error("Error fetching wishlist", err);
+          this.isLoading = false;
+          this.hasLoadError.set(true);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   /** Clears the cached response and retries the wishlist fetch. */

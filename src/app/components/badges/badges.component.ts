@@ -4,7 +4,9 @@ import {
   ChangeDetectorRef,
   inject,
   signal,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
@@ -39,6 +41,7 @@ export class BadgesComponent implements OnInit {
   private dataService = inject(DataService);
   private logger = inject(LoggingService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   public badges: Badge[] = [];
   public paginatedBadges: Badge[] = [];
@@ -57,20 +60,23 @@ export class BadgesComponent implements OnInit {
   private loadBadges(): void {
     this.isLoading = true;
     this.hasLoadError.set(false);
-    this.dataService.getBadges().subscribe({
-      next: (data: Badge[]) => {
-        this.badges = data;
-        this.totalItems = this.badges.length;
-        this.isLoading = false;
-        this.updatePagination();
-      },
-      error: (err: unknown) => {
-        this.logger.error("Error fetching badges", err);
-        this.isLoading = false;
-        this.hasLoadError.set(true);
-        this.cdr.markForCheck();
-      },
-    });
+    this.dataService
+      .getBadges()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data: Badge[]) => {
+          this.badges = data;
+          this.totalItems = this.badges.length;
+          this.isLoading = false;
+          this.updatePagination();
+        },
+        error: (err: unknown) => {
+          this.logger.error("Error fetching badges", err);
+          this.isLoading = false;
+          this.hasLoadError.set(true);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   /** Clears the cached response and retries the badges fetch. */

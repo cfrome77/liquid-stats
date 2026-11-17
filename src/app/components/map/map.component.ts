@@ -12,7 +12,9 @@ import {
   PLATFORM_ID,
   inject,
   signal,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { isPlatformBrowser } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -21,7 +23,6 @@ import { MatSidenav, MatSidenavModule } from "@angular/material/sidenav";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { BreakpointObserver } from "@angular/cdk/layout";
-import { Subscription } from "rxjs";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
@@ -32,6 +33,7 @@ import {
   getBreweryTypeColor,
 } from "src/app/core/services/marker.service";
 import { DataService } from "src/app/core/services/data.service";
+import { LoggingService } from "src/app/core/services/logger.service";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "src/app/core/models/beer.model";
@@ -67,11 +69,12 @@ export class MapComponent
   private breakpointObserver = inject(BreakpointObserver);
   private route = inject(ActivatedRoute);
   private ngZone = inject(NgZone);
+  private destroyRef = inject(DestroyRef);
+  private logger = inject(LoggingService);
 
   public mapId = "myMap";
   public selectedBrewery: BreweryMarkerData | null = null;
   private map: L.Map | undefined;
-  private routeSub: Subscription | undefined;
   private isOpeningPopup = false;
 
   public filterOpen = false;
@@ -111,6 +114,7 @@ export class MapComponent
   ngOnInit() {
     this.breakpointObserver
       .observe(["(max-width: 768px)"])
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         this.isMobile = result.matches;
       });
@@ -144,52 +148,59 @@ export class MapComponent
     this.isLoading.set(true);
     this.hasError.set(false);
 
-    this.dataService.getBeersAll().subscribe({
-      next: (data) => {
-        this.allBeers = data;
-        this.hasData.set(data.length > 0);
-        this.isLoading.set(false);
-        this.dataLoaded.set(true);
+    this.dataService
+      .getBeersAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.allBeers = data;
+          this.hasData.set(data.length > 0);
+          this.isLoading.set(false);
+          this.dataLoaded.set(true);
 
-        // Extract filter options
-        this.beerStyles = Array.from(
-          new Set(this.allBeers.map((b) => b.beer.beer_style).filter(Boolean)),
-        );
-        this.countries = Array.from(
-          new Set(
-            this.allBeers.map((b) => b.brewery.country_name).filter(Boolean),
-          ),
-        );
+          // Extract filter options
+          this.beerStyles = Array.from(
+            new Set(
+              this.allBeers.map((b) => b.beer.beer_style).filter(Boolean),
+            ),
+          );
+          this.countries = Array.from(
+            new Set(
+              this.allBeers.map((b) => b.brewery.country_name).filter(Boolean),
+            ),
+          );
 
-        this.updateMarkers(this.allBeers);
+          this.updateMarkers(this.allBeers);
 
-        // Ensure map resizes after markers added
-        this.ngZone.runOutsideAngular(() => {
-          setTimeout(() => this.map?.invalidateSize(), 100);
-        });
+          // Ensure map resizes after markers added
+          this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => this.map?.invalidateSize(), 100);
+          });
 
-        // Listen for deep links (URL params)
-        this.routeSub = this.route.queryParams.subscribe((params) => {
-          if (params["lat"] && params["lng"] && params["breweryId"]) {
-            this.handleDeepLink(
-              parseFloat(params["lat"]),
-              parseFloat(params["lng"]),
-              params["breweryId"],
-            );
-          }
-        });
+          // Listen for deep links (URL params)
+          this.route.queryParams
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((params) => {
+              if (params["lat"] && params["lng"] && params["breweryId"]) {
+                this.handleDeepLink(
+                  parseFloat(params["lat"]),
+                  parseFloat(params["lng"]),
+                  params["breweryId"],
+                );
+              }
+            });
 
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error("Error fetching map data:", err);
-        this.isLoading.set(false);
-        this.dataLoaded.set(true);
-        this.hasData.set(false);
-        this.hasError.set(true);
-        this.cdr.detectChanges();
-      },
-    });
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.logger.error("Error fetching map data", err);
+          this.isLoading.set(false);
+          this.dataLoaded.set(true);
+          this.hasData.set(false);
+          this.hasError.set(true);
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   /** Retries the failed data load after clearing the service cache. */
@@ -223,7 +234,6 @@ export class MapComponent
 
   ngOnDestroy(): void {
     if (this.map) this.map.remove();
-    this.routeSub?.unsubscribe();
   }
 
   /** Initialize Leaflet map */

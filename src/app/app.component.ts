@@ -2,20 +2,24 @@ import {
   Component,
   OnInit,
   Renderer2,
-  OnDestroy,
   effect,
   NgZone,
   inject,
   ChangeDetectorRef,
   HostListener,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
-import { Subject } from "rxjs";
-import { filter, takeUntil } from "rxjs/operators";
+import { filter } from "rxjs/operators";
 import { slideInAnimation } from "./animations";
 import { Ga4TrackingService } from "./core/services/ga4-tracking.service";
 import { ThemeService } from "./core/services/theme.service";
+import {
+  NotificationService,
+  NOTIFICATION_DEFAULT_DURATION,
+} from "./core/services/notification.service";
 import { DOCUMENT, CommonModule } from "@angular/common";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatButtonModule } from "@angular/material/button";
@@ -50,7 +54,7 @@ import { NavItem } from "./core/models/nav-item.model";
   ],
   animations: [slideInAnimation],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   private router = inject(Router);
   private ga4Service = inject(Ga4TrackingService);
   private themeService = inject(ThemeService);
@@ -61,7 +65,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private notifications = inject(NotificationService);
   private swUpdate = inject(SwUpdate, { optional: true });
+  private destroyRef = inject(DestroyRef);
 
   title = "liquid-stats";
   // Single source of truth for the desktop, mobile-bottom, and drawer navigation.
@@ -117,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ];
   currentTheme: "light-theme" | "dark-theme" = "dark-theme";
   hasLoadError = false;
-  private destroy$ = new Subject<void>();
+  private hasAnnouncedLoadError = false;
 
   constructor() {
     this.beerStore.load();
@@ -133,9 +139,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Listen for data load errors
     this.beerStore.loadError$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((err) => {
         this.hasLoadError = err;
+        this.announceLoadError(err);
         this.cdr.detectChanges();
       });
 
@@ -160,7 +167,7 @@ export class AppComponent implements OnInit, OnDestroy {
           filter(
             (event): event is NavigationEnd => event instanceof NavigationEnd,
           ),
-          takeUntil(this.destroy$),
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((event) => {
           const newPath = event.urlAfterRedirects;
@@ -173,6 +180,30 @@ export class AppComponent implements OnInit, OnDestroy {
     this.watchForAppUpdates();
   }
 
+  /**
+   * Raises a one-shot toast the first time the store reports a failure, with a
+   * retry action. Repeated failures (each stream sets the same flag) do not
+   * stack duplicate toasts; the persistent banner stays visible instead.
+   */
+  private announceLoadError(hasError: boolean): void {
+    if (!hasError) {
+      this.hasAnnouncedLoadError = false;
+      return;
+    }
+    if (this.hasAnnouncedLoadError) return;
+    this.hasAnnouncedLoadError = true;
+
+    this.notifications
+      .error(
+        "Unable to load the latest drink data.",
+        "Retry",
+        NOTIFICATION_DEFAULT_DURATION,
+      )
+      .onAction()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.retryLoad());
+  }
+
   /** Prompts the user to reload when a new app version is available. */
   private watchForAppUpdates(): void {
     if (!this.swUpdate?.isEnabled) return;
@@ -182,7 +213,7 @@ export class AppComponent implements OnInit, OnDestroy {
         filter(
           (event): event is VersionReadyEvent => event.type === "VERSION_READY",
         ),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         const ref = this.snackBar.open(
@@ -190,12 +221,19 @@ export class AppComponent implements OnInit, OnDestroy {
           "Reload",
           { duration: 10000 },
         );
-        ref.onAction().subscribe(() => {
-          this.swUpdate
-            ?.activateUpdate()
-            .then(() => this.document.location.reload())
-            .catch((err) => console.error("Failed to activate update:", err));
-        });
+        ref
+          .onAction()
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
+            this.swUpdate
+              ?.activateUpdate()
+              .then(() => this.document.location.reload())
+              .catch(() =>
+                this.notifications.error(
+                  "Failed to apply the update. Please reload the page.",
+                ),
+              );
+          });
       });
   }
 
@@ -234,11 +272,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.renderer.removeClass(host, "light-theme");
     this.renderer.removeClass(host, "dark-theme");
     this.renderer.addClass(host, theme);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   prepareRoute(outlet: unknown) {

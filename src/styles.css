@@ -563,6 +563,25 @@ strong {
   background-color: rgba(255, 255, 255, 0.3) !important;
 }
 
+/* Toast notifications (NotificationService) */
+.app-notification {
+  --mdc-snackbar-container-color: var(--glass-bg, #1e293b);
+  --mdc-snackbar-supporting-text-color: var(--text-color, #f8fafc);
+  --mat-snack-bar-button-color: var(--accent-blue, #38bdf8);
+}
+
+.app-notification--error {
+  --mdc-snackbar-container-color: #b91c1c;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
+.app-notification--success {
+  --mdc-snackbar-container-color: #15803d;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
 /* Glassmorphism Panel Utility */
 .glass-panel {
   background: var(--glass-bg) !important;
