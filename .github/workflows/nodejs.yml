@@ -36,6 +36,20 @@ jobs:
         env:
           CI: true
 
+  lambda:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r lambda/requirements-dev.txt
+      - name: Lambda schema validation tests
+        run: python -m pytest lambda/tests
+
   e2e:
     runs-on: ubuntu-latest
 

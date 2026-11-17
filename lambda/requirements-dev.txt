@@ -1,0 +1,11 @@
+# Test-only dependencies for the lambda data pipeline. Install alongside
+# lambda/requirements.txt, then run: python -m pytest lambda/tests
+#
+# boto3 ships with the AWS Lambda runtime so it is not in requirements.txt, but
+# the tests import the module directly and therefore need it installed locally.
+-r requirements.txt
+boto3==1.44.4
+iniconfig==2.3.1
+packaging==26.3
+pluggy==1.7.0
+pytest==9.2.0
