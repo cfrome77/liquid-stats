@@ -12,7 +12,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { of, throwError } from "rxjs";
 import { DataService } from "../../core/services/data.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 
 describe("TopBeersComponent", () => {
@@ -148,6 +148,64 @@ describe("TopBeersComponent", () => {
     component.onFilterChange();
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBe(0);
+  });
+
+  describe("URL state", () => {
+    async function initAt(query: Record<string, string>): Promise<Router> {
+      await TestBed.resetTestingModule();
+      mockDataService = jasmine.createSpyObj("DataService", ["getBeersAll"]);
+      mockDataService.getBeersAll.and.returnValue(of([]));
+
+      await TestBed.configureTestingModule({
+        imports: [TopBeersComponent, RouterTestingModule],
+        providers: [
+          { provide: DataService, useValue: mockDataService },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              params: of({}),
+              snapshot: {
+                queryParamMap: { get: (k: string) => query[k] ?? null },
+              },
+            },
+          },
+        ],
+      }).compileComponents();
+
+      const router = TestBed.inject(Router);
+      fixture = TestBed.createComponent(TopBeersComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      return router;
+    }
+
+    it("restores ranking filters from the URL", async () => {
+      await initAt({ range: "Last Month", topX: "10", min: "3" });
+
+      expect(component.selectedRange.label).toBe("Last Month");
+      expect(component.topX).toBe(10);
+      expect(component.minCheckins).toBe(3);
+    });
+
+    it("falls back to defaults for values outside the allowed sets", async () => {
+      await initAt({ range: "Nonsense", topX: "999", min: "0" });
+
+      expect(component.selectedRange).toBe(component.dateRangeOptions[0]!);
+      expect(component.topX).toBe(5);
+      expect(component.minCheckins).toBe(1);
+    });
+
+    it("writes a changed filter back to the URL", async () => {
+      const router = await initAt({});
+      const navigate = spyOn(router, "navigate");
+
+      component.topX = 15;
+      component.onFilterChange();
+
+      const queryParams = navigate.calls.mostRecent().args[1]!
+        .queryParams as Record<string, string | null>;
+      expect(queryParams["topX"]).toBe("15");
+    });
   });
 
   it("resets filters back to their defaults", () => {

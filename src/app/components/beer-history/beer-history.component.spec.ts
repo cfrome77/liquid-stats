@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialogModule } from "@angular/material/dialog";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { of, throwError } from "rxjs";
@@ -170,6 +171,106 @@ describe("BeerHistoryComponent", () => {
       component.currentPage = 3;
       component.onFilterChange();
       expect(component.currentPage).toBe(1);
+    });
+  });
+
+  describe("URL state", () => {
+    let router: Router;
+
+    async function initAt(params: Record<string, string>): Promise<void> {
+      mockDataService = { getBeersAll: () => of(sampleBeers) };
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          BeerHistoryComponent,
+          HttpClientTestingModule,
+          RouterTestingModule,
+          MatDialogModule,
+          ReactiveFormsModule,
+          FormsModule,
+        ],
+        providers: [
+          { provide: DataService, useValue: mockDataService },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              params: of({}),
+              queryParams: of(params),
+              snapshot: {
+                paramMap: { get: () => null },
+                queryParamMap: { get: (key: string) => params[key] ?? null },
+              },
+            },
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+
+      router = TestBed.inject(Router);
+      fixture = TestBed.createComponent(BeerHistoryComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    }
+
+    it("restores a narrowed brewery filter from the URL", async () => {
+      await initAt({ filters: JSON.stringify({ brewery: ["Beta Brewing"] }) });
+
+      const breweryFilter = component.filterFields.find(
+        (f) => f.field === "brewery",
+      )!;
+      expect(breweryFilter.selected).toEqual(["Beta Brewing"]);
+      expect(component.filteredBeers.length).toBe(1);
+    });
+
+    it("restores the search term and view mode from the URL", async () => {
+      await initAt({ q: "ipa", view: "compact" });
+
+      expect(component.searchTerm).toBe("ipa");
+      expect(component.viewMode()).toBe("compact");
+      expect(component.filteredBeers.length).toBe(2);
+    });
+
+    it("falls back to defaults for a malformed filter value", async () => {
+      await initAt({ filters: "{not-json" });
+
+      const breweryFilter = component.filterFields.find(
+        (f) => f.field === "brewery",
+      )!;
+      // Every option is selected by default, so all three check-ins remain.
+      expect(breweryFilter.selected.length).toBe(2);
+      expect(component.filteredBeers.length).toBe(3);
+    });
+
+    it("ignores a filter option that no longer exists in the data", async () => {
+      await initAt({ filters: JSON.stringify({ brewery: ["Ghost Brewery"] }) });
+
+      const breweryFilter = component.filterFields.find(
+        (f) => f.field === "brewery",
+      )!;
+      expect(breweryFilter.selected).toEqual(["Alpha Brewing", "Beta Brewing"]);
+      expect(component.filteredBeers.length).toBe(3);
+    });
+
+    it("clamps an out-of-range page from the URL", async () => {
+      await initAt({ page: "9999" });
+
+      expect(component.currentPage).toBe(1);
+      expect(component.paginatedBeers.length).toBeGreaterThan(0);
+    });
+
+    it("writes a narrowed filter back to the URL", async () => {
+      await initAt({});
+      const breweryFilter = component.filterFields.find(
+        (f) => f.field === "brewery",
+      )!;
+      const navigate = spyOn(router, "navigate");
+
+      breweryFilter.selected = ["Beta Brewing"];
+      component.onFilterChange();
+
+      const queryParams = navigate.calls.mostRecent().args[1]!
+        .queryParams as Record<string, string | null>;
+      expect(queryParams["filters"]).toContain("Beta Brewing");
     });
   });
 

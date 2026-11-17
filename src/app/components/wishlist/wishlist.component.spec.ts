@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { WishlistComponent } from "./wishlist.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../../core/services/data.service";
 import { of, Subject, throwError } from "rxjs";
-import { WishlistResponse } from "../../core/models/beer.model";
+import { WishlistBeer, WishlistResponse } from "../../core/models/beer.model";
 
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
@@ -112,6 +113,85 @@ describe("WishlistComponent", () => {
     expect(
       (fresh.nativeElement as HTMLElement).querySelector("app-skeleton-card"),
     ).toBeFalsy();
+  });
+
+  describe("URL state", () => {
+    function makeItems(count: number): WishlistBeer[] {
+      return Array.from({ length: count }, (_, i) => ({
+        created_at: "2026-01-01",
+        beer: {
+          beer_abv: 5,
+          bid: i,
+          beer_label: "",
+          beer_name: `Beer ${i + 1}`,
+          beer_style: "IPA",
+          beer_slug: `beer-${i}`,
+        },
+        brewery: { brewery_name: "Brewery" },
+      })) as WishlistBeer[];
+    }
+
+    async function initAt(
+      params: Record<string, string>,
+      items: WishlistBeer[] = [],
+    ): Promise<Router> {
+      mockDataService = jasmine.createSpyObj("DataService", ["getWishlist"]);
+      mockDataService.getWishlist.and.returnValue(
+        of({ response: { beers: { items } } }),
+      );
+
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [WishlistComponent, RouterTestingModule],
+        providers: [
+          { provide: DataService, useValue: mockDataService },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                queryParamMap: { get: (k: string) => params[k] ?? null },
+              },
+            },
+          },
+        ],
+      }).compileComponents();
+
+      const router = TestBed.inject(Router);
+      fixture = TestBed.createComponent(WishlistComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      return router;
+    }
+
+    it("restores view mode, page, and page size from the URL", async () => {
+      await initAt(
+        { view: "compact", perPage: "20", page: "2" },
+        makeItems(30),
+      );
+
+      expect(component.viewMode()).toBe("compact");
+      expect(component.itemsPerPage).toBe(20);
+      expect(component.currentPage).toBe(2);
+    });
+
+    it("falls back to defaults for malformed pagination values", async () => {
+      await initAt({ view: "grid", perPage: "999", page: "-3" });
+
+      expect(component.viewMode()).toBe("cards");
+      expect(component.itemsPerPage).toBe(10);
+      expect(component.currentPage).toBe(1);
+    });
+
+    it("writes a page change back to the URL", async () => {
+      const router = await initAt({}, makeItems(30));
+      const navigate = spyOn(router, "navigate");
+
+      component.goToPage(3);
+
+      const queryParams = navigate.calls.mostRecent().args[1]!
+        .queryParams as Record<string, string | null>;
+      expect(queryParams["page"]).toBe("3");
+    });
   });
 
   it("shows a retryable error state when the wishlist request fails", () => {

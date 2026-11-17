@@ -8,6 +8,7 @@ import { bootstrapApplication } from "@angular/platform-browser";
 import {
   provideRouter,
   withComponentInputBinding,
+  withInMemoryScrolling,
   TitleStrategy,
 } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
@@ -28,7 +29,16 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes, withComponentInputBinding()),
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      // Restore scroll position on Back so a filtered list returns to where
+      // the user left off.
+      withInMemoryScrolling({
+        scrollPositionRestoration: "enabled",
+        anchorScrolling: "enabled",
+      }),
+    ),
     { provide: TitleStrategy, useClass: AppTitleStrategy },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     provideBrowserGlobalErrorListeners(),

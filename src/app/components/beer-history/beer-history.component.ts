@@ -22,9 +22,13 @@ import { DateUtils } from "../../core/utils/date-utils";
 import {
   DEFAULT_PER_PAGE,
   DEFAULT_VIEW,
+  FilterFieldState,
   PER_PAGE_OPTIONS,
+  VIEW_STATE_PARAMS,
   ViewMode,
   clampPage,
+  decodeFilters,
+  encodeFilters,
   parsePositiveInt,
   parseViewMode,
   viewStateParams,
@@ -71,6 +75,12 @@ export class BeerHistoryComponent implements OnInit {
   private logger = inject(LoggingService);
 
   private searchTerm$ = new Subject<string>();
+
+  /**
+   * Raw `filters` query value captured at init. It can only be applied once the
+   * filter options are derived from the loaded data, so it is held until then.
+   */
+  private pendingFilters: string | null = null;
 
   public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public beersAll: BeerCheckin[] = [];
@@ -128,30 +138,65 @@ export class BeerHistoryComponent implements OnInit {
    */
   private syncFromQueryParams(): void {
     const params = this.route.snapshot.queryParamMap;
-    this.viewMode.set(parseViewMode(params.get("view")));
+    this.viewMode.set(parseViewMode(params.get(VIEW_STATE_PARAMS.view)));
     this.itemsPerPage = parsePositiveInt(
-      params.get("perPage"),
+      params.get(VIEW_STATE_PARAMS.perPage),
       DEFAULT_PER_PAGE,
       PER_PAGE_OPTIONS,
     );
-    this.currentPage = parsePositiveInt(params.get("page"), 1);
-    const search = params.get("q") ?? "";
+    this.currentPage = parsePositiveInt(params.get(VIEW_STATE_PARAMS.page), 1);
+    this.pendingFilters = params.get(VIEW_STATE_PARAMS.filters);
+    const search = params.get(VIEW_STATE_PARAMS.search) ?? "";
     if (search) {
       this.searchTerm = search;
       this.searchTerm$.next(search);
     }
   }
 
+  /**
+   * Restores filter selections from the URL now that the options are known.
+   * Unknown or malformed values are dropped, leaving the default selection.
+   */
+  private applyPendingFilters(): void {
+    if (!this.pendingFilters) return;
+    const states: Record<string, FilterFieldState> = {};
+    for (const field of this.filterFields) {
+      states[field.field] = {
+        selected: field.selected,
+        options: field.options,
+        type: field.type,
+      };
+    }
+    const restored = decodeFilters(this.pendingFilters, states);
+    for (const field of this.filterFields) {
+      if (restored[field.field]) {
+        field.selected = restored[field.field]!;
+      }
+    }
+    this.pendingFilters = null;
+  }
+
   /** Mirrors the current view state into the URL, replacing history entries. */
   private updateQueryParams(): void {
+    const states: Record<string, FilterFieldState> = {};
+    for (const field of this.filterFields) {
+      states[field.field] = {
+        selected: field.selected,
+        options: field.options,
+        type: field.type,
+      };
+    }
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: viewStateParams({
-        view: this.viewMode(),
-        page: this.currentPage,
-        perPage: this.itemsPerPage,
-        search: this.searchTerm,
-      }),
+      queryParams: {
+        ...viewStateParams({
+          view: this.viewMode(),
+          page: this.currentPage,
+          perPage: this.itemsPerPage,
+          search: this.searchTerm,
+        }),
+        [VIEW_STATE_PARAMS.filters]: encodeFilters(states),
+      },
       queryParamsHandling: "merge",
       replaceUrl: true,
     });
@@ -173,6 +218,7 @@ export class BeerHistoryComponent implements OnInit {
           this.beersAll = data;
           this.isLoadingAll = false;
           this.initializeFilters();
+          this.applyPendingFilters();
           this.applyFilters();
           this.cdr.detectChanges();
         },

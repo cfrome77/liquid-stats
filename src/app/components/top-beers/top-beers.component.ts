@@ -34,7 +34,10 @@ import {
 import { DateUtils } from "../../core/utils/date-utils";
 import {
   DEFAULT_VIEW,
+  VIEW_STATE_PARAMS,
   ViewMode,
+  isIsoDate,
+  parsePositiveInt,
   parseViewMode,
   viewStateParams,
 } from "../../core/utils/view-state";
@@ -112,25 +115,71 @@ export class TopBeersComponent implements OnInit {
     this.loadBeers();
   }
 
-  /** Restores the view mode from the URL so a shared link reproduces it. */
+  /**
+   * Restores the view mode and ranking filters from the URL so a shared link
+   * reproduces the view. Values outside the allowed sets are ignored, leaving
+   * the defaults in place.
+   */
   private syncFromQueryParams(): void {
-    this.viewMode.set(
-      parseViewMode(this.route.snapshot.queryParamMap.get("view")),
+    const params = this.route.snapshot.queryParamMap;
+    this.viewMode.set(parseViewMode(params.get(VIEW_STATE_PARAMS.view)));
+
+    const range = params.get(VIEW_STATE_PARAMS.topRange);
+    const matchedRange = this.dateRangeOptions.find(
+      (option) => option.label === range,
     );
+    if (matchedRange) {
+      this.selectedRange = matchedRange;
+      this.useCustomDate = matchedRange.daysBack === -1;
+    }
+
+    this.topX = parsePositiveInt(
+      params.get(VIEW_STATE_PARAMS.topX),
+      this.topX,
+      this.topXOptions,
+    );
+    this.minCheckins = parsePositiveInt(
+      params.get(VIEW_STATE_PARAMS.minCheckins),
+      this.minCheckins,
+      this.minCheckinOptions,
+    );
+
+    const from = params.get(VIEW_STATE_PARAMS.customStart);
+    if (this.useCustomDate && isIsoDate(from)) {
+      this.customStartDate = DateUtils.parseDate(from);
+    }
+  }
+
+  /** Mirrors the current view state into the URL, replacing history entries. */
+  private updateQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        ...viewStateParams({
+          view: this.viewMode(),
+          page: 1,
+          perPage: 10,
+        }),
+        [VIEW_STATE_PARAMS.topRange]:
+          this.selectedRange.label === DEFAULT_DATE_RANGE.label
+            ? null
+            : this.selectedRange.label,
+        [VIEW_STATE_PARAMS.topX]: this.topX === 5 ? null : String(this.topX),
+        [VIEW_STATE_PARAMS.minCheckins]:
+          this.minCheckins === 1 ? null : String(this.minCheckins),
+        [VIEW_STATE_PARAMS.customStart]:
+          this.useCustomDate && this.customStartDate
+            ? DateUtils.toISODate(this.customStartDate)
+            : null,
+      },
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
   }
 
   setViewMode(mode: ViewMode): void {
     this.viewMode.set(mode);
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: viewStateParams({
-        view: mode,
-        page: 1,
-        perPage: 10,
-      }),
-      queryParamsHandling: "merge",
-      replaceUrl: true,
-    });
+    this.updateQueryParams();
   }
 
   /** Fetches all check-ins that feed the ranking filters. */
@@ -168,6 +217,7 @@ export class TopBeersComponent implements OnInit {
       this.useCustomDate = false;
     }
     this.filterAndRankBeers();
+    this.updateQueryParams();
   }
 
   resetFilters(): void {
@@ -177,6 +227,7 @@ export class TopBeersComponent implements OnInit {
     this.useCustomDate = false;
     this.customStartDate = null;
     this.filterAndRankBeers();
+    this.updateQueryParams();
   }
 
   filterAndRankBeers() {
