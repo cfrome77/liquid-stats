@@ -22,6 +22,7 @@ import {
 import { ChartData, ChartOptions } from "chart.js";
 
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
+import { LoggingService } from "src/app/core/services/logger.service";
 import { ThemeService } from "src/app/core/services/theme.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { Checkin } from "src/app/core/models/checkin.model";
@@ -69,6 +70,7 @@ export class InsightsComponent implements OnInit {
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
+  private logger = inject(LoggingService);
 
   public beers: BeerCheckin[] = [];
   public hasData = signal<boolean>(false);
@@ -263,7 +265,7 @@ export class InsightsComponent implements OnInit {
         }
       },
       error: (err: unknown) => {
-        console.error("Error loading insights beers:", err);
+        this.logger.error("Error loading insights beers", err);
         this.isLoading.set(false);
         this.cdr.markForCheck();
       },
@@ -280,7 +282,7 @@ export class InsightsComponent implements OnInit {
           }
         },
         error: (err: unknown) => {
-          console.error("Error loading insights checkins:", err);
+          this.logger.error("Error loading insights checkins", err);
         },
       });
 

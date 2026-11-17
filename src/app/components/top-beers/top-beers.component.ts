@@ -4,7 +4,9 @@ import {
   ChangeDetectorRef,
   inject,
   signal,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -23,6 +25,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { DataService } from "src/app/core/services/data.service";
+import { LoggingService } from "src/app/core/services/logger.service";
 import {
   BaseCardData,
   CardExtraData,
@@ -77,6 +80,8 @@ export class TopBeersComponent implements OnInit {
   private dialog = inject(MatDialog);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+  private logger = inject(LoggingService);
 
   public viewMode = signal<ViewMode>(DEFAULT_VIEW);
   public beers: BeerCheckin[] = [];
@@ -132,19 +137,22 @@ export class TopBeersComponent implements OnInit {
   private loadBeers(): void {
     this.isLoading = true;
     this.hasLoadError.set(false);
-    this.dataService.getBeersAll().subscribe({
-      next: (data) => {
-        this.beers = data;
-        this.isLoading = false;
-        this.onFilterChange();
-      },
-      error: (err) => {
-        console.error("Error fetching beers:", err);
-        this.isLoading = false;
-        this.hasLoadError.set(true);
-        this.cdr.markForCheck();
-      },
-    });
+    this.dataService
+      .getBeersAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.beers = data;
+          this.isLoading = false;
+          this.onFilterChange();
+        },
+        error: (err) => {
+          this.logger.error("Error fetching beers", err);
+          this.isLoading = false;
+          this.hasLoadError.set(true);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   /** Clears the cached response and retries the check-ins fetch. */

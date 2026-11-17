@@ -8,7 +8,9 @@ import {
   ViewContainerRef,
   OnDestroy,
   inject,
+  DestroyRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Overlay, OverlayModule, OverlayRef } from "@angular/cdk/overlay";
 import { TemplatePortal } from "@angular/cdk/portal";
 
@@ -59,6 +61,7 @@ export class FilterComponent implements OnDestroy {
 
   private overlay = inject(Overlay);
   private viewContainerRef = inject(ViewContainerRef);
+  private destroyRef = inject(DestroyRef);
   private overlayRef: OverlayRef | null = null;
 
   activeFilter: FilterField | null = null;
@@ -92,15 +95,21 @@ export class FilterComponent implements OnDestroy {
     );
     this.overlayRef.attach(portal);
 
-    this.overlayRef.backdropClick().subscribe(() => {
-      this.closeModal();
-    });
-
-    this.overlayRef.keydownEvents().subscribe((event) => {
-      if (event.key === "Escape") {
+    this.overlayRef
+      .backdropClick()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
         this.closeModal();
-      }
-    });
+      });
+
+    this.overlayRef
+      .keydownEvents()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        if (event.key === "Escape") {
+          this.closeModal();
+        }
+      });
   }
 
   closeModal() {

@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   ChangeDetectorRef,
   DestroyRef,
   effect,
@@ -28,7 +27,6 @@ import {
   withDefaultRegisterables,
 } from "ng2-charts";
 import { ChartData, ChartOptions } from "chart.js";
-import { Subscription } from "rxjs";
 
 import { StatsService } from "./stats.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
@@ -69,15 +67,13 @@ import { environment } from "src/environments/environment";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StatsComponent implements OnInit, OnDestroy {
+export class StatsComponent implements OnInit {
   private statsService = inject(StatsService);
   private beerStore = inject(BeerStoreService);
   private dialog = inject(MatDialog);
   private themeService = inject(ThemeService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
-
-  private beerSub?: Subscription;
 
   beers: BeerCheckin[] = [];
   processedStats: ProcessedStats | null = null;
@@ -183,14 +179,16 @@ export class StatsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.beerStore.load();
 
-    this.beerSub = this.beerStore.beers$.subscribe((data) => {
-      this.beers = data ?? [];
-      if (data !== null) {
-        this.dataLoaded.set(true);
-      }
-      this.onDateChange();
-      this.cdr.markForCheck();
-    });
+    this.beerStore.beers$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data) => {
+        this.beers = data ?? [];
+        if (data !== null) {
+          this.dataLoaded.set(true);
+        }
+        this.onDateChange();
+        this.cdr.markForCheck();
+      });
 
     this.beerStore.loadError$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -199,18 +197,20 @@ export class StatsComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
 
-    this.dateRange.valueChanges.subscribe(() => this.onDateChange());
-    this.customStartDate.valueChanges.subscribe(() => this.onDateChange());
-    this.customEndDate.valueChanges.subscribe(() => this.onDateChange());
+    this.dateRange.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.onDateChange());
+    this.customStartDate.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.onDateChange());
+    this.customEndDate.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.onDateChange());
   }
 
   /** Retries loading all store data after a failed load. */
   retryLoad(): void {
     this.beerStore.load(true);
-  }
-
-  ngOnDestroy(): void {
-    this.beerSub?.unsubscribe();
   }
 
   // ---------------- SINGLE SOURCE OF TRUTH ----------------
