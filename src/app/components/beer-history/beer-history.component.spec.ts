@@ -173,6 +173,37 @@ describe("BeerHistoryComponent", () => {
     });
   });
 
+  describe("missing brewery.location", () => {
+    // Live Untappd exports omit `location` on some older/homebrew check-ins.
+    const beersWithoutLocation: BeerCheckin[] = [
+      makeBeer({
+        name: "Homebrew Saison",
+        style: "Saison",
+        brewery: "Garage Brewing",
+        country: "United States",
+        rating: 4,
+        date: "2026-06-01 12:00:00",
+      }),
+    ];
+    delete beersWithoutLocation[0].brewery.location;
+
+    beforeEach(async () => {
+      await TestBed.resetTestingModule();
+      await setup(beersWithoutLocation);
+      fixture = TestBed.createComponent(BeerHistoryComponent);
+      component = fixture.componentInstance;
+    });
+
+    it("loads and filters check-ins without throwing", () => {
+      expect(() => fixture.detectChanges()).not.toThrow();
+      expect(component.filteredBeers.length).toBe(1);
+
+      component.searchTerm = "homebrew";
+      expect(() => component.applyFilters()).not.toThrow();
+      expect(component.filteredBeers.length).toBe(1);
+    });
+  });
+
   describe("load error", () => {
     beforeEach(async () => {
       await TestBed.resetTestingModule();

@@ -75,4 +75,44 @@ describe("MarkerService", () => {
     expect(marker?.getPopup()).toBeTruthy();
     expect(marker?.getPopup()?.getContent()).toContain("Test Brewery");
   });
+
+  it("does not throw for check-ins missing brewery.location", () => {
+    const mockMap = L.map(document.createElement("div"), {
+      center: [0, 0],
+      zoom: 1,
+      maxZoom: 18,
+    });
+
+    // Live Untappd exports omit `location` on some older/homebrew check-ins.
+    const beersWithoutLocation: BeerCheckin[] = [
+      {
+        beer: {
+          bid: 2,
+          beer_name: "No Geo Ale",
+          beer_style: "Ale",
+          beer_abv: 4.2,
+          beer_label: "label.png",
+        },
+        brewery: {
+          brewery_id: 202,
+          brewery_name: "No Geo Brewery",
+          brewery_label: "logo.png",
+          country_name: "USA",
+        },
+        rating_score: 4,
+        recent_checkin_id: 99,
+        recent_created_at: "2026-01-02T00:00:00Z",
+        first_created_at: "2026-01-02T00:00:00Z",
+      },
+    ];
+
+    expect(() =>
+      service.makeBreweryMarkers(mockMap, beersWithoutLocation),
+    ).not.toThrow();
+
+    const marker = service.getMarkerByBreweryId("202");
+    expect(marker).toBeTruthy();
+    expect(marker?.checkInsData?.city).toBe("");
+    expect(marker?.checkInsData?.state).toBe("");
+  });
 });

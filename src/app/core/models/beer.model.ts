@@ -25,7 +25,7 @@ export interface BeerCheckin {
       instagram?: string;
       url?: string;
     };
-    location: {
+    location?: {
       lat?: number;
       lng?: number;
       brewery_state?: string;
