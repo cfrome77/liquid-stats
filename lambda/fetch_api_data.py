@@ -4,6 +4,15 @@ import time
 import requests
 import boto3
 from datetime import datetime
+from typing import Annotated, List, Optional, Union
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    RootModel,
+    StringConstraints,
+    ValidationError,
+)
 
 # --- Untappd API Config ---
 CLIENT_ID = os.environ.get("CLIENT_ID")
@@ -16,6 +25,227 @@ s3 = boto3.client("s3") if S3_BUCKET_NAME else None
 
 STEP = 50  # number of items per API call
 THROTTLE = 0.2  # seconds delay between calls to avoid hitting rate limit
+
+
+# --- Schema validation ---
+# Strict schemas for every payload this pipeline writes. The frontend reads many
+# of these fields without guarding (see src/app/core/models and
+# e2e/fixture-integrity.spec.ts), so an upstream API change or a truncated
+# response must fail here instead of silently overwriting the deployed JSON.
+# Unknown keys are allowed so new Untappd fields pass through untouched, but
+# required fields and their types are enforced.
+NonEmptyStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
+
+class ValidationAbort(RuntimeError):
+    """Raised when a fetched payload does not match its expected schema."""
+
+
+class _Schema(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
+# --- beers_all.json ---
+class BeerLocation(_Schema):
+    # The map and beer-history pages read these without guarding.
+    lat: float
+    lng: float
+    brewery_state: NonEmptyStr
+    brewery_city: Optional[str] = None
+
+
+class BeerBrewery(_Schema):
+    brewery_name: NonEmptyStr
+    country_name: NonEmptyStr
+    location: BeerLocation
+    brewery_id: Optional[int] = None
+    brewery_label: Optional[str] = None
+
+
+class BeerBeer(_Schema):
+    bid: int
+    beer_name: NonEmptyStr
+    beer_style: NonEmptyStr
+    beer_abv: float
+    beer_label: Optional[str] = None
+    beer_slug: Optional[str] = None
+    beer_description: Optional[str] = None
+
+
+class BeerHistoryItem(_Schema):
+    beer: BeerBeer
+    brewery: BeerBrewery
+    rating_score: float
+    count: int
+    recent_created_at: NonEmptyStr
+    first_created_at: NonEmptyStr
+    recent_checkin_id: Optional[int] = None
+
+
+class BeersAllFile(_Schema):
+    beers: List[BeerHistoryItem]
+
+
+# --- checkins.json ---
+class CheckinBeer(_Schema):
+    bid: int
+    beer_name: NonEmptyStr
+    beer_style: NonEmptyStr
+    beer_label: Optional[str] = None
+    beer_slug: Optional[str] = None
+
+
+class CheckinLocation(_Schema):
+    lat: float
+    lng: float
+    brewery_state: Optional[str] = None
+    brewery_city: Optional[str] = None
+
+
+class CheckinBrewery(_Schema):
+    brewery_id: int
+    brewery_name: NonEmptyStr
+    country_name: NonEmptyStr
+    brewery_label: Optional[str] = None
+    # Live Untappd exports omit `location` on some older/homebrew check-ins.
+    location: Optional[CheckinLocation] = None
+    contact: Optional[dict] = None
+
+
+class CheckinBadge(_Schema):
+    badge_name: NonEmptyStr
+    badge_description: Optional[str] = None
+    badge_image: Optional[Union[str, dict]] = None
+
+
+class CheckinBadges(_Schema):
+    items: List[CheckinBadge] = []
+
+
+class CheckinPhoto(_Schema):
+    photo_img_sm: Optional[str] = None
+    photo_img_md: Optional[str] = None
+    photo_img_lg: Optional[str] = None
+    photo_img_og: Optional[str] = None
+
+
+class CheckinMediaItem(_Schema):
+    photo: CheckinPhoto
+
+
+class CheckinMedia(_Schema):
+    count: Optional[int] = None
+    items: List[CheckinMediaItem] = []
+
+
+class CheckinVenue(_Schema):
+    venue_id: int
+    venue_name: Optional[str] = None
+
+
+class CheckinItem(_Schema):
+    checkin_id: int
+    created_at: NonEmptyStr
+    rating_score: float
+    beer: CheckinBeer
+    brewery: CheckinBrewery
+    checkin_comment: Optional[str] = None
+    badges: Optional[CheckinBadges] = None
+    media: Optional[CheckinMedia] = None
+    venue: Optional[CheckinVenue] = None
+
+
+class CheckinItems(_Schema):
+    items: List[CheckinItem]
+
+
+class CheckinResponse(_Schema):
+    checkins: CheckinItems
+
+
+class CheckinsFile(_Schema):
+    response: CheckinResponse
+
+
+# --- badges.json ---
+class BadgeMedia(_Schema):
+    badge_image_sm: NonEmptyStr
+
+
+class BadgeItem(_Schema):
+    badge_name: NonEmptyStr
+    earned_at: NonEmptyStr
+    media: BadgeMedia
+    badge_description: Optional[str] = None
+
+
+class BadgesFile(RootModel[List[BadgeItem]]):
+    pass
+
+
+# --- wishlist.json ---
+class WishlistBeer(_Schema):
+    bid: int
+    beer_name: NonEmptyStr
+    beer_style: NonEmptyStr
+    beer_label: Optional[str] = None
+    beer_slug: Optional[str] = None
+    beer_description: Optional[str] = None
+    beer_abv: Optional[float] = None
+
+
+class WishlistBrewery(_Schema):
+    brewery_name: NonEmptyStr
+    brewery_id: Optional[int] = None
+    brewery_label: Optional[str] = None
+    country_name: Optional[str] = None
+
+
+class WishlistItem(_Schema):
+    beer: WishlistBeer
+    brewery: WishlistBrewery
+    created_at: Optional[str] = None
+
+
+class WishlistBeers(_Schema):
+    items: List[WishlistItem]
+
+
+class WishlistResponse(_Schema):
+    beers: WishlistBeers
+
+
+class WishlistFile(_Schema):
+    response: WishlistResponse
+
+
+# --- stats.json ---
+class StatsFile(_Schema):
+    totalCheckins: int
+    averageRating: float
+    countriesTried: int
+    breweriesVisited: int
+    lastUpdated: NonEmptyStr
+
+
+def validate_payload(model, data, label):
+    """Validate a payload against its schema, aborting with field-level detail.
+
+    Returns the validated model on success. Raises ``ValidationAbort`` with a
+    human-readable list of the failing fields when the payload does not match,
+    so the caller can skip the write/upload instead of corrupting live data.
+    """
+    try:
+        return model.model_validate(data)
+    except ValidationError as err:
+        details = "; ".join(
+            f"{'.'.join(str(part) for part in error['loc']) or '<root>'}: {error['msg']}"
+            for error in err.errors()
+        )
+        raise ValidationAbort(
+            f"Schema validation failed for {label} "
+            f"({err.error_count()} problem(s)): {details}"
+        ) from err
 
 
 def fetch_untappd_data(endpoint, params=None):
@@ -199,28 +429,38 @@ def lambda_handler(event, context):
     print(f"Starting data fetch for Untappd user: {UNTAPPD_USERNAME}")
 
     try:
-        # 1. Fetch all beers
-        beers = get_all_beers()
-        save_json("beers_all.json", {"beers": beers})
+        # Fetch and validate each payload up front. Validation happens before any
+        # write/upload, so a single invalid payload aborts the whole run and a
+        # partial or changed API response cannot overwrite the live JSON files.
+        beers_payload = {"beers": get_all_beers()}
+        validate_payload(BeersAllFile, beers_payload, "beers_all.json")
 
-        # 2. Fetch all badges
         badges = get_all_badges()
-        save_json("badges.json", badges)
+        validate_payload(BadgesFile, badges, "badges.json")
 
-        # 3. Fetch recent checkins
         checkins = get_checkins()
-        save_json("checkins.json", checkins)
+        validate_payload(CheckinsFile, checkins, "checkins.json")
 
-        # 4. Fetch wishlist
         wishlist = get_wishlist()
-        save_json("wishlist.json", wishlist)
+        validate_payload(WishlistFile, wishlist, "wishlist.json")
 
-        # 5. Compute and save stats
-        stats = compute_stats(beers)
+        stats = compute_stats(beers_payload["beers"])
+        validate_payload(StatsFile, stats, "stats.json")
+
+        print("Schema validation passed for all payloads.")
+
+        # Persist the validated payloads.
+        save_json("beers_all.json", beers_payload)
+        save_json("badges.json", badges)
+        save_json("checkins.json", checkins)
+        save_json("wishlist.json", wishlist)
         save_json("stats.json", stats)
 
         print("Data fetch and processing completed successfully.")
         return {"statusCode": 200, "body": json.dumps("Success")}
+    except ValidationAbort as e:
+        print(f"Aborting run, no files were written: {e}")
+        return {"statusCode": 500, "body": json.dumps(f"Validation failed: {e}")}
     except Exception as e:
         print(f"Critical error occurred during Lambda execution: {e}")
         return {"statusCode": 500, "body": json.dumps(f"Critical error: {e}")}

@@ -78,6 +78,11 @@ tools/gulp-tasks/cldr/cldr-data/
 venv/
 .venv_packages_hash
 
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Terraform
 /deploy/terraform/terraform.auto.tfvars
 /deploy/terraform/*.tfplan

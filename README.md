@@ -84,6 +84,17 @@ pip install -r lambda/requirements.txt
 python lambda/fetch_api_data.py
 ```
 
+The pipeline validates every fetched payload against a strict schema before it
+writes or uploads anything. If a beer, check-in, badge, wishlist, or stats
+payload is missing a required field or has the wrong type, the run aborts with a
+field-level error and leaves the existing JSON files untouched. To run the
+validation tests:
+
+```bash
+pip install -r lambda/requirements-dev.txt
+python -m pytest lambda/tests
+```
+
 4. Install Node dependencies:
 
 ```bash
