@@ -15,12 +15,13 @@ function makeCheckin(
   id: number,
   name: string,
   createdAt = "2026-01-01T00:00:00Z",
+  overrides: Partial<Checkin["beer"]> = {},
 ): Checkin {
   return {
     checkin_id: id,
     created_at: createdAt,
     rating_score: 4.25,
-    beer: { beer_name: name, beer_label: `label-${id}.png` },
+    beer: { beer_name: name, beer_label: `label-${id}.png`, ...overrides },
     brewery: { brewery_name: `Brewery ${id}` },
     media: { items: [] },
   } as unknown as Checkin;
@@ -204,6 +205,117 @@ describe("HomeComponent", () => {
       "small.jpeg",
     );
     expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
+  });
+
+  it("falls back from a broken photo_url to the HD label, then the standard label, then the placeholder", () => {
+    const img = document.createElement("img");
+    const photoUrl = "https://assets.untappd.com/site/photo/1_sm.jpg";
+    const hdLabel =
+      "https://assets.untappd.com/site/beer_logos_hd/beer-1_hd.jpeg";
+    const label = "https://assets.untappd.com/site/beer_logos/beer-1_sm.jpeg";
+    img.setAttribute("src", photoUrl);
+
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      hdLabel,
+      label,
+    );
+    expect(img.getAttribute("src")).toBe(hdLabel);
+
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      hdLabel,
+      label,
+    );
+    expect(img.getAttribute("src")).toBe(label);
+
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      hdLabel,
+      label,
+    );
+    expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
+  });
+
+  it("skips missing or duplicate candidates instead of looping on a broken photo_url", () => {
+    const img = document.createElement("img");
+    const label = "https://assets.untappd.com/site/beer_logos/beer-1_sm.jpeg";
+    img.setAttribute("src", "https://assets.untappd.com/site/photo/1_sm.jpg");
+
+    // No HD label: the chain steps straight to the standard label.
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      undefined,
+      label,
+    );
+    expect(img.getAttribute("src")).toBe(label);
+
+    // Every candidate matches the current src, so it stops at the placeholder.
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      label,
+      label,
+    );
+    expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
+
+    // The placeholder itself failing must not re-assign the same src.
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      undefined,
+      label,
+    );
+    expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
+  });
+
+  it("walks a rendered carousel image from photo_url down to the beer labels", () => {
+    const photo = "https://assets.untappd.com/site/photo/1_sm.jpg";
+    const hd = "https://assets.untappd.com/site/beer_logos_hd/beer-1_hd.jpeg";
+    const checkin = makeCheckin(1, "Hazy IPA", undefined, {
+      beer_label: "https://assets.untappd.com/site/beer_logos/beer-1_sm.jpeg",
+      beer_label_hd: hd,
+    });
+    (checkin as { media: Checkin["media"] }).media = {
+      count: 1,
+      items: [
+        {
+          photo: {
+            photo_img_sm: photo,
+            photo_img_md: photo,
+            photo_img_lg: photo,
+            photo_img_og: photo,
+          },
+        },
+      ],
+    };
+    checkinsSubject.next([checkin]);
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector(
+      ".carousel-track .beer-card img",
+    ) as HTMLImageElement;
+    expect(img.getAttribute("src")).toBe(photo);
+
+    img.dispatchEvent(new Event("error"));
+    expect(img.getAttribute("src")).toBe(hd);
+
+    img.dispatchEvent(new Event("error"));
+    expect(img.getAttribute("src")).toBe(
+      "https://assets.untappd.com/site/beer_logos/beer-1_sm.jpeg",
+    );
+
+    img.dispatchEvent(new Event("error"));
+    expect(img.getAttribute("src")).toBe("assets/images/beer-placeholder.svg");
+  });
+
+  it("does not loop when the placeholder is passed as an explicit candidate", () => {
+    const img = document.createElement("img");
+    img.src = component.DEFAULT_IMAGE;
+    const before = img.getAttribute("src");
+    component.handleImageError(
+      { target: img } as unknown as Event,
+      component.DEFAULT_IMAGE,
+    );
+    expect(img.getAttribute("src")).toBe(before);
   });
 
   it("does not re-assign the placeholder on repeated image errors", () => {
