@@ -19,6 +19,29 @@ describe("InsightsComponent", () => {
   let mockBeerStore: jasmine.SpyObj<BeerStoreService>;
   let dialogSpy: jasmine.Spy;
 
+  const makeStyleBeers = (beerStyle: string, count: number): BeerCheckin[] =>
+    Array.from({ length: count }, (_, i) => ({
+      beer: {
+        bid: 1000 + i,
+        beer_name: `${beerStyle} ${i}`,
+        beer_style: beerStyle,
+        beer_label: "http://example.com/beer.png",
+        beer_abv: 5,
+        beer_slug: `${beerStyle}-${i}`,
+      },
+      brewery: {
+        brewery_id: 200,
+        brewery_name: "Test Brewery",
+        country_name: "United States",
+        location: { brewery_state: "Test" },
+      },
+      rating_score: 4,
+      first_created_at: "2026-05-10 14:00:00",
+      recent_created_at: "2026-05-15 18:00:00",
+      recent_checkin_id: 1000 + i,
+      count: 1,
+    }));
+
   const sampleBeers: BeerCheckin[] = [
     {
       beer: {
@@ -106,6 +129,140 @@ describe("InsightsComponent", () => {
     const testBeer = sampleBeers[0]!;
     expect(component.matchesCategory(testBeer, "Lager / Pilsner")).toBeTrue();
     expect(component.matchesCategory(testBeer, "Stout / Porter")).toBeFalse();
+  });
+
+  describe("ranked style distribution bar chart", () => {
+    it("no longer exposes the removed radar chart data or options", () => {
+      expect(
+        (component as unknown as Record<string, unknown>)[
+          "styleRadarChartData"
+        ],
+      ).toBeUndefined();
+      expect(
+        (component as unknown as Record<string, unknown>)["radarChartOptions"],
+      ).toBeUndefined();
+    });
+
+    it("renders a horizontal bar chart in place of the radar chart", () => {
+      const el = fixture.nativeElement as HTMLElement;
+      const canvases = el.querySelectorAll("canvas");
+      expect(canvases.length).toBeGreaterThan(0);
+
+      expect(component.styleBarChartOptions.indexAxis).toBe("y");
+      expect(component.styleBarChartData.datasets[0]?.label).toBe("Check-ins");
+
+      const rendered = el.textContent ?? "";
+      expect(rendered).toContain("Style Distribution");
+      expect(rendered).not.toContain("Style Radar Distribution");
+    });
+
+    it("sorts styles in descending order of check-in count", () => {
+      const labels = component.styleBarChartData.labels ?? [];
+      const data = component.styleBarChartData.datasets[0]?.data ?? [];
+      expect(labels.length).toBe(data.length);
+      expect(labels.length).toBeGreaterThan(0);
+
+      for (let i = 1; i < data.length; i++) {
+        expect(data[i - 1]!).toBeGreaterThanOrEqual(data[i]!);
+      }
+    });
+
+    it("ranks the most frequent style first across many styles", async () => {
+      const manyBeers: BeerCheckin[] = [
+        ...makeStyleBeers("IPA - American", 3),
+        ...makeStyleBeers("Stout - Imperial", 2),
+        ...makeStyleBeers("Pilsner - Czech", 1),
+      ];
+      const store = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of(manyBeers),
+        checkins$: of([]),
+        loadError$: of(false),
+      });
+
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [{ provide: BeerStoreService, useValue: store }],
+      }).compileComponents();
+
+      const rankedFixture = TestBed.createComponent(InsightsComponent);
+      rankedFixture.detectChanges();
+      const instance = rankedFixture.componentInstance;
+
+      expect(instance.styleBarChartData.labels).toEqual([
+        "IPA",
+        "Stout / Porter",
+        "Lager / Pilsner",
+      ]);
+      expect(instance.styleBarChartData.datasets[0]?.data).toEqual([3, 2, 1]);
+    });
+
+    it("grows the chart height so every style row stays readable", () => {
+      expect(component.styleBarChartHeight()).toBeGreaterThanOrEqual(220);
+      const container = (fixture.nativeElement as HTMLElement).querySelector(
+        ".style-bar-chart-container",
+      ) as HTMLElement | null;
+      expect(container).not.toBeNull();
+      expect(container!.style.height).toBe(
+        `${component.styleBarChartHeight()}px`,
+      );
+    });
+
+    it("wraps long style labels instead of truncating them", () => {
+      const longLabel = "Belgian-Style Quadrupel With Brettanomyces And Oak";
+      const wrapped = (
+        component as unknown as {
+          wrapStyleLabel: (label: string, maxChars?: number) => string;
+        }
+      ).wrapStyleLabel(longLabel);
+      const lines = wrapped.split("\n");
+
+      expect(lines.length).toBeGreaterThan(1);
+      // Wrapping must not drop any of the original words.
+      expect(lines.join(" ").replace(/\s+/g, " ")).toBe(longLabel);
+      for (const line of lines) {
+        expect(line.length).toBeLessThanOrEqual(24);
+      }
+    });
+
+    it("breaks a single over-long word so it cannot overflow the axis", () => {
+      const oneWord = "Doppelbockbockbockbockbockbockbockbock";
+      const wrapped = (
+        component as unknown as {
+          wrapStyleLabel: (label: string, maxChars?: number) => string;
+        }
+      ).wrapStyleLabel(oneWord);
+      const lines = wrapped.split("\n");
+
+      expect(lines.length).toBeGreaterThan(1);
+      expect(lines.join("")).toBe(oneWord);
+      for (const line of lines) {
+        expect(line.length).toBeLessThanOrEqual(24);
+      }
+    });
+
+    it("keeps the personal milestones section below the charts", () => {
+      const el = fixture.nativeElement as HTMLElement;
+      const milestonesHeading = Array.from(el.querySelectorAll("h3")).find(
+        (h) => (h.textContent ?? "").includes("Personal Milestones"),
+      );
+      expect(milestonesHeading).toBeDefined();
+
+      const milestoneCards = el.querySelectorAll(".milestone-card");
+      expect(milestoneCards.length).toBeGreaterThan(0);
+
+      const chart = el.querySelector(".style-bar-chart-container");
+      expect(chart).not.toBeNull();
+      const position = chart!.compareDocumentPosition(
+        milestonesHeading as Node,
+      );
+      expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
   });
 
   it("should open dialog for openAbvDialog displaying top highest ABV drinks", () => {

@@ -166,76 +166,71 @@ export class InsightsComponent implements OnInit {
     },
   };
 
-  public styleRadarChartData: ChartData<"radar", number[], string> = {
-    labels: [
-      "IPA",
-      "Stout / Porter",
-      "Sour / Wild",
-      "Lager / Pilsner",
-      "Pale Ale",
-      "Wheat",
-      "Belgian / Strong",
-    ],
+  public styleBarChartData: ChartData<"bar", number[], string> = {
+    labels: [],
     datasets: [
       {
-        data: [0, 0, 0, 0, 0, 0, 0],
-        label: "Style Experience Count",
-        backgroundColor: "rgba(56, 189, 248, 0.25)",
+        data: [],
+        label: "Check-ins",
+        backgroundColor: "rgba(56, 189, 248, 0.75)",
         borderColor: "#38bdf8",
-        pointBackgroundColor: "#38bdf8",
+        borderWidth: 1,
+        borderRadius: 4,
+        maxBarThickness: 28,
       },
     ],
   };
 
-  public radarChartOptions: ChartOptions<"radar"> = {
+  /**
+   * Height of the bar chart canvas, grown to fit one row per style so the
+   * y-axis labels never overlap the bars or each other.
+   */
+  public styleBarChartHeight = signal<number>(320);
+
+  public styleBarChartOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
+    indexAxis: "y",
     interaction: {
       mode: "nearest",
       intersect: false,
     },
-    elements: {
-      point: {
-        radius: 6,
-        hoverRadius: 10,
-        hitRadius: 20,
-      },
-    },
-    scales: {
-      r: {
-        angleLines: {
-          display: true,
-          color: "rgba(0, 0, 0, 0.25)",
-          lineWidth: 1.5,
-        },
-        grid: {
-          display: true,
-          color: "rgba(0, 0, 0, 0.25)",
-          lineWidth: 1.5,
-        },
-        pointLabels: {
-          display: true,
-          color: "#0f172a",
-          font: { size: 12, weight: "bold" },
-        },
-        ticks: {
-          display: true,
-          color: "#475569",
-          backdropColor: "transparent",
-        },
-      },
-    },
     plugins: {
       legend: {
-        display: true,
-        labels: {
-          color: "#0f172a",
-        },
+        display: false,
       },
       tooltip: {
         enabled: true,
         mode: "nearest",
         intersect: false,
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+        },
+        ticks: {
+          color: "#475569",
+          precision: 0,
+        },
+      },
+      y: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: "#0f172a",
+          font: { size: 12, weight: "bold" },
+          autoSkip: false,
+          callback: (_tickValue: string | number, index: number) => {
+            const label = this.styleBarChartData.labels?.[index];
+            return typeof label === "string"
+              ? this.wrapStyleLabel(label)
+              : (label ?? "");
+          },
+        },
       },
     },
   };
@@ -302,61 +297,47 @@ export class InsightsComponent implements OnInit {
   private updateChartThemeOptions(theme: "light-theme" | "dark-theme"): void {
     const isLight = theme === "light-theme";
     const textColor = isLight ? "#0f172a" : "#f1f5f9";
-    const gridColor = isLight
-      ? "rgba(0, 0, 0, 0.25)"
-      : "rgba(255, 255, 255, 0.25)";
     const tickColor = isLight ? "#475569" : "#94a3b8";
     const brandAccent = isLight ? "#0284c7" : "#38bdf8";
-    const brandBg = isLight
-      ? "rgba(2, 132, 199, 0.25)"
-      : "rgba(56, 189, 248, 0.25)";
+    const brandBarBg = isLight
+      ? "rgba(2, 132, 199, 0.75)"
+      : "rgba(56, 189, 248, 0.75)";
 
-    this.radarChartOptions = {
-      ...this.radarChartOptions,
+    this.styleBarChartOptions = {
+      ...this.styleBarChartOptions,
       scales: {
-        r: {
-          angleLines: {
-            display: true,
-            color: gridColor,
-            lineWidth: 1.5,
-          },
+        x: {
+          beginAtZero: true,
           grid: {
-            display: true,
-            color: gridColor,
-            lineWidth: 1.5,
-          },
-          pointLabels: {
-            display: true,
-            color: textColor,
-            font: { size: 12, weight: "bold" },
+            color: isLight ? "rgba(0, 0, 0, 0.1)" : "rgba(255, 255, 255, 0.1)",
           },
           ticks: {
-            display: true,
             color: tickColor,
-            backdropColor: "transparent",
+            precision: 0,
           },
         },
-      },
-      plugins: {
-        ...this.radarChartOptions.plugins,
-        legend: {
-          display: true,
-          labels: {
+        y: {
+          grid: {
+            display: false,
+          },
+          ticks: {
+            ...this.styleBarChartOptions.scales?.["y"]?.ticks,
             color: textColor,
+            font: { size: 12, weight: "bold" },
+            autoSkip: false,
           },
         },
       },
     };
 
-    if (this.styleRadarChartData.datasets[0]) {
-      this.styleRadarChartData = {
-        ...this.styleRadarChartData,
+    if (this.styleBarChartData.datasets[0]) {
+      this.styleBarChartData = {
+        ...this.styleBarChartData,
         datasets: [
           {
-            ...this.styleRadarChartData.datasets[0],
-            backgroundColor: brandBg,
+            ...this.styleBarChartData.datasets[0],
+            backgroundColor: brandBarBg,
             borderColor: brandAccent,
-            pointBackgroundColor: brandAccent,
           },
         ],
       };
@@ -404,6 +385,55 @@ export class InsightsComponent implements OnInit {
     }
 
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Grows the canvas so each style gets a comfortable row. Chart.js renders
+   * multi-line labels, but a fixed height would cram the axis ticks together
+   * once there are many styles, so the height tracks the row count instead.
+   */
+  private computeStyleBarChartHeight(labels: string[]): number {
+    const ROW_HEIGHT = 44;
+    const MIN_HEIGHT = 220;
+    const MAX_HEIGHT = 640;
+    const rows = Math.max(labels.length, 1);
+    return Math.min(Math.max(rows * ROW_HEIGHT + 40, MIN_HEIGHT), MAX_HEIGHT);
+  }
+
+  /**
+   * Breaks a long style name onto multiple lines so it stays fully readable
+   * without pushing the bars off the chart. The label is hard-wrapped at word
+   * boundaries to fit within a fixed pixel width.
+   */
+  private wrapStyleLabel(label: string, maxChars = 24): string {
+    if (label.length <= maxChars) return label;
+
+    const words = label.split(/\s+/);
+    const lines: string[] = [];
+    let current = "";
+
+    for (const word of words) {
+      // A single word longer than the line still needs breaking, otherwise it
+      // would overflow the axis and get clipped.
+      const chunks =
+        word.length > maxChars
+          ? (word.match(new RegExp(`.{1,${maxChars}}`, "g")) ?? [word])
+          : [word];
+
+      for (const chunk of chunks) {
+        if (!current) {
+          current = chunk;
+        } else if (`${current} ${chunk}`.length <= maxChars) {
+          current = `${current} ${chunk}`;
+        } else {
+          lines.push(current);
+          current = chunk;
+        }
+      }
+    }
+    if (current) lines.push(current);
+
+    return lines.join("\n");
   }
 
   public matchesCategory(b: BeerCheckin, categoryName: string): boolean {
@@ -1060,9 +1090,9 @@ export class InsightsComponent implements OnInit {
 
     const isLight = this.themeService.currentTheme() === "light-theme";
     const brandAccent = isLight ? "#0284c7" : "#38bdf8";
-    const brandBg = isLight
-      ? "rgba(2, 132, 199, 0.25)"
-      : "rgba(56, 189, 248, 0.25)";
+    const brandBarBg = isLight
+      ? "rgba(2, 132, 199, 0.75)"
+      : "rgba(56, 189, 248, 0.75)";
 
     // Filter out categories with 0 check-ins so non-legacy categories without check-ins are excluded
     const activeCategories = Object.entries(categoryCounts).filter(
@@ -1090,22 +1120,33 @@ export class InsightsComponent implements OnInit {
       ],
     };
 
-    // Radar chart data update
-    this.styleRadarChartData = {
-      labels: activeCategories.map(([cat]) => cat),
+    // Ranked bar chart: sorted descending by check-in count so the most
+    // frequently enjoyed styles sit at the top. Ties fall back to the style
+    // name for a stable order.
+    const rankedCategories = [...activeCategories].sort(
+      (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+    );
+
+    this.styleBarChartData = {
+      labels: rankedCategories.map(([cat]) => cat),
       datasets: [
         {
-          data: activeCategories.map(([, count]) => count),
-          label: "Check-ins by Style",
-          backgroundColor: brandBg,
+          data: rankedCategories.map(([, count]) => count),
+          label: "Check-ins",
+          backgroundColor: brandBarBg,
           borderColor: brandAccent,
-          pointBackgroundColor: brandAccent,
+          borderWidth: 1,
+          borderRadius: 4,
+          maxBarThickness: 28,
         },
       ],
     };
+    this.styleBarChartHeight.set(
+      this.computeStyleBarChartHeight(this.styleBarChartData.labels ?? []),
+    );
 
     // Find top category
-    const topCat = activeCategories.sort((a, b) => b[1] - a[1])[0];
+    const topCat = rankedCategories[0];
     if (topCat) this.topCategory.set(topCat[0]);
 
     // Top brewery
