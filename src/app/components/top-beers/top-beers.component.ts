@@ -43,6 +43,11 @@ import { thumbnailLabel } from "../../core/utils/label-image";
 
 type DateRangeOption = { label: string; daysBack?: number };
 
+const DEFAULT_DATE_RANGE: DateRangeOption = {
+  label: "Overall",
+  daysBack: 3650,
+};
+
 @Component({
   selector: "app-top-beers",
   templateUrl: "./top-beers.component.html",
@@ -81,13 +86,13 @@ export class TopBeersComponent implements OnInit {
 
   // Filter state
   public useCustomDate = false;
-  public selectedRange: DateRangeOption;
+  public selectedRange: DateRangeOption = DEFAULT_DATE_RANGE;
   public customStartDate: Date | null = null;
   public topX = 5;
   public minCheckins = 1;
 
   public dateRangeOptions: DateRangeOption[] = [
-    { label: "Overall", daysBack: 3650 },
+    DEFAULT_DATE_RANGE,
     { label: "Last Year", daysBack: 365 },
     { label: "Last 6 Months", daysBack: 180 },
     { label: "Last Month", daysBack: 30 },
@@ -96,10 +101,6 @@ export class TopBeersComponent implements OnInit {
 
   public topXOptions = [3, 5, 10, 15];
   public minCheckinOptions = [1, 2, 3, 5, 10];
-
-  constructor() {
-    this.selectedRange = this.dateRangeOptions[0];
-  }
 
   ngOnInit(): void {
     this.syncFromQueryParams();
@@ -162,7 +163,7 @@ export class TopBeersComponent implements OnInit {
   }
 
   resetFilters(): void {
-    this.selectedRange = this.dateRangeOptions[0];
+    this.selectedRange = DEFAULT_DATE_RANGE;
     this.topX = 5;
     this.minCheckins = 1;
     this.useCustomDate = false;
@@ -221,7 +222,8 @@ export class TopBeersComponent implements OnInit {
           totalRatedCheckins > 0 ? totalWeightedRating / totalRatedCheckins : 0;
 
         return {
-          ...group[0],
+          // Every group is seeded with at least one check-in before insertion.
+          ...group[0]!,
           totalCheckins: totalCheckins,
           avgRating: avgRating,
         };

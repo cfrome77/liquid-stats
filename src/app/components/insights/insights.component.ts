@@ -862,6 +862,9 @@ export class InsightsComponent implements OnInit {
       "THC / Cannabinoid": 0,
       "Other / Specialty": 0,
     };
+    const bump = (category: string): void => {
+      categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
+    };
 
     const uniqueStyles = new Set<string>();
     let totalABV = 0;
@@ -890,12 +893,12 @@ export class InsightsComponent implements OnInit {
       const styleLower = style.toLowerCase();
 
       if (styleLower.includes("ipa") || styleLower.includes("india pale")) {
-        categoryCounts["IPA"]++;
+        bump("IPA");
       } else if (
         styleLower.includes("stout") ||
         styleLower.includes("porter")
       ) {
-        categoryCounts["Stout / Porter"]++;
+        bump("Stout / Porter");
       } else if (
         styleLower.includes("sour") ||
         styleLower.includes("wild") ||
@@ -904,7 +907,7 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("lambic") ||
         styleLower.includes("coolship")
       ) {
-        categoryCounts["Sour / Wild"]++;
+        bump("Sour / Wild");
       } else if (
         styleLower.includes("lager") ||
         styleLower.includes("pilsner") ||
@@ -919,9 +922,9 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("vienna") ||
         styleLower.includes("zoigl")
       ) {
-        categoryCounts["Lager / Pilsner"]++;
+        bump("Lager / Pilsner");
       } else if (styleLower.includes("pale ale")) {
-        categoryCounts["Pale Ale"]++;
+        bump("Pale Ale");
       } else if (
         styleLower.includes("wheat") ||
         styleLower.includes("hefeweizen") ||
@@ -930,7 +933,7 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("weizenbock") ||
         styleLower.includes("grisette")
       ) {
-        categoryCounts["Wheat"]++;
+        bump("Wheat");
       } else if (
         styleLower.includes("belgian") ||
         styleLower.includes("abbey") ||
@@ -944,7 +947,7 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("enkel") ||
         styleLower.includes("patersbier")
       ) {
-        categoryCounts["Belgian / Farmhouse"]++;
+        bump("Belgian / Farmhouse");
       } else if (
         styleLower.includes("barleywine") ||
         styleLower.includes("old ale") ||
@@ -954,7 +957,7 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("doppelsticke") ||
         styleLower.includes("sticke")
       ) {
-        categoryCounts["Strong Ale"]++;
+        bump("Strong Ale");
       } else if (
         styleLower.includes("cider") ||
         styleLower.includes("perry") ||
@@ -963,7 +966,7 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("cyser") ||
         styleLower.includes("melomel")
       ) {
-        categoryCounts["Cider / Perry / Mead"]++;
+        bump("Cider / Perry / Mead");
       } else if (
         styleLower.includes("wine") ||
         styleLower.includes("champagne") ||
@@ -974,7 +977,7 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("sangria") ||
         styleLower.includes("spritz")
       ) {
-        categoryCounts["Wine"]++;
+        bump("Wine");
       } else if (
         styleLower.includes("spirit") ||
         styleLower.includes("whiskey") ||
@@ -993,14 +996,14 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("rtd") ||
         styleLower.includes("cocktail")
       ) {
-        categoryCounts["Spirit / RTD"]++;
+        bump("Spirit / RTD");
       } else if (
         styleLower.includes("sake") ||
         styleLower.includes("junmai") ||
         styleLower.includes("daiginjo") ||
         styleLower.includes("honjozo")
       ) {
-        categoryCounts["Sake"]++;
+        bump("Sake");
       } else if (
         styleLower.includes("non-alcoholic") ||
         styleLower.includes("root beer") ||
@@ -1013,14 +1016,14 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("malta") ||
         styleLower.includes("fassbrause")
       ) {
-        categoryCounts["Non-Alcoholic / Soda / Root Beer"]++;
+        bump("Non-Alcoholic / Soda / Root Beer");
       } else if (
         styleLower.includes("thc") ||
         styleLower.includes("cannabinoid") ||
         styleLower.includes("cbd") ||
         styleLower.includes("hemp")
       ) {
-        categoryCounts["THC / Cannabinoid"]++;
+        bump("THC / Cannabinoid");
       } else if (
         styleLower.includes("fruit") ||
         styleLower.includes("shandy") ||
@@ -1030,9 +1033,9 @@ export class InsightsComponent implements OnInit {
         styleLower.includes("herb") ||
         styleLower.includes("vegetable")
       ) {
-        categoryCounts["Fruit / Field / Spice"]++;
+        bump("Fruit / Field / Spice");
       } else {
-        categoryCounts["Other / Specialty"]++;
+        bump("Other / Specialty");
       }
 
       const brewery = b.brewery.brewery_name;

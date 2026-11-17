@@ -199,11 +199,12 @@ export class CommandPaletteComponent implements OnInit {
       });
 
       for (const [breweryName, beers] of breweryMap.entries()) {
-        if (breweryName.toLowerCase().includes(query)) {
+        const firstBeer = beers[0];
+        if (breweryName.toLowerCase().includes(query) && firstBeer) {
           items.push({
             type: "brewery",
             title: breweryName,
-            subtitle: `${beers[0].brewery.country_name || "Brewery"} • ${beers.length} drink(s)`,
+            subtitle: `${firstBeer.brewery.country_name || "Brewery"} • ${beers.length} drink(s)`,
             icon: "business",
             data: { breweryName, beers },
           });

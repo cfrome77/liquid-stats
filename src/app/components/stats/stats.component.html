@@ -79,16 +79,14 @@
         <h3><mat-icon>sports_bar</mat-icon> Drink Styles Breakdown</h3>
         <ul>
           @for (style of sortedBeerStyles; track style) {
-            @if (processedStats.beerStylesCount[style] > 0) {
+            @if (styleCount(style) > 0) {
               <li
                 class="clickable"
-                [title]="style + ': ' + processedStats.beerStylesCount[style]"
+                [title]="style + ': ' + styleCount(style)"
                 (click)="openBeersByStyle(style)"
               >
                 <span class="style-name">{{ style }}</span>
-                <span class="style-count">{{
-                  processedStats.beerStylesCount[style]
-                }}</span>
+                <span class="style-count">{{ styleCount(style) }}</span>
               </li>
             }
           }

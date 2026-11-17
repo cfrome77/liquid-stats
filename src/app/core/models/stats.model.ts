@@ -4,6 +4,15 @@ export interface TopBeer {
   avgRating: number;
 }
 
+/** The small pre-aggregated summary served by `stats.json`. */
+export interface QuickStats {
+  totalCheckins: number;
+  averageRating: number;
+  countriesTried: number;
+  breweriesVisited: number;
+  lastUpdated: string;
+}
+
 export interface DailyCheckinCount {
   date: string; // e.g., "YYYY-MM-DD"
   count: number;

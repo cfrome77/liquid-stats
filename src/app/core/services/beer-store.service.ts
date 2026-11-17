@@ -3,16 +3,9 @@ import { BehaviorSubject, map, catchError, of } from "rxjs";
 import { DataService } from "./data.service";
 import { BeerCheckin } from "../models/beer.model";
 import { Checkin, CheckinResponse } from "../models/checkin.model";
+import { QuickStats } from "../models/stats.model";
 import { StatsService } from "../../components/stats/stats.service";
 import { LoggingService } from "./logger.service";
-
-export interface QuickStats {
-  totalCheckins: number;
-  averageRating: number;
-  countriesTried: number;
-  breweriesVisited: number;
-  lastUpdated: string;
-}
 
 @Injectable({ providedIn: "root" })
 export class BeerStoreService {
@@ -75,7 +68,7 @@ export class BeerStoreService {
         )
         .subscribe((stats) => {
           if (stats) {
-            this.quickStatsSubject.next(stats as QuickStats);
+            this.quickStatsSubject.next(stats);
           }
         });
     }

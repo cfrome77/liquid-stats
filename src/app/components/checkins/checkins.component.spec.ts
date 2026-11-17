@@ -89,8 +89,8 @@ describe("CheckinsComponent", () => {
     expect(badges).toBeDefined();
     expect(badges?.length).toBe(2);
 
-    expect(badges![0].badge_image.sm).toBe("http://example.com/badge_sm.png");
-    expect(badges![1].badge_image.sm).toBe("http://example.com/badge_str.png");
+    expect(badges![0]!.badge_image.sm).toBe("http://example.com/badge_sm.png");
+    expect(badges![1]!.badge_image.sm).toBe("http://example.com/badge_str.png");
   });
 
   describe("pagination", () => {
@@ -107,7 +107,7 @@ describe("CheckinsComponent", () => {
       seed(25);
       component.updatePagination();
       expect(component.paginatedCheckins.length).toBe(10);
-      expect(component.paginatedCheckins[0].title).toBe("Beer 1");
+      expect(component.paginatedCheckins[0]!.title).toBe("Beer 1");
     });
 
     it("shows the trailing partial page", () => {
@@ -115,7 +115,7 @@ describe("CheckinsComponent", () => {
       component.currentPage = 3;
       component.updatePagination();
       expect(component.paginatedCheckins.length).toBe(5);
-      expect(component.paginatedCheckins[0].title).toBe("Beer 21");
+      expect(component.paginatedCheckins[0]!.title).toBe("Beer 21");
     });
 
     it("resets to the first page when the page size changes", () => {

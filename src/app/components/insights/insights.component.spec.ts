@@ -103,7 +103,7 @@ describe("InsightsComponent", () => {
   });
 
   it("should correctly identify drink categories with matchesCategory", () => {
-    const testBeer = sampleBeers[0];
+    const testBeer = sampleBeers[0]!;
     expect(component.matchesCategory(testBeer, "Lager / Pilsner")).toBeTrue();
     expect(component.matchesCategory(testBeer, "Stout / Porter")).toBeFalse();
   });
@@ -115,7 +115,7 @@ describe("InsightsComponent", () => {
       ?.data as GenericBeersDialogData;
     expect(data.title).toBe("Top Highest ABV Drinks");
     expect(data.beers.length).toBe(2);
-    expect(data.beers[0].beerName).toBe("Guinness Extra Stout");
+    expect(data.beers[0]!.beerName).toBe("Guinness Extra Stout");
   });
 
   it("should open dialog for openStylesDialog with styles list and reopen styles list on back", () => {
@@ -156,7 +156,7 @@ describe("InsightsComponent", () => {
       ?.data as GenericBeersDialogData;
     expect(data.title).toBe("Lager / Pilsner Drinks");
     expect(data.beers.length).toBe(1);
-    expect(data.beers[0].beerName).toBe("Pilsner Urquell");
+    expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
   });
 
   it("should open dialog for openBreweryDialog", () => {

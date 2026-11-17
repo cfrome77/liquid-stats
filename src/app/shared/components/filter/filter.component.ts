@@ -169,7 +169,9 @@ export class FilterComponent implements OnDestroy {
     }
   }
 
-  toDate(dateStr: string): Date | null {
+  // Accepts an absent value because `activeFilter.selected` is a sparse string
+  // array under noUncheckedIndexedAccess; a missing date yields null.
+  toDate(dateStr: string | undefined): Date | null {
     return dateStr ? new Date(dateStr + "T00:00:00") : null;
   }
 

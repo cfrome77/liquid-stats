@@ -89,7 +89,7 @@ describe("TopBeersComponent", () => {
   it("should filter beers", () => {
     fixture.detectChanges();
     expect(component.transformedTopBeers.length).toBeGreaterThan(0);
-    expect(component.transformedTopBeers[0].title).toBe("Test Beer");
+    expect(component.transformedTopBeers[0]!.title).toBe("Test Beer");
   });
 
   it("shows a retryable error state when the beers request fails", () => {
@@ -142,7 +142,7 @@ describe("TopBeersComponent", () => {
     fixture.detectChanges();
 
     expect(component.transformedTopBeers.length).toBe(1);
-    expect(component.transformedTopBeers[0].title).toBe("Multi Beer");
+    expect(component.transformedTopBeers[0]!.title).toBe("Multi Beer");
 
     component.minCheckins = 5;
     component.onFilterChange();
@@ -154,7 +154,7 @@ describe("TopBeersComponent", () => {
     fixture.detectChanges();
     component.topX = 15;
     component.minCheckins = 10;
-    component.selectedRange = component.dateRangeOptions[2];
+    component.selectedRange = component.dateRangeOptions[2]!;
     component.useCustomDate = true;
     component.customStartDate = new Date();
 
@@ -162,7 +162,7 @@ describe("TopBeersComponent", () => {
 
     expect(component.topX).toBe(5);
     expect(component.minCheckins).toBe(1);
-    expect(component.selectedRange).toBe(component.dateRangeOptions[0]);
+    expect(component.selectedRange).toBe(component.dateRangeOptions[0]!);
     expect(component.useCustomDate).toBeFalse();
     expect(component.customStartDate).toBeNull();
     expect(component.transformedTopBeers.length).toBeGreaterThan(0);

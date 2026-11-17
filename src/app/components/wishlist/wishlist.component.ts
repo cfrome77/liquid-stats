@@ -6,7 +6,7 @@ import {
   signal,
 } from "@angular/core";
 
-import { BeerCheckin } from "src/app/core/models/beer.model";
+import { WishlistBeer } from "src/app/core/models/beer.model";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterModule } from "@angular/router";
@@ -57,15 +57,10 @@ export class WishlistComponent implements OnInit {
     this.isLoading = true;
     this.hasLoadError.set(false);
     this.dataService.getWishlist().subscribe({
-      next: (data: unknown) => {
-        const response = data as {
-          response?: { beers?: { items?: unknown[] } };
-        };
-        const items = response?.response?.beers?.items || [];
+      next: (data) => {
+        const items = data.response.beers.items;
 
-        this.wishlist = items.map((item: unknown) =>
-          this.transformWishlistData(item as BeerCheckin),
-        );
+        this.wishlist = items.map((item) => this.transformWishlistData(item));
         this.totalItems = this.wishlist.length;
         this.isLoading = false;
         this.updatePagination();
@@ -86,9 +81,7 @@ export class WishlistComponent implements OnInit {
     this.loadWishlist();
   }
 
-  transformWishlistData(
-    item: BeerCheckin & { created_at?: string },
-  ): BaseCardData {
+  transformWishlistData(item: WishlistBeer): BaseCardData {
     return {
       title: item.beer.beer_name,
       subtitle: item.beer.beer_style,

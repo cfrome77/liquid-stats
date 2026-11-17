@@ -60,7 +60,7 @@ describe("FilterComponent", () => {
   });
 
   it("should open filter modal overlay when button is clicked", () => {
-    component.openFilterModal(component.filterFields[0]);
+    component.openFilterModal(component.filterFields[0]!);
     fixture.detectChanges();
 
     expect(component.isModalOpen).toBeTrue();
@@ -72,7 +72,7 @@ describe("FilterComponent", () => {
   });
 
   it("should close modal overlay when closeModal is called", () => {
-    component.openFilterModal(component.filterFields[0]);
+    component.openFilterModal(component.filterFields[0]!);
     fixture.detectChanges();
     expect(
       overlayContainerElement.querySelector(".modal-content"),
@@ -89,14 +89,14 @@ describe("FilterComponent", () => {
   it("should apply filter changes and emit filterChanged event", () => {
     spyOn(component.filterChanged, "emit");
 
-    component.openFilterModal(component.filterFields[0]);
+    component.openFilterModal(component.filterFields[0]!);
     fixture.detectChanges();
 
     // Toggle selected options
     component.activeFilter!.selected = ["Brewery A"];
     component.applyFilter();
 
-    expect(component.filterFields[0].selected).toEqual(["Brewery A"]);
+    expect(component.filterFields[0]!.selected).toEqual(["Brewery A"]);
     expect(component.filterChanged.emit).toHaveBeenCalledWith(
       component.filterFields,
     );
@@ -104,7 +104,7 @@ describe("FilterComponent", () => {
   });
 
   it("should toggle select/deselect all options", () => {
-    component.openFilterModal(component.filterFields[0]);
+    component.openFilterModal(component.filterFields[0]!);
     expect(component.allSelected).toBeTrue();
 
     component.toggleSelectDeselect();
@@ -118,7 +118,7 @@ describe("FilterComponent", () => {
   });
 
   it("should handle date change events", () => {
-    component.openFilterModal(component.filterFields[1]); // Date filter
+    component.openFilterModal(component.filterFields[1]!); // Date filter
 
     const fromEvent = {
       value: new Date(2023, 5, 15),
@@ -150,7 +150,7 @@ describe("FilterComponent", () => {
   });
 
   it("should clean up overlayRef on ngOnDestroy", () => {
-    component.openFilterModal(component.filterFields[0]);
+    component.openFilterModal(component.filterFields[0]!);
     fixture.detectChanges();
     expect(
       overlayContainerElement.querySelector(".modal-content"),

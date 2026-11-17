@@ -1,7 +1,8 @@
 export interface Checkin {
   checkin_id: number;
   created_at: string;
-  checkin_comment: string;
+  // Untappd omits this key entirely on check-ins left without a comment.
+  checkin_comment?: string;
   rating_score: number;
   beer: {
     bid: number;

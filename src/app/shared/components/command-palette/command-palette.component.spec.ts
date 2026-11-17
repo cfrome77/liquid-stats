@@ -74,7 +74,7 @@ describe("CommandPaletteComponent", () => {
   it("should create and display default navigation pages when search term is empty", () => {
     expect(component).toBeTruthy();
     expect(component.results().length).toBeGreaterThan(0);
-    expect(component.results()[0].type).toBe("page");
+    expect(component.results()[0]!.type).toBe("page");
   });
 
   it("should filter results based on search term for drinks, breweries, and styles", () => {
@@ -86,7 +86,7 @@ describe("CommandPaletteComponent", () => {
   });
 
   it("should navigate to page when page result is selected", () => {
-    const pageItem = component.pages[0];
+    const pageItem = component.pages[0]!;
     component.selectItem(pageItem);
     expect(mockDialogRef.close).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(["/"]);
