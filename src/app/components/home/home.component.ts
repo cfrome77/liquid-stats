@@ -111,21 +111,45 @@ export class HomeComponent implements OnInit {
   }
 
   /**
-   * Steps a failed carousel image to its next candidate before the bundled
-   * placeholder. The HD label is synthesised from the small one, and Untappd
-   * answers 403 for beers that have no HD variant, so a failed HD image must
-   * retry the standard label instead of dropping straight to the placeholder.
+   * Walks a failed carousel image forward through its ordered fallback chain
+   * (check-in photo -> HD label -> standard label -> bundled placeholder).
+   * The handler locates the current src in the chain and advances exactly one
+   * step, comparing resolved URLs so repeated or relatively-addressed
+   * candidates cannot re-trigger it in an infinite loop.
    */
-  handleImageError(event: Event, fallback?: string): void {
+  handleImageError(
+    event: Event,
+    ...candidates: Array<string | undefined>
+  ): void {
     const img = event.target as HTMLImageElement | null;
     if (!img) return;
 
-    const current = img.getAttribute("src");
-    if (fallback && fallback !== current) {
-      img.src = fallback;
+    const chain = [
+      ...new Set(
+        [...candidates, DEFAULT_IMAGE_URL].filter(
+          (url): url is string => !!url,
+        ),
+      ),
+    ];
+    const resolvedChain = chain.map((url) => this.resolveUrl(url, img));
+    // An unrecognised src falls back to the first candidate, mirroring the
+    // previous "retry the fallback" behaviour.
+    const next = chain[resolvedChain.indexOf(img.src) + 1];
+
+    if (next && this.resolveUrl(next, img) !== img.src) {
+      img.src = next;
       return;
     }
 
     applyDefaultImage(event);
+  }
+
+  /** Resolves a candidate against the image's base so URLs compare absolutely. */
+  private resolveUrl(url: string, img: HTMLImageElement): string {
+    try {
+      return new URL(url, img.baseURI).href;
+    } catch {
+      return url;
+    }
   }
 }
