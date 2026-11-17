@@ -198,6 +198,8 @@
             [src]="selectedBrewery.logo"
             class="brewery-logo"
             [alt]="selectedBrewery.name"
+            loading="lazy"
+            decoding="async"
           />
           <div class="brewery-details">
             <h2>{{ selectedBrewery.name }}</h2>
@@ -247,6 +249,8 @@
                 [src]="checkIn.beerLabel"
                 class="beer-label"
                 alt="Beer Label"
+                loading="lazy"
+                decoding="async"
               />
               <div class="beer-info">
                 <strong class="beer-name">{{ checkIn.beerName }}</strong>

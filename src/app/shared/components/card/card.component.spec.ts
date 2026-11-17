@@ -138,4 +138,35 @@ describe("CardComponent", () => {
     );
     expect(comment?.querySelector("script")).toBeNull();
   });
+
+  describe("thumbnail loading", () => {
+    it("lazily loads the grid thumbnails", () => {
+      fixture.componentRef.setInput("cardData", {
+        ...component.cardData,
+        secondaryImage: "brewery.jpg",
+      });
+      fixture.detectChanges();
+
+      const imgs = Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll(
+          "img",
+        ) as NodeListOf<HTMLImageElement>,
+      );
+      expect(imgs.length).toBeGreaterThan(0);
+      for (const img of imgs) {
+        expect(img.getAttribute("loading")).toBe("lazy");
+      }
+    });
+
+    it("lazily loads the compact view thumbnail", () => {
+      fixture.componentRef.setInput("viewMode", "compact");
+      fixture.detectChanges();
+
+      const img = (fixture.nativeElement as HTMLElement).querySelector(
+        "img.compact-thumb",
+      ) as HTMLImageElement;
+      expect(img).toBeTruthy();
+      expect(img.getAttribute("loading")).toBe("lazy");
+    });
+  });
 });
