@@ -4,11 +4,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { DataService } from "../../core/services/data.service";
-import {
-  BeerStoreService,
-  QuickStats,
-} from "../../core/services/beer-store.service";
-import { ProcessedStats } from "../../core/models/stats.model";
+import { BeerStoreService } from "../../core/services/beer-store.service";
+import { ProcessedStats, QuickStats } from "../../core/models/stats.model";
 import { Checkin } from "../../core/models/checkin.model";
 
 function makeCheckin(
@@ -41,7 +38,7 @@ describe("HomeComponent", () => {
 
     const mockDataService: Partial<DataService> = {
       getBeersAll: () => of([]),
-      getStats: () => of({}),
+      getStats: () => of({} as QuickStats),
       getCheckins: () => of({ response: { checkins: { items: [] } } }),
     };
 
@@ -78,8 +75,8 @@ describe("HomeComponent", () => {
       ".carousel-track .beer-card",
     ) as NodeListOf<HTMLElement>;
     expect(cards.length).toBe(2);
-    expect(cards[0].textContent).toContain("Hazy IPA");
-    expect(cards[1].textContent).toContain("Stout");
+    expect(cards[0]!.textContent).toContain("Hazy IPA");
+    expect(cards[1]!.textContent).toContain("Stout");
     expect(component.allCheckins().length).toBe(2);
   });
 
@@ -97,8 +94,8 @@ describe("HomeComponent", () => {
     expect(component.allCheckins().length).toBe(20);
     expect(component.recentCheckins().length).toBe(12);
     // newest first: the last item in the source array
-    expect(component.recentCheckins()[0].checkin_id).toBe(20);
-    expect(component.recentCheckins()[11].checkin_id).toBe(9);
+    expect(component.recentCheckins()[0]!.checkin_id).toBe(20);
+    expect(component.recentCheckins()[11]!.checkin_id).toBe(9);
 
     const cards = fixture.nativeElement.querySelectorAll(
       ".carousel-track .beer-card",
@@ -176,8 +173,8 @@ describe("HomeComponent", () => {
     expect(
       imgs.slice(4).every((img) => img.getAttribute("loading") === "lazy"),
     ).toBeTrue();
-    expect(imgs[0].getAttribute("fetchpriority")).toBe("high");
-    expect(imgs[7].getAttribute("fetchpriority")).toBe("low");
+    expect(imgs[0]!.getAttribute("fetchpriority")).toBe("high");
+    expect(imgs[7]!.getAttribute("fetchpriority")).toBe("low");
   });
 
   it("falls back to the default image when a card image fails to load", () => {

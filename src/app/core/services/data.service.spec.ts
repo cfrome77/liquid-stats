@@ -6,6 +6,7 @@ import {
 import { DataService } from "./data.service";
 import { Badge } from "../models/badge.model";
 import { CheckinResponse } from "../models/checkin.model";
+import { WishlistResponse } from "../models/beer.model";
 
 describe("DataService", () => {
   let service: DataService;
@@ -99,8 +100,8 @@ describe("DataService", () => {
     }>;
 
     expect(beers.length).toBe(1);
-    expect(beers[0].beer.beer_label_hd).toContain("beer_logos_hd");
-    expect(beers[0].brewery.brewery_label_hd).toContain("brewery_logos_hd");
+    expect(beers[0]!.beer.beer_label_hd).toContain("beer_logos_hd");
+    expect(beers[0]!.brewery.brewery_label_hd).toContain("brewery_logos_hd");
   });
 
   it("should clear cache when clearCache() is called", () => {
@@ -159,6 +160,43 @@ describe("DataService", () => {
 
     expect(result).toBeDefined();
     const item = result?.response?.checkins?.items?.[0];
+    expect(item?.beer?.beer_label_hd).toContain("beer_logos_hd");
+    expect(item?.brewery?.brewery_label_hd).toContain("brewery_logos_hd");
+  });
+
+  it("should fetch wishlist and transform beer/brewery labels", () => {
+    const mockWishlistResponse: WishlistResponse = {
+      response: {
+        beers: {
+          items: [
+            {
+              beer: {
+                bid: 30,
+                beer_name: "Wish IPA",
+                beer_style: "IPA",
+                beer_slug: "wish-ipa",
+                beer_label:
+                  "https://assets.untappd.com/site/beer_logos/beer-30_sm.jpeg",
+              },
+              brewery: {
+                brewery_name: "Wish Brewery",
+                brewery_label:
+                  "https://assets.untappd.com/site/brewery_logos/brewery-30_sm.jpeg",
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    let result: WishlistResponse | undefined;
+    service.getWishlist().subscribe((res) => (result = res));
+
+    const req = httpMock.expectOne((r) => r.url.endsWith("wishlist.json"));
+    req.flush(mockWishlistResponse);
+
+    expect(result).toBeDefined();
+    const item = result?.response?.beers?.items?.[0];
     expect(item?.beer?.beer_label_hd).toContain("beer_logos_hd");
     expect(item?.brewery?.brewery_label_hd).toContain("brewery_logos_hd");
   });

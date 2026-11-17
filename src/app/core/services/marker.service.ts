@@ -41,15 +41,15 @@ export function getBreweryTypeColor(type?: string): string {
   }
 
   // Substring match heuristics
-  if (lower.includes("micro")) return BREWERY_TYPE_COLORS["Micro Brewery"];
-  if (lower.includes("pub")) return BREWERY_TYPE_COLORS["Brewpub"];
+  if (lower.includes("micro")) return BREWERY_TYPE_COLORS["Micro Brewery"]!;
+  if (lower.includes("pub")) return BREWERY_TYPE_COLORS["Brewpub"]!;
   if (lower.includes("regional"))
-    return BREWERY_TYPE_COLORS["Regional Brewery"];
-  if (lower.includes("macro")) return BREWERY_TYPE_COLORS["Macro Brewery"];
-  if (lower.includes("cider")) return BREWERY_TYPE_COLORS["Cidery"];
-  if (lower.includes("mead")) return BREWERY_TYPE_COLORS["Meadery"];
-  if (lower.includes("nano")) return BREWERY_TYPE_COLORS["Nano Brewery"];
-  if (lower.includes("taproom")) return BREWERY_TYPE_COLORS["Taproom"];
+    return BREWERY_TYPE_COLORS["Regional Brewery"]!;
+  if (lower.includes("macro")) return BREWERY_TYPE_COLORS["Macro Brewery"]!;
+  if (lower.includes("cider")) return BREWERY_TYPE_COLORS["Cidery"]!;
+  if (lower.includes("mead")) return BREWERY_TYPE_COLORS["Meadery"]!;
+  if (lower.includes("nano")) return BREWERY_TYPE_COLORS["Nano Brewery"]!;
+  if (lower.includes("taproom")) return BREWERY_TYPE_COLORS["Taproom"]!;
 
   return DEFAULT_BREWERY_COLOR;
 }
@@ -202,9 +202,9 @@ export class MarkerService {
     this.markers.clearLayers();
     this.breweryMarkers = [];
 
-    for (const key in breweryCounts) {
+    for (const entry of Object.values(breweryCounts)) {
       const { lat, lon, name, breweryType, city, state, logo, checkIns, id } =
-        breweryCounts[key];
+        entry;
 
       const color = getBreweryTypeColor(breweryType);
       const icon = createCustomIcon(color);

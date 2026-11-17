@@ -111,8 +111,8 @@ describe("StatsComponent", () => {
       ?.data as GenericBeersDialogData;
     expect(dialogData.title).toBe("IPA - Rye");
     expect(dialogData.beers.length).toBe(1);
-    expect(dialogData.beers[0].beerName).toBe("Riversong");
-    expect(dialogData.beers[0].checkInDate).toBe("2026-09-19 20:38:00");
+    expect(dialogData.beers[0]!.beerName).toBe("Riversong");
+    expect(dialogData.beers[0]!.checkInDate).toBe("2026-09-19 20:38:00");
   });
 
   it("shows an empty state once data has loaded but nothing falls in range", () => {

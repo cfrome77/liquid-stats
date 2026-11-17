@@ -41,3 +41,38 @@ export interface BeerCheckin {
   };
   recent_checkin_id?: number;
 }
+
+/**
+ * A wishlist entry as returned by `wishlist.json`. It reuses the beer/brewery
+ * shape of {@link BeerCheckin} but carries no check-in metadata (counts,
+ * timestamps, ratings), so it is modelled separately rather than reusing
+ * BeerCheckin's required check-in fields.
+ */
+export interface WishlistBeer {
+  beer: {
+    bid: number;
+    beer_name: string;
+    beer_style: string;
+    beer_label: string;
+    beer_label_hd?: string;
+    beer_slug: string;
+    beer_description?: string;
+    beer_abv?: number;
+  };
+  brewery: {
+    brewery_id?: number;
+    brewery_name: string;
+    brewery_label?: string;
+    brewery_label_hd?: string;
+  };
+  // Present on some payloads; absent in the bundled wishlist.json fixture.
+  created_at?: string;
+}
+
+export interface WishlistResponse {
+  response: {
+    beers: {
+      items: WishlistBeer[];
+    };
+  };
+}

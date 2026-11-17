@@ -270,7 +270,7 @@ export class StatsComponent implements OnInit, OnDestroy {
     const stats = this.processedStats;
 
     this.sortedBeerStyles = Object.keys(stats.beerStylesCount || {}).sort(
-      (a, b) => stats.beerStylesCount[b] - stats.beerStylesCount[a],
+      (a, b) => stats.beerStylesCount[b]! - stats.beerStylesCount[a]!,
     );
 
     this.updateCharts();
@@ -360,6 +360,11 @@ export class StatsComponent implements OnInit, OnDestroy {
   }
 
   // ---------------- CLICK HANDLERS ----------------
+
+  /** Check-in count for a beer style, defaulting to 0 for an absent key. */
+  styleCount(style: string): number {
+    return this.processedStats?.beerStylesCount[style] ?? 0;
+  }
 
   openBeersByStyle(style: string) {
     this.openGeneric(style, (b) => b.beer.beer_style === style);

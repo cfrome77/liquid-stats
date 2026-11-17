@@ -4,7 +4,12 @@ import { Observable, map, shareReplay, catchError, throwError } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { Badge } from "../models/badge.model";
 import { CheckinResponse, Checkin } from "../models/checkin.model";
-import { BeerCheckin } from "../models/beer.model";
+import {
+  BeerCheckin,
+  WishlistBeer,
+  WishlistResponse,
+} from "../models/beer.model";
+import { QuickStats } from "../models/stats.model";
 import { upgradeToHdUrl, sanitizeUntappdUrl } from "../utils/url-utils";
 import { resolveDataBaseUrl } from "../utils/data-source";
 import { LoggingService } from "./logger.service";
@@ -19,10 +24,10 @@ export class DataService {
   private baseUrl = this.determineBaseUrl();
 
   private badgesCache$?: Observable<Badge[]>;
-  private statsCache$?: Observable<unknown>;
+  private statsCache$?: Observable<QuickStats>;
   private beersAllCache$?: Observable<BeerCheckin[]>;
   private checkinsCache$?: Observable<CheckinResponse>;
-  private wishlistCache$?: Observable<unknown>;
+  private wishlistCache$?: Observable<WishlistResponse>;
 
   private determineBaseUrl(): string {
     const hostname =
@@ -54,10 +59,10 @@ export class DataService {
     return this.badgesCache$;
   }
 
-  public getStats(): Observable<unknown> {
+  public getStats(): Observable<QuickStats> {
     if (!this.statsCache$) {
       this.statsCache$ = this.http
-        .get<unknown>(`${this.baseUrl}stats.json`)
+        .get<QuickStats>(`${this.baseUrl}stats.json`)
         .pipe(
           catchError((err) => {
             this.logger.error("Error fetching stats.json", err);
@@ -147,33 +152,35 @@ export class DataService {
     return this.checkinsCache$;
   }
 
-  public getWishlist(): Observable<unknown> {
+  public getWishlist(): Observable<WishlistResponse> {
     if (!this.wishlistCache$) {
       this.wishlistCache$ = this.http
-        .get<unknown>(`${this.baseUrl}wishlist.json`)
+        .get<WishlistResponse>(`${this.baseUrl}wishlist.json`)
         .pipe(
-          map((data) => {
-            const d = data as {
-              response?: { beers?: { items?: BeerCheckin[] } };
-            };
-            if (d?.response?.beers?.items) {
-              d.response.beers.items = d.response.beers.items.map((b) => ({
-                ...b,
-                beer: {
-                  ...b.beer,
-                  beer_label: sanitizeUntappdUrl(b.beer?.beer_label) || "",
-                  beer_label_hd: upgradeToHdUrl(b.beer?.beer_label),
-                },
-                brewery: {
-                  ...b.brewery,
-                  brewery_label:
-                    sanitizeUntappdUrl(b.brewery?.brewery_label) || "",
-                  brewery_label_hd: upgradeToHdUrl(b.brewery?.brewery_label),
-                },
-              }));
-            }
-            return d;
-          }),
+          map((data) => ({
+            response: {
+              beers: {
+                items: (data?.response?.beers?.items ?? []).map(
+                  (b): WishlistBeer => ({
+                    ...b,
+                    beer: {
+                      ...b.beer,
+                      beer_label: sanitizeUntappdUrl(b.beer?.beer_label) || "",
+                      beer_label_hd: upgradeToHdUrl(b.beer?.beer_label),
+                    },
+                    brewery: {
+                      ...b.brewery,
+                      brewery_label:
+                        sanitizeUntappdUrl(b.brewery?.brewery_label) || "",
+                      brewery_label_hd: upgradeToHdUrl(
+                        b.brewery?.brewery_label,
+                      ),
+                    },
+                  }),
+                ),
+              },
+            },
+          })),
           catchError((err) => {
             this.logger.error("Error fetching wishlist.json", err);
             this.wishlistCache$ = undefined;

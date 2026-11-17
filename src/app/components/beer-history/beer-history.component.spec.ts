@@ -185,7 +185,7 @@ describe("BeerHistoryComponent", () => {
         date: "2026-06-01 12:00:00",
       }),
     ];
-    delete beersWithoutLocation[0].brewery.location;
+    delete beersWithoutLocation[0]!.brewery.location;
 
     beforeEach(async () => {
       await TestBed.resetTestingModule();

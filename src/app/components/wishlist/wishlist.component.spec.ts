@@ -4,6 +4,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { DataService } from "../../core/services/data.service";
 import { of, Subject, throwError } from "rxjs";
+import { WishlistResponse } from "../../core/models/beer.model";
 
 describe("WishlistComponent", () => {
   let component: WishlistComponent;
@@ -15,7 +16,7 @@ describe("WishlistComponent", () => {
     mockDataService.getWishlist.and.returnValue(
       of({
         response: {
-          wishlist: {
+          beers: {
             items: [],
           },
         },
@@ -42,11 +43,7 @@ describe("WishlistComponent", () => {
 
   it("maps a wishlist item into card data with a link and thumbnail images", () => {
     const card = component.transformWishlistData({
-      count: 1,
-      first_created_at: "2026-01-01",
-      recent_created_at: "2026-01-01",
       created_at: "2026-01-01",
-      rating_score: 0,
       beer: {
         beer_abv: 5,
         bid: 42,
@@ -62,8 +59,6 @@ describe("WishlistComponent", () => {
         brewery_name: "Test Brewery",
         brewery_label: "https://example.com/brewery.png",
         brewery_label_hd: "https://example.com/brewery_hd.png",
-        country_name: "USA",
-        location: { brewery_state: "OR" },
       },
     });
 
@@ -80,21 +75,16 @@ describe("WishlistComponent", () => {
 
   it("falls back to a friendly timestamp when the item has no date", () => {
     const card = component.transformWishlistData({
-      count: 1,
-      first_created_at: "2026-01-01",
-      recent_created_at: "2026-01-01",
-      rating_score: 0,
       beer: {
         beer_abv: 5,
         bid: 42,
         beer_label: "label.png",
         beer_name: "Test IPA",
         beer_style: "IPA",
+        beer_slug: "test-ipa",
       },
       brewery: {
         brewery_name: "Test Brewery",
-        country_name: "USA",
-        location: {},
       },
     });
 
@@ -103,7 +93,7 @@ describe("WishlistComponent", () => {
   });
 
   it("shows a skeleton while the wishlist request is in flight", () => {
-    const pending = new Subject<unknown>();
+    const pending = new Subject<WishlistResponse>();
     mockDataService.getWishlist.and.returnValue(pending.asObservable());
 
     const fresh = TestBed.createComponent(WishlistComponent);

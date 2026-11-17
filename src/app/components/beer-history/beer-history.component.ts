@@ -464,7 +464,7 @@ export class BeerHistoryComponent implements OnInit {
     this.searchTerm = "";
     this.filterFields.forEach((f) => {
       if (f.type === "date") {
-        f.selected = [f.options[0], f.options[1]];
+        f.selected = [f.options[0]!, f.options[1]!];
       } else {
         f.selected = [...f.options];
       }

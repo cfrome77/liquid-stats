@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   ProcessedStats,
   TopBeer,
+  DailyCheckinCount,
   DayOfWeekCheckinCount,
   MonthlyCheckinCount,
   RatingOverTime,
@@ -157,7 +158,7 @@ export class StatsService {
       const name = b.beer?.beer_name || "Unknown Beer";
 
       beerStylesCount[style] = (beerStylesCount[style] || 0) + count;
-      hourly[hour] += count;
+      hourly[hour] = (hourly[hour] ?? 0) + count;
 
       if (!beerTally[name]) beerTally[name] = { count: 0, ratingSum: 0 };
       beerTally[name].count += count;
@@ -197,10 +198,12 @@ export class StatsService {
       .slice(0, 5);
 
     const sortedDates = Object.keys(dailyCountsMap).sort();
-    const recentActivityByDate = sortedDates.map((date) => ({
-      date,
-      count: dailyCountsMap[date],
-    }));
+    const recentActivityByDate: DailyCheckinCount[] = sortedDates.map(
+      (date) => ({
+        date,
+        count: dailyCountsMap[date] ?? 0,
+      }),
+    );
 
     const sortCounts = (counts: Record<string, number>) =>
       Object.fromEntries(Object.entries(counts).sort((a, b) => b[1] - a[1]));
@@ -246,13 +249,13 @@ export class StatsService {
       dailyRatingsMap,
     )
       .sort()
-      .map((date) => ({
-        date,
-        rating:
-          dailyRatingsMap[date].count > 0
-            ? dailyRatingsMap[date].sum / dailyRatingsMap[date].count
-            : 0,
-      }));
+      .map((date) => {
+        const daily = dailyRatingsMap[date]!;
+        return {
+          date,
+          rating: daily.count > 0 ? daily.sum / daily.count : 0,
+        };
+      });
 
     const result: ProcessedStats = {
       totalUniqueBeers,

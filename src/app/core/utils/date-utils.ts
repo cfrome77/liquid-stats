@@ -7,9 +7,9 @@ export class DateUtils {
       // If it's a YYYY-MM-DD string, parse it as a local date
       const isoDateMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (isoDateMatch) {
-        const year = parseInt(isoDateMatch[1], 10);
-        const month = parseInt(isoDateMatch[2], 10) - 1;
-        const day = parseInt(isoDateMatch[3], 10);
+        const year = parseInt(isoDateMatch[1]!, 10);
+        const month = parseInt(isoDateMatch[2]!, 10) - 1;
+        const day = parseInt(isoDateMatch[3]!, 10);
         return new Date(year, month, day);
       }
       // Remove commas to improve cross-browser parsing of human-readable formats like "Feb 7, 2026, 8:50 PM"
