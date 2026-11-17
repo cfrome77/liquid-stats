@@ -324,6 +324,16 @@ describe("InsightsComponent", () => {
     expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
   });
 
+  it("should not auto-focus the search input when a beers dialog opens", () => {
+    component.openCategoryDialog("Lager / Pilsner");
+    expect(dialogSpy.calls.mostRecent().args[1]?.autoFocus).toBeFalse();
+  });
+
+  it("should not auto-focus the search input when the styles dialog opens", () => {
+    component.openStylesDialog();
+    expect(dialogSpy.calls.mostRecent().args[1]?.autoFocus).toBeFalse();
+  });
+
   it("should open dialog for openBreweryDialog", () => {
     component.openBreweryDialog("Guinness Brewery");
     expect(dialogSpy).toHaveBeenCalled();

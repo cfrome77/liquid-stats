@@ -115,6 +115,11 @@ describe("StatsComponent", () => {
     expect(dialogData.beers[0]!.checkInDate).toBe("2026-09-19 20:38:00");
   });
 
+  it("should not auto-focus the search input when the drinks dialog opens", () => {
+    component.openBeersByStyle("IPA - Rye");
+    expect(dialogSpy.calls.mostRecent().args[1]?.autoFocus).toBeFalse();
+  });
+
   it("shows an empty state once data has loaded but nothing falls in range", () => {
     component.dataLoaded.set(true);
     component.beers = [];

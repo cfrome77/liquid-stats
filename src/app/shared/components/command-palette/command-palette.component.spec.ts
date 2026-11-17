@@ -142,6 +142,7 @@ describe("CommandPaletteComponent", () => {
     expect(dialogSpy).toHaveBeenCalledWith(
       BeerStyleDialogComponent,
       jasmine.objectContaining({
+        autoFocus: false,
         data: jasmine.objectContaining({
           showBackButton: true,
         }),

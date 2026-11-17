@@ -77,6 +77,29 @@ test("shows the search box when the list has several drinks", async ({
   await expect(dialog.locator(".dialog-search-wrapper")).toHaveCount(1);
 });
 
+test("does not focus the search box on open, so no keyboard pops up", async ({
+  page,
+}) => {
+  await page.goto("/insights?style=IPA");
+  await expect(page.locator("mat-dialog-container")).toBeVisible();
+
+  // Material moves focus once the open animation finishes. Wait for focus to
+  // land inside the dialog so we assert on the settled state, not mid-animation.
+  const focused = () =>
+    page.evaluate(() => {
+      const active = document.activeElement as HTMLElement | null;
+      return {
+        insideDialog: !!active?.closest("mat-dialog-container"),
+        tag: active?.tagName ?? null,
+      };
+    });
+  await expect.poll(async () => (await focused()).insideDialog).toBe(true);
+
+  // Focusing the first tabbable element (the search input) raises the
+  // on-screen keyboard on mobile, so focus must stay off the input.
+  expect((await focused()).tag).not.toBe("INPUT");
+});
+
 test("clicking a style bar does not open the dialog twice", async ({
   page,
 }) => {

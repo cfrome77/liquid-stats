@@ -764,6 +764,7 @@ export class InsightsComponent implements OnInit {
 
     return this.dialog.open(BeerStyleDialogComponent, {
       data,
+      autoFocus: false,
       width: "350px",
       maxHeight: "80vh",
     });
@@ -795,6 +796,7 @@ export class InsightsComponent implements OnInit {
         title: "Unique Styles Explorer",
         styles,
       },
+      autoFocus: false,
       width: "380px",
       maxHeight: "80vh",
     });
@@ -883,6 +885,7 @@ export class InsightsComponent implements OnInit {
 
     this.dialog.open(BeerStyleDialogComponent, {
       data,
+      autoFocus: false,
       width: "350px",
       maxHeight: "80vh",
     });
