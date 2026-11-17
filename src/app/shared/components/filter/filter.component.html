@@ -17,7 +17,15 @@
 <!-- Modal Template -->
 <ng-template #filterModalTemplate>
   @if (activeFilter) {
-    <div class="modal-content" (click)="$event.stopPropagation()">
+    <div
+      class="modal-content"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="activeFilter.label + ' filter'"
+      cdkTrapFocus
+      cdkTrapFocusAutoCapture
+      (click)="$event.stopPropagation()"
+    >
       <!-- Header -->
       <div class="modal-header">
         <button

@@ -86,6 +86,54 @@ describe("FilterComponent", () => {
     expect(overlayContainerElement.querySelector(".modal-content")).toBeFalsy();
   });
 
+  it("traps focus inside the modal while it is open", async () => {
+    component.openFilterModal(component.filterFields[0]!);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const modal = overlayContainerElement.querySelector(
+      ".modal-content",
+    ) as HTMLElement;
+    expect(modal.getAttribute("role")).toBe("dialog");
+    expect(modal.getAttribute("aria-modal")).toBe("true");
+
+    // cdkTrapFocus inserts a start/end anchor pair around the trapped region,
+    // which is what keeps Tab cycling within the dialog.
+    const anchors = overlayContainerElement.querySelectorAll(
+      ".cdk-focus-trap-anchor",
+    );
+    expect(anchors.length).toBe(2);
+    for (const anchor of Array.from(anchors)) {
+      expect(modal.parentElement?.contains(anchor)).toBeTrue();
+    }
+  });
+
+  it("moves focus into the modal when it opens", async () => {
+    component.openFilterModal(component.filterFields[0]!);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve));
+
+    const modal = overlayContainerElement.querySelector(
+      ".modal-content",
+    ) as HTMLElement;
+    expect(modal.contains(document.activeElement)).toBeTrue();
+  });
+
+  it("closes the modal when Escape is pressed", () => {
+    component.openFilterModal(component.filterFields[0]!);
+    fixture.detectChanges();
+    expect(component.isModalOpen).toBeTrue();
+
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
+    fixture.detectChanges();
+
+    expect(component.isModalOpen).toBeFalse();
+    expect(overlayContainerElement.querySelector(".modal-content")).toBeFalsy();
+  });
+
   it("should apply filter changes and emit filterChanged event", () => {
     spyOn(component.filterChanged, "emit");
 
