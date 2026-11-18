@@ -620,7 +620,11 @@ export class InsightsComponent implements OnInit {
       value: style,
     };
     this.openCategoryDialog(style);
-    this.updateQueryParam(CHART_FILTER_PARAMS.style, style);
+    this.updateQueryParam(
+      CHART_FILTER_PARAMS.style,
+      style,
+      CHART_FILTER_PARAMS.rating,
+    );
   }
 
   /** Opens the rating bin's check-in list and mirrors it into the URL. */
@@ -630,14 +634,30 @@ export class InsightsComponent implements OnInit {
       value: rating,
     };
     this.openRatingDialog(rating);
-    this.updateQueryParam(CHART_FILTER_PARAMS.rating, rating);
+    this.updateQueryParam(
+      CHART_FILTER_PARAMS.rating,
+      rating,
+      CHART_FILTER_PARAMS.style,
+    );
   }
 
-  /** Writes a single chart selection into the URL, merging existing params. */
-  private updateQueryParam(key: string, value: string | null): void {
+  /**
+   * Writes a chart selection into the URL, merging existing params so unrelated
+   * state survives.
+   *
+   * The two chart selections are mutually exclusive, so the sibling param is
+   * cleared. Closing a dialog leaves its param behind, and a lingering
+   * `?style=` would otherwise make the query-param echo of a rating click look
+   * like a style deep link and reopen the style list on top of the rating one.
+   */
+  private updateQueryParam(
+    key: string,
+    value: string,
+    siblingKey: string,
+  ): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { [key]: value },
+      queryParams: { [key]: value, [siblingKey]: null },
       queryParamsHandling: "merge",
       replaceUrl: true,
     });
@@ -654,6 +674,15 @@ export class InsightsComponent implements OnInit {
   private applySelectionFromParams(params: Record<string, string>): void {
     const style = params[CHART_FILTER_PARAMS.style];
     const rating = params[CHART_FILTER_PARAMS.rating];
+
+    // The key this component last wrote wins over the fixed order below, so a
+    // stale sibling param cannot masquerade as the selection that was clicked.
+    const last = this.lastAppliedSelection;
+    const echoed = last ? params[last.key] : undefined;
+    if (last && echoed === last.value) {
+      return;
+    }
+
     const selection = style
       ? { key: CHART_FILTER_PARAMS.style, value: style }
       : rating
@@ -662,13 +691,6 @@ export class InsightsComponent implements OnInit {
 
     if (!selection) {
       this.lastAppliedSelection = null;
-      return;
-    }
-
-    if (
-      this.lastAppliedSelection?.key === selection.key &&
-      this.lastAppliedSelection.value === selection.value
-    ) {
       return;
     }
 

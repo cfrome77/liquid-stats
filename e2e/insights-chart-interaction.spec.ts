@@ -360,3 +360,63 @@ test("clicking a rating column opens that column's list", async ({ page }) => {
   expect(title).toMatch(/★ Drinks$/);
   await expect(page).toHaveURL(/rating=/);
 });
+
+/**
+ * Closing a dialog leaves its query param in the URL. Clicking the other chart
+ * must replace that param, not stack a second dialog: the echo of the merged
+ * URL was read as a deep link for the stale param and reopened the first
+ * chart's list on top of the second one.
+ */
+test("clicking a rating column after a style does not reopen the style list", async ({
+  page,
+}) => {
+  await page.goto("/insights");
+  const dialog = page.locator("mat-dialog-container");
+
+  // Pick a style, then close its list. `?style=` stays behind in the URL.
+  await clickFirstStyleBar(page);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(/style=/);
+
+  // Now pick a rating bin from the histogram.
+  const canvas = page.locator(".histogram-chart-container canvas");
+  await canvas.scrollIntoViewIfNeeded();
+  const geo = await readChartGeometry(
+    page,
+    ".histogram-chart-container",
+    "vertical",
+  );
+  const counts = await page.evaluate(() => {
+    const debug = (window as unknown as { ng?: Record<string, unknown> }).ng;
+    const canvas = document.querySelector(
+      ".histogram-chart-container canvas",
+    ) as HTMLCanvasElement;
+    const dirs = (debug?.["getDirectives"] as (el: Element) => unknown[])(
+      canvas,
+    );
+    const chart = (dirs[0] as Record<string, unknown>)["chart"] as {
+      data: { datasets: { data: number[] }[] };
+    };
+    return chart.data.datasets[0]!.data;
+  });
+  const filled = counts.findIndex((c) => c > 0);
+  expect(filled).toBeGreaterThanOrEqual(0);
+
+  await clickCanvasAt(
+    page,
+    ".histogram-chart-container",
+    geo.bandCenters[filled]!,
+    (geo.chartArea.top + geo.chartArea.bottom) / 2,
+  );
+
+  // Only the rating list opens, and only once.
+  await expect(dialog).toHaveCount(1);
+  await expect(dialog.locator("h2")).toContainText(geo.labels[filled]!);
+  await page.waitForTimeout(500);
+  await expect(dialog).toHaveCount(1);
+
+  // The stale style param is gone, so the rating param stands alone.
+  await expect(page).toHaveURL(/rating=/);
+  await expect(page).not.toHaveURL(/style=/);
+});

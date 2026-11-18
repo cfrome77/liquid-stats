@@ -608,6 +608,8 @@ describe("InsightsComponent", () => {
       const extras = navigate.calls.mostRecent().args[1]!;
       expect(extras.queryParams).toEqual({
         [CHART_FILTER_PARAMS.style]: "IPA",
+        // The sibling chart param is cleared so the two stay exclusive.
+        [CHART_FILTER_PARAMS.rating]: null,
       });
       expect(extras.queryParamsHandling).toBe("merge");
     });
@@ -749,6 +751,8 @@ describe("InsightsComponent", () => {
       const extras = navigate.calls.mostRecent().args[1]!;
       expect(extras.queryParams).toEqual({
         [CHART_FILTER_PARAMS.rating]: "4.25",
+        // The sibling chart param is cleared so the two stay exclusive.
+        [CHART_FILTER_PARAMS.style]: null,
       });
       expect(extras.queryParamsHandling).toBe("merge");
     });
@@ -794,6 +798,66 @@ describe("InsightsComponent", () => {
       const hints = el.querySelectorAll(".chart-interaction-hint");
       expect(hints.length).toBe(2);
       expect(hints[0]!.textContent).toContain("Tap a bar");
+    });
+
+    describe("a stale sibling param cannot reopen the wrong dialog", () => {
+      const applyParams = (params: Record<string, string>): void =>
+        (
+          component as unknown as {
+            applySelectionFromParams: (p: Record<string, string>) => void;
+          }
+        ).applySelectionFromParams(params);
+
+      const openedTitles = (): string[] =>
+        dialogSpy.calls.allArgs().map((args) => {
+          const data = args[1]?.data as GenericBeersDialogData | undefined;
+          return data?.title ?? "";
+        });
+
+      it("keeps the rating dialog when a stale ?style= is still in the URL", () => {
+        // A style was clicked and its dialog closed, leaving `?style=IPA`
+        // behind. A rating click then opens the rating list and merges, so the
+        // URL now carries both params. The echo of that merge must not be read
+        // as a style deep link and reopen the style list on top.
+        component.selectStyle("IPA");
+        dialogSpy.calls.reset();
+
+        component.selectRating("4.25");
+        applyParams({
+          [CHART_FILTER_PARAMS.style]: "IPA",
+          [CHART_FILTER_PARAMS.rating]: "4.25",
+        });
+
+        const titles = openedTitles();
+        expect(titles).toContain("4.25★ Drinks");
+        expect(titles).not.toContain("IPA Drinks");
+      });
+
+      it("keeps the style dialog when a stale ?rating= is still in the URL", () => {
+        component.selectRating("4.25");
+        dialogSpy.calls.reset();
+
+        component.selectStyle("IPA");
+        applyParams({
+          [CHART_FILTER_PARAMS.rating]: "4.25",
+          [CHART_FILTER_PARAMS.style]: "IPA",
+        });
+
+        const titles = openedTitles();
+        expect(titles).toContain("IPA Drinks");
+        expect(titles).not.toContain("4.25★ Drinks");
+      });
+
+      it("still reopens a deep link whose value differs from the last click", () => {
+        // The guard only skips the echo of the selection just written, so a
+        // genuinely different deep link still opens.
+        component.selectRating("4.25");
+        dialogSpy.calls.reset();
+
+        applyParams({ [CHART_FILTER_PARAMS.style]: "Lager / Pilsner" });
+
+        expect(openedTitles()).toContain("Lager / Pilsner Drinks");
+      });
     });
   });
 });
