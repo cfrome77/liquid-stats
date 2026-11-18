@@ -1,11 +1,7 @@
-::ng-deep .mat-dialog-container {
-  background-color: #1e1e1e;
-  color: white;
-  padding: 24px;
-}
-
+/* The surface background/colour come from the global theme-aware
+   .mat-mdc-dialog-surface rule in styles.css. */
 h2 {
-  color: white;
+  color: var(--header-text);
 }
 
 .dialog-search-wrapper {
@@ -13,11 +9,16 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: #1e1e1e;
+  background-color: var(--card-bg-solid);
 }
 
 small {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.beer-item-link:hover {
+  background-color: var(--hover-bg);
 }
 
 .dialog-content-scroll {

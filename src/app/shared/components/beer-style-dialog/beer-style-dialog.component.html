@@ -32,7 +32,13 @@
 <div mat-dialog-content style="max-height: 400px; overflow-y: auto">
   @if (filteredBeers.length === 0) {
     <div
-      style="padding: 20px; text-align: center; color: #888; font-style: italic"
+      style="
+        padding: 20px;
+        text-align: center;
+        color: var(--text-color);
+        opacity: 0.7;
+        font-style: italic;
+      "
     >
       No drinks found for this selection.
     </div>
@@ -54,12 +60,6 @@
           "
           [style.cursor]="beer.checkinUrl ? 'pointer' : 'default'"
           class="beer-item-link"
-          (mouseenter)="
-            $any($event.target).style.backgroundColor = 'rgba(255,255,255,0.05)'
-          "
-          (mouseleave)="
-            $any($event.target).style.backgroundColor = 'transparent'
-          "
         >
           <img
             [src]="
@@ -80,7 +80,7 @@
           <div style="flex: 1; min-width: 0">
             <strong
               style="
-                color: var(--accent-glow, #ffca28);
+                color: var(--accent-glow);
                 display: block;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -90,7 +90,7 @@
             >
             <strong
               style="
-                color: white;
+                color: var(--text-color);
                 font-size: 0.9em;
                 display: block;
                 opacity: 0.9;

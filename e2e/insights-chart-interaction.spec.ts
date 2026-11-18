@@ -218,6 +218,84 @@ test("a shared ?rating= URL reopens the rating bin list", async ({ page }) => {
   await expect(dialog.locator("h2")).toContainText("4.25");
 });
 
+/**
+ * The prebuilt Material theme paints the dialog surface a fixed dark grey and
+ * its text fixed white. In light mode that left dark text on a grey/black
+ * surface. The surface and its text must follow the active app theme instead.
+ */
+test.describe("dialog theme contrast", () => {
+  /**
+   * Reads the dialog surface and body-text colours and returns the WCAG
+   * relative-luminance contrast ratio between them. Runs in the page.
+   */
+  async function readDialogContrast(page: Page) {
+    return page.evaluate(() => {
+      const channel = (c: number) => {
+        c /= 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      };
+      const luminance = (rgb: number[]) =>
+        0.2126 * channel(rgb[0]!) +
+        0.7152 * channel(rgb[1]!) +
+        0.0722 * channel(rgb[2]!);
+      const toRgb = (value: string) =>
+        value.match(/\d+/g)!.slice(0, 3).map(Number);
+
+      const surface = document.querySelector(
+        ".mat-mdc-dialog-surface",
+      ) as HTMLElement;
+      // The brewery line is plain theme text (the drink name is the brand
+      // accent, which has its own colour).
+      const body = document.querySelector(
+        ".beer-item-link strong:last-of-type",
+      ) as HTMLElement;
+
+      const surfaceRgb = toRgb(getComputedStyle(surface).backgroundColor);
+      const textRgb = toRgb(getComputedStyle(body).color);
+      const a = luminance(textRgb);
+      const b = luminance(surfaceRgb);
+      return {
+        surfaceRgb,
+        textRgb,
+        contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+      };
+    });
+  }
+
+  test("popup surface and text follow the light theme", async ({ browser }) => {
+    const context = await browser.newContext({ colorScheme: "light" });
+    const page = await context.newPage();
+    await page.goto("/insights?style=IPA");
+    await expect(page.locator("body")).toHaveClass(/light-theme/);
+
+    const dialog = page.locator("mat-dialog-container");
+    await expect(dialog).toBeVisible();
+
+    const { surfaceRgb, contrast } = await readDialogContrast(page);
+
+    // A light surface, not the theme's fixed #424242 grey.
+    expect(surfaceRgb[0]).toBeGreaterThan(200);
+    // Body text is dark enough to read on it (WCAG AA).
+    expect(contrast).toBeGreaterThan(4.5);
+
+    await context.close();
+  });
+
+  test("popup surface and text follow the dark theme", async ({ page }) => {
+    await page.goto("/insights?style=IPA");
+    await expect(page.locator("body")).toHaveClass(/dark-theme/);
+
+    const dialog = page.locator("mat-dialog-container");
+    await expect(dialog).toBeVisible();
+
+    const { surfaceRgb, contrast } = await readDialogContrast(page);
+
+    // A dark surface, matching the dark card colour (#171f2e).
+    expect(surfaceRgb[0]).toBeLessThan(60);
+    expect(contrast).toBeGreaterThan(4.5);
+  });
+});
+
 test("hides the search box when the list has a single drink", async ({
   page,
 }) => {

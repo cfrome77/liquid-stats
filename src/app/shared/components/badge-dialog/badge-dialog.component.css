@@ -31,7 +31,8 @@
   margin: 20px 0;
   line-height: 1.6;
   font-size: 1rem;
-  color: #e0e0e0;
+  color: var(--text-color);
+  opacity: 0.85;
 }
 
 /* This targets the yellow links inside the description */

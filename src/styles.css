@@ -532,6 +532,20 @@ strong {
   -webkit-backdrop-filter: blur(4px);
 }
 
+/* The prebuilt Material theme paints the dialog surface a fixed dark grey
+   (--mat-dialog-container-color: #424242) and its title/body/button text fixed
+   white in both app themes, so popups were white-on-grey in light mode. Drive
+   the surface and its Material tokens from the app theme instead. */
+.mat-mdc-dialog-surface {
+  background-color: var(--card-bg-solid) !important;
+  color: var(--text-color) !important;
+  --mat-dialog-container-color: var(--card-bg-solid);
+  --mat-dialog-subhead-color: var(--header-text);
+  --mat-dialog-supporting-text-color: var(--text-color);
+  --mat-button-text-label-text-color: var(--accent-blue);
+  --mat-button-text-state-layer-color: var(--accent-blue);
+}
+
 /* Global Error Banner */
 .global-error-banner {
   background-color: #f44336;
