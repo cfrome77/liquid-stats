@@ -168,9 +168,10 @@
             baseChart
             class="interactive-chart"
             role="img"
-            aria-label="Style distribution bar chart. Tap a bar to view the check-ins for that style."
+            aria-label="Style distribution bar chart. Tap a bar or its style name to view the check-ins for that style."
             [data]="styleBarChartData"
             [options]="styleBarChartOptions"
+            [plugins]="styleBarChartPlugins"
             [type]="'bar'"
           >
           </canvas>
@@ -194,9 +195,10 @@
             baseChart
             class="interactive-chart"
             role="img"
-            aria-label="Rating score histogram. Tap a bar to view the check-ins with that rating."
+            aria-label="Rating score histogram. Tap a bar or its rating to view the check-ins with that rating."
             [data]="ratingHistogramChartData"
             [options]="ratingChartOptions"
+            [plugins]="ratingChartPlugins"
             [type]="'bar'"
           >
           </canvas>

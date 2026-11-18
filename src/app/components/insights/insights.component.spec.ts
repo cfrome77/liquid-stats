@@ -591,6 +591,78 @@ describe("InsightsComponent", () => {
       expect(dialogSpy).not.toHaveBeenCalled();
     });
 
+    it("registers a label-tap plugin on each chart", () => {
+      // Chart.js only fires onClick inside the plot area, so the axis labels
+      // need a plugin. Each chart gets its own instance.
+      expect(component.styleBarChartPlugins.map((p) => p.id)).toEqual([
+        "styleLabelTap",
+      ]);
+      expect(component.ratingChartPlugins.map((p) => p.id)).toEqual([
+        "ratingLabelTap",
+      ]);
+    });
+
+    it("opens the style named by a tap on its label", () => {
+      const index = labels().indexOf("Lager / Pilsner");
+      const chart = {
+        scales: { y: { getPixelForValue: (i: number) => 20 + i * 40 } },
+        chartArea: { left: 100, right: 400, top: 0, bottom: 200 },
+      };
+
+      // A tap left of the plot area, level with the row.
+      const resolved = (
+        component as unknown as {
+          resolveStyleLabelTarget: (
+            chart: unknown,
+            x: number,
+            y: number,
+          ) => number | null;
+        }
+      ).resolveStyleLabelTarget(chart, 40, 20 + index * 40);
+
+      expect(resolved).toBe(index);
+    });
+
+    it("ignores a label tap inside the plot area, which Chart.js handles", () => {
+      const chart = {
+        scales: { y: { getPixelForValue: (i: number) => 20 + i * 40 } },
+        chartArea: { left: 100, right: 400, top: 0, bottom: 200 },
+      };
+
+      const resolved = (
+        component as unknown as {
+          resolveStyleLabelTarget: (
+            chart: unknown,
+            x: number,
+            y: number,
+          ) => number | null;
+        }
+      ).resolveStyleLabelTarget(chart, 200, 20);
+
+      expect(resolved).toBeNull();
+    });
+
+    it("ignores a tap on the label of an empty rating column", () => {
+      // The default fixture has no check-ins in the 0.25 bin.
+      expect(component.ratingHistogramChartData.datasets[0]!.data[0]).toBe(0);
+      const chart = {
+        scales: { x: { getPixelForValue: (i: number) => 10 + i * 10 } },
+        chartArea: { left: 0, right: 400, top: 0, bottom: 200 },
+      };
+
+      const resolved = (
+        component as unknown as {
+          resolveRatingLabelTarget: (
+            chart: unknown,
+            x: number,
+            y: number,
+          ) => number | null;
+        }
+      ).resolveRatingLabelTarget(chart, 10, 260);
+
+      expect(resolved).toBeNull();
+    });
+
     it("writes the selected rating into the URL", () => {
       const router = TestBed.inject(Router);
       const navigate = spyOn(router, "navigate");

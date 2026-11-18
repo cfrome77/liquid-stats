@@ -20,7 +20,13 @@ import {
   provideCharts,
   withDefaultRegisterables,
 } from "ng2-charts";
-import { ChartData, ChartEvent, ChartOptions, ActiveElement } from "chart.js";
+import {
+  Chart,
+  ChartData,
+  ChartEvent,
+  ChartOptions,
+  ActiveElement,
+} from "chart.js";
 
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { LoggingService } from "src/app/core/services/logger.service";
@@ -39,6 +45,10 @@ import {
 } from "../../shared/components/styles-list-dialog/styles-list-dialog.component";
 import { sanitizeUntappdUrl } from "../../core/utils/url-utils";
 import { CHART_FILTER_PARAMS } from "../../core/utils/view-state";
+import {
+  createChartLabelTapPlugin,
+  resolveLabelIndex,
+} from "../../core/utils/chart-hit-testing";
 import { environment } from "src/environments/environment";
 
 export interface Milestone {
@@ -271,6 +281,28 @@ export class InsightsComponent implements OnInit {
     },
   };
 
+  /**
+   * Makes the style names beside the ranked chart clickable. Chart.js's own
+   * `onClick` only fires inside the plot area, so the labels, which are drawn
+   * outside it, need this plugin.
+   */
+  public styleBarChartPlugins = [
+    createChartLabelTapPlugin({
+      id: "styleLabelTap",
+      resolveLabel: (chart, x, y) => this.resolveStyleLabelTarget(chart, x, y),
+      onSelect: (index) => this.selectStyleIndex(index),
+    }),
+  ];
+
+  /** Makes the rating ticks below the histogram clickable. */
+  public ratingChartPlugins = [
+    createChartLabelTapPlugin({
+      id: "ratingLabelTap",
+      resolveLabel: (chart, x, y) => this.resolveRatingLabelTarget(chart, x, y),
+      onSelect: (index) => this.selectRatingIndex(index),
+    }),
+  ];
+
   constructor() {
     effect(() => {
       const currentTheme = this.themeService.currentTheme();
@@ -494,24 +526,34 @@ export class InsightsComponent implements OnInit {
     target.style.cursor = elements.length > 0 ? "pointer" : "default";
   }
 
-  /** Resolves the category label behind a clicked bar in the style chart. */
+  /** Chart.js `onClick` for the ranked chart: selects the clicked bar's row. */
   private onStyleBarClick(elements: ActiveElement[]): void {
     const index = elements[0]?.index;
     if (index === undefined) return;
 
+    this.selectStyleIndex(index);
+  }
+
+  /** Chart.js `onClick` for the histogram: selects the clicked column's bin. */
+  private onRatingChartClick(elements: ActiveElement[]): void {
+    const index = elements[0]?.index;
+    if (index === undefined) return;
+
+    this.selectRatingIndex(index);
+  }
+
+  /** Opens the style at `index` in the ranked chart. */
+  private selectStyleIndex(index: number): void {
     const label = this.styleBarChartData.labels?.[index];
     if (typeof label !== "string") return;
 
     this.selectStyle(label);
   }
 
-  /** Resolves the rating bin behind a clicked bar in the histogram. */
-  private onRatingChartClick(elements: ActiveElement[]): void {
-    const index = elements[0]?.index;
-    if (index === undefined) return;
-
-    // A click can land on a column with no check-ins, which has no list to
-    // show. Ignore it rather than opening an empty dialog.
+  /** Opens the rating bin at `index` in the histogram. */
+  private selectRatingIndex(index: number): void {
+    // A tap can land on a column with no check-ins, which has no list to show.
+    // Ignore it rather than opening an empty dialog.
     const count = this.ratingHistogramChartData.datasets[0]?.data[index];
     if (!count) return;
 
@@ -519,6 +561,48 @@ export class InsightsComponent implements OnInit {
     if (typeof label !== "string") return;
 
     this.selectRating(label);
+  }
+
+  /**
+   * Category index behind a tap on the ranked chart's style labels, or null.
+   * The labels are drawn outside the plot area, where Chart.js never fires
+   * `onClick`, so the tap plugin resolves them here.
+   */
+  private resolveStyleLabelTarget(
+    chart: Chart,
+    x: number,
+    y: number,
+  ): number | null {
+    const yScale = chart.scales["y"];
+    if (!yScale) return null;
+
+    const labels = this.styleBarChartData.labels ?? [];
+    return resolveLabelIndex({
+      orientation: "horizontal",
+      chartArea: chart.chartArea,
+      pointer: { x, y },
+      bandCenters: labels.map((_, i) => yScale.getPixelForValue(i)),
+      values: this.styleBarChartData.datasets[0]?.data ?? [],
+    });
+  }
+
+  /** Category index behind a tap on the histogram's rating ticks, or null. */
+  private resolveRatingLabelTarget(
+    chart: Chart,
+    x: number,
+    y: number,
+  ): number | null {
+    const xScale = chart.scales["x"];
+    if (!xScale) return null;
+
+    const labels = this.ratingHistogramChartData.labels ?? [];
+    return resolveLabelIndex({
+      orientation: "vertical",
+      chartArea: chart.chartArea,
+      pointer: { x, y },
+      bandCenters: labels.map((_, i) => xScale.getPixelForValue(i)),
+      values: this.ratingHistogramChartData.datasets[0]?.data ?? [],
+    });
   }
 
   /**

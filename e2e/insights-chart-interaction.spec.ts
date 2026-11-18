@@ -23,6 +23,63 @@ async function clickFirstStyleBar(page: Page): Promise<string> {
   return title.trim();
 }
 
+/**
+ * Reads a chart's plot area and category band centres from the live Chart.js
+ * instance, in canvas coordinates. The charts are canvases, so a hard-coded
+ * fraction of the box can land on empty space; the geometry keeps clicks
+ * deterministic.
+ */
+async function readChartGeometry(
+  page: Page,
+  selector: string,
+  orientation: "horizontal" | "vertical",
+): Promise<{
+  chartArea: { left: number; right: number; top: number; bottom: number };
+  labels: string[];
+  bandCenters: number[];
+}> {
+  return page.evaluate(
+    ({ selector, orientation }) => {
+      const debug = (window as unknown as { ng?: Record<string, unknown> }).ng;
+      const canvas = document.querySelector(
+        `${selector} canvas`,
+      ) as HTMLCanvasElement;
+      const dirs = (debug?.["getDirectives"] as (el: Element) => unknown[])(
+        canvas,
+      );
+      const chart = (dirs[0] as Record<string, unknown>)["chart"] as {
+        chartArea: { left: number; right: number; top: number; bottom: number };
+        scales: Record<string, { getPixelForValue: (v: number) => number }>;
+        data: { labels?: string[] };
+      };
+      const labels = chart.data.labels ?? [];
+      const categoryScale = orientation === "horizontal" ? "y" : "x";
+      return {
+        chartArea: chart.chartArea,
+        labels,
+        bandCenters: labels.map((_, i) =>
+          chart.scales[categoryScale]!.getPixelForValue(i),
+        ),
+      };
+    },
+    { selector, orientation },
+  );
+}
+
+/** Clicks a canvas position given in canvas coordinates. */
+async function clickCanvasAt(
+  page: Page,
+  selector: string,
+  x: number,
+  y: number,
+): Promise<void> {
+  const canvas = page.locator(`${selector} canvas`);
+  const box = (await canvas.boundingBox())!;
+  const scaleX = box.width / (await canvas.evaluate((c) => c.clientWidth));
+  const scaleY = box.height / (await canvas.evaluate((c) => c.clientHeight));
+  await page.mouse.click(box.x + x * scaleX, box.y + y * scaleY);
+}
+
 test("clicking a style bar opens the filtered list and writes ?style=", async ({
   page,
 }) => {
@@ -34,6 +91,115 @@ test("clicking a style bar opens the filtered list and writes ?style=", async ({
   await expect(page).toHaveURL(
     new RegExp(`style=${encodeURIComponent(style)}`),
   );
+});
+
+/**
+ * Chart.js only fires onClick inside the plot area, so the style names, which
+ * are drawn to its left, are dead without the label-tap plugin. A name is the
+ * largest and easiest target, so it is the common way to pick a style.
+ */
+test("clicking a style name selects that style", async ({ page }) => {
+  await page.goto("/insights");
+  const canvas = page.locator(".style-bar-chart-container canvas");
+  await expect(canvas).toBeVisible();
+  await canvas.scrollIntoViewIfNeeded();
+
+  const geo = await readChartGeometry(
+    page,
+    ".style-bar-chart-container",
+    "horizontal",
+  );
+  const row = 1;
+  // Style names sit left of the plot area.
+  await clickCanvasAt(
+    page,
+    ".style-bar-chart-container",
+    geo.chartArea.left / 2,
+    geo.bandCenters[row]!,
+  );
+
+  const dialog = page.locator("mat-dialog-container");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator("h2")).toHaveText(`${geo.labels[row]} Drinks`);
+  await expect(page).toHaveURL(
+    new RegExp(`style=${encodeURIComponent(geo.labels[row]!)}`),
+  );
+});
+
+/** The rating ticks below the histogram are clickable in the same way. */
+test("clicking a rating tick selects that rating bin", async ({ page }) => {
+  await page.goto("/insights");
+  const canvas = page.locator(".histogram-chart-container canvas");
+  await expect(canvas).toBeVisible();
+  await canvas.scrollIntoViewIfNeeded();
+
+  const geo = await readChartGeometry(
+    page,
+    ".histogram-chart-container",
+    "vertical",
+  );
+  const counts = await page.evaluate(() => {
+    const debug = (window as unknown as { ng?: Record<string, unknown> }).ng;
+    const canvas = document.querySelector(
+      ".histogram-chart-container canvas",
+    ) as HTMLCanvasElement;
+    const dirs = (debug?.["getDirectives"] as (el: Element) => unknown[])(
+      canvas,
+    );
+    const chart = (dirs[0] as Record<string, unknown>)["chart"] as {
+      data: { datasets: { data: number[] }[] };
+    };
+    return chart.data.datasets[0]!.data;
+  });
+  const filled = counts.findIndex((c) => c > 0);
+  expect(filled).toBeGreaterThanOrEqual(0);
+
+  // Rating ticks sit below the plot area.
+  await clickCanvasAt(
+    page,
+    ".histogram-chart-container",
+    geo.bandCenters[filled]!,
+    geo.chartArea.bottom + 12,
+  );
+
+  const dialog = page.locator("mat-dialog-container");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator("h2")).toContainText(geo.labels[filled]!);
+  await expect(page).toHaveURL(/rating=/);
+});
+
+/**
+ * A touch tap must behave like a click. Chart.js maps a touch to a synthetic
+ * click, so the label strip stays tappable on a phone-sized viewport.
+ */
+test.describe("touch viewport", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test("a tap on a style name selects that style", async ({ page }) => {
+    await page.goto("/insights");
+    const canvas = page.locator(".style-bar-chart-container canvas");
+    await expect(canvas).toBeVisible();
+    await canvas.scrollIntoViewIfNeeded();
+
+    const geo = await readChartGeometry(
+      page,
+      ".style-bar-chart-container",
+      "horizontal",
+    );
+    const row = 0;
+    const box = (await canvas.boundingBox())!;
+    const scaleX = box.width / (await canvas.evaluate((c) => c.clientWidth));
+    const scaleY = box.height / (await canvas.evaluate((c) => c.clientHeight));
+    await page.touchscreen.tap(
+      box.x + (geo.chartArea.left / 2) * scaleX,
+      box.y + geo.bandCenters[row]! * scaleY,
+    );
+
+    const dialog = page.locator("mat-dialog-container");
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("h2")).toHaveText(`${geo.labels[row]} Drinks`);
+    await expect(page).toHaveURL(/style=/);
+  });
 });
 
 test("a shared ?style= URL reopens the filtered list", async ({ page }) => {
