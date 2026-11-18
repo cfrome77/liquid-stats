@@ -559,6 +559,38 @@ describe("InsightsComponent", () => {
       expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
     });
 
+    it("matches clicks by the axis each chart lays its bars along", () => {
+      // The style chart is horizontal (one bar per row), so a click resolves to
+      // the nearest row. The histogram is vertical, so it resolves to the
+      // nearest column. Matching on the other axis would let a click land on a
+      // bar in a different row or column.
+      expect(component.styleBarChartOptions.indexAxis).toBe("y");
+      expect(component.styleBarChartOptions.interaction).toEqual({
+        mode: "nearest",
+        axis: "y",
+        intersect: false,
+      });
+      expect(component.ratingChartOptions.interaction).toEqual({
+        mode: "nearest",
+        axis: "x",
+        intersect: false,
+      });
+    });
+
+    it("ignores a click on a rating column that has no check-ins", () => {
+      dialogSpy.calls.reset();
+      // The default fixture has no check-ins in the 0.25 bin.
+      expect(component.ratingHistogramChartData.datasets[0]!.data[0]).toBe(0);
+
+      (
+        component as unknown as {
+          onRatingChartClick: (elements: { index: number }[]) => void;
+        }
+      ).onRatingChartClick([{ index: 0 }]);
+
+      expect(dialogSpy).not.toHaveBeenCalled();
+    });
+
     it("writes the selected rating into the URL", () => {
       const router = TestBed.inject(Router);
       const navigate = spyOn(router, "navigate");

@@ -116,3 +116,81 @@ test("the charts advertise their interactivity", async ({ page }) => {
   await expect(page.locator(".chart-interaction-hint")).toHaveCount(2);
   await expect(page.locator("canvas.interactive-chart")).toHaveCount(2);
 });
+
+/**
+ * Rows in the ranked chart are one bar each, so a click anywhere along a row
+ * should select that row's style. Distance was previously measured to each
+ * bar's centre, so a click far along a short row resolved to a longer bar in
+ * another row.
+ */
+test("a click selects the row it lands on, even far from a short bar", async ({
+  page,
+}) => {
+  const canvas = page.locator(".style-bar-chart-container canvas");
+  const dialog = page.locator("mat-dialog-container");
+
+  async function styleAtRow(fraction: number): Promise<string> {
+    await page.goto("/insights");
+    await expect(canvas).toBeVisible();
+    await canvas.scrollIntoViewIfNeeded();
+    const box = (await canvas.boundingBox())!;
+    await page.mouse.click(
+      box.x + box.width * 0.95,
+      box.y + box.height * fraction,
+    );
+    await expect(dialog).toBeVisible();
+    const title = ((await dialog.locator("h2").textContent()) ?? "").trim();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    return title.replace(/ Drinks$/, "");
+  }
+
+  const top = await styleAtRow(0.15);
+  const bottom = await styleAtRow(0.85);
+
+  // Distinct rows must resolve to distinct styles.
+  expect(top).not.toBe(bottom);
+  expect(top.length).toBeGreaterThan(0);
+  expect(bottom.length).toBeGreaterThan(0);
+});
+
+/**
+ * The histogram is vertical, so a click resolves to the nearest column. A
+ * column with check-ins opens that bin's list and mirrors it into the URL,
+ * while an empty column must stay inert rather than open an empty list.
+ */
+test("clicking a rating column opens that column's list", async ({ page }) => {
+  await page.goto("/insights");
+  const canvas = page.locator(".histogram-chart-container canvas");
+  const dialog = page.locator("mat-dialog-container");
+  await expect(canvas).toBeVisible();
+  await canvas.scrollIntoViewIfNeeded();
+  const box = (await canvas.boundingBox())!;
+
+  const clickAt = async (fraction: number): Promise<boolean> => {
+    await page.mouse.click(
+      box.x + box.width * fraction,
+      box.y + box.height / 2,
+    );
+    return dialog
+      .waitFor({ state: "visible", timeout: 800 })
+      .then(() => true)
+      .catch(() => false);
+  };
+
+  // The fixture only rates a middle slice of the 0.25–5.00 axis, so the far
+  // edges are empty columns: clicking them must not open a dialog.
+  expect(await clickAt(0.02)).toBe(false);
+
+  // Scan inwards for a populated column, then assert it opened its own bin.
+  let title: string | null = null;
+  for (const fraction of [0.7, 0.75, 0.8, 0.65, 0.6, 0.85, 0.55]) {
+    if (await clickAt(fraction)) {
+      title = ((await dialog.locator("h2").textContent()) ?? "").trim();
+      break;
+    }
+  }
+
+  expect(title).toMatch(/★ Drinks$/);
+  await expect(page).toHaveURL(/rating=/);
+});

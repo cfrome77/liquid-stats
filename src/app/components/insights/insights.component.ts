@@ -146,6 +146,14 @@ export class InsightsComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
+    interaction: {
+      // Pick the column under the pointer by its x position only. With the
+      // default 2D nearest-distance a short bar is a tiny target, because the
+      // click has to land inside the bar's own rectangle.
+      mode: "nearest",
+      axis: "x",
+      intersect: false,
+    },
     onHover: (event: ChartEvent, elements: ActiveElement[]) =>
       this.setPointerCursor(event, elements),
     onClick: (event: ChartEvent, elements: ActiveElement[]) =>
@@ -156,6 +164,9 @@ export class InsightsComponent implements OnInit {
       },
       tooltip: {
         enabled: true,
+        mode: "nearest",
+        axis: "x",
+        intersect: false,
       },
     },
     scales: {
@@ -208,7 +219,11 @@ export class InsightsComponent implements OnInit {
     indexAxis: "y",
     events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
     interaction: {
+      // Rows are one bar each, so match by y position. The default 2D
+      // nearest-distance compared against each bar's centre point, which meant
+      // a click far along a short row resolved to a longer bar in another row.
       mode: "nearest",
+      axis: "y",
       intersect: false,
     },
     onHover: (event: ChartEvent, elements: ActiveElement[]) =>
@@ -222,6 +237,7 @@ export class InsightsComponent implements OnInit {
       tooltip: {
         enabled: true,
         mode: "nearest",
+        axis: "y",
         intersect: false,
       },
     },
@@ -493,6 +509,11 @@ export class InsightsComponent implements OnInit {
   private onRatingChartClick(elements: ActiveElement[]): void {
     const index = elements[0]?.index;
     if (index === undefined) return;
+
+    // A click can land on a column with no check-ins, which has no list to
+    // show. Ignore it rather than opening an empty dialog.
+    const count = this.ratingHistogramChartData.datasets[0]?.data[index];
+    if (!count) return;
 
     const label = this.ratingHistogramChartData.labels?.[index];
     if (typeof label !== "string") return;
