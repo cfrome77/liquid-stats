@@ -49,6 +49,11 @@ import {
   createChartLabelTapPlugin,
   resolveLabelIndex,
 } from "../../core/utils/chart-hit-testing";
+import {
+  classifyDrinkCategory,
+  DRINK_CATEGORIES,
+  drinkMatchesCategory,
+} from "../../core/utils/beer-category";
 import { environment } from "src/environments/environment";
 
 export interface Milestone {
@@ -699,150 +704,7 @@ export class InsightsComponent implements OnInit {
   }
 
   public matchesCategory(b: BeerCheckin, categoryName: string): boolean {
-    const styleLower = (b.beer.beer_style || "").toLowerCase();
-    switch (categoryName) {
-      case "IPA":
-        return styleLower.includes("ipa") || styleLower.includes("india pale");
-      case "Stout / Porter":
-        return styleLower.includes("stout") || styleLower.includes("porter");
-      case "Sour / Wild":
-        return (
-          styleLower.includes("sour") ||
-          styleLower.includes("wild") ||
-          styleLower.includes("gose") ||
-          styleLower.includes("berliner weisse") ||
-          styleLower.includes("lambic") ||
-          styleLower.includes("coolship")
-        );
-      case "Lager / Pilsner":
-        return (
-          styleLower.includes("lager") ||
-          styleLower.includes("pilsner") ||
-          styleLower.includes("pils") ||
-          styleLower.includes("helles") ||
-          styleLower.includes("bock") ||
-          styleLower.includes("märzen") ||
-          styleLower.includes("marzen") ||
-          styleLower.includes("kellerbier") ||
-          styleLower.includes("dunkel") ||
-          styleLower.includes("schwarzbier") ||
-          styleLower.includes("vienna") ||
-          styleLower.includes("zoigl")
-        );
-      case "Pale Ale":
-        return styleLower.includes("pale ale");
-      case "Wheat":
-        return (
-          styleLower.includes("wheat") ||
-          styleLower.includes("hefeweizen") ||
-          styleLower.includes("witbier") ||
-          styleLower.includes("dunkelweizen") ||
-          styleLower.includes("weizenbock") ||
-          styleLower.includes("grisette")
-        );
-      case "Belgian / Farmhouse":
-        return (
-          styleLower.includes("belgian") ||
-          styleLower.includes("abbey") ||
-          styleLower.includes("trappist") ||
-          styleLower.includes("dubbel") ||
-          styleLower.includes("tripel") ||
-          styleLower.includes("quadrupel") ||
-          styleLower.includes("saison") ||
-          styleLower.includes("bière de garde") ||
-          styleLower.includes("blonde ale") ||
-          styleLower.includes("enkel") ||
-          styleLower.includes("patersbier")
-        );
-      case "Strong Ale":
-        return (
-          styleLower.includes("barleywine") ||
-          styleLower.includes("old ale") ||
-          styleLower.includes("wee heavy") ||
-          styleLower.includes("scotch ale") ||
-          styleLower.includes("strong ale") ||
-          styleLower.includes("doppelsticke") ||
-          styleLower.includes("sticke")
-        );
-      case "Cider / Perry / Mead":
-        return (
-          styleLower.includes("cider") ||
-          styleLower.includes("perry") ||
-          styleLower.includes("graff") ||
-          styleLower.includes("mead") ||
-          styleLower.includes("cyser") ||
-          styleLower.includes("melomel")
-        );
-      case "Wine":
-        return (
-          styleLower.includes("wine") ||
-          styleLower.includes("champagne") ||
-          styleLower.includes("prosecco") ||
-          styleLower.includes("vermouth") ||
-          styleLower.includes("port") ||
-          styleLower.includes("sherry") ||
-          styleLower.includes("sangria") ||
-          styleLower.includes("spritz")
-        );
-      case "Spirit / RTD":
-        return (
-          styleLower.includes("spirit") ||
-          styleLower.includes("whiskey") ||
-          styleLower.includes("whisky") ||
-          styleLower.includes("bourbon") ||
-          styleLower.includes("scotch") ||
-          styleLower.includes("gin") ||
-          styleLower.includes("vodka") ||
-          styleLower.includes("tequila") ||
-          styleLower.includes("mezcal") ||
-          styleLower.includes("rum") ||
-          styleLower.includes("brandy") ||
-          styleLower.includes("cognac") ||
-          styleLower.includes("liqueur") ||
-          styleLower.includes("absinthe") ||
-          styleLower.includes("rtd") ||
-          styleLower.includes("cocktail")
-        );
-      case "Sake":
-        return (
-          styleLower.includes("sake") ||
-          styleLower.includes("junmai") ||
-          styleLower.includes("daiginjo") ||
-          styleLower.includes("honjozo")
-        );
-      case "Non-Alcoholic / Soda / Root Beer":
-        return (
-          styleLower.includes("non-alcoholic") ||
-          styleLower.includes("root beer") ||
-          styleLower.includes("soda") ||
-          styleLower.includes("cola") ||
-          styleLower.includes("ginger ale") ||
-          styleLower.includes("kombucha") ||
-          styleLower.includes("coffee") ||
-          styleLower.includes("tea") ||
-          styleLower.includes("malta") ||
-          styleLower.includes("fassbrause")
-        );
-      case "THC / Cannabinoid":
-        return (
-          styleLower.includes("thc") ||
-          styleLower.includes("cannabinoid") ||
-          styleLower.includes("cbd") ||
-          styleLower.includes("hemp")
-        );
-      case "Fruit / Field / Spice":
-        return (
-          styleLower.includes("fruit") ||
-          styleLower.includes("shandy") ||
-          styleLower.includes("radler") ||
-          styleLower.includes("pumpkin") ||
-          styleLower.includes("spiced") ||
-          styleLower.includes("herb") ||
-          styleLower.includes("vegetable")
-        );
-      default:
-        return true;
-    }
+    return drinkMatchesCategory(b.beer.beer_style, categoryName);
   }
 
   private openBeersDialog(
@@ -1141,24 +1003,10 @@ export class InsightsComponent implements OnInit {
   }
 
   private computeInsights(beers: BeerCheckin[]): void {
-    const categoryCounts: Record<string, number> = {
-      IPA: 0,
-      "Stout / Porter": 0,
-      "Sour / Wild": 0,
-      "Lager / Pilsner": 0,
-      "Pale Ale": 0,
-      Wheat: 0,
-      "Belgian / Farmhouse": 0,
-      "Strong Ale": 0,
-      "Cider / Perry / Mead": 0,
-      "Fruit / Field / Spice": 0,
-      Wine: 0,
-      "Spirit / RTD": 0,
-      Sake: 0,
-      "Non-Alcoholic / Soda / Root Beer": 0,
-      "THC / Cannabinoid": 0,
-      "Other / Specialty": 0,
-    };
+    const categoryCounts: Record<string, number> = {};
+    for (const category of DRINK_CATEGORIES) {
+      categoryCounts[category] = 0;
+    }
     const bump = (category: string): void => {
       categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
     };
@@ -1187,153 +1035,7 @@ export class InsightsComponent implements OnInit {
         abvCount++;
       }
 
-      const styleLower = style.toLowerCase();
-
-      if (styleLower.includes("ipa") || styleLower.includes("india pale")) {
-        bump("IPA");
-      } else if (
-        styleLower.includes("stout") ||
-        styleLower.includes("porter")
-      ) {
-        bump("Stout / Porter");
-      } else if (
-        styleLower.includes("sour") ||
-        styleLower.includes("wild") ||
-        styleLower.includes("gose") ||
-        styleLower.includes("berliner weisse") ||
-        styleLower.includes("lambic") ||
-        styleLower.includes("coolship")
-      ) {
-        bump("Sour / Wild");
-      } else if (
-        styleLower.includes("lager") ||
-        styleLower.includes("pilsner") ||
-        styleLower.includes("pils") ||
-        styleLower.includes("helles") ||
-        styleLower.includes("bock") ||
-        styleLower.includes("märzen") ||
-        styleLower.includes("marzen") ||
-        styleLower.includes("kellerbier") ||
-        styleLower.includes("dunkel") ||
-        styleLower.includes("schwarzbier") ||
-        styleLower.includes("vienna") ||
-        styleLower.includes("zoigl")
-      ) {
-        bump("Lager / Pilsner");
-      } else if (styleLower.includes("pale ale")) {
-        bump("Pale Ale");
-      } else if (
-        styleLower.includes("wheat") ||
-        styleLower.includes("hefeweizen") ||
-        styleLower.includes("witbier") ||
-        styleLower.includes("dunkelweizen") ||
-        styleLower.includes("weizenbock") ||
-        styleLower.includes("grisette")
-      ) {
-        bump("Wheat");
-      } else if (
-        styleLower.includes("belgian") ||
-        styleLower.includes("abbey") ||
-        styleLower.includes("trappist") ||
-        styleLower.includes("dubbel") ||
-        styleLower.includes("tripel") ||
-        styleLower.includes("quadrupel") ||
-        styleLower.includes("saison") ||
-        styleLower.includes("bière de garde") ||
-        styleLower.includes("blonde ale") ||
-        styleLower.includes("enkel") ||
-        styleLower.includes("patersbier")
-      ) {
-        bump("Belgian / Farmhouse");
-      } else if (
-        styleLower.includes("barleywine") ||
-        styleLower.includes("old ale") ||
-        styleLower.includes("wee heavy") ||
-        styleLower.includes("scotch ale") ||
-        styleLower.includes("strong ale") ||
-        styleLower.includes("doppelsticke") ||
-        styleLower.includes("sticke")
-      ) {
-        bump("Strong Ale");
-      } else if (
-        styleLower.includes("cider") ||
-        styleLower.includes("perry") ||
-        styleLower.includes("graff") ||
-        styleLower.includes("mead") ||
-        styleLower.includes("cyser") ||
-        styleLower.includes("melomel")
-      ) {
-        bump("Cider / Perry / Mead");
-      } else if (
-        styleLower.includes("wine") ||
-        styleLower.includes("champagne") ||
-        styleLower.includes("prosecco") ||
-        styleLower.includes("vermouth") ||
-        styleLower.includes("port") ||
-        styleLower.includes("sherry") ||
-        styleLower.includes("sangria") ||
-        styleLower.includes("spritz")
-      ) {
-        bump("Wine");
-      } else if (
-        styleLower.includes("spirit") ||
-        styleLower.includes("whiskey") ||
-        styleLower.includes("whisky") ||
-        styleLower.includes("bourbon") ||
-        styleLower.includes("scotch") ||
-        styleLower.includes("gin") ||
-        styleLower.includes("vodka") ||
-        styleLower.includes("tequila") ||
-        styleLower.includes("mezcal") ||
-        styleLower.includes("rum") ||
-        styleLower.includes("brandy") ||
-        styleLower.includes("cognac") ||
-        styleLower.includes("liqueur") ||
-        styleLower.includes("absinthe") ||
-        styleLower.includes("rtd") ||
-        styleLower.includes("cocktail")
-      ) {
-        bump("Spirit / RTD");
-      } else if (
-        styleLower.includes("sake") ||
-        styleLower.includes("junmai") ||
-        styleLower.includes("daiginjo") ||
-        styleLower.includes("honjozo")
-      ) {
-        bump("Sake");
-      } else if (
-        styleLower.includes("non-alcoholic") ||
-        styleLower.includes("root beer") ||
-        styleLower.includes("soda") ||
-        styleLower.includes("cola") ||
-        styleLower.includes("ginger ale") ||
-        styleLower.includes("kombucha") ||
-        styleLower.includes("coffee") ||
-        styleLower.includes("tea") ||
-        styleLower.includes("malta") ||
-        styleLower.includes("fassbrause")
-      ) {
-        bump("Non-Alcoholic / Soda / Root Beer");
-      } else if (
-        styleLower.includes("thc") ||
-        styleLower.includes("cannabinoid") ||
-        styleLower.includes("cbd") ||
-        styleLower.includes("hemp")
-      ) {
-        bump("THC / Cannabinoid");
-      } else if (
-        styleLower.includes("fruit") ||
-        styleLower.includes("shandy") ||
-        styleLower.includes("radler") ||
-        styleLower.includes("pumpkin") ||
-        styleLower.includes("spiced") ||
-        styleLower.includes("herb") ||
-        styleLower.includes("vegetable")
-      ) {
-        bump("Fruit / Field / Spice");
-      } else {
-        bump("Other / Specialty");
-      }
+      bump(classifyDrinkCategory(style));
 
       const brewery = b.brewery.brewery_name;
       breweryCounts[brewery] = (breweryCounts[brewery] || 0) + 1;

@@ -136,6 +136,83 @@ describe("InsightsComponent", () => {
     expect(component.matchesCategory(testBeer, "Stout / Porter")).toBeFalse();
   });
 
+  describe("category classification", () => {
+    const categoryOf = (beerStyle: string): BeerCheckin =>
+      makeStyleBeers(beerStyle, 1)[0]!;
+
+    it("keeps a porter out of the wine list", () => {
+      const porter = categoryOf("Baltic Porter");
+      expect(component.matchesCategory(porter, "Stout / Porter")).toBeTrue();
+      expect(component.matchesCategory(porter, "Wine")).toBeFalse();
+    });
+
+    it("classifies a spirit the keyword list previously missed", () => {
+      const grappa = categoryOf("Grappa");
+      expect(component.matchesCategory(grappa, "Spirit / RTD")).toBeTrue();
+      expect(
+        component.matchesCategory(grappa, "Other / Specialty"),
+      ).toBeFalse();
+    });
+
+    it("shows only uncategorized drinks under Other / Specialty", () => {
+      const ipa = categoryOf("IPA - American");
+      const mystery = categoryOf("Mystery Liquid");
+      expect(
+        component.matchesCategory(mystery, "Other / Specialty"),
+      ).toBeTrue();
+      expect(component.matchesCategory(ipa, "Other / Specialty")).toBeFalse();
+    });
+
+    it("keeps the chart count and the category list in agreement", async () => {
+      const beers: BeerCheckin[] = [
+        ...makeStyleBeers("Baltic Porter", 2),
+        ...makeStyleBeers("IPA - American", 1),
+        ...makeStyleBeers("Grappa", 1),
+      ];
+      const store = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of(beers),
+        checkins$: of([]),
+        loadError$: of(false),
+      });
+
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [
+          { provide: BeerStoreService, useValue: store },
+          provideRouter([]),
+        ],
+      }).compileComponents();
+
+      const rankedFixture = TestBed.createComponent(InsightsComponent);
+      rankedFixture.detectChanges();
+      const instance = rankedFixture.componentInstance;
+
+      const labels = instance.styleBarChartData.labels ?? [];
+      const data = instance.styleBarChartData.datasets[0]?.data ?? [];
+
+      // The porter must not appear as wine, and grappa must be its own bar.
+      expect(labels).not.toContain("Wine");
+      expect(labels).toContain("Stout / Porter");
+      expect(labels).toContain("Spirit / RTD");
+
+      // Every bar's count matches the number of drinks its list would show.
+      labels.forEach((label, i) => {
+        const listed = beers.filter((b) =>
+          instance.matchesCategory(b, String(label)),
+        ).length;
+        expect(listed)
+          .withContext(String(label))
+          .toBe(data[i] ?? 0);
+      });
+    });
+  });
+
   describe("ranked style distribution bar chart", () => {
     it("no longer exposes the removed radar chart data or options", () => {
       expect(
