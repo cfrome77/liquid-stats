@@ -209,4 +209,35 @@ describe("FilterComponent", () => {
 
     expect(overlayContainerElement.querySelector(".modal-content")).toBeFalsy();
   });
+
+  describe("accessibility", () => {
+    it("announces the visible option count in a polite live region", () => {
+      component.openFilterModal(component.filterFields[0]!);
+      fixture.detectChanges();
+
+      const status = overlayContainerElement.querySelector(
+        '.modal-body [role="status"]',
+      );
+      expect(status?.getAttribute("aria-live")).toBe("polite");
+      expect(status?.textContent).toContain("2 options available");
+    });
+
+    it("updates the announced count as the search narrows the options", () => {
+      component.openFilterModal(component.filterFields[0]!);
+      fixture.detectChanges();
+
+      const input = overlayContainerElement.querySelector(
+        'input[type="text"]',
+      ) as HTMLInputElement;
+      input.value = "Brewery A";
+      input.dispatchEvent(new Event("input"));
+      fixture.detectChanges();
+
+      const status = overlayContainerElement.querySelector(
+        '.modal-body [role="status"]',
+      );
+      expect(component.visibleOptionCount).toBe(1);
+      expect(status?.textContent).toContain("1 options available");
+    });
+  });
 });

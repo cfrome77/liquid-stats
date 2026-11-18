@@ -98,6 +98,38 @@ describe("PaginationComponent", () => {
     });
   });
 
+  describe("accessibility", () => {
+    it("announces the current page in a polite live region", () => {
+      fixture.componentRef.setInput("currentPage", 3);
+      fixture.componentRef.setInput("itemsPerPage", 10);
+      fixture.componentRef.setInput("totalItems", 200);
+      fixture.detectChanges();
+
+      const status = (fixture.nativeElement as HTMLElement).querySelector(
+        '.pagination-controls [role="status"]',
+      );
+      expect(status?.getAttribute("aria-live")).toBe("polite");
+      expect(status?.textContent).toContain("Page 3 of 20");
+    });
+
+    it("labels page buttons and marks the active page for assistive tech", () => {
+      fixture.componentRef.setInput("currentPage", 2);
+      fixture.componentRef.setInput("itemsPerPage", 10);
+      fixture.componentRef.setInput("totalItems", 30);
+      fixture.detectChanges();
+
+      const buttons = Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll(
+          ".pagination-controls button.page-number",
+        ),
+      );
+      expect(buttons.length).toBe(3);
+      expect(buttons[0]!.getAttribute("aria-label")).toBe("Page 1");
+      expect(buttons[1]!.getAttribute("aria-current")).toBe("page");
+      expect(buttons[2]!.getAttribute("aria-current")).toBeNull();
+    });
+  });
+
   describe("navigation", () => {
     it("emits the previous page when not on the first page", () => {
       const spy = spyOn(component.pageChange, "emit");

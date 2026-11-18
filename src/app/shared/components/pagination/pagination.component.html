@@ -1,5 +1,9 @@
 <!-- Pagination controls -->
 <div class="pagination-controls">
+  <p class="visually-hidden" role="status" aria-live="polite">
+    Page {{ currentPage }} of {{ lastPage }}
+  </p>
+
   <!-- First page button -->
   <button mat-button (click)="goToPage(1)" [disabled]="currentPage === 1">
     First
@@ -16,13 +20,15 @@
       mat-button
       (click)="isNumber(page) && goToPage(page)"
       [class.active]="page === currentPage"
+      [attr.aria-current]="page === currentPage ? 'page' : null"
+      [attr.aria-label]="isNumber(page) ? 'Page ' + page : null"
       class="page-number"
     >
       @if (isNumber(page)) {
-        <span>{{ page }}</span>
+        <span aria-hidden="true">{{ page }}</span>
       }
       @if (page === "...") {
-        <span class="ellipsis">{{ page }}</span>
+        <span class="ellipsis" aria-hidden="true">{{ page }}</span>
       }
     </button>
   }

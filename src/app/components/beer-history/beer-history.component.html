@@ -74,8 +74,12 @@
       (action)="retryLoad()"
     ></app-empty-state>
   } @else {
+    <p class="visually-hidden" role="status" aria-live="polite">
+      Showing {{ paginatedBeers.length }} of {{ totalItems }} drinks.
+    </p>
     <div
       class="cards-layout-container"
+      aria-live="polite"
       [class.cards-layout]="viewMode() === 'cards'"
       [class.compact-layout]="viewMode() === 'compact'"
     >

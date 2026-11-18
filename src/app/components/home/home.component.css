@@ -46,7 +46,7 @@
 }
 .hero-buttons .mat-flat-button {
   background-color: var(--btn-danger) !important;
-  color: white !important;
+  color: var(--on-solid-fill, #ffffff) !important;
 }
 .quick-stats {
   display: grid;
@@ -195,7 +195,7 @@
 }
 .nav-btn:hover {
   background: var(--accent-blue);
-  color: white;
+  color: var(--on-accent-blue, #ffffff);
   border-color: var(--accent-blue);
   transform: scale(1.1);
 }

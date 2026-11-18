@@ -39,7 +39,7 @@
   </div>
 
   @if (processedStats) {
-    <div class="stats-cards">
+    <div class="stats-cards" aria-live="polite">
       <div class="card">
         <mat-icon class="stat-icon">verified</mat-icon>
         <div class="stat-value">{{ processedStats.totalUniqueBeers }}</div>

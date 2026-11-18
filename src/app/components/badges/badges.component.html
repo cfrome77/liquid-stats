@@ -39,8 +39,12 @@
       (action)="retryLoad()"
     ></app-empty-state>
   } @else {
+    <p class="visually-hidden" role="status" aria-live="polite">
+      Showing {{ paginatedBadges.length }} of {{ totalItems }} badges.
+    </p>
     <div
       class="cards-layout-container"
+      aria-live="polite"
       [class.cards-layout]="viewMode() === 'cards'"
       [class.compact-layout]="viewMode() === 'compact'"
     >

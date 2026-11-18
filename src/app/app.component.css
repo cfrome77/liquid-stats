@@ -174,7 +174,7 @@ mat-toolbar {
   z-index: 1000;
   padding: 10px 16px;
   background: var(--accent-blue);
-  color: #fff;
+  color: var(--on-accent-blue, #fff);
   font-weight: 600;
   border-radius: 0 0 8px 0;
   text-decoration: none;

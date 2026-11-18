@@ -124,7 +124,7 @@
 
   @if (filteredBeers.length > 0) {
     <div class="dialog-list-footer">
-      <span class="dialog-list-count">
+      <span class="dialog-list-count" role="status" aria-live="polite">
         Showing {{ visibleBeers.length }} of {{ filteredBeers.length }}
       </span>
       @if (hasMore) {

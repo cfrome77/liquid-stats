@@ -127,6 +127,44 @@ describe("CheckinsComponent", () => {
     });
   });
 
+  describe("accessibility", () => {
+    it("exposes the result list as a polite live region", () => {
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+
+      const container = el.querySelector(".cards-layout-container");
+      expect(container?.getAttribute("aria-live")).toBe("polite");
+
+      const status = el.querySelector('p[role="status"]');
+      expect(status?.getAttribute("aria-live")).toBe("polite");
+    });
+
+    it("announces how many check-ins are shown out of the total", () => {
+      mockDataService.getCheckins = () =>
+        of({
+          response: {
+            checkins: {
+              items: [
+                {
+                  checkin_id: 1,
+                  created_at: "Sun, 20 Sep 2026 00:11:10 +0000",
+                  rating_score: 4,
+                  beer: { bid: 1, beer_name: "Beer", beer_label: "" },
+                  brewery: { brewery_id: 2, brewery_name: "Brewery" },
+                },
+              ],
+            },
+          },
+        }) as unknown as ReturnType<DataService["getCheckins"]>;
+
+      fixture.detectChanges();
+
+      const el = fixture.nativeElement as HTMLElement;
+      const status = el.querySelector('p[role="status"]');
+      expect(status?.textContent).toContain("Showing 1 of 1 check-ins");
+    });
+  });
+
   describe("load error", () => {
     it("shows a retryable error state when the check-ins request fails", () => {
       mockDataService.getCheckins = () =>

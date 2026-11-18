@@ -34,7 +34,7 @@
 
 .apply-button {
   background-color: var(--success-green);
-  color: white;
+  color: var(--on-solid-fill, #ffffff);
   padding: 8px 16px;
   border-radius: 20px;
   border: none;

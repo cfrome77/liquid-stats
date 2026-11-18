@@ -243,6 +243,14 @@ export class FilterComponent implements OnDestroy {
     return filter.selected.length !== filter.options.length;
   }
 
+  /** Number of filter options currently visible after the search filter. */
+  get visibleOptionCount(): number {
+    if (!this.activeFilter) return 0;
+    return this.activeFilter.options.filter((option) =>
+      this.shouldShowOption(option),
+    ).length;
+  }
+
   shouldShowOption(option: string): boolean {
     if (!this.activeFilter) return false;
 

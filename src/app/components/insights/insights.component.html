@@ -20,7 +20,7 @@
     ></app-empty-state>
   } @else {
     <!-- Overview KPI Row -->
-    <div class="insights-grid">
+    <div class="insights-grid" aria-live="polite">
       <div
         class="card glass-panel hero-insight clickable-card"
         role="button"
@@ -211,7 +211,7 @@
       <h3><mat-icon>workspace_premium</mat-icon> Personal Milestones</h3>
     </div>
 
-    <div class="milestones-grid">
+    <div class="milestones-grid" aria-live="polite">
       @for (m of milestones(); track m.title) {
         <div
           class="card glass-panel milestone-card clickable-card"
