@@ -18,6 +18,15 @@ export const VIEW_STATE_PARAMS = {
   customStart: "from",
 } as const;
 
+/**
+ * Query-parameter keys used by the Insights charts to persist a clicked
+ * category (`?style=`) or rating bin (`?rating=`) selection in the URL.
+ */
+export const CHART_FILTER_PARAMS = {
+  style: "style",
+  rating: "rating",
+} as const;
+
 /** Narrows an arbitrary query value to a supported view mode. */
 export function parseViewMode(value: unknown): ViewMode {
   return value === "compact" ? "compact" : DEFAULT_VIEW;

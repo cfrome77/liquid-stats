@@ -13,10 +13,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  background: var(--chip-bg);
+  border: 1px solid var(--divider-color);
   border-radius: 8px;
-  color: var(--text-color, inherit);
+  color: var(--text-color);
   cursor: pointer;
   text-align: left;
   transition:
@@ -26,15 +26,15 @@
 }
 
 .style-item-btn:hover {
-  background: rgba(56, 189, 248, 0.12);
-  border-color: var(--accent-blue, #38bdf8);
+  background: rgba(var(--accent-blue-rgb), 0.12);
+  border-color: var(--accent-blue);
   transform: translateX(2px);
 }
 
 .style-name {
   font-weight: 600;
   font-size: 0.95rem;
-  color: var(--header-text, inherit);
+  color: var(--text-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -44,9 +44,25 @@
 .style-badge {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--accent-blue, #38bdf8);
-  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-blue);
+  background: rgba(var(--accent-blue-rgb), 0.15);
   padding: 4px 8px;
   border-radius: 12px;
   white-space: nowrap;
+}
+
+.dialog-list-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid var(--divider-color);
+}
+
+.dialog-list-count {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.7;
 }

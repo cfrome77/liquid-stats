@@ -9,6 +9,7 @@ import {
   DestroyRef,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ActivatedRoute, Router } from "@angular/router";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -19,7 +20,13 @@ import {
   provideCharts,
   withDefaultRegisterables,
 } from "ng2-charts";
-import { ChartData, ChartOptions } from "chart.js";
+import {
+  Chart,
+  ChartData,
+  ChartEvent,
+  ChartOptions,
+  ActiveElement,
+} from "chart.js";
 
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { LoggingService } from "src/app/core/services/logger.service";
@@ -37,6 +44,16 @@ import {
   StyleItem,
 } from "../../shared/components/styles-list-dialog/styles-list-dialog.component";
 import { sanitizeUntappdUrl } from "../../core/utils/url-utils";
+import { CHART_FILTER_PARAMS } from "../../core/utils/view-state";
+import {
+  createChartLabelTapPlugin,
+  resolveLabelIndex,
+} from "../../core/utils/chart-hit-testing";
+import {
+  classifyDrinkCategory,
+  DRINK_CATEGORIES,
+  drinkMatchesCategory,
+} from "../../core/utils/beer-category";
 import { environment } from "src/environments/environment";
 
 export interface Milestone {
@@ -65,12 +82,17 @@ export interface Milestone {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InsightsComponent implements OnInit {
+  /** The ABV card is a curated "top" view, so its list is deliberately short. */
+  private static readonly TOP_ABV_COUNT = 15;
+
   private beerStore = inject(BeerStoreService);
   private themeService = inject(ThemeService);
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
   private logger = inject(LoggingService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   public beers: BeerCheckin[] = [];
   public hasData = signal<boolean>(false);
@@ -81,6 +103,12 @@ export class InsightsComponent implements OnInit {
   public averageABV = signal<number>(0);
   public topCategory = signal<string>("IPA");
   public totalUniqueStyles = signal<number>(0);
+
+  /** A `?style=`/`?rating=` deep link waiting for the beers to finish loading. */
+  private deepLinkSelection: { key: string; value: string } | null = null;
+
+  /** The last selection acted on, so a re-emitted query param is a no-op. */
+  private lastAppliedSelection: { key: string; value: string } | null = null;
 
   public checkinHeatmapWeeks = signal<
     {
@@ -135,12 +163,28 @@ export class InsightsComponent implements OnInit {
   public ratingChartOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
+    events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
+    interaction: {
+      // Pick the column under the pointer by its x position only. With the
+      // default 2D nearest-distance a short bar is a tiny target, because the
+      // click has to land inside the bar's own rectangle.
+      mode: "nearest",
+      axis: "x",
+      intersect: false,
+    },
+    onHover: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.setPointerCursor(event, elements),
+    onClick: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.onRatingChartClick(elements),
     plugins: {
       legend: {
         display: false,
       },
       tooltip: {
         enabled: true,
+        mode: "nearest",
+        axis: "x",
+        intersect: false,
       },
     },
     scales: {
@@ -191,10 +235,19 @@ export class InsightsComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     indexAxis: "y",
+    events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
     interaction: {
+      // Rows are one bar each, so match by y position. The default 2D
+      // nearest-distance compared against each bar's centre point, which meant
+      // a click far along a short row resolved to a longer bar in another row.
       mode: "nearest",
+      axis: "y",
       intersect: false,
     },
+    onHover: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.setPointerCursor(event, elements),
+    onClick: (event: ChartEvent, elements: ActiveElement[]) =>
+      this.onStyleBarClick(elements),
     plugins: {
       legend: {
         display: false,
@@ -202,6 +255,7 @@ export class InsightsComponent implements OnInit {
       tooltip: {
         enabled: true,
         mode: "nearest",
+        axis: "y",
         intersect: false,
       },
     },
@@ -235,6 +289,28 @@ export class InsightsComponent implements OnInit {
     },
   };
 
+  /**
+   * Makes the style names beside the ranked chart clickable. Chart.js's own
+   * `onClick` only fires inside the plot area, so the labels, which are drawn
+   * outside it, need this plugin.
+   */
+  public styleBarChartPlugins = [
+    createChartLabelTapPlugin({
+      id: "styleLabelTap",
+      resolveLabel: (chart, x, y) => this.resolveStyleLabelTarget(chart, x, y),
+      onSelect: (index) => this.selectStyleIndex(index),
+    }),
+  ];
+
+  /** Makes the rating ticks below the histogram clickable. */
+  public ratingChartPlugins = [
+    createChartLabelTapPlugin({
+      id: "ratingLabelTap",
+      resolveLabel: (chart, x, y) => this.resolveRatingLabelTarget(chart, x, y),
+      onSelect: (index) => this.selectRatingIndex(index),
+    }),
+  ];
+
   constructor() {
     effect(() => {
       const currentTheme = this.themeService.currentTheme();
@@ -251,6 +327,8 @@ export class InsightsComponent implements OnInit {
           this.computeInsights(beers);
           this.hasData.set(true);
           this.isLoading.set(false);
+          // A deep link may have arrived before the beers finished loading.
+          this.openDeepLinkSelection();
           this.cdr.markForCheck();
         } else if (beers !== null) {
           // Loaded but empty (e.g. a failed fetch): stop the skeleton so the
@@ -287,6 +365,13 @@ export class InsightsComponent implements OnInit {
         this.hasLoadError.set(hasError);
         this.cdr.markForCheck();
       });
+
+    // Deep link: a shared URL carrying `?style=`/`?rating=` reopens the
+    // matching filtered list. `queryParams` replays the current value on
+    // subscribe, so a bookmarked load and an in-page navigation both work.
+    this.route.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.applySelectionFromParams(params));
   }
 
   /** Retries loading all store data after a failed load. */
@@ -436,151 +521,215 @@ export class InsightsComponent implements OnInit {
     return lines.join("\n");
   }
 
-  public matchesCategory(b: BeerCheckin, categoryName: string): boolean {
-    const styleLower = (b.beer.beer_style || "").toLowerCase();
-    switch (categoryName) {
-      case "IPA":
-        return styleLower.includes("ipa") || styleLower.includes("india pale");
-      case "Stout / Porter":
-        return styleLower.includes("stout") || styleLower.includes("porter");
-      case "Sour / Wild":
-        return (
-          styleLower.includes("sour") ||
-          styleLower.includes("wild") ||
-          styleLower.includes("gose") ||
-          styleLower.includes("berliner weisse") ||
-          styleLower.includes("lambic") ||
-          styleLower.includes("coolship")
-        );
-      case "Lager / Pilsner":
-        return (
-          styleLower.includes("lager") ||
-          styleLower.includes("pilsner") ||
-          styleLower.includes("pils") ||
-          styleLower.includes("helles") ||
-          styleLower.includes("bock") ||
-          styleLower.includes("märzen") ||
-          styleLower.includes("marzen") ||
-          styleLower.includes("kellerbier") ||
-          styleLower.includes("dunkel") ||
-          styleLower.includes("schwarzbier") ||
-          styleLower.includes("vienna") ||
-          styleLower.includes("zoigl")
-        );
-      case "Pale Ale":
-        return styleLower.includes("pale ale");
-      case "Wheat":
-        return (
-          styleLower.includes("wheat") ||
-          styleLower.includes("hefeweizen") ||
-          styleLower.includes("witbier") ||
-          styleLower.includes("dunkelweizen") ||
-          styleLower.includes("weizenbock") ||
-          styleLower.includes("grisette")
-        );
-      case "Belgian / Farmhouse":
-        return (
-          styleLower.includes("belgian") ||
-          styleLower.includes("abbey") ||
-          styleLower.includes("trappist") ||
-          styleLower.includes("dubbel") ||
-          styleLower.includes("tripel") ||
-          styleLower.includes("quadrupel") ||
-          styleLower.includes("saison") ||
-          styleLower.includes("bière de garde") ||
-          styleLower.includes("blonde ale") ||
-          styleLower.includes("enkel") ||
-          styleLower.includes("patersbier")
-        );
-      case "Strong Ale":
-        return (
-          styleLower.includes("barleywine") ||
-          styleLower.includes("old ale") ||
-          styleLower.includes("wee heavy") ||
-          styleLower.includes("scotch ale") ||
-          styleLower.includes("strong ale") ||
-          styleLower.includes("doppelsticke") ||
-          styleLower.includes("sticke")
-        );
-      case "Cider / Perry / Mead":
-        return (
-          styleLower.includes("cider") ||
-          styleLower.includes("perry") ||
-          styleLower.includes("graff") ||
-          styleLower.includes("mead") ||
-          styleLower.includes("cyser") ||
-          styleLower.includes("melomel")
-        );
-      case "Wine":
-        return (
-          styleLower.includes("wine") ||
-          styleLower.includes("champagne") ||
-          styleLower.includes("prosecco") ||
-          styleLower.includes("vermouth") ||
-          styleLower.includes("port") ||
-          styleLower.includes("sherry") ||
-          styleLower.includes("sangria") ||
-          styleLower.includes("spritz")
-        );
-      case "Spirit / RTD":
-        return (
-          styleLower.includes("spirit") ||
-          styleLower.includes("whiskey") ||
-          styleLower.includes("whisky") ||
-          styleLower.includes("bourbon") ||
-          styleLower.includes("scotch") ||
-          styleLower.includes("gin") ||
-          styleLower.includes("vodka") ||
-          styleLower.includes("tequila") ||
-          styleLower.includes("mezcal") ||
-          styleLower.includes("rum") ||
-          styleLower.includes("brandy") ||
-          styleLower.includes("cognac") ||
-          styleLower.includes("liqueur") ||
-          styleLower.includes("absinthe") ||
-          styleLower.includes("rtd") ||
-          styleLower.includes("cocktail")
-        );
-      case "Sake":
-        return (
-          styleLower.includes("sake") ||
-          styleLower.includes("junmai") ||
-          styleLower.includes("daiginjo") ||
-          styleLower.includes("honjozo")
-        );
-      case "Non-Alcoholic / Soda / Root Beer":
-        return (
-          styleLower.includes("non-alcoholic") ||
-          styleLower.includes("root beer") ||
-          styleLower.includes("soda") ||
-          styleLower.includes("cola") ||
-          styleLower.includes("ginger ale") ||
-          styleLower.includes("kombucha") ||
-          styleLower.includes("coffee") ||
-          styleLower.includes("tea") ||
-          styleLower.includes("malta") ||
-          styleLower.includes("fassbrause")
-        );
-      case "THC / Cannabinoid":
-        return (
-          styleLower.includes("thc") ||
-          styleLower.includes("cannabinoid") ||
-          styleLower.includes("cbd") ||
-          styleLower.includes("hemp")
-        );
-      case "Fruit / Field / Spice":
-        return (
-          styleLower.includes("fruit") ||
-          styleLower.includes("shandy") ||
-          styleLower.includes("radler") ||
-          styleLower.includes("pumpkin") ||
-          styleLower.includes("spiced") ||
-          styleLower.includes("herb") ||
-          styleLower.includes("vegetable")
-        );
-      default:
-        return true;
+  // ---------------- CHART INTERACTION ----------------
+
+  /**
+   * Shows a pointer cursor over clickable chart elements (bars, slices) and
+   * resets it otherwise, so the chart reads as interactive on desktop. On
+   * touch devices the `click`/`touchstart` events below still fire.
+   */
+  private setPointerCursor(event: ChartEvent, elements: ActiveElement[]): void {
+    const target = event.native?.target as HTMLElement | null | undefined;
+    if (!target || !target.style) return;
+    target.style.cursor = elements.length > 0 ? "pointer" : "default";
+  }
+
+  /** Chart.js `onClick` for the ranked chart: selects the clicked bar's row. */
+  private onStyleBarClick(elements: ActiveElement[]): void {
+    const index = elements[0]?.index;
+    if (index === undefined) return;
+
+    this.selectStyleIndex(index);
+  }
+
+  /** Chart.js `onClick` for the histogram: selects the clicked column's bin. */
+  private onRatingChartClick(elements: ActiveElement[]): void {
+    const index = elements[0]?.index;
+    if (index === undefined) return;
+
+    this.selectRatingIndex(index);
+  }
+
+  /** Opens the style at `index` in the ranked chart. */
+  private selectStyleIndex(index: number): void {
+    const label = this.styleBarChartData.labels?.[index];
+    if (typeof label !== "string") return;
+
+    this.selectStyle(label);
+  }
+
+  /** Opens the rating bin at `index` in the histogram. */
+  private selectRatingIndex(index: number): void {
+    // A tap can land on a column with no check-ins, which has no list to show.
+    // Ignore it rather than opening an empty dialog.
+    const count = this.ratingHistogramChartData.datasets[0]?.data[index];
+    if (!count) return;
+
+    const label = this.ratingHistogramChartData.labels?.[index];
+    if (typeof label !== "string") return;
+
+    this.selectRating(label);
+  }
+
+  /**
+   * Category index behind a tap on the ranked chart's style labels, or null.
+   * The labels are drawn outside the plot area, where Chart.js never fires
+   * `onClick`, so the tap plugin resolves them here.
+   */
+  private resolveStyleLabelTarget(
+    chart: Chart,
+    x: number,
+    y: number,
+  ): number | null {
+    const yScale = chart.scales["y"];
+    if (!yScale) return null;
+
+    const labels = this.styleBarChartData.labels ?? [];
+    return resolveLabelIndex({
+      orientation: "horizontal",
+      chartArea: chart.chartArea,
+      pointer: { x, y },
+      bandCenters: labels.map((_, i) => yScale.getPixelForValue(i)),
+      values: this.styleBarChartData.datasets[0]?.data ?? [],
+    });
+  }
+
+  /** Category index behind a tap on the histogram's rating ticks, or null. */
+  private resolveRatingLabelTarget(
+    chart: Chart,
+    x: number,
+    y: number,
+  ): number | null {
+    const xScale = chart.scales["x"];
+    if (!xScale) return null;
+
+    const labels = this.ratingHistogramChartData.labels ?? [];
+    return resolveLabelIndex({
+      orientation: "vertical",
+      chartArea: chart.chartArea,
+      pointer: { x, y },
+      bandCenters: labels.map((_, i) => xScale.getPixelForValue(i)),
+      values: this.ratingHistogramChartData.datasets[0]?.data ?? [],
+    });
+  }
+
+  /**
+   * Opens the style's check-in list and mirrors the selection into the URL
+   * (`?style=`), merging with any existing params so other state survives.
+   */
+  public selectStyle(style: string): void {
+    this.lastAppliedSelection = {
+      key: CHART_FILTER_PARAMS.style,
+      value: style,
+    };
+    this.openCategoryDialog(style);
+    this.updateQueryParam(
+      CHART_FILTER_PARAMS.style,
+      style,
+      CHART_FILTER_PARAMS.rating,
+    );
+  }
+
+  /** Opens the rating bin's check-in list and mirrors it into the URL. */
+  public selectRating(rating: string): void {
+    this.lastAppliedSelection = {
+      key: CHART_FILTER_PARAMS.rating,
+      value: rating,
+    };
+    this.openRatingDialog(rating);
+    this.updateQueryParam(
+      CHART_FILTER_PARAMS.rating,
+      rating,
+      CHART_FILTER_PARAMS.style,
+    );
+  }
+
+  /**
+   * Writes a chart selection into the URL, merging existing params so unrelated
+   * state survives.
+   *
+   * The two chart selections are mutually exclusive, so the sibling param is
+   * cleared. Closing a dialog leaves its param behind, and a lingering
+   * `?style=` would otherwise make the query-param echo of a rating click look
+   * like a style deep link and reopen the style list on top of the rating one.
+   */
+  private updateQueryParam(
+    key: string,
+    value: string,
+    siblingKey: string,
+  ): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [key]: value, [siblingKey]: null },
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
+  }
+
+  /**
+   * Restores a chart selection from a shared or bookmarked URL by reopening
+   * the matching dialog.
+   *
+   * A selection this component just wrote (a chart click) is not reopened: the
+   * query-param emission it produces is recognised and skipped, so a click
+   * never opens the dialog twice.
+   */
+  private applySelectionFromParams(params: Record<string, string>): void {
+    const style = params[CHART_FILTER_PARAMS.style];
+    const rating = params[CHART_FILTER_PARAMS.rating];
+
+    // The key this component last wrote wins over the fixed order below, so a
+    // stale sibling param cannot masquerade as the selection that was clicked.
+    const last = this.lastAppliedSelection;
+    const echoed = last ? params[last.key] : undefined;
+    if (last && echoed === last.value) {
+      return;
     }
+
+    const selection = style
+      ? { key: CHART_FILTER_PARAMS.style, value: style }
+      : rating
+        ? { key: CHART_FILTER_PARAMS.rating, value: rating }
+        : null;
+
+    if (!selection) {
+      this.lastAppliedSelection = null;
+      return;
+    }
+
+    this.lastAppliedSelection = selection;
+    this.deepLinkSelection = selection;
+    this.openDeepLinkSelection();
+  }
+
+  /**
+   * Opens the list for a deep-linked selection, deferring until the beers are
+   * loaded so the dialog is never built from an empty set.
+   */
+  private openDeepLinkSelection(): void {
+    const selection = this.deepLinkSelection;
+    if (!selection || this.beers.length === 0) return;
+
+    this.deepLinkSelection = null;
+    if (selection.key === CHART_FILTER_PARAMS.style) {
+      this.openCategoryDialog(selection.value);
+    } else {
+      this.openRatingDialog(selection.value);
+    }
+  }
+
+  /** Opens the check-in list for a rating bin (e.g. `4.25`). */
+  public openRatingDialog(ratingLabel: string): void {
+    const target = Number(ratingLabel);
+    const filtered = this.beers.filter((b) => {
+      if (!b.rating_score || b.rating_score <= 0) return false;
+      return Math.round(b.rating_score * 4) / 4 === target;
+    });
+    this.openBeersDialog(`${ratingLabel}★ Drinks`, filtered);
+  }
+
+  public matchesCategory(b: BeerCheckin, categoryName: string): boolean {
+    return drinkMatchesCategory(b.beer.beer_style, categoryName);
   }
 
   private openBeersDialog(
@@ -607,6 +756,7 @@ export class InsightsComponent implements OnInit {
 
     return this.dialog.open(BeerStyleDialogComponent, {
       data,
+      autoFocus: false,
       width: "350px",
       maxHeight: "80vh",
     });
@@ -616,8 +766,11 @@ export class InsightsComponent implements OnInit {
     const filtered = [...this.beers]
       .filter((b) => b.beer.beer_abv > 0)
       .sort((a, b) => b.beer.beer_abv - a.beer.beer_abv)
-      .slice(0, 15);
-    this.openBeersDialog("Top Highest ABV Drinks", filtered);
+      .slice(0, InsightsComponent.TOP_ABV_COUNT);
+    this.openBeersDialog(
+      `Top ${InsightsComponent.TOP_ABV_COUNT} Highest ABV Drinks`,
+      filtered,
+    );
   }
 
   public openStylesDialog(): void {
@@ -638,6 +791,7 @@ export class InsightsComponent implements OnInit {
         title: "Unique Styles Explorer",
         styles,
       },
+      autoFocus: false,
       width: "380px",
       maxHeight: "80vh",
     });
@@ -726,6 +880,7 @@ export class InsightsComponent implements OnInit {
 
     this.dialog.open(BeerStyleDialogComponent, {
       data,
+      autoFocus: false,
       width: "350px",
       maxHeight: "80vh",
     });
@@ -876,24 +1031,10 @@ export class InsightsComponent implements OnInit {
   }
 
   private computeInsights(beers: BeerCheckin[]): void {
-    const categoryCounts: Record<string, number> = {
-      IPA: 0,
-      "Stout / Porter": 0,
-      "Sour / Wild": 0,
-      "Lager / Pilsner": 0,
-      "Pale Ale": 0,
-      Wheat: 0,
-      "Belgian / Farmhouse": 0,
-      "Strong Ale": 0,
-      "Cider / Perry / Mead": 0,
-      "Fruit / Field / Spice": 0,
-      Wine: 0,
-      "Spirit / RTD": 0,
-      Sake: 0,
-      "Non-Alcoholic / Soda / Root Beer": 0,
-      "THC / Cannabinoid": 0,
-      "Other / Specialty": 0,
-    };
+    const categoryCounts: Record<string, number> = {};
+    for (const category of DRINK_CATEGORIES) {
+      categoryCounts[category] = 0;
+    }
     const bump = (category: string): void => {
       categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
     };
@@ -922,153 +1063,7 @@ export class InsightsComponent implements OnInit {
         abvCount++;
       }
 
-      const styleLower = style.toLowerCase();
-
-      if (styleLower.includes("ipa") || styleLower.includes("india pale")) {
-        bump("IPA");
-      } else if (
-        styleLower.includes("stout") ||
-        styleLower.includes("porter")
-      ) {
-        bump("Stout / Porter");
-      } else if (
-        styleLower.includes("sour") ||
-        styleLower.includes("wild") ||
-        styleLower.includes("gose") ||
-        styleLower.includes("berliner weisse") ||
-        styleLower.includes("lambic") ||
-        styleLower.includes("coolship")
-      ) {
-        bump("Sour / Wild");
-      } else if (
-        styleLower.includes("lager") ||
-        styleLower.includes("pilsner") ||
-        styleLower.includes("pils") ||
-        styleLower.includes("helles") ||
-        styleLower.includes("bock") ||
-        styleLower.includes("märzen") ||
-        styleLower.includes("marzen") ||
-        styleLower.includes("kellerbier") ||
-        styleLower.includes("dunkel") ||
-        styleLower.includes("schwarzbier") ||
-        styleLower.includes("vienna") ||
-        styleLower.includes("zoigl")
-      ) {
-        bump("Lager / Pilsner");
-      } else if (styleLower.includes("pale ale")) {
-        bump("Pale Ale");
-      } else if (
-        styleLower.includes("wheat") ||
-        styleLower.includes("hefeweizen") ||
-        styleLower.includes("witbier") ||
-        styleLower.includes("dunkelweizen") ||
-        styleLower.includes("weizenbock") ||
-        styleLower.includes("grisette")
-      ) {
-        bump("Wheat");
-      } else if (
-        styleLower.includes("belgian") ||
-        styleLower.includes("abbey") ||
-        styleLower.includes("trappist") ||
-        styleLower.includes("dubbel") ||
-        styleLower.includes("tripel") ||
-        styleLower.includes("quadrupel") ||
-        styleLower.includes("saison") ||
-        styleLower.includes("bière de garde") ||
-        styleLower.includes("blonde ale") ||
-        styleLower.includes("enkel") ||
-        styleLower.includes("patersbier")
-      ) {
-        bump("Belgian / Farmhouse");
-      } else if (
-        styleLower.includes("barleywine") ||
-        styleLower.includes("old ale") ||
-        styleLower.includes("wee heavy") ||
-        styleLower.includes("scotch ale") ||
-        styleLower.includes("strong ale") ||
-        styleLower.includes("doppelsticke") ||
-        styleLower.includes("sticke")
-      ) {
-        bump("Strong Ale");
-      } else if (
-        styleLower.includes("cider") ||
-        styleLower.includes("perry") ||
-        styleLower.includes("graff") ||
-        styleLower.includes("mead") ||
-        styleLower.includes("cyser") ||
-        styleLower.includes("melomel")
-      ) {
-        bump("Cider / Perry / Mead");
-      } else if (
-        styleLower.includes("wine") ||
-        styleLower.includes("champagne") ||
-        styleLower.includes("prosecco") ||
-        styleLower.includes("vermouth") ||
-        styleLower.includes("port") ||
-        styleLower.includes("sherry") ||
-        styleLower.includes("sangria") ||
-        styleLower.includes("spritz")
-      ) {
-        bump("Wine");
-      } else if (
-        styleLower.includes("spirit") ||
-        styleLower.includes("whiskey") ||
-        styleLower.includes("whisky") ||
-        styleLower.includes("bourbon") ||
-        styleLower.includes("scotch") ||
-        styleLower.includes("gin") ||
-        styleLower.includes("vodka") ||
-        styleLower.includes("tequila") ||
-        styleLower.includes("mezcal") ||
-        styleLower.includes("rum") ||
-        styleLower.includes("brandy") ||
-        styleLower.includes("cognac") ||
-        styleLower.includes("liqueur") ||
-        styleLower.includes("absinthe") ||
-        styleLower.includes("rtd") ||
-        styleLower.includes("cocktail")
-      ) {
-        bump("Spirit / RTD");
-      } else if (
-        styleLower.includes("sake") ||
-        styleLower.includes("junmai") ||
-        styleLower.includes("daiginjo") ||
-        styleLower.includes("honjozo")
-      ) {
-        bump("Sake");
-      } else if (
-        styleLower.includes("non-alcoholic") ||
-        styleLower.includes("root beer") ||
-        styleLower.includes("soda") ||
-        styleLower.includes("cola") ||
-        styleLower.includes("ginger ale") ||
-        styleLower.includes("kombucha") ||
-        styleLower.includes("coffee") ||
-        styleLower.includes("tea") ||
-        styleLower.includes("malta") ||
-        styleLower.includes("fassbrause")
-      ) {
-        bump("Non-Alcoholic / Soda / Root Beer");
-      } else if (
-        styleLower.includes("thc") ||
-        styleLower.includes("cannabinoid") ||
-        styleLower.includes("cbd") ||
-        styleLower.includes("hemp")
-      ) {
-        bump("THC / Cannabinoid");
-      } else if (
-        styleLower.includes("fruit") ||
-        styleLower.includes("shandy") ||
-        styleLower.includes("radler") ||
-        styleLower.includes("pumpkin") ||
-        styleLower.includes("spiced") ||
-        styleLower.includes("herb") ||
-        styleLower.includes("vegetable")
-      ) {
-        bump("Fruit / Field / Spice");
-      } else {
-        bump("Other / Specialty");
-      }
+      bump(classifyDrinkCategory(style));
 
       const brewery = b.brewery.brewery_name;
       breweryCounts[brewery] = (breweryCounts[brewery] || 0) + 1;

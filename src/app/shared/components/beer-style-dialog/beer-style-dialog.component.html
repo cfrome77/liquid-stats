@@ -1,42 +1,50 @@
 <h2 mat-dialog-title style="margin-bottom: 8px">{{ data.title }}</h2>
 
-<div class="dialog-search-wrapper">
-  <mat-form-field
-    appearance="outline"
-    style="width: 100%"
-    subscriptSizing="dynamic"
-  >
-    <mat-label>Search drinks...</mat-label>
-    <input
-      matInput
-      type="text"
-      placeholder="Filter by drink or brewery..."
-      [(ngModel)]="searchTerm"
-    />
-    @if (searchTerm) {
-      <button
-        matSuffix
-        mat-icon-button
-        type="button"
-        aria-label="Clear search"
-        (click)="searchTerm = ''"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    }
-  </mat-form-field>
-</div>
+@if (data.beers.length > 1) {
+  <div class="dialog-search-wrapper">
+    <mat-form-field
+      appearance="outline"
+      style="width: 100%"
+      subscriptSizing="dynamic"
+    >
+      <mat-label>Search drinks...</mat-label>
+      <input
+        matInput
+        type="text"
+        placeholder="Filter by drink or brewery..."
+        [(ngModel)]="searchTerm"
+      />
+      @if (searchTerm) {
+        <button
+          matSuffix
+          mat-icon-button
+          type="button"
+          aria-label="Clear search"
+          (click)="searchTerm = ''"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+}
 
 <div mat-dialog-content style="max-height: 400px; overflow-y: auto">
   @if (filteredBeers.length === 0) {
     <div
-      style="padding: 20px; text-align: center; color: #888; font-style: italic"
+      style="
+        padding: 20px;
+        text-align: center;
+        color: var(--text-color);
+        opacity: 0.7;
+        font-style: italic;
+      "
     >
-      No drinks found for this selection matching your search.
+      No drinks found for this selection.
     </div>
   }
   <ul style="padding-left: 0; list-style-type: none">
-    @for (beer of filteredBeers; track beer.beerName + $index) {
+    @for (beer of visibleBeers; track beer.beerName + $index) {
       <li style="margin-bottom: 16px">
         <a
           [href]="beer.checkinUrl"
@@ -52,12 +60,6 @@
           "
           [style.cursor]="beer.checkinUrl ? 'pointer' : 'default'"
           class="beer-item-link"
-          (mouseenter)="
-            $any($event.target).style.backgroundColor = 'rgba(255,255,255,0.05)'
-          "
-          (mouseleave)="
-            $any($event.target).style.backgroundColor = 'transparent'
-          "
         >
           <img
             [src]="
@@ -78,7 +80,7 @@
           <div style="flex: 1; min-width: 0">
             <strong
               style="
-                color: var(--accent-glow, #ffca28);
+                color: var(--accent-glow);
                 display: block;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -88,7 +90,7 @@
             >
             <strong
               style="
-                color: white;
+                color: var(--text-color);
                 font-size: 0.9em;
                 display: block;
                 opacity: 0.9;
@@ -119,6 +121,17 @@
       </li>
     }
   </ul>
+
+  @if (filteredBeers.length > 0) {
+    <div class="dialog-list-footer">
+      <span class="dialog-list-count">
+        Showing {{ visibleBeers.length }} of {{ filteredBeers.length }}
+      </span>
+      @if (hasMore) {
+        <button mat-button type="button" (click)="loadMore()">Load more</button>
+      }
+    </div>
+  }
 </div>
 
 <div mat-dialog-actions align="end">

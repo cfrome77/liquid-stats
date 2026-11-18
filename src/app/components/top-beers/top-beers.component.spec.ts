@@ -7,7 +7,11 @@ import { MatInputModule } from "@angular/material/input";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatRadioModule } from "@angular/material/radio";
-import { MatDialogModule } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { of, throwError } from "rxjs";
@@ -206,6 +210,17 @@ describe("TopBeersComponent", () => {
         .queryParams as Record<string, string | null>;
       expect(queryParams["topX"]).toBe("15");
     });
+  });
+
+  it("should not auto-focus the search input when the style dialog opens", () => {
+    const dialogSpy = spyOn(MatDialog.prototype, "open").and.returnValue({
+      afterClosed: () => of(undefined),
+      close: () => {},
+    } as unknown as MatDialogRef<unknown>);
+
+    component.openStyleDialog("IPA");
+
+    expect(dialogSpy.calls.mostRecent().args[1]?.autoFocus).toBeFalse();
   });
 
   it("resets filters back to their defaults", () => {

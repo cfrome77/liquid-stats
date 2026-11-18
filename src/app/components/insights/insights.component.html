@@ -155,6 +155,10 @@
           <p class="subtitle">
             Your drink styles ranked by check-in frequency.
           </p>
+          <p class="chart-interaction-hint">
+            <mat-icon inline>touch_app</mat-icon> Tap a bar to see those
+            check-ins
+          </p>
         </div>
         <div
           class="style-bar-chart-container"
@@ -162,8 +166,12 @@
         >
           <canvas
             baseChart
+            class="interactive-chart"
+            role="img"
+            aria-label="Style distribution bar chart. Tap a bar or its style name to view the check-ins for that style."
             [data]="styleBarChartData"
             [options]="styleBarChartOptions"
+            [plugins]="styleBarChartPlugins"
             [type]="'bar'"
           >
           </canvas>
@@ -177,12 +185,20 @@
           <p class="subtitle">
             Distribution of ratings given (in 0.25 star increments).
           </p>
+          <p class="chart-interaction-hint">
+            <mat-icon inline>touch_app</mat-icon> Tap a bar to see those
+            check-ins
+          </p>
         </div>
         <div class="histogram-chart-container">
           <canvas
             baseChart
+            class="interactive-chart"
+            role="img"
+            aria-label="Rating score histogram. Tap a bar or its rating to view the check-ins with that rating."
             [data]="ratingHistogramChartData"
             [options]="ratingChartOptions"
+            [plugins]="ratingChartPlugins"
             [type]="'bar'"
           >
           </canvas>

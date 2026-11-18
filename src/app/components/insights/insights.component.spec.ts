@@ -6,12 +6,14 @@ import {
   MatDialog,
 } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ActivatedRoute, Router, provideRouter } from "@angular/router";
 import { of } from "rxjs";
 
 import { InsightsComponent } from "./insights.component";
 import { BeerStoreService } from "src/app/core/services/beer-store.service";
 import { BeerCheckin } from "src/app/core/models/beer.model";
 import { GenericBeersDialogData } from "src/app/shared/components/beer-style-dialog/beer-style-dialog.component";
+import { CHART_FILTER_PARAMS } from "src/app/core/utils/view-state";
 
 describe("InsightsComponent", () => {
   let component: InsightsComponent;
@@ -110,7 +112,10 @@ describe("InsightsComponent", () => {
         MatDialogModule,
         BrowserAnimationsModule,
       ],
-      providers: [{ provide: BeerStoreService, useValue: mockBeerStore }],
+      providers: [
+        { provide: BeerStoreService, useValue: mockBeerStore },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InsightsComponent);
@@ -129,6 +134,83 @@ describe("InsightsComponent", () => {
     const testBeer = sampleBeers[0]!;
     expect(component.matchesCategory(testBeer, "Lager / Pilsner")).toBeTrue();
     expect(component.matchesCategory(testBeer, "Stout / Porter")).toBeFalse();
+  });
+
+  describe("category classification", () => {
+    const categoryOf = (beerStyle: string): BeerCheckin =>
+      makeStyleBeers(beerStyle, 1)[0]!;
+
+    it("keeps a porter out of the wine list", () => {
+      const porter = categoryOf("Baltic Porter");
+      expect(component.matchesCategory(porter, "Stout / Porter")).toBeTrue();
+      expect(component.matchesCategory(porter, "Wine")).toBeFalse();
+    });
+
+    it("classifies a spirit the keyword list previously missed", () => {
+      const grappa = categoryOf("Grappa");
+      expect(component.matchesCategory(grappa, "Spirit / RTD")).toBeTrue();
+      expect(
+        component.matchesCategory(grappa, "Other / Specialty"),
+      ).toBeFalse();
+    });
+
+    it("shows only uncategorized drinks under Other / Specialty", () => {
+      const ipa = categoryOf("IPA - American");
+      const mystery = categoryOf("Mystery Liquid");
+      expect(
+        component.matchesCategory(mystery, "Other / Specialty"),
+      ).toBeTrue();
+      expect(component.matchesCategory(ipa, "Other / Specialty")).toBeFalse();
+    });
+
+    it("keeps the chart count and the category list in agreement", async () => {
+      const beers: BeerCheckin[] = [
+        ...makeStyleBeers("Baltic Porter", 2),
+        ...makeStyleBeers("IPA - American", 1),
+        ...makeStyleBeers("Grappa", 1),
+      ];
+      const store = jasmine.createSpyObj("BeerStoreService", ["load"], {
+        beers$: of(beers),
+        checkins$: of([]),
+        loadError$: of(false),
+      });
+
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [
+          { provide: BeerStoreService, useValue: store },
+          provideRouter([]),
+        ],
+      }).compileComponents();
+
+      const rankedFixture = TestBed.createComponent(InsightsComponent);
+      rankedFixture.detectChanges();
+      const instance = rankedFixture.componentInstance;
+
+      const labels = instance.styleBarChartData.labels ?? [];
+      const data = instance.styleBarChartData.datasets[0]?.data ?? [];
+
+      // The porter must not appear as wine, and grappa must be its own bar.
+      expect(labels).not.toContain("Wine");
+      expect(labels).toContain("Stout / Porter");
+      expect(labels).toContain("Spirit / RTD");
+
+      // Every bar's count matches the number of drinks its list would show.
+      labels.forEach((label, i) => {
+        const listed = beers.filter((b) =>
+          instance.matchesCategory(b, String(label)),
+        ).length;
+        expect(listed)
+          .withContext(String(label))
+          .toBe(data[i] ?? 0);
+      });
+    });
   });
 
   describe("ranked style distribution bar chart", () => {
@@ -187,7 +269,10 @@ describe("InsightsComponent", () => {
           MatDialogModule,
           BrowserAnimationsModule,
         ],
-        providers: [{ provide: BeerStoreService, useValue: store }],
+        providers: [
+          { provide: BeerStoreService, useValue: store },
+          provideRouter([]),
+        ],
       }).compileComponents();
 
       const rankedFixture = TestBed.createComponent(InsightsComponent);
@@ -270,7 +355,7 @@ describe("InsightsComponent", () => {
     expect(dialogSpy).toHaveBeenCalled();
     const data = dialogSpy.calls.mostRecent().args[1]
       ?.data as GenericBeersDialogData;
-    expect(data.title).toBe("Top Highest ABV Drinks");
+    expect(data.title).toBe("Top 15 Highest ABV Drinks");
     expect(data.beers.length).toBe(2);
     expect(data.beers[0]!.beerName).toBe("Guinness Extra Stout");
   });
@@ -314,6 +399,16 @@ describe("InsightsComponent", () => {
     expect(data.title).toBe("Lager / Pilsner Drinks");
     expect(data.beers.length).toBe(1);
     expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
+  });
+
+  it("should not auto-focus the search input when a beers dialog opens", () => {
+    component.openCategoryDialog("Lager / Pilsner");
+    expect(dialogSpy.calls.mostRecent().args[1]?.autoFocus).toBeFalse();
+  });
+
+  it("should not auto-focus the search input when the styles dialog opens", () => {
+    component.openStylesDialog();
+    expect(dialogSpy.calls.mostRecent().args[1]?.autoFocus).toBeFalse();
   });
 
   it("should open dialog for openBreweryDialog", () => {
@@ -398,7 +493,10 @@ describe("InsightsComponent", () => {
           MatDialogModule,
           BrowserAnimationsModule,
         ],
-        providers: [{ provide: BeerStoreService, useValue: emptyStore }],
+        providers: [
+          { provide: BeerStoreService, useValue: emptyStore },
+          provideRouter([]),
+        ],
       }).compileComponents();
 
       const emptyFixture = TestBed.createComponent(InsightsComponent);
@@ -428,7 +526,10 @@ describe("InsightsComponent", () => {
           MatDialogModule,
           BrowserAnimationsModule,
         ],
-        providers: [{ provide: BeerStoreService, useValue: errorStore }],
+        providers: [
+          { provide: BeerStoreService, useValue: errorStore },
+          provideRouter([]),
+        ],
       }).compileComponents();
 
       const errorFixture = TestBed.createComponent(InsightsComponent);
@@ -444,6 +545,319 @@ describe("InsightsComponent", () => {
       ) as HTMLButtonElement;
       button.click();
       expect(errorStore.load).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe("interactive chart clicks and URL filtering", () => {
+    const labels = (): string[] =>
+      component.styleBarChartData.labels as string[];
+
+    it("registers Chart.js onClick and onHover handlers plus hover events", () => {
+      const style = component.styleBarChartOptions;
+      expect(typeof style.onClick).toBe("function");
+      expect(typeof style.onHover).toBe("function");
+      expect(style.events).toContain("click");
+      expect(style.events).toContain("touchstart");
+
+      const rating = component.ratingChartOptions;
+      expect(typeof rating.onClick).toBe("function");
+      expect(typeof rating.onHover).toBe("function");
+    });
+
+    it("sets a pointer cursor over an active element and resets otherwise", () => {
+      const target = document.createElement("canvas");
+      const setCursor = (
+        component as unknown as {
+          setPointerCursor: (
+            event: { native: { target: HTMLElement } },
+            elements: unknown[],
+          ) => void;
+        }
+      ).setPointerCursor.bind(component);
+
+      setCursor({ native: { target } }, [{}]);
+      expect(target.style.cursor).toBe("pointer");
+
+      setCursor({ native: { target } }, []);
+      expect(target.style.cursor).toBe("default");
+    });
+
+    it("extracts the clicked style label and opens the filtered dialog", () => {
+      const index = labels().indexOf("Lager / Pilsner");
+      expect(index).toBeGreaterThanOrEqual(0);
+
+      (
+        component as unknown as {
+          onStyleBarClick: (elements: { index: number }[]) => void;
+        }
+      ).onStyleBarClick([{ index }]);
+
+      const data = dialogSpy.calls.mostRecent().args[1]
+        ?.data as GenericBeersDialogData;
+      expect(data.title).toBe("Lager / Pilsner Drinks");
+      expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
+    });
+
+    it("writes the selected style into the URL with merged query params", () => {
+      const router = TestBed.inject(Router);
+      const navigate = spyOn(router, "navigate");
+
+      component.selectStyle("IPA");
+
+      expect(navigate).toHaveBeenCalled();
+      const extras = navigate.calls.mostRecent().args[1]!;
+      expect(extras.queryParams).toEqual({
+        [CHART_FILTER_PARAMS.style]: "IPA",
+        // The sibling chart param is cleared so the two stay exclusive.
+        [CHART_FILTER_PARAMS.rating]: null,
+      });
+      expect(extras.queryParamsHandling).toBe("merge");
+    });
+
+    it("ignores a click when no chart element was hit", () => {
+      dialogSpy.calls.reset();
+      (
+        component as unknown as {
+          onStyleBarClick: (elements: unknown[]) => void;
+        }
+      ).onStyleBarClick([]);
+      expect(dialogSpy).not.toHaveBeenCalled();
+    });
+
+    it("filters check-ins into a rating bin when a histogram bar is clicked", () => {
+      (
+        component as unknown as {
+          onRatingChartClick: (elements: { index: number }[]) => void;
+        }
+      ).onRatingChartClick([{ index: 16 }]); // 4.25 -> rounded to 4.25
+
+      const data = dialogSpy.calls.mostRecent().args[1]
+        ?.data as GenericBeersDialogData;
+      expect(data.title).toBe("4.25★ Drinks");
+      expect(data.beers.length).toBe(1);
+      expect(data.beers[0]!.beerName).toBe("Pilsner Urquell");
+    });
+
+    it("matches clicks by the axis each chart lays its bars along", () => {
+      // The style chart is horizontal (one bar per row), so a click resolves to
+      // the nearest row. The histogram is vertical, so it resolves to the
+      // nearest column. Matching on the other axis would let a click land on a
+      // bar in a different row or column.
+      expect(component.styleBarChartOptions.indexAxis).toBe("y");
+      expect(component.styleBarChartOptions.interaction).toEqual({
+        mode: "nearest",
+        axis: "y",
+        intersect: false,
+      });
+      expect(component.ratingChartOptions.interaction).toEqual({
+        mode: "nearest",
+        axis: "x",
+        intersect: false,
+      });
+    });
+
+    it("ignores a click on a rating column that has no check-ins", () => {
+      dialogSpy.calls.reset();
+      // The default fixture has no check-ins in the 0.25 bin.
+      expect(component.ratingHistogramChartData.datasets[0]!.data[0]).toBe(0);
+
+      (
+        component as unknown as {
+          onRatingChartClick: (elements: { index: number }[]) => void;
+        }
+      ).onRatingChartClick([{ index: 0 }]);
+
+      expect(dialogSpy).not.toHaveBeenCalled();
+    });
+
+    it("registers a label-tap plugin on each chart", () => {
+      // Chart.js only fires onClick inside the plot area, so the axis labels
+      // need a plugin. Each chart gets its own instance.
+      expect(component.styleBarChartPlugins.map((p) => p.id)).toEqual([
+        "styleLabelTap",
+      ]);
+      expect(component.ratingChartPlugins.map((p) => p.id)).toEqual([
+        "ratingLabelTap",
+      ]);
+    });
+
+    it("opens the style named by a tap on its label", () => {
+      const index = labels().indexOf("Lager / Pilsner");
+      const chart = {
+        scales: { y: { getPixelForValue: (i: number) => 20 + i * 40 } },
+        chartArea: { left: 100, right: 400, top: 0, bottom: 200 },
+      };
+
+      // A tap left of the plot area, level with the row.
+      const resolved = (
+        component as unknown as {
+          resolveStyleLabelTarget: (
+            chart: unknown,
+            x: number,
+            y: number,
+          ) => number | null;
+        }
+      ).resolveStyleLabelTarget(chart, 40, 20 + index * 40);
+
+      expect(resolved).toBe(index);
+    });
+
+    it("ignores a label tap inside the plot area, which Chart.js handles", () => {
+      const chart = {
+        scales: { y: { getPixelForValue: (i: number) => 20 + i * 40 } },
+        chartArea: { left: 100, right: 400, top: 0, bottom: 200 },
+      };
+
+      const resolved = (
+        component as unknown as {
+          resolveStyleLabelTarget: (
+            chart: unknown,
+            x: number,
+            y: number,
+          ) => number | null;
+        }
+      ).resolveStyleLabelTarget(chart, 200, 20);
+
+      expect(resolved).toBeNull();
+    });
+
+    it("ignores a tap on the label of an empty rating column", () => {
+      // The default fixture has no check-ins in the 0.25 bin.
+      expect(component.ratingHistogramChartData.datasets[0]!.data[0]).toBe(0);
+      const chart = {
+        scales: { x: { getPixelForValue: (i: number) => 10 + i * 10 } },
+        chartArea: { left: 0, right: 400, top: 0, bottom: 200 },
+      };
+
+      const resolved = (
+        component as unknown as {
+          resolveRatingLabelTarget: (
+            chart: unknown,
+            x: number,
+            y: number,
+          ) => number | null;
+        }
+      ).resolveRatingLabelTarget(chart, 10, 260);
+
+      expect(resolved).toBeNull();
+    });
+
+    it("writes the selected rating into the URL", () => {
+      const router = TestBed.inject(Router);
+      const navigate = spyOn(router, "navigate");
+
+      component.selectRating("4.25");
+
+      const extras = navigate.calls.mostRecent().args[1]!;
+      expect(extras.queryParams).toEqual({
+        [CHART_FILTER_PARAMS.rating]: "4.25",
+        // The sibling chart param is cleared so the two stay exclusive.
+        [CHART_FILTER_PARAMS.style]: null,
+      });
+      expect(extras.queryParamsHandling).toBe("merge");
+    });
+
+    it("deep-links a style from ?style= by opening the filtered list", async () => {
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [
+          InsightsComponent,
+          HttpClientTestingModule,
+          MatDialogModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [
+          { provide: BeerStoreService, useValue: mockBeerStore },
+          provideRouter([]),
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                queryParamMap: {
+                  get: (k: string) =>
+                    k === "style" ? "Lager / Pilsner" : null,
+                },
+              },
+              queryParams: of({ style: "Lager / Pilsner" }),
+            },
+          },
+        ],
+      }).compileComponents();
+
+      const deepLinkFixture = TestBed.createComponent(InsightsComponent);
+      deepLinkFixture.detectChanges();
+      expect(deepLinkFixture.componentInstance).toBeTruthy();
+
+      const data = dialogSpy.calls.mostRecent().args[1]
+        ?.data as GenericBeersDialogData;
+      expect(data.title).toBe("Lager / Pilsner Drinks");
+    });
+
+    it("renders the interaction hint on both charts", () => {
+      const el = fixture.nativeElement as HTMLElement;
+      const hints = el.querySelectorAll(".chart-interaction-hint");
+      expect(hints.length).toBe(2);
+      expect(hints[0]!.textContent).toContain("Tap a bar");
+    });
+
+    describe("a stale sibling param cannot reopen the wrong dialog", () => {
+      const applyParams = (params: Record<string, string>): void =>
+        (
+          component as unknown as {
+            applySelectionFromParams: (p: Record<string, string>) => void;
+          }
+        ).applySelectionFromParams(params);
+
+      const openedTitles = (): string[] =>
+        dialogSpy.calls.allArgs().map((args) => {
+          const data = args[1]?.data as GenericBeersDialogData | undefined;
+          return data?.title ?? "";
+        });
+
+      it("keeps the rating dialog when a stale ?style= is still in the URL", () => {
+        // A style was clicked and its dialog closed, leaving `?style=IPA`
+        // behind. A rating click then opens the rating list and merges, so the
+        // URL now carries both params. The echo of that merge must not be read
+        // as a style deep link and reopen the style list on top.
+        component.selectStyle("IPA");
+        dialogSpy.calls.reset();
+
+        component.selectRating("4.25");
+        applyParams({
+          [CHART_FILTER_PARAMS.style]: "IPA",
+          [CHART_FILTER_PARAMS.rating]: "4.25",
+        });
+
+        const titles = openedTitles();
+        expect(titles).toContain("4.25★ Drinks");
+        expect(titles).not.toContain("IPA Drinks");
+      });
+
+      it("keeps the style dialog when a stale ?rating= is still in the URL", () => {
+        component.selectRating("4.25");
+        dialogSpy.calls.reset();
+
+        component.selectStyle("IPA");
+        applyParams({
+          [CHART_FILTER_PARAMS.rating]: "4.25",
+          [CHART_FILTER_PARAMS.style]: "IPA",
+        });
+
+        const titles = openedTitles();
+        expect(titles).toContain("IPA Drinks");
+        expect(titles).not.toContain("4.25★ Drinks");
+      });
+
+      it("still reopens a deep link whose value differs from the last click", () => {
+        // The guard only skips the echo of the selection just written, so a
+        // genuinely different deep link still opens.
+        component.selectRating("4.25");
+        dialogSpy.calls.reset();
+
+        applyParams({ [CHART_FILTER_PARAMS.style]: "Lager / Pilsner" });
+
+        expect(openedTitles()).toContain("Lager / Pilsner Drinks");
+      });
     });
   });
 });

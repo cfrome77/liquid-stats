@@ -272,6 +272,7 @@ export class CommandPaletteComponent implements OnInit {
 
     const dialogRef = this.dialog.open(BeerStyleDialogComponent, {
       data,
+      autoFocus: false,
       width: "350px",
       maxHeight: "80vh",
     });

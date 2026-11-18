@@ -353,6 +353,7 @@ export class TopBeersComponent implements OnInit {
     const beersInStyle = this.beers.filter((b) => b.beer.beer_style === style);
     this.dialog.open(BeerStyleDialogComponent, {
       data: { style, beers: beersInStyle },
+      autoFocus: false,
       width: "600px",
     });
   }
