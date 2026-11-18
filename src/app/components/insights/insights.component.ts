@@ -82,6 +82,9 @@ export interface Milestone {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InsightsComponent implements OnInit {
+  /** The ABV card is a curated "top" view, so its list is deliberately short. */
+  private static readonly TOP_ABV_COUNT = 15;
+
   private beerStore = inject(BeerStoreService);
   private themeService = inject(ThemeService);
   private dialog = inject(MatDialog);
@@ -763,8 +766,11 @@ export class InsightsComponent implements OnInit {
     const filtered = [...this.beers]
       .filter((b) => b.beer.beer_abv > 0)
       .sort((a, b) => b.beer.beer_abv - a.beer.beer_abv)
-      .slice(0, 15);
-    this.openBeersDialog("Top Highest ABV Drinks", filtered);
+      .slice(0, InsightsComponent.TOP_ABV_COUNT);
+    this.openBeersDialog(
+      `Top ${InsightsComponent.TOP_ABV_COUNT} Highest ABV Drinks`,
+      filtered,
+    );
   }
 
   public openStylesDialog(): void {

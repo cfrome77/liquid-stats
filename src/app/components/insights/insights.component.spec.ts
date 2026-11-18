@@ -355,7 +355,7 @@ describe("InsightsComponent", () => {
     expect(dialogSpy).toHaveBeenCalled();
     const data = dialogSpy.calls.mostRecent().args[1]
       ?.data as GenericBeersDialogData;
-    expect(data.title).toBe("Top Highest ABV Drinks");
+    expect(data.title).toBe("Top 15 Highest ABV Drinks");
     expect(data.beers.length).toBe(2);
     expect(data.beers[0]!.beerName).toBe("Guinness Extra Stout");
   });

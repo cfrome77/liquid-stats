@@ -44,7 +44,7 @@
     </div>
   }
   <ul style="padding-left: 0; list-style-type: none">
-    @for (beer of filteredBeers; track beer.beerName + $index) {
+    @for (beer of visibleBeers; track beer.beerName + $index) {
       <li style="margin-bottom: 16px">
         <a
           [href]="beer.checkinUrl"
@@ -121,6 +121,17 @@
       </li>
     }
   </ul>
+
+  @if (filteredBeers.length > 0) {
+    <div class="dialog-list-footer">
+      <span class="dialog-list-count">
+        Showing {{ visibleBeers.length }} of {{ filteredBeers.length }}
+      </span>
+      @if (hasMore) {
+        <button mat-button type="button" (click)="loadMore()">Load more</button>
+      }
+    </div>
+  }
 </div>
 
 <div mat-dialog-actions align="end">

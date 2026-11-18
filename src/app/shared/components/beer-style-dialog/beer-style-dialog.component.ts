@@ -40,8 +40,25 @@ export interface GenericBeersDialogData {
   ],
 })
 export class BeerStyleDialogComponent {
+  /** Rows revealed per "Load more" tap. */
+  readonly PAGE_SIZE = 25;
+
   data = inject<GenericBeersDialogData>(MAT_DIALOG_DATA);
-  searchTerm = "";
+
+  private _searchTerm = "";
+
+  /** Caps the rendered rows so a long list stays quick to scan. */
+  visibleCount = this.PAGE_SIZE;
+
+  get searchTerm(): string {
+    return this._searchTerm;
+  }
+
+  set searchTerm(value: string) {
+    this._searchTerm = value;
+    // A new search starts from the top of its own results.
+    this.visibleCount = this.PAGE_SIZE;
+  }
 
   get filteredBeers() {
     if (!this.searchTerm.trim()) {
@@ -53,6 +70,19 @@ export class BeerStyleDialogComponent {
         b.beerName.toLowerCase().includes(term) ||
         b.breweryName.toLowerCase().includes(term),
     );
+  }
+
+  /** The window of `filteredBeers` currently rendered. */
+  get visibleBeers() {
+    return this.filteredBeers.slice(0, this.visibleCount);
+  }
+
+  get hasMore(): boolean {
+    return this.filteredBeers.length > this.visibleCount;
+  }
+
+  loadMore(): void {
+    this.visibleCount += this.PAGE_SIZE;
   }
 
   formatDate(date: string): string {

@@ -498,3 +498,106 @@ test("clicking a rating column after a style does not reopen the style list", as
   await expect(page).toHaveURL(/rating=/);
   await expect(page).not.toHaveURL(/style=/);
 });
+
+/**
+ * A filtered list can hold hundreds of check-ins, so the dialog renders one
+ * page at a time and reveals the rest on demand. This keeps a long list quick
+ * to open and scroll while the search box stays available.
+ */
+test.describe("long drink lists", () => {
+  /** Builds `count` check-ins that all classify as IPA. */
+  function manyIpas(count: number) {
+    return {
+      beers: Array.from({ length: count }, (_, i) => ({
+        first_created_at: "Mon, 06 Apr 2026 21:00:00 +0000",
+        recent_created_at: "Mon, 06 Apr 2026 21:00:00 +0000",
+        rating_score: 4,
+        beer: {
+          beer_abv: 6.5,
+          bid: 1000 + i,
+          beer_label:
+            "https://assets.untappd.com/site/assets/images/temp/badge-beer-default.png",
+          beer_name: `Hop Test ${i}`,
+          beer_style: "IPA",
+        },
+        brewery: {
+          brewery_name: `Brewery ${i}`,
+          country_name: "USA",
+        },
+      })),
+    };
+  }
+
+  test("renders one page and reveals the rest on Load more", async ({
+    page,
+  }) => {
+    await page.route("**/beers_all.json", (route) =>
+      route.fulfill({ json: manyIpas(60) }),
+    );
+    await page.goto("/insights?style=IPA");
+
+    const dialog = page.locator("mat-dialog-container");
+    await expect(dialog).toBeVisible();
+
+    // Only the first page is rendered, and the footer reports the total.
+    await expect(dialog.locator("li")).toHaveCount(25);
+    await expect(dialog.locator(".dialog-list-count")).toContainText(
+      "Showing 25 of 60",
+    );
+
+    await dialog.getByRole("button", { name: "Load more" }).click();
+
+    await expect(dialog.locator("li")).toHaveCount(50);
+    await expect(dialog.locator(".dialog-list-count")).toContainText(
+      "Showing 50 of 60",
+    );
+
+    await dialog.getByRole("button", { name: "Load more" }).click();
+
+    await expect(dialog.locator("li")).toHaveCount(60);
+    // Everything is shown, so the button is gone.
+    await expect(dialog.getByRole("button", { name: "Load more" })).toHaveCount(
+      0,
+    );
+  });
+
+  test("a short list shows no Load more button", async ({ page }) => {
+    await page.route("**/beers_all.json", (route) =>
+      route.fulfill({ json: manyIpas(8) }),
+    );
+    await page.goto("/insights?style=IPA");
+
+    const dialog = page.locator("mat-dialog-container");
+    await expect(dialog).toBeVisible();
+
+    await expect(dialog.locator("li")).toHaveCount(8);
+    await expect(dialog.getByRole("button", { name: "Load more" })).toHaveCount(
+      0,
+    );
+    await expect(dialog.locator(".dialog-list-count")).toContainText(
+      "Showing 8 of 8",
+    );
+  });
+
+  test("searching resets the list to its first page", async ({ page }) => {
+    await page.route("**/beers_all.json", (route) =>
+      route.fulfill({ json: manyIpas(60) }),
+    );
+    await page.goto("/insights?style=IPA");
+
+    const dialog = page.locator("mat-dialog-container");
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole("button", { name: "Load more" }).click();
+    await expect(dialog.locator("li")).toHaveCount(50);
+
+    // "Brewery 1" matches Brewery 1 and Brewery 10-19, so 11 drinks. A search
+    // narrows the list and starts from the top of its own results.
+    await dialog.locator("input").fill("Brewery 1");
+
+    await expect(dialog.locator("li")).toHaveCount(11);
+    await expect(dialog.locator(".dialog-list-count")).toContainText(
+      "Showing 11 of 11",
+    );
+  });
+});

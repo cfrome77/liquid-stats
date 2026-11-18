@@ -38,11 +38,28 @@ export interface StylesListDialogData {
   ],
 })
 export class StylesListDialogComponent {
+  /** Rows revealed per "Load more" tap. */
+  readonly PAGE_SIZE = 25;
+
   public data = inject<StylesListDialogData>(MAT_DIALOG_DATA);
   public dialogRef = inject(MatDialogRef<StylesListDialogComponent>);
-  public searchTerm = "";
 
-  get filteredStyles(): StyleItem[] {
+  private _searchTerm = "";
+
+  /** Caps the rendered rows so a long list stays quick to scan. */
+  public visibleCount = this.PAGE_SIZE;
+
+  public get searchTerm(): string {
+    return this._searchTerm;
+  }
+
+  public set searchTerm(value: string) {
+    this._searchTerm = value;
+    // A new search starts from the top of its own results.
+    this.visibleCount = this.PAGE_SIZE;
+  }
+
+  public get filteredStyles(): StyleItem[] {
     if (!this.searchTerm.trim()) {
       return this.data.styles;
     }
@@ -50,6 +67,19 @@ export class StylesListDialogComponent {
     return this.data.styles.filter((s) =>
       s.styleName.toLowerCase().includes(term),
     );
+  }
+
+  /** The window of `filteredStyles` currently rendered. */
+  public get visibleStyles(): StyleItem[] {
+    return this.filteredStyles.slice(0, this.visibleCount);
+  }
+
+  public get hasMore(): boolean {
+    return this.filteredStyles.length > this.visibleCount;
+  }
+
+  public loadMore(): void {
+    this.visibleCount += this.PAGE_SIZE;
   }
 
   selectStyle(styleName: string): void {

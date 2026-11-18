@@ -77,4 +77,100 @@ describe("BeerStyleDialogComponent", () => {
     instance.searchTerm = "";
     expect(instance.filteredBeers.length).toBe(2);
   });
+
+  describe("long lists", () => {
+    const manyBeers = (count: number) =>
+      Array.from({ length: count }, (_, i) =>
+        beer(`Beer ${i}`, `Brewery ${i}`),
+      );
+
+    it("renders only the first page of a long list", async () => {
+      const fixture = await createDialog({ beers: manyBeers(120) });
+      const el = fixture.nativeElement as HTMLElement;
+
+      expect(fixture.componentInstance.visibleBeers.length).toBe(25);
+      expect(el.querySelectorAll("li").length).toBe(25);
+      expect(fixture.componentInstance.hasMore).toBe(true);
+    });
+
+    it("shows the whole list when it fits on one page", async () => {
+      const fixture = await createDialog({ beers: manyBeers(10) });
+      const el = fixture.nativeElement as HTMLElement;
+
+      expect(fixture.componentInstance.visibleBeers.length).toBe(10);
+      expect(el.querySelectorAll("li").length).toBe(10);
+      expect(fixture.componentInstance.hasMore).toBe(false);
+    });
+
+    it("reveals another page on load more", async () => {
+      const fixture = await createDialog({ beers: manyBeers(60) });
+      const instance = fixture.componentInstance;
+
+      instance.loadMore();
+      fixture.detectChanges();
+
+      expect(instance.visibleBeers.length).toBe(50);
+      expect(instance.hasMore).toBe(true);
+
+      instance.loadMore();
+      fixture.detectChanges();
+
+      expect(instance.visibleBeers.length).toBe(60);
+      expect(instance.hasMore).toBe(false);
+    });
+
+    it("reports how many of the total are shown", async () => {
+      const fixture = await createDialog({ beers: manyBeers(120) });
+      const el = fixture.nativeElement as HTMLElement;
+
+      expect(el.querySelector(".dialog-list-count")?.textContent).toContain(
+        "Showing 25 of 120",
+      );
+
+      fixture.componentInstance.loadMore();
+      fixture.detectChanges();
+
+      expect(el.querySelector(".dialog-list-count")?.textContent).toContain(
+        "Showing 50 of 120",
+      );
+    });
+
+    it("hides the load more button once everything is shown", async () => {
+      const fixture = await createDialog({ beers: manyBeers(30) });
+      const el = fixture.nativeElement as HTMLElement;
+
+      const findLoadMore = () =>
+        Array.from(el.querySelectorAll("button")).find((b) =>
+          b.textContent?.includes("Load more"),
+        );
+
+      expect(findLoadMore()).toBeTruthy();
+
+      fixture.componentInstance.loadMore();
+      fixture.detectChanges();
+
+      expect(findLoadMore()).toBeFalsy();
+    });
+
+    it("restarts the window from the top of a new search", async () => {
+      const fixture = await createDialog({ beers: manyBeers(120) });
+      const instance = fixture.componentInstance;
+
+      instance.loadMore();
+      instance.loadMore();
+      expect(instance.visibleBeers.length).toBe(75);
+
+      instance.searchTerm = "Beer 1";
+
+      // A search always starts at the first page, not 75 rows in.
+      expect(instance.visibleCount).toBe(instance.PAGE_SIZE);
+    });
+
+    it("has no footer when the list is empty", async () => {
+      const fixture = await createDialog({ beers: [] });
+      const el = fixture.nativeElement as HTMLElement;
+
+      expect(el.querySelector(".dialog-list-footer")).toBeNull();
+    });
+  });
 });

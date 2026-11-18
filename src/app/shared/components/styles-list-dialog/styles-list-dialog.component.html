@@ -42,7 +42,7 @@
     </div>
   }
   <ul style="padding-left: 0; list-style-type: none; margin: 0">
-    @for (item of filteredStyles; track item.styleName) {
+    @for (item of visibleStyles; track item.styleName) {
       <li style="margin-bottom: 8px">
         <button
           type="button"
@@ -57,6 +57,17 @@
       </li>
     }
   </ul>
+
+  @if (filteredStyles.length > 0) {
+    <div class="dialog-list-footer">
+      <span class="dialog-list-count">
+        Showing {{ visibleStyles.length }} of {{ filteredStyles.length }}
+      </span>
+      @if (hasMore) {
+        <button mat-button type="button" (click)="loadMore()">Load more</button>
+      }
+    </div>
+  }
 </div>
 
 <div mat-dialog-actions align="end">
