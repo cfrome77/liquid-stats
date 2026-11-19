@@ -366,40 +366,29 @@
   background-color: var(--map-bg) !important;
 }
 
-::ng-deep .custom-brewery-popup .leaflet-popup-content-wrapper {
-  background-color: var(--card-bg, #ffffff) !important;
-  color: var(--text-color, #333333) !important;
-  border-radius: 12px !important;
-  padding: 8px 12px !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12)) !important;
+::ng-deep .brewery-marker-tooltip {
+  background-color: var(--card-bg-solid, #ffffff);
+  color: var(--text-color, #333333);
+  border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-::ng-deep .custom-brewery-popup .leaflet-popup-tip {
-  background-color: var(--card-bg, #ffffff) !important;
+::ng-deep .brewery-marker-tooltip::before {
+  border-top-color: var(--card-bg-solid, #ffffff);
 }
 
-::ng-deep .custom-brewery-popup .leaflet-popup-content {
-  margin: 4px 6px !important;
+::ng-deep .marker-selected svg {
+  filter: drop-shadow(0 0 6px var(--accent-blue, #1565c0))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
-::ng-deep .marker-pulse {
-  animation: pulse-marker 1.5s infinite;
-}
-
-@keyframes pulse-marker {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+::ng-deep .marker-selected svg path {
+  stroke: var(--accent-blue, #1565c0);
+  stroke-width: 3;
 }
 
 @media (max-width: 768px) {

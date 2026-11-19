@@ -4,7 +4,6 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import { BeerCheckin } from "../models/beer.model";
 import { sanitizeUntappdUrl } from "../utils/url-utils";
-import { PopUpService } from "./pop-up.service";
 
 export const BREWERY_TYPE_COLORS: Record<string, string> = {
   "Micro Brewery": "#2e7d32", // Green
@@ -93,9 +92,9 @@ export interface BreweryMarker extends L.Marker {
 @Injectable()
 export class MarkerService {
   private platformId = inject(PLATFORM_ID);
-  private popUpService = inject(PopUpService);
   public markers: L.MarkerClusterGroup | undefined;
   private breweryMarkers: BreweryMarker[] = [];
+  private selectedBreweryId: string | null = null;
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -136,7 +135,6 @@ export class MarkerService {
         className: "custom-svg-marker",
         iconSize: [30, 42],
         iconAnchor: [15, 42],
-        popupAnchor: [0, -38],
       });
     };
 
@@ -213,22 +211,27 @@ export class MarkerService {
       marker.breweryId = id;
       marker.checkInsData = { name, breweryType, city, state, logo, checkIns };
 
-      const popupHtml = this.popUpService.makePopup(
-        name,
-        state,
-        city,
-        logo,
-        checkIns.length,
-      );
-      marker.bindPopup(popupHtml, {
-        offset: L.point(0, -28),
-        className: "custom-brewery-popup",
-        autoClose: true,
-        closeOnClick: true,
+      marker.bindTooltip(name, {
+        direction: "top",
+        offset: L.point(0, -34),
+        opacity: 1,
+        className: "brewery-marker-tooltip",
+      });
+
+      // Leaflet rebuilds the icon element whenever a marker re-enters the map
+      // (e.g. after its cluster expands), which drops the highlight class.
+      marker.on("add", () => {
+        if (this.selectedBreweryId === id) {
+          marker.getElement()?.classList.add("marker-selected");
+          marker.setZIndexOffset(1000);
+        }
       });
 
       if (onClick) {
-        marker.on("click", () =>
+        marker.on("click", () => {
+          // The panel already names the brewery, so drop the hover label
+          // instead of leaving it floating above the selected pin.
+          marker.closeTooltip();
           onClick({
             breweryId: id,
             name,
@@ -237,8 +240,8 @@ export class MarkerService {
             state,
             logo,
             checkIns,
-          }),
-        );
+          });
+        });
       }
 
       this.markers.addLayer(marker);
@@ -249,6 +252,33 @@ export class MarkerService {
     if (!map.hasLayer(this.markers)) {
       map.addLayer(this.markers);
     }
+
+    if (this.selectedBreweryId) {
+      this.setSelectedMarker(this.selectedBreweryId);
+    }
+  }
+
+  /**
+   * Highlights a marker as the selected brewery. Passing null clears the
+   * highlight from whichever marker currently owns it.
+   */
+  public setSelectedMarker(breweryId: string | null): void {
+    if (this.selectedBreweryId !== breweryId) {
+      const previous = this.selectedBreweryId;
+      this.selectedBreweryId = breweryId;
+
+      if (previous) {
+        const previousMarker = this.getMarkerByBreweryId(previous);
+        previousMarker?.getElement()?.classList.remove("marker-selected");
+        previousMarker?.setZIndexOffset(0);
+      }
+    }
+
+    if (!breweryId) return;
+
+    const marker = this.getMarkerByBreweryId(breweryId);
+    marker?.getElement()?.classList.add("marker-selected");
+    marker?.setZIndexOffset(1000);
   }
 
   /** Get a marker by brewery ID */
