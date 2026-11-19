@@ -31,8 +31,12 @@
       </button>
     </div>
 
+    <p class="visually-hidden" role="status" aria-live="polite">
+      Showing {{ paginatedWishlist.length }} of {{ totalItems }} wishlist items.
+    </p>
     <div
       class="cards-layout-container"
+      aria-live="polite"
       [class.cards-layout]="viewMode() === 'cards'"
       [class.compact-layout]="viewMode() === 'compact'"
     >

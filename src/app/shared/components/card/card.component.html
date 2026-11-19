@@ -97,9 +97,12 @@
                     : cardData.footerInfo.link
                 "
                 target="_blank"
+                [attr.aria-label]="
+                  cardData.footerInfo.rightLinkText || 'View details'
+                "
                 [title]="cardData.footerInfo.rightLinkText || 'View Details'"
               >
-                <mat-icon>open_in_new</mat-icon>
+                <mat-icon aria-hidden="true">open_in_new</mat-icon>
               </a>
             </div>
           </div>
@@ -299,9 +302,12 @@
                   : cardData.footerInfo.link
               "
               target="_blank"
+              [attr.aria-label]="
+                cardData.footerInfo.rightLinkText || 'View details'
+              "
               [title]="cardData.footerInfo.rightLinkText || 'View Details'"
             >
-              <mat-icon>open_in_new</mat-icon>
+              <mat-icon aria-hidden="true">open_in_new</mat-icon>
             </a>
           </div>
         </footer>

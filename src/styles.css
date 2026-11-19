@@ -15,13 +15,21 @@ app-root {
   --transition-timing: cubic-bezier(0.25, 0.8, 0.25, 1);
   --transition-standard: 0.3s var(--transition-timing);
 
-  /* Accent Colors */
-  --accent-blue: #1976d2;
+  /* Accent Colors
+     Each token is tuned so normal text it paints clears the WCAG AA 4.5:1
+     contrast bar against the surfaces it is used on in both themes. */
+  --accent-blue: #1565c0;
   --accent-indigo: #3f51b5;
-  --success-green: #28a745;
-  --btn-primary: #007bff;
+  --success-green: #1e7e34;
+  --btn-primary: #0b5ed7;
   --btn-danger: #c2185b;
-  --accent-blue-rgb: 25, 118, 210;
+  --accent-blue-rgb: 21, 101, 192;
+  /* Text drawn on top of the accent fills (badges, active pagination, chips). */
+  --on-accent-blue: #ffffff;
+  --on-accent-glow: #ffffff;
+  /* Text on fills whose colour is identical in both themes (primary and
+     success buttons); white clears AA on both. */
+  --on-solid-fill: #ffffff;
 }
 
 .light-theme {
@@ -44,7 +52,15 @@ app-root {
     rgba(255, 246, 232, 0.6) 20%,
     transparent 60%
   );
-  --accent-glow: #e65100;
+  --accent-glow: #bf360c;
+  /* Amber used for map check-in counts and rating text. */
+  --accent-amber: #b45309;
+  /* Command palette result-type accents, tuned per theme for AA contrast. */
+  --type-page: #7c3aed;
+  --type-brewery: #b45309;
+  --type-style: #047857;
+  /* About-dialog hero banner; white text sits on top of it. */
+  --hero-banner: linear-gradient(135deg, #c1440e, #8d2f0f);
   --card-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
   --hover-bg: rgba(0, 0, 0, 0.03);
@@ -60,8 +76,10 @@ app-root {
   --toggle-btn-bg: #ffffff;
   --toggle-btn-border: #cbd5e1;
   --toggle-btn-text: #334155;
-  --toggle-btn-active-bg: #0284c7;
+  --toggle-btn-active-bg: #0369a1;
   --toggle-btn-active-text: #ffffff;
+  /* Secondary/muted text (location links, hints). */
+  --muted-text: #64748b;
 }
 
 .dark-theme {
@@ -71,6 +89,8 @@ app-root {
   --card-bg-solid: #171f2e;
   --accent-blue: #38bdf8;
   --accent-blue-rgb: 56, 189, 248;
+  /* The dark accent is a light blue, so on-accent text must be dark. */
+  --on-accent-blue: #0b1220;
   --navbar-bg: #0f172a;
   --navbar-text: #ffffff;
   --header-text: #ffffff;
@@ -87,6 +107,16 @@ app-root {
     transparent 65%
   );
   --accent-glow: #ffca28;
+  /* Amber used for map check-in counts and rating text. */
+  --accent-amber: #ffca28;
+  /* Command palette result-type accents, tuned per theme for AA contrast. */
+  --type-page: #c084fc;
+  --type-brewery: #fbbf24;
+  --type-style: #34d399;
+  /* Text on the amber accent fill (badge dialog action). */
+  --on-accent-glow: #121212;
+  /* About-dialog hero banner; white text sits on top of it. */
+  --hero-banner: linear-gradient(135deg, #c1440e, #8d2f0f);
   --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
   --hover-bg: rgba(255, 255, 255, 0.05);
   --hover-overlay: rgba(255, 255, 255, 0.08);
@@ -103,6 +133,8 @@ app-root {
   --toggle-btn-text: #cbd5e1;
   --toggle-btn-active-bg: #38bdf8;
   --toggle-btn-active-text: #0f172a;
+  /* Secondary/muted text (location links, hints). */
+  --muted-text: #94a3b8;
 }
 
 /* View Mode Toggle Group Styles */
@@ -548,7 +580,7 @@ strong {
 
 /* Global Error Banner */
 .global-error-banner {
-  background-color: #f44336;
+  background-color: #b91c1c;
   color: #ffffff;
   padding: 12px 16px;
   font-size: 14px;

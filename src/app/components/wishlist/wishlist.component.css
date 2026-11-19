@@ -1,4 +1,4 @@
 p {
-  color: black;
+  color: var(--text-color, #1e293b);
   margin: 0 !important;
 }

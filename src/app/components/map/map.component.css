@@ -156,7 +156,7 @@
   font-size: 0.75rem;
   margin-top: 2px;
   font-weight: 600;
-  color: var(--accent-color, #ffb400);
+  color: var(--accent-amber, #b45309);
 }
 
 /* Map Legend Overlay */
@@ -347,7 +347,7 @@
 .rating {
   font-weight: bold;
   opacity: 1;
-  color: var(--accent-color, #ffb400);
+  color: var(--accent-amber, #b45309);
 }
 
 .close-btn {

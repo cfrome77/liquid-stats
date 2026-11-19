@@ -54,6 +54,11 @@
 
       <!-- Body -->
       <div class="modal-body">
+        @if (activeFilter.type !== "date") {
+          <p class="visually-hidden" role="status" aria-live="polite">
+            {{ visibleOptionCount }} options available
+          </p>
+        }
         @if (activeFilter.type === "date") {
           <div class="date-range-filter">
             <mat-form-field appearance="outline" class="date-picker-field">

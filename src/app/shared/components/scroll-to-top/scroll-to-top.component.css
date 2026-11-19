@@ -3,8 +3,8 @@
   bottom: 80px; /* Stack above the info FAB (bottom: 15px + 56px + gap) */
   right: 15px;
   z-index: 100;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--btn-primary);
+  color: var(--on-solid-fill, #ffffff);
   padding: 16px;
   border-radius: 50%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);

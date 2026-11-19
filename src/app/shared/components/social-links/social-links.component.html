@@ -1,13 +1,23 @@
 @if (contact) {
   <div class="social-links">
     @if (contact.url) {
-      <a [href]="contact.url" target="_blank" title="Website">
-        <mat-icon>language</mat-icon>
+      <a
+        [href]="contact.url"
+        target="_blank"
+        title="Website"
+        aria-label="Visit brewery website"
+      >
+        <mat-icon aria-hidden="true">language</mat-icon>
       </a>
     }
     @if (contact.facebook) {
-      <a [href]="contact.facebook" target="_blank" title="Facebook">
-        <mat-icon>facebook</mat-icon>
+      <a
+        [href]="contact.facebook"
+        target="_blank"
+        title="Facebook"
+        aria-label="Visit brewery Facebook page"
+      >
+        <mat-icon aria-hidden="true">facebook</mat-icon>
       </a>
     }
     @if (contact.instagram) {
@@ -15,8 +25,9 @@
         [href]="'https://instagram.com/' + contact.instagram"
         target="_blank"
         title="Instagram"
+        aria-label="Visit brewery Instagram profile"
       >
-        <mat-icon svgIcon="instagram"></mat-icon>
+        <mat-icon svgIcon="instagram" aria-hidden="true"></mat-icon>
       </a>
     }
     @if (mapData) {
@@ -28,8 +39,9 @@
           breweryId: mapData.breweryId,
         }"
         title="View on Map"
+        aria-label="View brewery on the map"
       >
-        <mat-icon>map</mat-icon>
+        <mat-icon aria-hidden="true">map</mat-icon>
       </a>
     }
   </div>

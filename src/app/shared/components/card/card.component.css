@@ -309,7 +309,7 @@
 .rank-badge {
   display: inline-block;
   background: var(--accent-blue);
-  color: white;
+  color: var(--on-accent-blue, #ffffff);
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 20px;

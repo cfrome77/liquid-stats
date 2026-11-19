@@ -85,8 +85,8 @@
 .hero-section {
   padding: 20px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #ffb74d, #ff8a65);
-  color: white;
+  background: var(--hero-banner);
+  color: var(--on-solid-fill, #ffffff);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
@@ -126,7 +126,7 @@
   background-color: var(--chip-bg);
   color: inherit;
 
-  border-left: 4px solid #ffb74d;
+  border-left: 4px solid var(--accent-amber, #b45309);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 
   transition:
@@ -150,7 +150,7 @@
 
 .about-card mat-icon {
   font-size: 20px;
-  color: #ffb74d;
+  color: var(--accent-amber, #b45309);
 }
 
 /* ============================= */
@@ -164,7 +164,7 @@
 .contact-link {
   display: inline-block;
   margin-top: 6px;
-  color: #64b5f6;
+  color: var(--accent-blue, #1565c0);
   font-weight: 500;
   text-decoration: none;
   transition: opacity 0.2s ease;

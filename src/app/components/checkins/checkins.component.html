@@ -38,8 +38,12 @@
       (action)="retryLoad()"
     ></app-empty-state>
   } @else {
+    <p class="visually-hidden" role="status" aria-live="polite">
+      Showing {{ paginatedCheckins.length }} of {{ totalItems }} check-ins.
+    </p>
     <div
       class="cards-layout-container"
+      aria-live="polite"
       [class.cards-layout]="viewMode() === 'cards'"
       [class.compact-layout]="viewMode() === 'compact'"
     >

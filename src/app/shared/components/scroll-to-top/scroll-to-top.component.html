@@ -1,6 +1,11 @@
 <!-- Scroll to Top Button -->
 @if (isVisible) {
-  <button mat-fab class="fab-scroll-to-top" (click)="scrollToTop()">
-    <mat-icon>arrow_upward</mat-icon>
+  <button
+    mat-fab
+    class="fab-scroll-to-top"
+    aria-label="Scroll back to top"
+    (click)="scrollToTop()"
+  >
+    <mat-icon aria-hidden="true">arrow_upward</mat-icon>
   </button>
 }

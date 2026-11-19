@@ -60,7 +60,7 @@
 
   @if (filteredStyles.length > 0) {
     <div class="dialog-list-footer">
-      <span class="dialog-list-count">
+      <span class="dialog-list-count" role="status" aria-live="polite">
         Showing {{ visibleStyles.length }} of {{ filteredStyles.length }}
       </span>
       @if (hasMore) {

@@ -40,13 +40,13 @@
 .pagination-controls button.page-number.active {
   font-weight: 700;
   background-color: var(--accent-blue);
-  color: white !important;
+  color: var(--on-accent-blue, #ffffff) !important;
   box-shadow: 0 4px 8px rgba(var(--accent-blue-rgb), 0.3);
 }
 
 /* Active page number span */
 .pagination-controls button.page-number.active span {
-  color: white !important;
+  color: var(--on-accent-blue, #ffffff) !important;
 }
 
 /* Ellipsis styling to prevent hover effect and ensure no click */

@@ -169,7 +169,7 @@
 
 .style-count {
   background: var(--accent-blue);
-  color: white;
+  color: var(--on-accent-blue, #ffffff);
   padding: 2px 10px;
   border-radius: 12px;
   font-size: 0.8rem;
