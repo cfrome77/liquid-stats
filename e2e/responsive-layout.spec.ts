@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { setViewport, VIEWPORTS } from "./support/waits";
 
 test("has title", async ({ page }) => {
   await page.goto("/");
@@ -9,12 +10,12 @@ test("responsive navigation", async ({ page }) => {
   await page.goto("/");
 
   // Desktop view
-  await page.setViewportSize({ width: 1280, height: 800 });
+  await setViewport(page, VIEWPORTS.desktop);
   const navItems = page.locator(".desktop-nav");
   await expect(navItems).toBeVisible();
 
   // Mobile view
-  await page.setViewportSize({ width: 375, height: 667 });
+  await setViewport(page, VIEWPORTS.mobile);
   await expect(navItems).not.toBeVisible();
 
   // Menu button is hidden on mobile in favor of bottom nav
@@ -32,11 +33,11 @@ test("beer history layout", async ({ page }) => {
   await expect(container).toBeVisible();
 
   // Check layout on desktop
-  await page.setViewportSize({ width: 1280, height: 800 });
+  await setViewport(page, VIEWPORTS.desktop);
   await page.screenshot({ path: "e2e/screenshots/beer-history-desktop.png" });
 
   // Check layout on mobile
-  await page.setViewportSize({ width: 375, height: 667 });
+  await setViewport(page, VIEWPORTS.mobile);
   await page.screenshot({ path: "e2e/screenshots/beer-history-mobile.png" });
 });
 
@@ -45,13 +46,13 @@ test("routes render on mobile and desktop", async ({ page }) => {
 
   for (const r of routes) {
     // Desktop
-    await page.setViewportSize({ width: 1280, height: 800 });
+    await setViewport(page, VIEWPORTS.desktop);
     await page.goto(r);
     const containerDesktop = page.locator(".main-content-container");
     await expect(containerDesktop).toBeVisible();
 
     // Mobile
-    await page.setViewportSize({ width: 375, height: 667 });
+    await setViewport(page, VIEWPORTS.mobile);
     await page.goto(r);
     const containerMobile = page.locator(".main-content-container");
     await expect(containerMobile).toBeVisible();

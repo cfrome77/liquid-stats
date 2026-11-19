@@ -29,8 +29,19 @@ jobs:
         run: npm run format:check
       - name: Lint
         run: npm run lint
+      - name: Validate environment scripts
+        # Runs the real generate-env.js / ensure-local-env.js / inject-proxy-origin.js
+        # against a throwaway tree and asserts they reject missing or malformed
+        # variables before writing anything. No browser or dev server needed.
+        run: npx playwright test --config playwright.scripts.config.ts
       - name: Build
         run: npm run build:prod
+        env:
+          # generate-env.js validates these strictly, so the CI build needs
+          # well-formed placeholder values rather than an empty environment.
+          DATA_URL: https://example-bucket.s3.amazonaws.com/
+          UNTAPPD_USERNAME: ci-user
+          GA4_MEASUREMENT_ID: G-CI00000
       - name: Unit tests
         run: npm run test:ci
         env:

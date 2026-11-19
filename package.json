@@ -21,6 +21,7 @@
     "watch": "ng build --project liquid-stats --watch --configuration development",
     "test": "ng test --project liquid-stats",
     "test:ci": "ng test --project liquid-stats --watch=false --browsers=ChromeHeadlessNoSandbox",
+    "test:scripts": "playwright test --config playwright.scripts.config.ts",
     "lint": "ng lint --project liquid-stats",
     "analyze": "webpack-bundle-analyzer dist/liquid-stats/stats.json",
     "format:check": "prettier --check .",

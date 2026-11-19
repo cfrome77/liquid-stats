@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { gotoRoute, settleAnimations } from "./support/waits";
 
 /**
  * The shared card stacks three layers of horizontal padding: the global
@@ -46,9 +47,11 @@ async function openLongCard(page: Page, width: number): Promise<void> {
     route.fulfill({ json: LONG_CHECKIN }),
   );
   await page.setViewportSize({ width, height: 900 });
-  await page.goto("/checkins");
+  await gotoRoute(page, "/checkins");
   await page.locator("app-card").first().waitFor();
-  await page.waitForTimeout(300);
+  // The card fades in; wait for the finite transition to finish instead of
+  // guessing a duration, so a slow runner does not measure a mid-fade box.
+  await settleAnimations(page);
 }
 
 test.describe("Card text column on narrow screens", () => {
