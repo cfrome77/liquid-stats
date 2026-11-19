@@ -77,7 +77,6 @@ export class MapComponent
   public mapId = "myMap";
   public selectedBrewery: BreweryMarkerData | null = null;
   private map: L.Map | undefined;
-  private isOpeningPopup = false;
 
   public filterOpen = false;
   public filterName = "";
@@ -132,14 +131,8 @@ export class MapComponent
       setTimeout(() => this.map?.invalidateSize(), 100);
     });
 
-    // Close overlay when clicking on map background or when marker popup closes
+    // Close overlay when clicking on map background
     this.map!.on("click", () => this.closeBreweryOverlay());
-    this.map!.on("popupclose", () => {
-      if (!this.isOpeningPopup) {
-        this.selectedBrewery = null;
-        this.cdr.detectChanges();
-      }
-    });
 
     // Load beer data
     this.loadBeerData();
@@ -271,7 +264,6 @@ export class MapComponent
     const marker = this.markerService.getMarkerByBreweryId(breweryId);
     if (!marker) return;
 
-    this.isOpeningPopup = true;
     this.overlaySearchTerm = "";
 
     this.selectedBrewery = {
@@ -283,11 +275,8 @@ export class MapComponent
       logo: marker.checkInsData?.logo,
       checkIns: this.getFilteredCheckIns(marker.breweryId!),
     };
+    this.markerService.setSelectedMarker(breweryId);
     this.cdr.detectChanges();
-
-    setTimeout(() => {
-      this.isOpeningPopup = false;
-    }, 100);
   }
 
   /** Builds the Untappd check-in URL for a given check-in id. */
@@ -305,9 +294,14 @@ export class MapComponent
 
   /** Close overlay */
   closeBreweryOverlay() {
+    if (!this.selectedBrewery) return;
+
     this.selectedBrewery = null;
     this.overlaySearchTerm = "";
-    this.map?.closePopup();
+    this.markerService.setSelectedMarker(null);
+    // Leaflet fires map clicks outside the Angular zone, so the panel would
+    // otherwise stay on screen after the state is cleared.
+    this.cdr.detectChanges();
   }
 
   /** Escape key closes overlay */
@@ -321,16 +315,7 @@ export class MapComponent
     if (!this.map) return;
 
     this.markerService.makeBreweryMarkers(this.map, beers, (markerData) => {
-      this.selectedBrewery = {
-        breweryId: markerData.breweryId,
-        name: markerData.name,
-        breweryType: markerData.breweryType,
-        city: markerData.city,
-        state: markerData.state,
-        logo: markerData.logo,
-        checkIns: markerData.checkIns,
-      };
-      this.cdr.detectChanges();
+      if (markerData.breweryId) this.openBreweryOverlay(markerData.breweryId);
     });
 
     this.updateLegend(beers);
@@ -344,7 +329,7 @@ export class MapComponent
         this.selectedBrewery.checkIns = marker.checkInsData?.checkIns || [];
         this.cdr.detectChanges();
       } else {
-        this.selectedBrewery = null;
+        this.closeBreweryOverlay();
       }
     }
 
@@ -416,13 +401,6 @@ export class MapComponent
           this.map.setView(marker.getLatLng(), 18, { animate: true });
         }
         this.openBreweryOverlay(breweryId);
-        const el = marker.getElement();
-        if (el) {
-          el.classList.add("marker-pulse");
-          this.ngZone.runOutsideAngular(() => {
-            setTimeout(() => el.classList.remove("marker-pulse"), 3000);
-          });
-        }
       });
     } else {
       // Fallback if marker not found

@@ -28,6 +28,7 @@ describe("MapComponent", () => {
     mockMarkerService = jasmine.createSpyObj("MarkerService", [
       "makeBreweryMarkers",
       "getMarkerByBreweryId",
+      "setSelectedMarker",
     ]);
     mockMarkerService.markers = jasmine.createSpyObj("MarkerClusterGroup", [
       "clearLayers",
@@ -220,6 +221,45 @@ describe("MapComponent", () => {
     document.body.removeChild(mapDiv);
   }));
 
+  it("removes the panel and marker highlight when the map background is clicked", fakeAsync(() => {
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "myMap";
+    mapDiv.style.width = "100px";
+    mapDiv.style.height = "100px";
+    document.body.appendChild(mapDiv);
+
+    fixture.detectChanges();
+    tick(200);
+    flush();
+
+    mockMarkerService.getMarkerByBreweryId.and.returnValue({
+      breweryId: "brewery-1",
+      checkInsData: {
+        name: "Test Brewery",
+        city: "Test City",
+        state: "TS",
+        logo: "logo.png",
+        checkIns: [],
+      },
+    } as unknown as BreweryMarker);
+
+    component.openBreweryOverlay("brewery-1");
+    fixture.detectChanges(false);
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector(".map-info-panel")).toBeTruthy();
+
+    // Leaflet dispatches this outside the Angular zone in the real app.
+    component.closeBreweryOverlay();
+    fixture.detectChanges(false);
+
+    expect(component.selectedBrewery).toBeNull();
+    expect(mockMarkerService.setSelectedMarker).toHaveBeenCalledWith(null);
+    expect(host.querySelector(".map-info-panel")).toBeFalsy();
+
+    fixture.destroy();
+    document.body.removeChild(mapDiv);
+  }));
+
   it("traps focus inside the brewery overlay while it is open", fakeAsync(() => {
     const mapDiv = document.createElement("div");
     mapDiv.id = "myMap";
@@ -292,11 +332,15 @@ describe("MapComponent", () => {
     component.openBreweryOverlay("brewery-1");
     fixture.detectChanges(false);
     expect(component.selectedBrewery).not.toBeNull();
+    expect(mockMarkerService.setSelectedMarker).toHaveBeenCalledWith(
+      "brewery-1",
+    );
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
     fixture.detectChanges(false);
 
     expect(component.selectedBrewery).toBeNull();
+    expect(mockMarkerService.setSelectedMarker).toHaveBeenCalledWith(null);
 
     fixture.destroy();
     document.body.removeChild(mapDiv);

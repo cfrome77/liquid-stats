@@ -113,6 +113,12 @@
     <div class="map-wrapper">
       <div id="myMap" class="leaflet-map"></div>
 
+      <p class="visually-hidden" role="status" aria-live="polite">
+        @if (selectedBrewery) {
+          Showing check-ins for {{ selectedBrewery.name }}
+        }
+      </p>
+
       @if (isLoading()) {
         <div class="map-overlay-message">
           <mat-icon>public</mat-icon>
