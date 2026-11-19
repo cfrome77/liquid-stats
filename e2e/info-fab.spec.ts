@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { setViewport, VIEWPORTS } from "./support/waits";
 
 test.describe("Info FAB positioning", () => {
   test("should be positioned on the right on desktop", async ({ page }) => {
     await page.goto("/");
-    await page.setViewportSize({ width: 1280, height: 800 });
+    await setViewport(page, VIEWPORTS.desktop);
 
     const fabContainer = page.locator("app-info-fab .fab-container");
     await expect(fabContainer).toBeVisible();
@@ -25,7 +26,7 @@ test.describe("Info FAB positioning", () => {
     page,
   }) => {
     await page.goto("/");
-    await page.setViewportSize({ width: 375, height: 667 });
+    await setViewport(page, VIEWPORTS.mobile);
 
     const fabContainer = page.locator("app-info-fab .fab-container");
     await expect(fabContainer).toBeVisible();

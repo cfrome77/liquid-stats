@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { gotoRoute, setViewport, VIEWPORTS } from "./support/waits";
 
 test("no overlap on mobile", async ({ page }) => {
   // Mock the checkins.json request with many long badges
@@ -55,8 +56,8 @@ test("no overlap on mobile", async ({ page }) => {
   });
 
   // Mobile viewport
-  await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto("/checkins");
+  await setViewport(page, VIEWPORTS.mobile);
+  await gotoRoute(page, "/checkins");
 
   const card = page.locator("app-card").first();
   await expect(card).toBeVisible();
@@ -150,8 +151,8 @@ test("inline on mobile if short", async ({ page }) => {
     await route.fulfill({ json });
   });
 
-  await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto("/checkins");
+  await setViewport(page, VIEWPORTS.mobile);
+  await gotoRoute(page, "/checkins");
 
   const card = page.locator("app-card").first();
   const badge = card.locator("mat-chip").first();
@@ -213,8 +214,8 @@ test("inline on desktop", async ({ page }) => {
   });
 
   // Desktop viewport
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto("/checkins");
+  await setViewport(page, VIEWPORTS.desktop);
+  await gotoRoute(page, "/checkins");
 
   const card = page.locator("app-card").first();
   await expect(card).toBeVisible();

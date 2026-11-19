@@ -350,8 +350,10 @@ test("clicking a style bar does not open the dialog twice", async ({
   await page.goto("/insights");
   await clickFirstStyleBar(page);
 
-  // Give the query-param echo a chance to fire a second time.
-  await page.waitForTimeout(500);
+  // The click echoes the selection into the URL, and that echo is what used to
+  // reopen the dialog a second time. Wait for the URL to reflect it (the echo
+  // has fired) and then assert the dialog did not stack.
+  await expect(page).toHaveURL(/style=/);
   await expect(page.locator("mat-dialog-container")).toHaveCount(1);
 });
 
@@ -491,11 +493,12 @@ test("clicking a rating column after a style does not reopen the style list", as
   // Only the rating list opens, and only once.
   await expect(dialog).toHaveCount(1);
   await expect(dialog.locator("h2")).toContainText(geo.labels[filled]!);
-  await page.waitForTimeout(500);
+  // The merged URL echo (`?rating=`) is what used to reopen the dialog; wait
+  // for it to settle rather than for an arbitrary interval.
+  await expect(page).toHaveURL(/rating=/);
   await expect(dialog).toHaveCount(1);
 
   // The stale style param is gone, so the rating param stands alone.
-  await expect(page).toHaveURL(/rating=/);
   await expect(page).not.toHaveURL(/style=/);
 });
 

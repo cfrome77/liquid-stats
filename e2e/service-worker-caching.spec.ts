@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { gotoRoute } from "./support/waits";
 
 /**
  * The service worker config decides what is prefetched at install time versus
@@ -71,10 +72,13 @@ test.describe("rendered images load lazily", () => {
     "/wishlist",
   ]) {
     test(`card thumbnails on ${path} use loading="lazy"`, async ({ page }) => {
-      await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await gotoRoute(page, path);
 
       const imgs = page.locator("app-card img");
+      // The fixtures arrive before Angular renders the cards, so wait for the
+      // first thumbnail rather than assuming the list is already painted.
+      await expect(imgs.first()).toBeVisible();
+
       const count = await imgs.count();
       expect(count).toBeGreaterThan(0);
       for (let i = 0; i < count; i++) {

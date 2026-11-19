@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { gotoRoute } from "./support/waits";
 
 /**
  * List cards render labels at 38–54 px. Untappd serves a small square
@@ -23,8 +24,7 @@ test.describe("Label thumbnails request the small variant", () => {
         }
       });
 
-      await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await gotoRoute(page, path);
 
       const labels = page.locator(
         "app-card img.beer-label, app-card img.brewery-label",
