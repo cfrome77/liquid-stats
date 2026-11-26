@@ -1,5 +1,5 @@
 annotated-types==0.8.0
-certifi==2026.10.23
+certifi==2026.11.20
 charset-normalizer==3.5.2
 pydantic==2.14.3
 pydantic_core==2.50.4
