@@ -2,7 +2,7 @@ annotated-types==0.8.0
 certifi==2026.10.23
 charset-normalizer==3.5.2
 pydantic==2.14.3
-pydantic_core==2.50.4
+pydantic_core==2.50.5
 python-dotenv==1.2.4
 idna==3.20
 requests==2.34.2
